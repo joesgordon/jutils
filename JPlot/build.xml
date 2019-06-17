@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="all" name="Builds jutils and creates jars">
+	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
+	<!--ANT 1.7 is required                                        -->
+
+	<property name="projname" value="jchartlib" />
+	<property name="class.main" value="org.jutils.chart.app.JChartAppMain" />
+	<property name="dir.proj" location="." />
+	<property name="dir.build" location="${dir.proj}/build" />
+	<property name="dir.src" location="${dir.proj}/src" />
+	<property name="dir.release" location="${dir.build}/release" />
+	<property name="dir.debug" location="${dir.build}/debug" />
+	<property name="dir.libs" location="${dir.proj}/../libs/libs" />
+
+	<property name="jar.release" location="${dir.build}/${projname}.jar" />
+	<property name="jar.debug" location="${dir.build}/${projname}_debug.jar" />
+	<property name="jar.source" location="${dir.build}/${projname}_source.jar" />
+
+	<property name="lib.jutils" location="${dir.proj}/../jutils/build/jutils_source.jar" />
+
+	<target name="clean" description="Removes intermediate and compiled files">
+		<delete dir="${dir.build}" failonerror="false" quiet="true" />
+	</target>
+
+	<target name="build_src">
+		<delete dir="${build_dir}" failonerror="false" quiet="true" />
+		<mkdir dir="${build_dir}" />
+		<javac srcdir="${dir.src}" classpath="${lib.jutils}" destdir="${build_dir}" debug="${debug_flag}" debuglevel="${debug_lvl}" source="1.8" target="1.8" includeantruntime="false" />
+		<copy todir="${build_dir}">
+			<fileset dir="${dir.src}" excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="release" description="Builds a release jar that does not include source or libs.">
+		<antcall target="build_src" inheritall="true" inheritrefs="true">
+			<param name="debug_flag" value="false" />
+			<param name="debug_lvl" value="none" />
+			<param name="build_dir" value="${dir.release}" />
+		</antcall>
+		<jar destfile="${jar.release}" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="${class.main}" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="${dir.release}" />
+		</jar>
+	</target>
+
+	<target name="debug" description="Builds a debug jar that includes source and libs">
+		<antcall target="build_src" inheritall="true" inheritrefs="true">
+			<param name="debug_flag" value="true" />
+			<param name="debug_lvl" value="lines,vars,source" />
+			<param name="build_dir" value="${dir.debug}" />
+		</antcall>
+		<jar destfile="${jar.debug}" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="${class.main}" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="${dir.release}" />
+			<zipfileset excludes="META-INF/*.SF" src="${lib.jutils}" />
+		</jar>
+	</target>
+
+	<target name="source" description="Builds a release jar that includes source and libs">
+		<jar destfile="${jar.source}" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="${class.main}" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="${dir.src}" />
+			<fileset dir="${dir.release}" />
+			<zipfileset excludes="META-INF/*.SF" src="${lib.jutils}" />
+		</jar>
+	</target>
+
+	<target name="all" depends="clean,release,debug,source" description="Build release, debug, and source jars." />
+
+</project>
