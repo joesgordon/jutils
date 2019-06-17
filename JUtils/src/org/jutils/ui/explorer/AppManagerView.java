@@ -1,10 +1,17 @@
 package org.jutils.ui.explorer;
 
-import java.awt.*;
 import java.awt.Dialog.ModalityType;
-import java.io.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import org.jutils.SwingUtils;
 import org.jutils.ValidationException;
@@ -175,6 +182,11 @@ public class AppManagerView implements IDataView<AppManagerConfig>
             SwingUtils.showErrorMessage( getView(),
                 "Error reading from file: " + file.getAbsolutePath(),
                 "I/O Error" );
+        }
+        catch( ValidationException ex )
+        {
+            SwingUtils.showErrorMessage( getView(), ex.getMessage(),
+                "Serialization Error" );
         }
     }
 }

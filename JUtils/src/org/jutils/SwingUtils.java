@@ -1,13 +1,59 @@
 package org.jutils;
 
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dialog.ModalityType;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.DisplayMode;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.PopupMenu;
+import java.awt.Rectangle;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRootPane;
+import javax.swing.JSeparator;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -15,11 +61,11 @@ import org.jutils.io.IParser;
 import org.jutils.io.XStreamUtils;
 import org.jutils.ui.StandardFormView;
 import org.jutils.ui.StatusBarPanel;
-import org.jutils.ui.event.*;
+import org.jutils.ui.event.ActionAdapter;
+import org.jutils.ui.event.ItemActionEvent;
+import org.jutils.ui.event.ItemActionListener;
 import org.jutils.ui.fields.ParserFormField;
 import org.jutils.ui.model.IDataView;
-
-import com.thoughtworks.xstream.XStreamException;
 
 /*******************************************************************************
  * Utility class for AWT/Swing static functions.
@@ -622,6 +668,10 @@ public final class SwingUtils
             {
                 throw new RuntimeException( ex );
             }
+            catch( ValidationException ex )
+            {
+                throw new RuntimeException( ex );
+            }
         };
         Icon icon = IconConstants.getIcon( IconConstants.EDIT_COPY_16 );
         Action action = new ActionAdapter( listener, "Copy", icon );
@@ -648,7 +698,7 @@ public final class SwingUtils
                 itemListener.actionPerformed(
                     new ItemActionEvent<T>( itemListener, data ) );
             }
-            catch( XStreamException ex )
+            catch( ValidationException ex )
             {
             }
         };

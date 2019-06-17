@@ -1,6 +1,8 @@
 package org.jutils.io;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.jutils.ValidationException;
 
@@ -18,6 +20,7 @@ public class XStreamStreamSerializer<T>
 
     /***************************************************************************
      * @param cls
+     * @throws ValidationException
      **************************************************************************/
     public XStreamStreamSerializer( Class<? extends T> cls )
     {

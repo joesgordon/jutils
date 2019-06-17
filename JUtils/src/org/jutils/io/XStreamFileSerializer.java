@@ -1,6 +1,9 @@
 package org.jutils.io;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.jutils.ValidationException;
 
@@ -15,6 +18,7 @@ public class XStreamFileSerializer<T> implements IStdSerializer<T, File>
 
     /***************************************************************************
      * @param cls
+     * @throws ValidationException
      **************************************************************************/
     public XStreamFileSerializer( Class<? extends T> cls )
     {

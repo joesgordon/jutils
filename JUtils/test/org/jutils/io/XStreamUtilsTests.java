@@ -7,9 +7,8 @@ import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jutils.ValidationException;
 import org.jutils.ui.ColorMapView;
-
-import com.thoughtworks.xstream.XStreamException;
 
 /*******************************************************************************
  *
@@ -26,7 +25,7 @@ public class XStreamUtilsTests
         {
             XStreamUtils.writeObjectXStream( 42.0 );
         }
-        catch( XStreamException ex )
+        catch( ValidationException ex )
         {
             ex.printStackTrace();
             Assert.fail( ex.getMessage() );
@@ -54,7 +53,7 @@ public class XStreamUtilsTests
 
             Assert.assertEquals( expected, d );
         }
-        catch( XStreamException ex )
+        catch( ValidationException ex )
         {
             ex.printStackTrace();
             Assert.fail( ex.getMessage() );
@@ -83,7 +82,7 @@ public class XStreamUtilsTests
 
             Assert.assertEquals( expected, actual );
         }
-        catch( XStreamException ex )
+        catch( ValidationException ex )
         {
             ex.printStackTrace();
             Assert.fail( ex.getMessage() );
@@ -95,6 +94,9 @@ public class XStreamUtilsTests
         }
     }
 
+    /***************************************************************************
+     *
+     **************************************************************************/
     @Test
     public void test_buildDependencyList()
     {

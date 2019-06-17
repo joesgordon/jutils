@@ -1,14 +1,27 @@
 package org.jutils.io;
 
-import java.io.*;
-import java.lang.reflect.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jutils.Utils;
 import org.jutils.ValidationException;
 
+import com.thoughtworks.xstream.InitializationException;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 
 /*******************************************************************************
  * 
@@ -28,9 +41,10 @@ public final class XStreamUtils
      * @param file File
      * @param packages
      * @throws IOException
+     * @throws ValidationException
      **************************************************************************/
     public static void writeObjectXStream( Object obj, File file,
-        String... packages ) throws IOException
+        String... packages ) throws IOException, ValidationException
     {
         try( FileOutputStream stream = new FileOutputStream( file ) )
         {
@@ -43,13 +57,22 @@ public final class XStreamUtils
      * @param outStream
      * @param packages
      * @throws IOException
+     * @throws ValidationException
      **************************************************************************/
     public static void writeObjectXStream( Object obj, OutputStream outStream,
-        String... packages ) throws IOException
+        String... packages ) throws IOException, ValidationException
     {
-        XStream xstream = createXStream( packages );
+        try
+        {
+            XStream xstream = createXStream( packages );
 
-        xstream.toXML( obj, outStream );
+            xstream.toXML( obj, outStream );
+        }
+        catch( XStreamException ex )
+        {
+            throw new ValidationException( "Unable to write object to XStream",
+                ex );
+        }
     }
 
     /***************************************************************************
@@ -57,13 +80,22 @@ public final class XStreamUtils
      * @param packages
      * @return
      * @throws IOException
+     * @throws ValidationException
      **************************************************************************/
     public static String writeObjectXStream( Object obj, String... packages )
-        throws IOException
+        throws IOException, ValidationException
     {
-        XStream xstream = createXStream( packages );
+        try
+        {
+            XStream xstream = createXStream( packages );
 
-        return xstream.toXML( obj );
+            return xstream.toXML( obj );
+        }
+        catch( XStreamException ex )
+        {
+            throw new ValidationException( "Unable to write object to XStream",
+                ex );
+        }
     }
 
     /***************************************************************************
@@ -114,21 +146,31 @@ public final class XStreamUtils
      * @param str
      * @param packages
      * @return
+     * @throws ValidationException
      **************************************************************************/
     public static <T> T readObjectXStream( String str, String... packages )
+        throws ValidationException
     {
         XStream xstream = createXStream( packages );
 
-        Object obj = xstream.fromXML( str );
-        @SuppressWarnings( "unchecked")
-        T t = ( T )obj;
+        try
+        {
+            Object obj = xstream.fromXML( str );
+            @SuppressWarnings( "unchecked")
+            T t = ( T )obj;
 
-        return t;
+            return t;
+        }
+        catch( XStreamException ex )
+        {
+            throw new ValidationException( "Unable read from XML string", ex );
+        }
     }
 
     /***************************************************************************
      * @param packages
      * @return
+     * @throws ValidationException
      **************************************************************************/
     public static XStream createXStream( String... packages )
     {
@@ -139,15 +181,22 @@ public final class XStreamUtils
             wildcards[i] = packages[i] + ".**";
         }
 
-        XStream xstream = new XStream();
-
-        if( wildcards.length > 0 )
+        try
         {
-            XStream.setupDefaultSecurity( xstream );
-            xstream.allowTypesByWildcard( wildcards );
-        }
+            XStream xstream = new XStream();
 
-        return xstream;
+            if( wildcards.length > 0 )
+            {
+                XStream.setupDefaultSecurity( xstream );
+                xstream.allowTypesByWildcard( wildcards );
+            }
+
+            return xstream;
+        }
+        catch( InitializationException ex )
+        {
+            throw new RuntimeException( "Unable to initialize XStream", ex );
+        }
     }
 
     /***************************************************************************
@@ -359,6 +408,12 @@ public final class XStreamUtils
         }
     }
 
+    /***************************************************************************
+     * @param <T>
+     * @param cls
+     * @return
+     * @throws ValidationException
+     **************************************************************************/
     public static <T> XStream createXStream( Class<? extends T> cls )
     {
         return createXStream(

@@ -6,7 +6,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.jutils.io.*;
+import org.jutils.ValidationException;
+import org.jutils.io.FilePrintStream;
+import org.jutils.io.LogUtils;
+import org.jutils.io.XStreamUtils;
 
 public class OptionsSerializerTests
 {
@@ -35,6 +38,12 @@ public class OptionsSerializerTests
         catch( IOException ex )
         {
             fail( "I/O Exception: " + ex.getMessage() );
+            ex.printStackTrace();
+            return;
+        }
+        catch( ValidationException ex )
+        {
+            fail( "Validation Exception" + ex.getMessage() );
             ex.printStackTrace();
             return;
         }
