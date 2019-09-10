@@ -1,10 +1,16 @@
 package org.jutils.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.jutils.ui.ListView.IItemListModel;
 import org.jutils.ui.ListView.ItemListCellRenderer;
@@ -73,6 +79,7 @@ public class ItemListView<T> implements IDataView<List<T>>
 
     /***************************************************************************
      * Creates the component that is displayed when no item is selected.
+     * @return
      **************************************************************************/
     private static JPanel createNullSelectionPanel()
     {
@@ -90,6 +97,7 @@ public class ItemListView<T> implements IDataView<List<T>>
 
     /***************************************************************************
      * Creates the main view.
+     * @return
      **************************************************************************/
     private JPanel createView()
     {
@@ -112,7 +120,7 @@ public class ItemListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Component getView()
