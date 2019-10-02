@@ -17,12 +17,12 @@ public class XStreamFileSerializer<T> implements IStdSerializer<T, File>
     private final XStreamStreamSerializer<T> serializer;
 
     /***************************************************************************
-     * @param cls
+     * @param clss
      * @throws ValidationException
      **************************************************************************/
-    public XStreamFileSerializer( Class<? extends T> cls )
+    public XStreamFileSerializer( Class<?>... clss )
     {
-        this.serializer = new XStreamStreamSerializer<>( cls );
+        this.serializer = new XStreamStreamSerializer<>( clss );
     }
 
     /***************************************************************************

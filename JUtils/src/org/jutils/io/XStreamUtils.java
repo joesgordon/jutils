@@ -238,11 +238,14 @@ public final class XStreamUtils
      * @param cls
      * @return
      **************************************************************************/
-    public static List<String> buildDependencyList( Class<?> cls )
+    public static List<String> buildDependencyList( Class<?>... clss )
     {
         List<Class<?>> classes = new ArrayList<>();
 
-        buildClasses( cls, classes );
+        for( Class<?> cls : clss )
+        {
+            buildClasses( cls, classes );
+        }
 
         return buildDependencyList( classes );
     }
@@ -414,9 +417,9 @@ public final class XStreamUtils
      * @return
      * @throws ValidationException
      **************************************************************************/
-    public static <T> XStream createXStream( Class<? extends T> cls )
+    public static <T> XStream createXStream( Class<?>... clss )
     {
         return createXStream(
-            buildDependencyList( cls ).toArray( new String[0] ) );
+            buildDependencyList( clss ).toArray( new String[0] ) );
     }
 }

@@ -19,12 +19,12 @@ public class XStreamStreamSerializer<T>
     private final XStream xstream;
 
     /***************************************************************************
-     * @param cls
+     * @param clss
      * @throws ValidationException
      **************************************************************************/
-    public XStreamStreamSerializer( Class<? extends T> cls )
+    public XStreamStreamSerializer( Class<?>... clss )
     {
-        this.xstream = XStreamUtils.createXStream( cls );
+        this.xstream = XStreamUtils.createXStream( clss );
     }
 
     /***************************************************************************
