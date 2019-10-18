@@ -1,6 +1,10 @@
 package org.jutils.io;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import org.jutils.Utils;
 
@@ -45,7 +49,7 @@ public class FilePrintStream implements IPrintStream
     {
         this.fileStream = new FileOutputStream( file, append );
         this.outputWriter = new OutputStreamWriter( fileStream,
-            IOUtils.US_ASCII );
+            IOUtils.get8BitEncoding() );
         this.writer = new BufferedWriter( outputWriter, BUFFER_SIZE );
     }
 

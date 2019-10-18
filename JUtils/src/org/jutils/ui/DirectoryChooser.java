@@ -1,18 +1,34 @@
 package org.jutils.ui;
 
-import java.awt.*;
 import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Window;
 import java.io.File;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
-import org.jutils.*;
+import org.jutils.OptionUtils;
+import org.jutils.SwingUtils;
+import org.jutils.Utils;
+import org.jutils.ValidationException;
 import org.jutils.io.IOUtils;
 import org.jutils.io.LogUtils;
+import org.jutils.io.parsers.StringParser;
 import org.jutils.ui.app.AppRunner;
 import org.jutils.ui.app.IApplication;
-import org.jutils.ui.validation.*;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.ValidationTextField;
+import org.jutils.ui.validation.ValidationView;
+import org.jutils.ui.validation.Validity;
 import org.jutils.ui.validators.ITextValidator;
 
 /*******************************************************************************
@@ -199,9 +215,10 @@ public class DirectoryChooser
 
         if( selectedFiles.length == 1 )
         {
-            String name = JOptionPane.showInputDialog( dialog,
-                "Enter the new directory name:", "New Directory Name",
-                JOptionPane.QUESTION_MESSAGE );
+            StringParser nameParser = new StringParser();
+
+            String name = OptionUtils.promptForValue( dialog, "Directory Name",
+                nameParser, "Enter the new directory name:" );
 
             if( name != null )
             {
@@ -211,9 +228,9 @@ public class DirectoryChooser
         }
         else
         {
-            JOptionPane.showMessageDialog( dialog,
+            OptionUtils.showErrorMessage( dialog,
                 "Please choose only one directory when creating a sub-directory.",
-                "Cannot Create New Directory", JOptionPane.ERROR_MESSAGE );
+                "Cannot Create New Directory" );
         }
     }
 
@@ -225,9 +242,9 @@ public class DirectoryChooser
         {
             if( !newDir.mkdir() )
             {
-                JOptionPane.showMessageDialog( dialog,
+                OptionUtils.showErrorMessage( dialog,
                     "Please check the permissions on the parent directory.",
-                    "Cannot Create New Directory", JOptionPane.ERROR_MESSAGE );
+                    "Cannot Create New Directory" );
             }
             else
             {
@@ -238,9 +255,9 @@ public class DirectoryChooser
         }
         else
         {
-            JOptionPane.showMessageDialog( dialog,
+            OptionUtils.showErrorMessage( dialog,
                 "The directory or file, '" + name + "', already exists.",
-                "Cannot Create New Directory", JOptionPane.ERROR_MESSAGE );
+                "Cannot Create New Directory" );
         }
     }
 

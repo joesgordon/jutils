@@ -41,7 +41,7 @@ public class FilteredWriter
         }
 
         try( FileInputStream fis = new FileInputStream( temp );
-             Reader r = new InputStreamReader( fis, IOUtils.US_ASCII );
+             Reader r = new InputStreamReader( fis, IOUtils.get8BitEncoding() );
              BufferedReader reader = new BufferedReader( r ) )
         {
             try( FilePrintStream stream = new FilePrintStream( toFile ) )

@@ -1,11 +1,13 @@
 package org.jutils.net;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 
 import org.jutils.ValidationException;
-import org.jutils.io.*;
+import org.jutils.io.IDataSerializer;
+import org.jutils.io.IDataStream;
+import org.jutils.io.LengthStringSerializer;
+import org.jutils.io.LocalDateTimeSerializer;
 
 /*******************************************************************************
  *
@@ -13,7 +15,7 @@ import org.jutils.io.*;
 public class NetMessageSerializer implements IDataSerializer<NetMessage>
 {
     /**  */
-    private final LenStringSerializer stringSerializer = new LenStringSerializer();
+    private final LengthStringSerializer stringSerializer = new LengthStringSerializer();
     /**  */
     private final LocalDateTimeSerializer timeSerializer = new LocalDateTimeSerializer();
 
@@ -61,38 +63,5 @@ public class NetMessageSerializer implements IDataSerializer<NetMessage>
 
         stream.writeInt( msg.contents.length );
         stream.write( msg.contents );
-    }
-
-    /***************************************************************************
-     *
-     **************************************************************************/
-    public static class LenStringSerializer implements IDataSerializer<String>
-    {
-        /**  */
-        private final Charset utf8 = Charset.forName( "UTF-8" );
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String read( IDataStream stream )
-            throws IOException, ValidationException
-        {
-            int strLen = stream.readInt();
-            byte [] strBytes = new byte[strLen];
-            stream.read( strBytes );
-            return new String( strBytes, utf8 );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void write( String str, IDataStream stream ) throws IOException
-        {
-            byte [] bytes = str.getBytes( utf8 );
-            stream.writeInt( bytes.length );
-            stream.write( bytes );
-        }
     }
 }

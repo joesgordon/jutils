@@ -31,12 +31,12 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 
 import org.jutils.IconConstants;
+import org.jutils.OptionUtils;
 import org.jutils.SwingUtils;
 import org.jutils.Utils;
 import org.jutils.ValidationException;
@@ -503,23 +503,21 @@ public class ChartView implements IView<JComponent>
         }
         catch( FileNotFoundException ex )
         {
-            JOptionPane.showMessageDialog( mainPanel.getView(),
+            OptionUtils.showErrorMessage( mainPanel.getView(),
                 "The file was not found: " + file.getAbsolutePath(),
-                "File Not Found", JOptionPane.ERROR_MESSAGE );
+                "File Not Found" );
             return;
         }
         catch( IOException ex )
         {
-            JOptionPane.showMessageDialog( mainPanel.getView(),
-                "I/O Exception: " + ex.getMessage(), "I/O Exception",
-                JOptionPane.ERROR_MESSAGE );
+            OptionUtils.showErrorMessage( mainPanel.getView(),
+                "I/O Exception: " + ex.getMessage(), "I/O Exception" );
             return;
         }
         catch( ValidationException ex )
         {
-            JOptionPane.showMessageDialog( mainPanel.getView(),
-                "Format Error: " + ex.getMessage(), "Format Error",
-                JOptionPane.ERROR_MESSAGE );
+            OptionUtils.showErrorMessage( mainPanel.getView(),
+                "Format Error: " + ex.getMessage(), "Format Error" );
             return;
         }
 
@@ -780,9 +778,8 @@ public class ChartView implements IView<JComponent>
         }
         catch( IOException ex )
         {
-            JOptionPane.showMessageDialog( mainPanel.getView(),
-                "I/O Error: " + ex.getMessage(), "I/O Error",
-                JOptionPane.ERROR_MESSAGE );
+            OptionUtils.showErrorMessage( mainPanel.getView(),
+                "I/O Error: " + ex.getMessage(), "I/O Error" );
         }
 
         view.setCursor( Cursor.getDefaultCursor() );

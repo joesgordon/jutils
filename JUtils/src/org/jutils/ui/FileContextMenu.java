@@ -6,9 +6,14 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
-import org.jutils.*;
+import org.jutils.IconConstants;
+import org.jutils.OptionUtils;
+import org.jutils.Utils;
 import org.jutils.io.IOUtils;
 import org.jutils.ui.event.ActionAdapter;
 import org.jutils.utils.IGetter;
@@ -203,7 +208,7 @@ public class FileContextMenu
         if( !file.exists() )
         {
             String [] choices = new String[] { "Open Parent", "Cancel" };
-            String choice = SwingUtils.showConfirmMessage( parentComp,
+            String choice = OptionUtils.showOptionMessage( parentComp,
                 "File does not exist. Open existing parent?",
                 "File does not exist", choices, choices[0] );
 
@@ -213,7 +218,7 @@ public class FileContextMenu
 
                 if( parent == null )
                 {
-                    SwingUtils.showErrorMessage(
+                    OptionUtils.showErrorMessage(
                         parentComp, "No parent exists for file:" +
                             Utils.NEW_LINE + file.getAbsolutePath(),
                         "Error Opening File" );
@@ -236,7 +241,7 @@ public class FileContextMenu
             }
             catch( IOException ex )
             {
-                SwingUtils.showErrorMessage(
+                OptionUtils.showErrorMessage(
                     parentComp, "Could not open file externally:" +
                         Utils.NEW_LINE + file.getAbsolutePath(),
                     "Error Opening File" );
@@ -244,7 +249,7 @@ public class FileContextMenu
         }
         else
         {
-            SwingUtils.showErrorMessage( parentComp,
+            OptionUtils.showErrorMessage( parentComp,
                 "Unable to open files on this platform.",
                 "Error Opening File" );
         }

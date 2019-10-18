@@ -1,6 +1,12 @@
 package org.jutils.chart.io;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 
 import org.jutils.ValidationException;
@@ -28,7 +34,7 @@ public class DataFileReader implements IReader<ISeriesData<?>, File>
         // LogUtils.printDebug( "Reading " + f.getName() );
 
         try( InputStream is = new FileInputStream( f );
-             Reader r = new InputStreamReader( is, IOUtils.US_ASCII );
+             Reader r = new InputStreamReader( is, IOUtils.get8BitEncoding() );
              BufferedReader reader = new BufferedReader( r ) )
         {
             while( ( line = reader.readLine() ) != null )

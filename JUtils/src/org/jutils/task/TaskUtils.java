@@ -3,8 +3,7 @@ package org.jutils.task;
 import java.awt.Component;
 import java.awt.Window;
 
-import javax.swing.JOptionPane;
-
+import org.jutils.OptionUtils;
 import org.jutils.SwingUtils;
 import org.jutils.ui.MessageExceptionView;
 import org.jutils.ui.VerboseMessageView;
@@ -41,13 +40,11 @@ public final class TaskUtils
 
             view.setMessages( error.message, error.description );
 
-            JOptionPane.showMessageDialog( parent, view.getView(), error.name,
-                JOptionPane.ERROR_MESSAGE );
+            OptionUtils.showErrorMessage( parent, view.getView(), error.name );
         }
         else
         {
-            JOptionPane.showMessageDialog( parent, error.message, error.name,
-                JOptionPane.ERROR_MESSAGE );
+            OptionUtils.showErrorMessage( parent, error.message, error.name );
         }
     }
 }

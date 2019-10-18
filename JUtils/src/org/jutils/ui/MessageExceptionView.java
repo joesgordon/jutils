@@ -1,10 +1,16 @@
 package org.jutils.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
+import org.jutils.OptionUtils;
 import org.jutils.ValidationException;
 import org.jutils.ui.app.AppRunner;
 import org.jutils.ui.app.IApplication;
@@ -116,8 +122,7 @@ public class MessageExceptionView implements IView<JComponent>
         meView.setMessage( message );
         meView.setException( th );
 
-        JOptionPane.showMessageDialog( parent, meView.getView(), title,
-            JOptionPane.ERROR_MESSAGE );
+        OptionUtils.showErrorMessage( parent, meView.getView(), title );
     }
 
     /***************************************************************************

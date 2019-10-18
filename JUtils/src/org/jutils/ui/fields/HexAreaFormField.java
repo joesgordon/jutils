@@ -3,24 +3,33 @@ package org.jutils.ui.fields;
 import java.awt.Font;
 import java.nio.charset.Charset;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
+import org.jutils.io.IOUtils;
 import org.jutils.io.parsers.HexBytesParser;
 import org.jutils.ui.event.updater.IUpdater;
 import org.jutils.ui.hex.HexUtils;
-import org.jutils.ui.validation.*;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.ValidationTextAreaField;
+import org.jutils.ui.validation.ValidationView;
+import org.jutils.ui.validation.Validity;
 import org.jutils.ui.validators.DataTextValidator;
 import org.jutils.ui.validators.ITextValidator;
 
-/***************************************************************************
+/*******************************************************************************
  * 
- **************************************************************************/
+ ******************************************************************************/
 public class HexAreaFormField implements IDataFormField<byte []>
 {
     /**  */
-    public static final Charset UTF8 = Charset.forName( "UTF-8" );
+    public static final Charset HEXSET = IOUtils.get8BitEncoding();
 
     /**  */
     private final String name;
@@ -188,7 +197,7 @@ public class HexAreaFormField implements IDataFormField<byte []>
      **************************************************************************/
     public void setText( String text )
     {
-        setValue( text.getBytes( UTF8 ) );
+        setValue( text.getBytes( HEXSET ) );
     }
 
     /***************************************************************************

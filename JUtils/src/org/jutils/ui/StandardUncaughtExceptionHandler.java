@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import org.jutils.SwingUtils;
+import org.jutils.OptionUtils;
 import org.jutils.Utils;
 import org.jutils.io.FilePrintStream;
 import org.jutils.io.IOUtils;
@@ -100,7 +100,7 @@ public class StandardUncaughtExceptionHandler
         exView.setException( ex );
 
         String [] choices = new String[] { "Continue", "Quit" };
-        String choice = SwingUtils.showConfirmMessage( frame, exView.getView(),
+        String choice = OptionUtils.showOptionMessage( frame, exView.getView(),
             "Unhandled Error", choices, choices[1], true );
 
         if( choice == null || choice.equals( choices[1] ) )

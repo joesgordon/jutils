@@ -2,12 +2,29 @@ package org.jutils.ui.hex;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.Icon;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 
-import org.jutils.*;
+import org.jutils.IconConstants;
+import org.jutils.OptionUtils;
+import org.jutils.SwingUtils;
+import org.jutils.Utils;
 import org.jutils.io.BitBuffer;
 import org.jutils.io.BitPosition;
 import org.jutils.ui.event.ActionAdapter;
@@ -267,7 +284,7 @@ public class ShiftHexView implements IView<JComponent>
 
         bitsView.setData( bits );
 
-        bits = SwingUtils.showQuestion( parent,
+        bits = OptionUtils.showQuestionView( parent,
             "Enter binary string to be found:", "Enter Search String",
             bitsView );
 
@@ -310,8 +327,7 @@ public class ShiftHexView implements IView<JComponent>
             String msg = "Pattern not found between " + begStr + " and " +
                 endStr;
 
-            JOptionPane.showMessageDialog( view, msg, "Pattern Not Found",
-                JOptionPane.ERROR_MESSAGE );
+            OptionUtils.showErrorMessage( view, msg, "Pattern Not Found" );
         }
     }
 
@@ -419,11 +435,11 @@ public class ShiftHexView implements IView<JComponent>
                 }
                 catch( NumberFormatException ex )
                 {
-                    JOptionPane.showMessageDialog( view.view,
+                    OptionUtils.showErrorMessage( view.view,
                         "Cannot parse " + bits.toString() +
                             " as a binary string:" + Utils.NEW_LINE +
                             ex.getMessage(),
-                        "Parse Error", JOptionPane.ERROR_MESSAGE );
+                        "Parse Error" );
                 }
             }
         }

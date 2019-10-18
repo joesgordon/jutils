@@ -1,6 +1,7 @@
 package org.jutils.io;
 
 import java.io.File;
+import java.nio.charset.Charset;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,5 +30,38 @@ public class IOUtilsTests
         File cca = IOUtils.findClosestCommonAncestor( files );
 
         Assert.assertEquals( expected, cca.getAbsolutePath() );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void test_8BitEncodingReflectivelySymmetric()
+    {
+        Charset encoding = IOUtils.get8BitEncoding();
+
+        for( int i = 0; i < 256; i++ )
+        {
+            byte [] bytes = new byte[] { ( byte )i };
+            String str = new String( bytes, encoding );
+            byte [] actuals = str.getBytes( encoding );
+
+            Assert.assertArrayEquals( bytes, actuals );
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void test_AsciiBitEncodingReflectivelySymmetric()
+    {
+        Charset encoding = Charset.forName( "US-ASCII" );
+
+        byte [] bytes = new byte[] { ( byte )128 };
+        String str = new String( bytes, encoding );
+        byte [] actuals = str.getBytes( encoding );
+
+        Assert.assertNotEquals( bytes[0], actuals[0] );
     }
 }

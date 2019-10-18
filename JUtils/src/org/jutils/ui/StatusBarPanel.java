@@ -1,14 +1,30 @@
 package org.jutils.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import org.jutils.IconConstants;
+import org.jutils.OptionUtils;
 import org.jutils.SwingUtils;
 import org.jutils.concurrent.GcThread;
+import org.jutils.io.parsers.IntegerParser;
 
 /*******************************************************************************
  *
@@ -349,27 +365,19 @@ public class StatusBarPanel
      **************************************************************************/
     private class PromptForDelayListener implements ActionListener
     {
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void actionPerformed( ActionEvent e )
         {
-            Frame frame = SwingUtils.getComponentsFrame(
-                StatusBarPanel.this.view );
-            Integer delay = 10;
-            Object obj = JOptionPane.showInputDialog( frame,
-                "New Delay in seconds: ", delay );
-            if( obj != null )
+            Integer delay = OptionUtils.promptForValue(
+                StatusBarPanel.this.view, "delay", new IntegerParser(),
+                "New Delay in seconds" );
+
+            if( delay != null )
             {
-                try
-                {
-                    delay = Integer.parseInt( obj.toString() );
-                    setDelay( delay.intValue() * 1000 );
-                }
-                catch( NumberFormatException ex )
-                {
-                    JOptionPane.showMessageDialog( frame,
-                        "Sorry, " + obj.toString() + "isn't a valid integer!",
-                        "ERROR", JOptionPane.ERROR_MESSAGE );
-                }
+                setDelay( delay.intValue() * 1000 );
             }
         }
     }

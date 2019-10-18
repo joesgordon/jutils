@@ -1,14 +1,30 @@
 package org.jutils.io;
 
 import java.awt.Component;
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import javax.swing.JOptionPane;
-
+import org.jutils.OptionUtils;
+import org.jutils.OptionUtils.YncAnswer;
 import org.jutils.Utils;
 import org.jutils.ValidationException;
 import org.jutils.data.SystemProperty;
@@ -24,8 +40,6 @@ public final class IOUtils
     public static final File INSTALL_DIR;
     /**  */
     public static final int DEFAULT_BUF_SIZE = 8 * 1024 * 1024;
-    /**  */
-    public static final Charset US_ASCII = Charset.forName( "US-ASCII" );
 
     static
     {
@@ -151,6 +165,17 @@ public final class IOUtils
         }
 
         return ans;
+    }
+
+    /***************************************************************************
+     * Returns the <a
+     * href="https://en.wikipedia.org/wiki/ISO/IEC_8859-1">ISO-8559-1 character
+     * set</a> for 1:1 encoding of bytes <-> characters.
+     * @return the ISO-8859-1 character set.
+     **************************************************************************/
+    public static Charset get8BitEncoding()
+    {
+        return Charset.forName( "ISO-8859-1" );
     }
 
     /***************************************************************************
@@ -361,7 +386,7 @@ public final class IOUtils
         StringBuilder lines = new StringBuilder();
 
         try( InputStream is = new FileInputStream( file );
-             Reader r = new InputStreamReader( is, US_ASCII );
+             Reader r = new InputStreamReader( is, get8BitEncoding() );
              BufferedReader reader = new BufferedReader( r ) )
         {
             String line;
@@ -391,7 +416,7 @@ public final class IOUtils
         List<String> lines = new ArrayList<String>();
 
         try( InputStream is = new FileInputStream( file );
-             Reader r = new InputStreamReader( is, US_ASCII );
+             Reader r = new InputStreamReader( is, get8BitEncoding() );
              BufferedReader reader = new BufferedReader( r ) )
         {
             String line;
@@ -789,10 +814,10 @@ public final class IOUtils
 
         if( files == null )
         {
-            JOptionPane.showMessageDialog( parent,
+            OptionUtils.showErrorMessage( parent,
                 "Output directory does not exist or cannot be read: " +
                     Utils.NEW_LINE + outDir.getAbsolutePath(),
-                "Configuration Error", JOptionPane.ERROR_MESSAGE );
+                "Configuration Error" );
 
             return false;
         }
@@ -801,22 +826,15 @@ public final class IOUtils
             return true;
         }
 
-        String delOption = "Delete";
-        String contOption = "Continue";
-        String cancelOption = "Cancel";
-        String [] options = new String[] { delOption, contOption,
-            cancelOption };
-        int ans = JOptionPane.showOptionDialog( parent,
+        YncAnswer ans = OptionUtils.showQuestionMessage( parent,
             "The output directory contains files. Do you want to delete them before proceeding?",
-            "Output Directory Not Empty", JOptionPane.YES_NO_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, options, delOption );
+            "Output Directory Not Empty", "Delete", "Keep", "Cancel" );
 
-        if( ans == JOptionPane.CLOSED_OPTION ||
-            ans == JOptionPane.CANCEL_OPTION )
+        if( ans == YncAnswer.CANCEL )
         {
             return false;
         }
-        else if( ans == JOptionPane.YES_OPTION )
+        else if( ans == YncAnswer.YES )
         {
             try
             {
@@ -825,14 +843,14 @@ public final class IOUtils
             }
             catch( IOException ex )
             {
-                JOptionPane.showMessageDialog( parent,
+                OptionUtils.showErrorMessage( parent,
                     "Unable to delete output directory contents: " +
                         ex.getMessage(),
-                    "Deletion Error", JOptionPane.ERROR_MESSAGE );
+                    "Deletion Error" );
                 return false;
             }
         }
-        else if( ans == JOptionPane.NO_OPTION )
+        else if( ans == YncAnswer.NO )
         {
             return true;
         }

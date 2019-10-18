@@ -1,6 +1,8 @@
 package org.jutils.io;
 
-import java.io.*;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -115,7 +117,7 @@ public class LeOutputStream implements DataOutput
     @Override
     public void writeBytes( String s ) throws IOException
     {
-        out.write( s.getBytes( IOUtils.US_ASCII ) );
+        out.write( s.getBytes( IOUtils.get8BitEncoding() ) );
     }
 
     /***************************************************************************

@@ -1,12 +1,20 @@
 package org.jutils.ui.app;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
+
+import org.jutils.OptionUtils;
 
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
@@ -149,43 +157,13 @@ public final class AppRunner
     }
 
     /***************************************************************************
-     * @param <T>
-     * @param message
-     * @param title
-     * @param options
-     * @param defaultValue
-     * @return
-     **************************************************************************/
-    public static <T> T invokeInput( String message, String title, T [] options,
-        T defaultValue )
-    {
-        InputApp<T> app = new InputApp<>( message, title, options,
-            defaultValue );
-
-        invokeAndWait( app );
-
-        return app.getAnswer();
-    }
-
-    /***************************************************************************
      * @param message
      * @param title
      **************************************************************************/
     public static void invokeError( String message, String title )
     {
-        invokeMessage( message, title, JOptionPane.ERROR_MESSAGE );
-    }
-
-    /***************************************************************************
-     * @param message
-     * @param title
-     * @param type
-     **************************************************************************/
-    public static void invokeMessage( String message, String title, int type )
-    {
-        MessageApp app = new MessageApp( message, title, type );
-
-        invokeAndWait( app );
+        invokeLater(
+            () -> OptionUtils.showErrorMessage( null, message, title ) );
     }
 
     /***************************************************************************
@@ -194,6 +172,14 @@ public final class AppRunner
     public static void invokeLater( IApplication app )
     {
         SwingUtilities.invokeLater( () -> runApp( app ) );
+    }
+
+    /***************************************************************************
+     * @param uiCreateAndShow
+     **************************************************************************/
+    public static void invokeLater( Runnable uiCreateAndShow )
+    {
+        invokeLater( new SimpleApp( uiCreateAndShow ) );
     }
 
     /***************************************************************************
@@ -211,6 +197,14 @@ public final class AppRunner
         catch( InterruptedException ex )
         {
         }
+    }
+
+    /***************************************************************************
+     * @param uiCreateAndShow
+     **************************************************************************/
+    public static void invokeAndWait( Runnable uiCreateAndShow )
+    {
+        invokeAndWait( new SimpleApp( uiCreateAndShow ) );
     }
 
     /***************************************************************************
@@ -268,25 +262,17 @@ public final class AppRunner
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class MessageApp implements IApplication
+    private static class SimpleApp implements IApplication
     {
         /**  */
-        private final String message;
-        /**  */
-        private final String title;
-        /**  */
-        private final int type;
+        private final Runnable callback;
 
         /**
-         * @param message
-         * @param title
-         * @param type
+         * @param callback
          */
-        public MessageApp( String message, String title, int type )
+        public SimpleApp( Runnable callback )
         {
-            this.message = message;
-            this.title = title;
-            this.type = type;
+            this.callback = callback;
         }
 
         /**
@@ -304,69 +290,7 @@ public final class AppRunner
         @Override
         public void createAndShowUi()
         {
-            JOptionPane.showMessageDialog( null, message, title, type );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class InputApp<T> implements IApplication
-    {
-        /**  */
-        private final String message;
-        /**  */
-        private final String title;
-        /**  */
-        private final T [] selections;
-        /**  */
-        private final T defaultValue;
-
-        /**  */
-        private T answer;
-
-        /**
-         * @param message
-         * @param title
-         * @param selections
-         * @param defaultValue
-         */
-        public InputApp( String message, String title, T [] selections,
-            T defaultValue )
-        {
-            this.message = message;
-            this.title = title;
-            this.selections = selections;
-            this.defaultValue = defaultValue;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getLookAndFeelName()
-        {
-            return null;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void createAndShowUi()
-        {
-            @SuppressWarnings( "unchecked")
-            T ans = ( T )JOptionPane.showInputDialog( null, message, title,
-                JOptionPane.QUESTION_MESSAGE, null, selections, defaultValue );
-            answer = ans;
-        }
-
-        /**
-         * @return
-         */
-        public T getAnswer()
-        {
-            return answer;
+            callback.run();
         }
     }
 
@@ -417,18 +341,8 @@ public final class AppRunner
         @Override
         public void createAndShowUi()
         {
-            int idx = JOptionPane.showOptionDialog( null, message, title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+            answer = OptionUtils.showOptionMessage( null, message, title,
                 selections, defaultValue );
-
-            if( idx == JOptionPane.CLOSED_OPTION )
-            {
-                answer = null;
-            }
-            else
-            {
-                answer = selections[idx];
-            }
         }
 
         /**

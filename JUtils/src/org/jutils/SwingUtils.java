@@ -1,11 +1,9 @@
 package org.jutils;
 
 import java.awt.AWTException;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Font;
@@ -41,12 +39,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
@@ -57,14 +52,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.jutils.io.IParser;
 import org.jutils.io.XStreamUtils;
-import org.jutils.ui.StandardFormView;
 import org.jutils.ui.StatusBarPanel;
 import org.jutils.ui.event.ActionAdapter;
 import org.jutils.ui.event.ItemActionEvent;
 import org.jutils.ui.event.ItemActionListener;
-import org.jutils.ui.fields.ParserFormField;
 import org.jutils.ui.model.IDataView;
 
 /*******************************************************************************
@@ -113,303 +105,6 @@ public final class SwingUtils
         Action closeAction = new ActionAdapter( closeListener, mapKey, null );
 
         addKeyListener( rootPane, "ESCAPE", closeAction, true );
-    }
-
-    /***************************************************************************
-     * Shows the provided message in a {@link ModalityType#DOCUMENT_MODAL}
-     * JDialog with an error icon.
-     * @param parent determines the {@link Frame} in which the dialog is
-     * displayed; if the {@code parent} has no {@link Frame}, a default
-     * {@link Frame} is used.
-     * @param message the {@link String} or {@link Component} that represents
-     * the message to be displayed.
-     * @param title the title of the dialog displayed.
-     **************************************************************************/
-    public static void showErrorMessage( Component parent, Object message,
-        String title )
-    {
-        JOptionPane jop = new JOptionPane( message, JOptionPane.ERROR_MESSAGE,
-            JOptionPane.DEFAULT_OPTION, null );
-
-        JDialog dialog = jop.createDialog( parent, title );
-        dialog.setModalityType( ModalityType.DOCUMENT_MODAL );
-
-        dialog.setVisible( true );
-    }
-
-    /***************************************************************************
-     * Displays an OK/Cancel option dialog with the provided message, title, and
-     * choices.
-     * @param <T> the data type of the choices presented.
-     * @param parent determines the {@link Frame} in which the dialog is
-     * displayed; if the {@code parent} has no {@link Frame}, a default
-     * {@link Frame} is used.
-     * @param message the message to be displayed in the dialog.
-     * @param title the title of the dialog.
-     * @param choices the choices to be displayed in combo box.
-     * @param defaultChoice the choice to be selected by default.
-     * @return the user's choice or null if the user closes the dialog.
-     **************************************************************************/
-    public static <T> String showEditableMessage( Component parent,
-        String message, String title, T [] choices, T defaultChoice )
-    {
-        JPanel panel = new JPanel( new GridBagLayout() );
-        JLabel msgLabel = new JLabel( message );
-        JComboBox<T> nameField = new JComboBox<>( choices );
-        GridBagConstraints constraints;
-
-        Object ans;
-        String name;
-
-        // ---------------------------------------------------------------------
-        // Build message UI.
-        // ---------------------------------------------------------------------
-        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
-            GridBagConstraints.WEST, GridBagConstraints.NONE,
-            new Insets( 8, 8, 0, 8 ), 0, 0 );
-        panel.add( msgLabel, constraints );
-
-        nameField.setEditable( true );
-        nameField.setSelectedItem( defaultChoice );
-
-        constraints = new GridBagConstraints( 0, 2, 1, 1, 1.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-            new Insets( 8, 8, 8, 8 ), 0, 0 );
-        panel.add( nameField, constraints );
-
-        // ---------------------------------------------------------------------
-        // Prompt user.
-        // ---------------------------------------------------------------------
-        JOptionPane jop = new JOptionPane( panel, JOptionPane.QUESTION_MESSAGE,
-            JOptionPane.OK_CANCEL_OPTION, null, null, null );
-
-        JDialog dialog = jop.createDialog( parent, title );
-        dialog.setModalityType( ModalityType.DOCUMENT_MODAL );
-        dialog.setResizable( true );
-        dialog.setVisible( true );
-
-        ans = jop.getValue();
-
-        name = nameField.getSelectedItem().toString();
-
-        if( ans != null )
-        {
-            if( ans instanceof Integer )
-            {
-                int ians = ( Integer )ans;
-                if( ians != JOptionPane.OK_OPTION )
-                {
-                    name = null;
-                }
-            }
-            else
-            {
-                name = null;
-            }
-        }
-        else
-        {
-            name = null;
-        }
-
-        return name;
-    }
-
-    /***************************************************************************
-     * Displays an question dialog with the provided message, title, and button
-     * choices.
-     * @param parent determines the {@link Frame} in which the dialog is
-     * displayed; if the {@code parent} has no {@link Frame}, a default
-     * {@link Frame} is used.
-     * @param message the String or JComponent to be displayed in the dialog.
-     * @param title the title of the dialog.
-     * @param choices the choices to be displayed in buttons.
-     * @param defaultChoice the choice to be selected by default.
-     * @return the user's choice or null if the user closes the dialog.
-     **************************************************************************/
-    public static String showConfirmMessage( Component parent, Object message,
-        String title, String [] choices, String defaultChoice )
-    {
-        return showConfirmMessage( parent, message, title, choices,
-            defaultChoice, false );
-    }
-
-    /***************************************************************************
-     * @param parent determines the {@link Frame} in which the dialog is
-     * displayed; if the {@code parent} has no {@link Frame}, a default
-     * {@link Frame} is used.
-     * @param message the {@link String} or {@link Component} that represents
-     * the message to be displayed.
-     * @param title the title of the dialog.
-     * @param choices the choices to be displayed in buttons.
-     * @param defaultChoice the choice to be selected by default.
-     * @param resizable indicates that the dialog is resizable with
-     * {@code true}.
-     * @return the user's choice or null if the user closes the dialog.
-     **************************************************************************/
-    public static String showConfirmMessage( Component parent, Object message,
-        String title, String [] choices, String defaultChoice,
-        boolean resizable )
-    {
-        JOptionPane jop = new JOptionPane( message,
-            JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
-            choices, defaultChoice );
-
-        JDialog dialog = jop.createDialog( parent, title );
-        dialog.setModalityType( ModalityType.DOCUMENT_MODAL );
-        dialog.setResizable( resizable );
-        dialog.setVisible( true );
-
-        Object valueObj = jop.getValue();
-        String value = null;
-
-        if( valueObj instanceof String )
-        {
-            value = valueObj.toString();
-        }
-
-        return value;
-    }
-
-    /***************************************************************************
-     * Displays an OK/Cancel dialog with the provided message, title, and data
-     * view.
-     * @param <T> the type of data displayed in the provided view.
-     * @param parent determines the {@link Frame} in which the dialog is
-     * displayed; if the {@code parent} has no {@link Frame}, a default
-     * {@link Frame} is used.
-     * @param message the message to be displayed above the data view.
-     * @param title the title of the dialog.
-     * @param view the data view to be displayed
-     * @return the edited data value or null if the dialog was cancelled or
-     * closed.
-     **************************************************************************/
-    public static <T> T showQuestion( Component parent, String message,
-        String title, IDataView<T> view )
-    {
-        JPanel panel = new JPanel( new BorderLayout() );
-
-        panel.add( new JLabel( message ), BorderLayout.NORTH );
-        panel.add( view.getView(), BorderLayout.CENTER );
-
-        JOptionPane jop = new JOptionPane( panel, JOptionPane.QUESTION_MESSAGE,
-            JOptionPane.OK_CANCEL_OPTION, null, null, null );
-
-        JDialog dialog = jop.createDialog( parent, title );
-        dialog.setModalityType( ModalityType.DOCUMENT_MODAL );
-        dialog.setVisible( true );
-
-        // ---------------------------------------------------------------------
-        // Prompt user.
-        // ---------------------------------------------------------------------
-        Object ans = jop.getValue();
-        T data = null;
-
-        if( ans instanceof Integer && ( Integer )ans == JOptionPane.OK_OPTION )
-        {
-            data = view.getData();
-        }
-
-        return data;
-    }
-
-    /***************************************************************************
-     * Displays an OK/Cancel dialog with the provided message, title, and data
-     * view.
-     * @param parent determines the {@link Frame} in which the dialog is
-     * displayed; if the {@code parent} has no {@link Frame}, a default
-     * {@link Frame} is used.
-     * @param message the message to be displayed above the data view.
-     * @param title the title of the dialog.
-     * @param okText the text of the OK button.
-     * @param initialFocusSelector the callback to request focus for the
-     * message.
-     * @return {@code true} if the ok button was pressed; {@code false}
-     * otherwise.
-     **************************************************************************/
-    public static boolean showOkCancelDialog( Component parent, Object message,
-        String title, String okText, final Runnable initialFocusSelector )
-    {
-        String [] choices = new String[] { okText, "Cancel" };
-        JDialog dialog;
-
-        JOptionPane pane = new JOptionPane( message,
-            JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
-            choices, okText )
-        {
-            private static final long serialVersionUID = -2554071173382615212L;
-
-            @Override
-            public void selectInitialValue()
-            {
-                initialFocusSelector.run();
-            }
-        };
-
-        dialog = pane.createDialog( parent, title );
-        dialog.setResizable( true );
-        dialog.setModalityType( ModalityType.DOCUMENT_MODAL );
-        dialog.setSize( 500, dialog.getHeight() );
-        dialog.setVisible( true );
-
-        // TODO because JOptionPane sometimes returns -1.
-
-        return okText.equals( pane.getValue() );
-    }
-
-    /***************************************************************************
-     * Prompts for an item using a {@link JOptionPane}.
-     * @param <T> the type of the item to be parsed from a text field.
-     * @param parent determines the {@link Frame} in which the dialog is
-     * displayed; if the {@code parent} has no {@link Frame}, a default
-     * {@link Frame} is used.
-     * @param name the name of the item to prompt the user to enter.
-     * @param parser the method used to interpret the entered text as the item
-     * needed.
-     * @param message the message to be displayed on the dialog.
-     * @return the value entered by the user or {@code null} if cancelled or
-     * invalid.
-     **************************************************************************/
-    public static <T> T promptForValue( Component parent, String name,
-        IParser<T> parser, String message )
-    {
-        return promptForValue( parent, name, parser, new JLabel( message ) );
-    }
-
-    /***************************************************************************
-     * Prompts for an item using a {@link JOptionPane}.
-     * @param <T> the type of the item to be parsed from a text field.
-     * @param parent determines the {@link Frame} in which the dialog is
-     * displayed; if the {@code parent} has no {@link Frame}, a default
-     * {@link Frame} is used.
-     * @param name the name of the item to prompt the user to enter.
-     * @param parser the method used to interpret the entered text as the item
-     * needed.
-     * @param message the component to be displayed as the message on the
-     * dialog.
-     * @return the value entered by the user or {@code null} if cancelled or
-     * invalid.
-     **************************************************************************/
-    public static <T> T promptForValue( Component parent, String name,
-        IParser<T> parser, JComponent message )
-    {
-        ParserFormField<T> field = new ParserFormField<>( name, parser );
-        T value = null;
-        StandardFormView form = new StandardFormView();
-
-        form.addComponent( message );
-        form.addField( field );
-
-        int result = JOptionPane.showConfirmDialog( parent, form.getView(),
-            "Enter " + name, JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE );
-
-        if( result == JOptionPane.OK_OPTION && field.getValidity().isValid )
-        {
-            value = field.getValue();
-        }
-
-        return value;
     }
 
     /***************************************************************************

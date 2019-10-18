@@ -1,19 +1,36 @@
 package org.jutils.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.jutils.IconConstants;
+import org.jutils.OptionUtils;
 import org.jutils.SwingUtils;
-import org.jutils.ui.event.*;
+import org.jutils.ui.event.ActionAdapter;
+import org.jutils.ui.event.ItemActionList;
+import org.jutils.ui.event.ItemActionListener;
+import org.jutils.ui.fields.StringFormField;
 import org.jutils.ui.model.CollectionListModel;
 import org.jutils.ui.model.IDataView;
 
@@ -383,7 +400,7 @@ public class ListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * Prompts for a name of an item using a {@link JOptionPane}.
+     * Prompts for a name of an item using a option pane.
      * @param message the type of item that needs a name (cat, dog, bird, etc.).
      * @return the name entered by the user or {@code null} if cancelled.
      **************************************************************************/
@@ -394,7 +411,9 @@ public class ListView<T> implements IDataView<List<T>>
 
         while( prompt )
         {
-            name = JOptionPane.showInputDialog( view, message, name );
+            StringFormField nameField = new StringFormField( "Name" );
+            name = OptionUtils.showQuestionField( view, message, "Input Name",
+                nameField );
 
             if( name != null )
             {
@@ -406,17 +425,15 @@ public class ListView<T> implements IDataView<List<T>>
                     }
                     else
                     {
-                        JOptionPane.showMessageDialog( view, "The name " +
-                            name +
+                        OptionUtils.showErrorMessage( view, "The name " + name +
                             " already exists. Please Choose a different one.",
-                            "Name Exists", JOptionPane.ERROR_MESSAGE );
+                            "Name Exists" );
                     }
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog( view,
-                        "The name cannot be empty.", "Name Empty",
-                        JOptionPane.ERROR_MESSAGE );
+                    OptionUtils.showErrorMessage( view,
+                        "The name cannot be empty.", "Name Empty" );
                 }
             }
             else

@@ -1,6 +1,10 @@
 package org.jutils.ui;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -48,8 +52,8 @@ public final class TextAreaUtils
 
         while( ( bytesRead = buffer.read( byteBuffer ) ) > 0 )
         {
-            to.append(
-                new String( byteBuffer, 0, bytesRead, IOUtils.US_ASCII ) );
+            to.append( new String( byteBuffer, 0, bytesRead,
+                IOUtils.get8BitEncoding() ) );
         }
     }
 

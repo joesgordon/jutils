@@ -4,9 +4,14 @@ import java.awt.Container;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 import org.jutils.IconConstants;
+import org.jutils.OptionUtils;
 import org.jutils.SwingUtils;
 import org.jutils.ui.OkDialogView.OkDialogButtons;
 import org.jutils.ui.app.FrameRunner;
@@ -147,8 +152,7 @@ public class OkDialogViewMain
          */
         private void notifyUser( String message )
         {
-            JOptionPane.showMessageDialog( getView(), message, "INFO",
-                JOptionPane.INFORMATION_MESSAGE );
+            OptionUtils.showInfoMessage( getView(), message, "INFO" );
         }
 
         /**

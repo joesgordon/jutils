@@ -1,13 +1,25 @@
 package org.jutils.ui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.ColorUIResource;
@@ -33,13 +45,11 @@ public class PropEditPanel
     /**  */
     private DefaultRendererFactory defaultRenderers;
     /**  */
-    @SuppressWarnings( "rawtypes")
     private DefaultRenderer defaultRenderer;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    @SuppressWarnings( "rawtypes")
     public PropEditPanel()
     {
         renderers = null;
@@ -171,7 +181,11 @@ public class PropEditPanel
         }
     }
 
-    @SuppressWarnings( "unchecked")
+    /**
+     * @param p
+     * @param entry
+     * @return
+     */
     private JComponent getComponent( Map<Object, Object> p,
         Entry<Object, Object> entry )
     {
@@ -191,7 +205,11 @@ public class PropEditPanel
         return comp;
     }
 
-    @SuppressWarnings( { "rawtypes", "unchecked" })
+    /**
+     * @param p
+     * @param entry
+     * @return
+     */
     private JComponent getComponentByValue( Map<Object, Object> p,
         Entry<Object, Object> entry )
     {
@@ -202,11 +220,12 @@ public class PropEditPanel
         if( value != null )
         {
             IRenderer renderer = renderers == null ? null
-                : renderers.getRenderer( value.getClass() );
+                : renderers.getRendererByClass( value.getClass() );
 
             if( renderer == null )
             {
-                renderer = defaultRenderers.getRenderer( value.getClass() );
+                renderer = defaultRenderers.getRendererByClass(
+                    value.getClass() );
                 if( renderer == null )
                 {
                     renderer = defaultRenderer;
@@ -223,17 +242,21 @@ public class PropEditPanel
         return comp;
     }
 
-    @SuppressWarnings( { "rawtypes", "unchecked" })
+    /**
+     * @param p
+     * @param entry
+     * @return
+     */
     private JComponent getComponentByKey( Map<Object, Object> p,
         Entry<Object, Object> entry )
     {
         JComponent comp = null;
         IRenderer renderer = renderers == null ? null
-            : renderers.getRenderer( entry.getKey() );
+            : renderers.getRendererByKey( entry.getKey() );
 
         if( renderer == null )
         {
-            renderer = defaultRenderers.getRenderer( entry.getKey() );
+            renderer = defaultRenderers.getRendererByKey( entry.getKey() );
             if( renderer == null )
             {
                 renderer = defaultRenderer;
@@ -252,10 +275,16 @@ public class PropEditPanel
     /***************************************************************************
      * 
      **************************************************************************/
-    public static interface IRenderer<T>
+    public static interface IRenderer
     {
+        /**
+         * @param props
+         * @param key
+         * @param value
+         * @return
+         */
         public JComponent createWidget( Map<Object, Object> props, Object key,
-            T value );
+            Object value );
     }
 
     /***************************************************************************
@@ -263,9 +292,19 @@ public class PropEditPanel
      **************************************************************************/
     public static interface IRendererFactory
     {
-        public IRenderer<Object> getRenderer( Object key );
+        /**
+         * @param <T>
+         * @param key
+         * @return
+         */
+        public IRenderer getRendererByKey( Object key );
 
-        public <T> IRenderer<T> getRenderer( Class<T> c );
+        /**
+         * @param <T>
+         * @param c
+         * @return
+         */
+        public IRenderer getRendererByClass( Class<?> c );
     }
 
     /***************************************************************************
@@ -274,35 +313,52 @@ public class PropEditPanel
     public static class DefaultRendererFactory implements IRendererFactory
     {
         /**  */
-        private final Map<Object, IRenderer<Object>> keyRenderers;
+        private final Map<Object, IRenderer> keyRenderers;
         /**  */
-        private final Map<Class<?>, IRenderer<?>> valueRenderers;
+        private final Map<Class<?>, IRenderer> valueRenderers;
 
+        /**
+         * 
+         */
         public DefaultRendererFactory()
         {
-            keyRenderers = new HashMap<Object, IRenderer<Object>>();
-            valueRenderers = new HashMap<Class<?>, IRenderer<?>>();
+            keyRenderers = new HashMap<Object, IRenderer>();
+            valueRenderers = new HashMap<Class<?>, IRenderer>();
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
-        public IRenderer<Object> getRenderer( Object key )
+        public IRenderer getRendererByKey( Object key )
         {
             return keyRenderers.get( key );
         }
 
-        public void assignRenderer( Object key, IRenderer<Object> renderer )
+        /**
+         * @param key
+         * @param renderer
+         */
+        public void assignRenderer( Object key, IRenderer renderer )
         {
             keyRenderers.put( key, renderer );
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
-        @SuppressWarnings( "unchecked")
-        public <T> IRenderer<T> getRenderer( Class<T> c )
+        public IRenderer getRendererByClass( Class<?> c )
         {
-            return ( IRenderer<T> )valueRenderers.get( c );
+            return valueRenderers.get( c );
         }
 
-        public <T> void assignRenderer( Class<T> c, IRenderer<T> renderer )
+        /**
+         * @param <T>
+         * @param c
+         * @param renderer
+         */
+        public <T> void assignRenderer( Class<T> c, IRenderer renderer )
         {
             valueRenderers.put( c, renderer );
         }
@@ -311,14 +367,17 @@ public class PropEditPanel
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class ColorUIResourceRenderer
-        implements IRenderer<ColorUIResource>
+    private static class ColorUIResourceRenderer implements IRenderer
     {
+        /**  */
         private ColorRenderer renderer = new ColorRenderer();
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public JComponent createWidget( Map<Object, Object> props, Object key,
-            ColorUIResource value )
+            Object value )
         {
             return renderer.createWidget( props, key, value );
         }
@@ -328,12 +387,16 @@ public class PropEditPanel
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class ColorRenderer implements IRenderer<Color>
+    private static class ColorRenderer implements IRenderer
     {
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public JComponent createWidget( Map<Object, Object> props, Object key,
-            Color c )
+            Object value )
         {
+            Color c = ( Color )value;
             ColorField button = new ColorField( "Color" );
 
             button.setValue( c );
@@ -347,50 +410,38 @@ public class PropEditPanel
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class BooleanRenderer implements IRenderer<Boolean>
+    private static class BooleanRenderer implements IRenderer
     {
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public JComponent createWidget( Map<Object, Object> props, Object key,
-            Boolean t )
+            Object value )
         {
+            Boolean bValue = ( Boolean )value;
             JCheckBox checkBox = new JCheckBox();
 
-            checkBox.setSelected( t.booleanValue() );
+            checkBox.setSelected( bValue );
             checkBox.setEnabled( false );
-            checkBox.addActionListener( new CheckBoxListener( props, key ) );
+            checkBox.addActionListener(
+                ( e ) -> props.put( key, checkBox.isSelected() ) );
 
             return checkBox;
-        }
-
-        private static class CheckBoxListener implements ActionListener
-        {
-            private Map<Object, Object> props;
-            private Object key;
-
-            public CheckBoxListener( Map<Object, Object> props, Object key )
-            {
-                this.props = props;
-                this.key = key;
-            }
-
-            @Override
-            public void actionPerformed( ActionEvent e )
-            {
-                JCheckBox jcb = ( JCheckBox )e.getSource();
-
-                props.put( key, jcb.isSelected() );
-            }
         }
     }
 
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class DefaultRenderer<T> implements IRenderer<T>
+    private static class DefaultRenderer implements IRenderer
     {
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public JComponent createWidget( Map<Object, Object> props, Object key,
-            T value )
+            Object value )
         {
             String text;
             JTextField valField;
@@ -421,11 +472,14 @@ public class PropEditPanel
         }
     }
 
-    public static class StringRenderer extends DefaultRenderer<String>
+    public static class StringRenderer extends DefaultRenderer
     {
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public JComponent createWidget( Map<Object, Object> props, Object key,
-            String value )
+            Object value )
         {
             JTextField field = ( JTextField )super.createWidget( props, key,
                 value );

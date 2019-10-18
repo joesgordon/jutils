@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import org.jutils.SwingUtils;
+import org.jutils.OptionUtils;
 import org.jutils.ValidationException;
 import org.jutils.io.XStreamUtils;
 import org.jutils.ui.OkDialogView;
@@ -151,19 +151,19 @@ public class AppManagerView implements IDataView<AppManagerConfig>
         }
         catch( ValidationException ex )
         {
-            SwingUtils.showErrorMessage( getView(),
+            OptionUtils.showErrorMessage( getView(),
                 "Error reading from file: " + file.getAbsolutePath(),
                 "Read Error" );
         }
         catch( FileNotFoundException ex )
         {
-            SwingUtils.showErrorMessage( getView(),
+            OptionUtils.showErrorMessage( getView(),
                 "File not found: " + file.getAbsolutePath(),
                 "File Not Found Error" );
         }
         catch( IOException ex )
         {
-            SwingUtils.showErrorMessage( getView(),
+            OptionUtils.showErrorMessage( getView(),
                 "Error reading from file: " + file.getAbsolutePath(),
                 "I/O Error" );
         }
@@ -179,13 +179,13 @@ public class AppManagerView implements IDataView<AppManagerConfig>
         }
         catch( IOException e )
         {
-            SwingUtils.showErrorMessage( getView(),
+            OptionUtils.showErrorMessage( getView(),
                 "Error reading from file: " + file.getAbsolutePath(),
                 "I/O Error" );
         }
         catch( ValidationException ex )
         {
-            SwingUtils.showErrorMessage( getView(), ex.getMessage(),
+            OptionUtils.showErrorMessage( getView(), ex.getMessage(),
                 "Serialization Error" );
         }
     }

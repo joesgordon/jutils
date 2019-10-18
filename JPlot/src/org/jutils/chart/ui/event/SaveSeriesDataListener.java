@@ -1,9 +1,10 @@
 package org.jutils.chart.ui.event;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
-import javax.swing.JOptionPane;
-
+import org.jutils.OptionUtils;
 import org.jutils.Utils;
 import org.jutils.chart.app.JChartAppConstants;
 import org.jutils.chart.app.UserData;
@@ -83,11 +84,11 @@ public class SaveSeriesDataListener implements ILastFile, IFileSelected
         }
         catch( IOException ex )
         {
-            JOptionPane.showMessageDialog( view.getView(),
+            OptionUtils.showErrorMessage( view.getView(),
                 "Unable to save file: " + Utils.NEW_LINE +
                     toFile.getAbsolutePath() + Utils.NEW_LINE + Utils.NEW_LINE +
                     ex.getMessage(),
-                "I/O Error", JOptionPane.ERROR_MESSAGE );
+                "I/O Error" );
         }
     }
 
