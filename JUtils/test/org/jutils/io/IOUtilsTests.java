@@ -15,6 +15,17 @@ public class IOUtilsTests
      * 
      **************************************************************************/
     @Test
+    public void test_byteCountNegativeValue()
+    {
+        String value = IOUtils.byteCount( -10000 );
+
+        LogUtils.printDebug( value );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
     public void test_findClosestCommonAncestor_UNC_success()
     {
         String expected = "\\\\some\\unc";

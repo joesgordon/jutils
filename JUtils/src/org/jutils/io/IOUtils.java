@@ -67,7 +67,12 @@ public final class IOUtils
         int exp;
         char pre;
 
-        if( count < unit )
+        if( count < 0 )
+        {
+            throw new IllegalArgumentException(
+                "Cannot count bytes less than 0" );
+        }
+        else if( count < unit )
         {
             return count + " B";
         }
