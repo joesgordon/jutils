@@ -1,8 +1,14 @@
 package org.jutils.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import org.jutils.SwingUtils;
@@ -109,7 +115,7 @@ public class LedsView implements IView<JComponent>
      * @param field
      * @return
      **************************************************************************/
-    private Component createIndicatorView( LedLabel field )
+    private static Component createIndicatorView( LedLabel field )
     {
         JPanel panel = new JPanel( new GridBagLayout() );
         GridBagConstraints constraints;

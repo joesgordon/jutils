@@ -1,7 +1,14 @@
 package org.jutils.net;
 
-import java.net.*;
-import java.util.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
 import org.jutils.Utils;
 import org.jutils.ValidationException;
@@ -140,7 +147,7 @@ public final class NetUtils
      * @param name
      * @throws ValidationException
      **************************************************************************/
-    public void validateNicString( String nicString, String name )
+    public static void validateNicString( String nicString, String name )
         throws ValidationException
     {
         if( lookupNic( nicString ) == null )

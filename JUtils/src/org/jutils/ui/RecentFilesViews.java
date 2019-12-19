@@ -5,29 +5,39 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JMenu;
+import javax.swing.JToolBar;
 import javax.swing.filechooser.FileSystemView;
 
 import org.jutils.IconConstants;
+import org.jutils.SwingUtils;
 import org.jutils.ui.SplitButtonView.IListItemModel;
 import org.jutils.ui.event.FileDropTarget;
 import org.jutils.ui.event.IRecentListener;
 
 /*******************************************************************************
- * 
+ * Manages a {@link JMenu} and a {@link SplitButtonView} that displays a list of
+ * files.
  ******************************************************************************/
 public class RecentFilesViews
 {
-    /**  */
+    /** The default maximum number of files to display, 20. */
+    public static final int DEFAULT_MAX_FILE_COUNT = 20;
+
+    /** The menu to display the list of files. */
     private final RecentFilesMenuView menuView;
-    /**  */
+    /** The split button to display the list of files. */
     private final SplitButtonView<File> buttonView;
 
-    /**  */
+    /**
+     * The client listener invoked when a file is chosen from either the menu or
+     * the split button.
+     */
     private IRecentListener<File> recentListener;
 
     /***************************************************************************
-     * 
+     * Creates new views with the {@link #DEFAULT_MAX_FILE_COUNT}.
      **************************************************************************/
     public RecentFilesViews()
     {
@@ -35,7 +45,8 @@ public class RecentFilesViews
     }
 
     /***************************************************************************
-     * @param maxFileCount
+     * Creates new views with the provided maximum number of files to display.
+     * @param maxFileCount the maximum number of files to display.
      **************************************************************************/
     public RecentFilesViews( int maxFileCount )
     {
@@ -55,6 +66,14 @@ public class RecentFilesViews
 
         buttonView.setDropTarget( new FileDropTarget(
             ( e ) -> callSelected( e.getItem().getFiles().get( 0 ), false ) ) );
+
+        FileContextMenu menu = new FileContextMenu( buttonView.getView() );
+
+        buttonView.addRightClickListener( ( f, c, x, y ) -> {
+            c = SwingUtils.getComponentsWindow( c );
+            buttonView.hidePopup();
+            menu.show( f, c, x, y );
+        } );
     }
 
     /***************************************************************************

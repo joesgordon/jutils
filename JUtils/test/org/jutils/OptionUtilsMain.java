@@ -88,7 +88,7 @@ public class OptionUtilsMain
         /**
          * @return
          */
-        private JComponent createView()
+        private static JComponent createView()
         {
             JPanel panel = new JPanel( new GridBagLayout() );
             int r = 0;

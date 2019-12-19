@@ -1,18 +1,39 @@
 package org.jutils.ui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.dnd.DropTarget;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 import org.jutils.SwingUtils;
 import org.jutils.data.UIProperty;
 import org.jutils.ui.event.IRecentListener;
-import org.jutils.ui.model.*;
+import org.jutils.ui.model.CollectionListModel;
+import org.jutils.ui.model.IView;
+import org.jutils.ui.model.LabelListCellRenderer;
 import org.jutils.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
 
 /*******************************************************************************
@@ -102,6 +123,10 @@ public class SplitButtonView<T> implements IView<JComponent>
         fireListeners( item, ctrlPressed );
     }
 
+    /***************************************************************************
+     * @param item
+     * @param ctrlPressed
+     **************************************************************************/
     private void fireListeners( T item, boolean ctrlPressed )
     {
         for( IRecentListener<T> irl : selectedListeners )
@@ -140,7 +165,7 @@ public class SplitButtonView<T> implements IView<JComponent>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -186,7 +211,15 @@ public class SplitButtonView<T> implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param files
+     * @param listener
+     **************************************************************************/
+    public void addRightClickListener( IListRightClickListener<T> listener )
+    {
+        popup.addRightClickListener( listener );
+    }
+
+    /***************************************************************************
+     * @param items
      **************************************************************************/
     public void setData( List<T> items )
     {
@@ -212,14 +245,29 @@ public class SplitButtonView<T> implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
+    public void hidePopup()
+    {
+        popup.hide();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private class ArrowIcon implements Icon
     {
+        /**  */
         private final Color shadow;
+        /**  */
         private final Color highlight;
+        /**  */
         private final Color darkShadow;
 
+        /**  */
         private static final int SIZE = 5;
 
+        /**
+         * 
+         */
         public ArrowIcon()
         {
             this.shadow = UIManager.getColor( "controlShadow" );
@@ -228,6 +276,9 @@ public class SplitButtonView<T> implements IView<JComponent>
             this.highlight = UIManager.getColor( "controlLtHighlight" );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void paintIcon( Component c, Graphics g, int x, int y )
         {
@@ -237,6 +288,13 @@ public class SplitButtonView<T> implements IView<JComponent>
             paintTriangle( g, x1, y1, SIZE, true );
         }
 
+        /**
+         * @param g
+         * @param x
+         * @param y
+         * @param size
+         * @param isEnabled
+         */
         public void paintTriangle( Graphics g, int x, int y, int size,
             boolean isEnabled )
         {
@@ -281,12 +339,18 @@ public class SplitButtonView<T> implements IView<JComponent>
             g.setColor( oldColor );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int getIconWidth()
         {
             return SIZE;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int getIconHeight()
         {
@@ -299,10 +363,16 @@ public class SplitButtonView<T> implements IView<JComponent>
      **************************************************************************/
     private static final class ListPopup<T>
     {
+        /**  */
         private final PopupWindow popup;
+        /**  */
         private final CollectionListModel<T> model;
+        /**  */
         private final JList<T> list;
+        /**  */
         private final List<IRecentListener<T>> selectedListeners;
+        /**  */
+        private final List<IListRightClickListener<T>> rightClickListeners;
 
         /**
          * @param items
@@ -313,6 +383,8 @@ public class SplitButtonView<T> implements IView<JComponent>
             this.model = new CollectionListModel<>();
             this.list = new JList<>( model );
             this.selectedListeners = new ArrayList<>();
+            this.rightClickListeners = new ArrayList<>();
+            this.popup = new PopupWindow( true, list );
 
             model.setData( items );
 
@@ -341,27 +413,45 @@ public class SplitButtonView<T> implements IView<JComponent>
 
             // popup.setPreferredSize( dim );
 
-            this.popup = new PopupWindow( true, list );
-
             popup.setBorder( new LineBorder( Color.black ) );
         }
 
+        /**
+         * @param listener
+         */
+        public void addRightClickListener( IListRightClickListener<T> listener )
+        {
+            rightClickListeners.add( listener );
+        }
+
+        /**
+         * 
+         */
         public void hide()
         {
             // LogUtils.printDebug( "Hiding" );
             popup.hide();
         }
 
+        /**
+         * @param l
+         */
         public void addItemSelectedListener( IRecentListener<T> l )
         {
             selectedListeners.add( l );
         }
 
+        /**
+         * @param items
+         */
         public void setItems( List<T> items )
         {
             model.setData( items );
         }
 
+        /**
+         * @param parent
+         */
         public void show( JComponent parent )
         {
             if( model.getSize() > 0 )
@@ -373,6 +463,10 @@ public class SplitButtonView<T> implements IView<JComponent>
             list.requestFocus();
         }
 
+        /**
+         * @param item
+         * @param ctrlPressed
+         */
         public void fireSelected( T item, boolean ctrlPressed )
         {
             for( IRecentListener<T> irl : selectedListeners )
@@ -387,13 +481,20 @@ public class SplitButtonView<T> implements IView<JComponent>
      **************************************************************************/
     private static final class ListMouseListener<T> extends MouseAdapter
     {
+        /**  */
         private final ListPopup<T> popup;
 
+        /**
+         * @param popup
+         */
         public ListMouseListener( ListPopup<T> popup )
         {
             this.popup = popup;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void mousePressed( MouseEvent e )
         {
@@ -416,12 +517,26 @@ public class SplitButtonView<T> implements IView<JComponent>
                     {
                         T item = list.getModel().getElementAt( index );
 
-                        popup.fireSelected( item, ctrlPressed );
+                        if( SwingUtilities.isLeftMouseButton( e ) )
+                        {
+                            popup.fireSelected( item, ctrlPressed );
+                        }
+                        else if( SwingUtilities.isRightMouseButton( e ) )
+                        {
+                            Component c = e.getComponent();
+                            int x = e.getX();
+                            int y = e.getY();
+                            popup.rightClickListeners.forEach(
+                                ( l ) -> l.rightClicked( item, c, x, y ) );
+                        }
                     }
                 }
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void mouseMoved( MouseEvent e )
         {
@@ -438,6 +553,9 @@ public class SplitButtonView<T> implements IView<JComponent>
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void mouseExited( MouseEvent e )
         {
@@ -453,13 +571,20 @@ public class SplitButtonView<T> implements IView<JComponent>
     private static final class DescriptorListCellLabelDecorator<T>
         implements IListCellLabelDecorator<T>
     {
+        /**  */
         private final IListItemModel<T> descriptor;
 
+        /**
+         * @param descriptor
+         */
         public DescriptorListCellLabelDecorator( IListItemModel<T> descriptor )
         {
             this.descriptor = descriptor;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void decorate( JLabel label, JList<? extends T> list, T value,
             int index, boolean isSelected, boolean cellHasFocus )
@@ -478,29 +603,61 @@ public class SplitButtonView<T> implements IView<JComponent>
         }
     }
 
+    /***************************************************************************
+     * @param <T>
+     **************************************************************************/
     public static interface IListItemModel<T>
     {
+        /**
+         * @param item
+         * @return
+         */
         public String getName( T item );
 
+        /**
+         * @param item
+         * @return
+         */
         public String getTooltip( T item );
 
+        /**
+         * @param item
+         * @return
+         */
         public Icon getIcon( T item );
     }
 
+    public static interface IListRightClickListener<T>
+    {
+        public void rightClicked( T item, Component c, int x, int y );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     **************************************************************************/
     public static class DefaultListItemModel<T> implements IListItemModel<T>
     {
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getName( T item )
         {
             return item.toString();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getTooltip( T item )
         {
             return "";
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Icon getIcon( T item )
         {

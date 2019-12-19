@@ -417,7 +417,7 @@ public final class XStreamUtils
      * @return
      * @throws ValidationException
      **************************************************************************/
-    public static <T> XStream createXStream( Class<?>... clss )
+    public static XStream createXStream( Class<?>... clss )
     {
         return createXStream(
             buildDependencyList( clss ).toArray( new String[0] ) );
