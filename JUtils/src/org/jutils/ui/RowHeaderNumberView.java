@@ -2,10 +2,15 @@ package org.jutils.ui;
 
 import java.awt.Component;
 
-import javax.swing.*;
+import javax.swing.AbstractListModel;
+import javax.swing.JList;
+import javax.swing.JTable;
 
 import org.jutils.data.UIProperty;
 
+/***************************************************************************
+ * 
+ **************************************************************************/
 public class RowHeaderNumberView
 {
     /**  */
@@ -13,6 +18,9 @@ public class RowHeaderNumberView
     /**  */
     private final JList<String> rowHeader;
 
+    /***************************************************************************
+     * @param table
+     **************************************************************************/
     public RowHeaderNumberView( JTable table )
     {
         this.rowModel = new RowListModel();
@@ -24,9 +32,20 @@ public class RowHeaderNumberView
         rowHeader.setFixedCellWidth( 15 );
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     public Component getView()
     {
         return rowHeader;
+    }
+
+    /***************************************************************************
+     * @param height
+     **************************************************************************/
+    public void setRowHeight( int height )
+    {
+        rowHeader.setFixedCellHeight( height );
     }
 
     /***************************************************************************
