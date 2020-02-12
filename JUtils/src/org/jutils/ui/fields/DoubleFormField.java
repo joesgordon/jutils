@@ -4,7 +4,10 @@ import javax.swing.JComponent;
 
 import org.jutils.io.parsers.DoubleParser;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.ValidationTextField;
+import org.jutils.ui.validation.ValidationTextView;
+import org.jutils.ui.validation.Validity;
 import org.jutils.ui.validators.DataTextValidator;
 import org.jutils.ui.validators.ITextValidator;
 
@@ -127,6 +130,16 @@ public class DoubleFormField implements IDataFormField<Double>
     public JComponent getView()
     {
         return textField.getView();
+    }
+
+    public ValidationTextField getValidationField()
+    {
+        return textField.getField();
+    }
+
+    public JComponent getTextField()
+    {
+        return textField.getField().getView();
     }
 
     /***************************************************************************

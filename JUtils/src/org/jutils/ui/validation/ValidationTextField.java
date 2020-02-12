@@ -1,5 +1,6 @@
 package org.jutils.ui.validation;
 
+import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.JTextField;
@@ -26,7 +27,7 @@ public final class ValidationTextField implements IValidationField
     }
 
     /***************************************************************************
-     * 
+     * @param columns
      **************************************************************************/
     public ValidationTextField( int columns )
     {
@@ -136,5 +137,13 @@ public final class ValidationTextField implements IValidationField
     public void setColumns( int columns )
     {
         textField.setColumns( columns );
+    }
+
+    /***************************************************************************
+     * @param bg
+     **************************************************************************/
+    public void setValidBackground( Color bg )
+    {
+        field.setValidBackground( bg );
     }
 }

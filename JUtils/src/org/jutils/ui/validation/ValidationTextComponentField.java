@@ -208,6 +208,14 @@ public class ValidationTextComponentField<T extends JTextComponent>
     }
 
     /***************************************************************************
+     * @param bg
+     **************************************************************************/
+    public void setValidBackground( Color bg )
+    {
+        this.validBackground = bg;
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     private static class ValidationDocumentListener implements DocumentListener

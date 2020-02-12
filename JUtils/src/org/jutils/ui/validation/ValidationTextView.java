@@ -1,5 +1,7 @@
 package org.jutils.ui.validation;
 
+import java.awt.Color;
+
 import javax.swing.JPanel;
 
 import org.jutils.ui.model.IView;
@@ -79,6 +81,14 @@ public class ValidationTextView implements IView<JPanel>
     public ValidationTextField getField()
     {
         return field;
+    }
+
+    /***************************************************************************
+     * @param bg
+     **************************************************************************/
+    public void setValidBackground( Color bg )
+    {
+        field.setValidBackground( bg );
     }
 
     /***************************************************************************
