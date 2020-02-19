@@ -1,6 +1,10 @@
 package org.jutils.time;
 
-import java.time.*;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 
 import org.jutils.INamedItem;
 
@@ -73,10 +77,20 @@ public class NanoTime
 
         doy++;
 
-        LocalDate date = LocalDate.ofYearDay( year, doy );
-        LocalTime time = LocalTime.ofNanoOfDay( nod );
+        try
+        {
+            LocalDate date = LocalDate.ofYearDay( year, doy );
+            LocalTime time = LocalTime.ofNanoOfDay( nod );
 
-        return LocalDateTime.of( date, time );
+            return LocalDateTime.of( date, time );
+        }
+        catch( DateTimeException ex )
+        {
+            String msg = String.format(
+                "Unable to convert year:nanos (doy:nod) into date/time: %d : %d ( %d : %d )",
+                year, nanoseconds, doy, nod );
+            throw new DateTimeException( msg, ex );
+        }
     }
 
     /***************************************************************************
