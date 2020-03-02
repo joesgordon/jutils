@@ -1,6 +1,12 @@
 package org.jutils.ui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.RenderingHints;
 
 import javax.swing.Icon;
 
@@ -135,7 +141,7 @@ public class LedIcon implements Icon
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void paintIcon( Component c, Graphics g, int x, int y )
