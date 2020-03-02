@@ -7,15 +7,26 @@ import javax.swing.JButton;
 import org.jutils.ui.event.updater.IUpdater;
 import org.jutils.ui.model.IView;
 
+/***************************************************************************
+ * 
+ **************************************************************************/
 public class LedButton implements IView<JButton>
 {
+    /**  */
     private final LedIcon icon;
+    /**  */
     private final JButton button;
 
+    /**  */
     private Color onColor;
+    /**  */
     private Color offColor;
+    /**  */
     private IUpdater<Boolean> updater;
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     public LedButton()
     {
         this.onColor = LedLabel.DEFAULT_ON_COLOR;
@@ -27,6 +38,9 @@ public class LedButton implements IView<JButton>
         button.addActionListener( ( e ) -> handlePress() );
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private void handlePress()
     {
         boolean isOn = !icon.getColor().equals( onColor );
@@ -83,6 +97,9 @@ public class LedButton implements IView<JButton>
         setText( text );
     }
 
+    /***************************************************************************
+     * @param updater
+     **************************************************************************/
     public void setUpdater( IUpdater<Boolean> updater )
     {
         this.updater = updater;
