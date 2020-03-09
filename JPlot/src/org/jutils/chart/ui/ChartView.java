@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -30,7 +29,6 @@ import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
@@ -48,7 +46,6 @@ import org.jutils.chart.app.UserData;
 import org.jutils.chart.data.SaveOptions;
 import org.jutils.chart.io.DataFileReader;
 import org.jutils.chart.model.Chart;
-import org.jutils.chart.model.ChartOptions.PointRemovalMethod;
 import org.jutils.chart.model.IDataPoint;
 import org.jutils.chart.model.ISeriesData;
 import org.jutils.chart.model.Interval;
@@ -74,8 +71,6 @@ import org.jutils.ui.event.FileDropTarget.IFileDropEvent;
 import org.jutils.ui.event.ItemActionEvent;
 import org.jutils.ui.event.ItemActionList;
 import org.jutils.ui.event.ItemActionListener;
-import org.jutils.ui.fields.ComboFormField;
-import org.jutils.ui.fields.NamedItemDescriptor;
 import org.jutils.ui.model.IDataView;
 import org.jutils.ui.model.IView;
 
@@ -97,8 +92,6 @@ public class ChartView implements IView<JComponent>
     /**  */
     private final JToolBar toolbar;
     /**  */
-    private final ComboFormField<PointRemovalMethod> pointsField;
-    /**  */
     private final JSeparator separator;
 
     /**  */
@@ -117,7 +110,8 @@ public class ChartView implements IView<JComponent>
     public JDialog propertiesDialog;
 
     /***************************************************************************
-     * 
+     * Creates a new chart view that allows open and uses a gradient (instead of
+     * flat) toolbar.
      **************************************************************************/
     public ChartView()
     {
@@ -125,8 +119,12 @@ public class ChartView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param allowOpen
-     * @param gradientToolbar
+     * Creates a new chart.
+     * @param allowOpen if {@code true}, an Open button is added to the toolbar
+     * and a drop target is added to the chart that allows the user to drag
+     * files to be read.
+     * @param gradientToolbar paints the background on the toolbar that is
+     * gradient (if {@code true}) or flat (if {@code false}).
      **************************************************************************/
     public ChartView( boolean allowOpen, boolean gradientToolbar )
     {
@@ -138,8 +136,6 @@ public class ChartView implements IView<JComponent>
         this.propertiesView = new PropertiesView( chart );
         this.recentFiles = new RecentFilesViews();
 
-        this.pointsField = new ComboFormField<>( "Point Removal: ",
-            PointRemovalMethod.values(), new NamedItemDescriptor<>() );
         this.toolbar = createToolbar( allowOpen, gradientToolbar );
         this.separator = new JSeparator();
         this.view = createView();
@@ -166,7 +162,7 @@ public class ChartView implements IView<JComponent>
         {
             addFileLoadedListener( new FileLoadedListener( this ) );
             mainComp.setDropTarget(
-                new FileDropTarget( new ChartDropTarget( this ) ) );
+                new FileDropTarget( ( e ) -> handleDrop( e ) ) );
         }
 
         mainComp.setFocusable( true );
@@ -178,6 +174,23 @@ public class ChartView implements IView<JComponent>
             JComponent.WHEN_FOCUSED );
 
         mainComp.setMinimumSize( new Dimension( 150, 150 ) );
+    }
+
+    /***************************************************************************
+     * @param event
+     **************************************************************************/
+    private void handleDrop( ItemActionEvent<IFileDropEvent> event )
+    {
+        IFileDropEvent fde = event.getItem();
+        List<File> files = fde.getFiles();
+
+        boolean addData = fde.getActionType() == DropActionType.COPY;
+
+        for( int i = 0; i < files.size(); i++ )
+        {
+            importData( files.get( i ), addData );
+            addData = true;
+        }
     }
 
     /***************************************************************************
@@ -246,15 +259,16 @@ public class ChartView implements IView<JComponent>
 
         SwingUtils.addActionToToolbar( toolbar, createZoomOutAction() );
 
-        JPanel panel = new JPanel( new FlowLayout( FlowLayout.CENTER, 0, 0 ) );
-
-        pointsField.setValue( PointRemovalMethod.NAN );
-
-        panel.setOpaque( false );
-        panel.add( new JLabel( pointsField.getName() ) );
-        panel.add( pointsField.getView() );
-        panel.setMaximumSize( panel.getPreferredSize() );
-        toolbar.add( panel );
+        // JPanel panel = new JPanel( new FlowLayout( FlowLayout.CENTER, 0, 0 )
+        // );
+        //
+        // pointsField.setValue( PointRemovalMethod.NAN );
+        //
+        // panel.setOpaque( false );
+        // panel.add( new JLabel( pointsField.getName() ) );
+        // panel.add( pointsField.getView() );
+        // panel.setMaximumSize( panel.getPreferredSize() );
+        // toolbar.add( panel );
 
         toolbar.add( Box.createHorizontalGlue() );
 
@@ -815,32 +829,11 @@ public class ChartView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * 
+     * @param enabled
      **************************************************************************/
-    private static class ChartDropTarget
-        implements ItemActionListener<IFileDropEvent>
+    public void setRemovalEnabled( boolean enabled )
     {
-        private final ChartView view;
-
-        public ChartDropTarget( ChartView view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void actionPerformed( ItemActionEvent<IFileDropEvent> event )
-        {
-            IFileDropEvent fde = event.getItem();
-            List<File> files = fde.getFiles();
-
-            boolean addData = fde.getActionType() == DropActionType.COPY;
-
-            for( int i = 0; i < files.size(); i++ )
-            {
-                view.importData( files.get( i ), addData );
-                addData = true;
-            }
-        }
+        // TODO Auto-generated method stub
     }
 
     /***************************************************************************

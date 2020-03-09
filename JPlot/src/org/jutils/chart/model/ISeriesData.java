@@ -1,7 +1,7 @@
 package org.jutils.chart.model;
 
 /*******************************************************************************
- * 
+ * @param <T>
  ******************************************************************************/
 public interface ISeriesData<T extends IDataPoint> extends Iterable<T>
 {

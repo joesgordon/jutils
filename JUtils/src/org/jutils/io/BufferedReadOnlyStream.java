@@ -28,8 +28,9 @@ public class BufferedReadOnlyStream implements IStream
      * Creates a new buffered stream with the provided underlying stream using a
      * buffer of {@link IOUtils#DEFAULT_BUF_SIZE} size.
      * @param stream the underlying stream.
+     * @throws IOException
      **************************************************************************/
-    public BufferedReadOnlyStream( IStream stream )
+    public BufferedReadOnlyStream( IStream stream ) throws IOException
     {
         this( stream, IOUtils.DEFAULT_BUF_SIZE );
     }
@@ -39,15 +40,17 @@ public class BufferedReadOnlyStream implements IStream
      * buffer of the provided size.
      * @param stream the underlying stream.
      * @param bufferSize the size of this stream's buffer.
+     * @throws IOException
      **************************************************************************/
     public BufferedReadOnlyStream( IStream stream, int bufferSize )
+        throws IOException
     {
         this.stream = stream;
         this.buffer = new byte[bufferSize];
 
         this.index = 0;
         this.fillCount = 0;
-        this.position = 0;
+        this.position = stream.getPosition();
         this.length = null;
     }
 

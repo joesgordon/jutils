@@ -2,7 +2,10 @@ package org.jutils.ui.model;
 
 import java.awt.Component;
 
-import javax.swing.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 /*******************************************************************************
  * A {@link ListCellRenderer} that uses the provided decorator to render cells
@@ -24,6 +27,9 @@ public class LabelListCellRenderer<T> implements ListCellRenderer<T>
         this.decorator = decorator;
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public Component getListCellRendererComponent( JList<? extends T> list,
         T value, int index, boolean isSelected, boolean cellHasFocus )

@@ -1,6 +1,9 @@
 package org.jutils.io;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /*******************************************************************************
  * Defines an object to read lines from a file and keep up with the number of
@@ -9,7 +12,7 @@ import java.io.*;
 public class LineReader implements Closeable
 {
     /** The underlying reader. */
-    private final RandomAccessFile reader;
+    private final FileStream stream;
 
     /** The number of the last line read. */
     private long lineNumber;
@@ -22,7 +25,7 @@ public class LineReader implements Closeable
      **************************************************************************/
     public LineReader( File file ) throws FileNotFoundException
     {
-        this.reader = new RandomAccessFile( file, "r" );
+        this.stream = new FileStream( file, true );
         this.lineNumber = -1;
     }
 
@@ -32,7 +35,7 @@ public class LineReader implements Closeable
     @Override
     public void close() throws IOException
     {
-        reader.close();
+        stream.close();
     }
 
     /***************************************************************************
@@ -43,7 +46,7 @@ public class LineReader implements Closeable
     public String readLine() throws IOException
     {
         lineNumber++;
-        return reader.readLine();
+        return stream.readLine();
     }
 
     /***************************************************************************
@@ -63,6 +66,14 @@ public class LineReader implements Closeable
      **************************************************************************/
     public long getPosition() throws IOException
     {
-        return reader.getFilePointer();
+        return stream.getPosition();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public IStream getStream()
+    {
+        return stream;
     }
 }

@@ -1,6 +1,8 @@
 package org.jutils.chart.data;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.jutils.chart.model.IDataPoint;
 import org.jutils.chart.model.ISeriesData;
@@ -236,15 +238,23 @@ public class ArraySeries implements ISeriesData<IDataPoint>
      **************************************************************************/
     private static class DataSeries
     {
+        /**  */
         public String name;
+        /**  */
         public double [] data;
 
+        /**
+         * @param length
+         */
         public DataSeries( int length )
         {
             this.data = new double[length];
             this.name = "";
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String toString()
         {

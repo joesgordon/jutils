@@ -1,10 +1,14 @@
 package org.jutils.chart.ui.objects;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
 
 import org.jutils.SwingUtils;
 import org.jutils.chart.ChartUtils;
-import org.jutils.chart.model.*;
+import org.jutils.chart.model.IDataPoint;
+import org.jutils.chart.model.Interval;
+import org.jutils.chart.model.Series;
 import org.jutils.chart.ui.IChartWidget;
 import org.jutils.chart.ui.Layer2d;
 import org.jutils.chart.ui.lines.SimpleLine;
@@ -37,7 +41,8 @@ public class PlotWidget implements IChartWidget
     public Point highlightLocation;
 
     /***************************************************************************
-     * @param data
+     * @param series
+     * @param context
      **************************************************************************/
     public PlotWidget( Series series, PlotContext context )
     {
@@ -60,7 +65,7 @@ public class PlotWidget implements IChartWidget
     }
 
     /***************************************************************************
-     *
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void draw( Graphics2D graphics, Point unusedPoint,
@@ -126,6 +131,8 @@ public class PlotWidget implements IChartWidget
             selectedMarker.draw( g2d, mp );
         }
 
+        // int count = 0;
+
         for( int i = start; i < end; i++ )
         {
             dp = series.data.get( i );
@@ -155,12 +162,18 @@ public class PlotWidget implements IChartWidget
 
                 last.x = p.x;
                 last.y = p.y;
+
+                // count++;
             }
         }
+
+        // LogUtils.printDebug( "Drew %d points for series with %d points",
+        // count,
+        // series.data.getCount() );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Dimension calculateSize( Dimension canvasSize )
@@ -195,6 +208,9 @@ public class PlotWidget implements IChartWidget
         }
     }
 
+    /***************************************************************************
+     * @param point
+     **************************************************************************/
     public void setHighlightLocation( Point point )
     {
         this.highlightLocation = point;

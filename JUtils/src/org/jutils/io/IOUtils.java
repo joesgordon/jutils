@@ -38,7 +38,7 @@ public final class IOUtils
     public static final File USERS_DIR;
     /** The installation directory of this class/jar. */
     public static final File INSTALL_DIR;
-    /**  */
+    /** 8 Megabytes. */
     public static final int DEFAULT_BUF_SIZE = 8 * 1024 * 1024;
 
     static
