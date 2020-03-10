@@ -3,13 +3,17 @@ package org.jutils.ui.fields;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.ComboBoxEditor;
+import javax.swing.JComboBox;
+import javax.swing.ListCellRenderer;
 
 import org.jutils.ValidationException;
 import org.jutils.io.IParser;
 import org.jutils.ui.event.updater.ComboBoxUpdater;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.ValidationComboField;
+import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
  * 
@@ -23,6 +27,8 @@ public final class ComboFormField<T> implements IDataFormField<T>
 
     /**  */
     private IUpdater<T> updater;
+    /**  */
+    private boolean isSetting;
 
     /***************************************************************************
      * @param name
@@ -64,9 +70,21 @@ public final class ComboFormField<T> implements IDataFormField<T>
         this.name = name;
 
         this.updater = null;
+        this.isSetting = false;
 
         field.addItemListener(
-            new ComboBoxUpdater<>( new ComboValidListener<T>( this ) ) );
+            new ComboBoxUpdater<>( ( d ) -> handleDataChanged() ) );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void handleDataChanged()
+    {
+        if( updater != null && !isSetting )
+        {
+            updater.update( getValue() );
+        }
     }
 
     /***************************************************************************
@@ -102,7 +120,9 @@ public final class ComboFormField<T> implements IDataFormField<T>
     @Override
     public void setValue( T value )
     {
+        isSetting = true;
         field.setSelectedItem( value );
+        isSetting = false;
     }
 
     /***************************************************************************
@@ -210,28 +230,6 @@ public final class ComboFormField<T> implements IDataFormField<T>
     public int getSelectedIndex()
     {
         return field.getSelectedIndex();
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class ComboValidListener<T> implements IUpdater<T>
-    {
-        private ComboFormField<T> field;
-
-        public ComboValidListener( ComboFormField<T> field )
-        {
-            this.field = field;
-        }
-
-        @Override
-        public void update( T data )
-        {
-            if( field.updater != null )
-            {
-                field.updater.update( field.getValue() );
-            }
-        }
     }
 
     /***************************************************************************

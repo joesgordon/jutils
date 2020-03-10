@@ -1,23 +1,56 @@
 package org.jutils.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dialog.ModalityType;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JToolBar;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import org.jutils.*;
-import org.jutils.io.*;
+import org.jutils.IconConstants;
+import org.jutils.SwingUtils;
+import org.jutils.ValidationException;
+import org.jutils.io.FileStream;
+import org.jutils.io.IDataSerializer;
+import org.jutils.io.IOUtils;
+import org.jutils.io.IReferenceStream;
+import org.jutils.io.IStream;
+import org.jutils.io.IStringWriter;
+import org.jutils.io.ReferenceStream;
 import org.jutils.ui.OkDialogView.OkDialogButtons;
-import org.jutils.ui.event.*;
+import org.jutils.ui.event.ActionAdapter;
+import org.jutils.ui.event.BottomScroller;
+import org.jutils.ui.event.FileChooserListener;
 import org.jutils.ui.event.FileChooserListener.IFileSelected;
-import org.jutils.ui.model.*;
+import org.jutils.ui.event.ResizingTableModelListener;
+import org.jutils.ui.model.IDataView;
+import org.jutils.ui.model.ITableItemsConfig;
+import org.jutils.ui.model.ItemsTableModel;
+import org.jutils.ui.model.LabelTableCellRenderer;
 import org.jutils.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
 import org.jutils.ui.net.StringWriterView;
 
@@ -409,7 +442,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
      **************************************************************************/
     private void updateRowHeader( int count )
     {
-        rowView.setData( pageStartIndex, count );
+        rowView.setData( pageStartIndex + 1, count );
     }
 
     /***************************************************************************

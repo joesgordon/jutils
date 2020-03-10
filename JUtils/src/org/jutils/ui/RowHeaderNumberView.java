@@ -8,9 +8,9 @@ import javax.swing.JTable;
 
 import org.jutils.data.UIProperty;
 
-/***************************************************************************
+/*******************************************************************************
  * 
- **************************************************************************/
+ ******************************************************************************/
 public class RowHeaderNumberView
 {
     /**  */
@@ -49,6 +49,19 @@ public class RowHeaderNumberView
     }
 
     /***************************************************************************
+     * @param start
+     * @param count
+     **************************************************************************/
+    public void setData( long start, int count )
+    {
+        rowModel.setStart( start );
+        rowModel.setSize( count );
+        rowHeader.setFixedCellWidth( -1 );
+        rowHeader.setFixedCellWidth( rowHeader.getPreferredSize().width + 16 );
+        rowHeader.repaint();
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     private static class RowListModel extends AbstractListModel<String>
@@ -60,41 +73,47 @@ public class RowHeaderNumberView
         /**  */
         private int rowCount;
 
+        /**
+         * 
+         */
         public RowListModel()
         {
             rowStart = 0;
             rowCount = 0;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int getSize()
         {
             return rowCount;
         }
 
+        /**
+         * @param count
+         */
         public void setSize( int count )
         {
             rowCount = count;
         }
 
+        /**
+         * @param start
+         */
         public void setStart( long start )
         {
             rowStart = start;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getElementAt( int index )
         {
-            return Long.toString( rowStart + index + 1 );
+            return Long.toString( rowStart + index );
         }
-    }
-
-    public void setData( long start, int count )
-    {
-        rowModel.setStart( start );
-        rowModel.setSize( count );
-        rowHeader.setFixedCellWidth( -1 );
-        rowHeader.setFixedCellWidth( rowHeader.getPreferredSize().width + 16 );
-        rowHeader.repaint();
     }
 }

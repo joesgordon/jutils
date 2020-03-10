@@ -1,6 +1,8 @@
 package org.jutils.ui.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -22,7 +24,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     private List<T> items;
 
     /***************************************************************************
-     * 
+     * @param tableConfig
      **************************************************************************/
     public ItemsTableModel( ITableItemsConfig<T> tableConfig )
     {
@@ -48,7 +50,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public int getColumnCount()
@@ -57,7 +59,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public int getRowCount()
@@ -149,7 +151,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Class<?> getColumnClass( int col )
@@ -167,7 +169,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getColumnName( int col )
@@ -187,7 +189,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public boolean isCellEditable( int row, int col )
@@ -198,7 +200,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public final Object getValueAt( int row, int col )
@@ -215,7 +217,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public final void setValueAt( Object data, int row, int col )

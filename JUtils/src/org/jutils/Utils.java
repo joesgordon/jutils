@@ -1,11 +1,31 @@
 package org.jutils;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.Transparency;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JTable;
@@ -239,6 +259,29 @@ public final class Utils
         }
 
         return fields;
+    }
+
+    /***************************************************************************
+     * Writes the decimal value for each integer in the array and places a comma
+     * and a space between each.
+     * @param a the array to convert to a string.
+     * @return the comma separated array of items.
+     **************************************************************************/
+    public static String arrayToString( int [] a )
+    {
+        StringBuffer buf = new StringBuffer();
+
+        for( int i = 0; i < a.length; i++ )
+        {
+            if( i > 0 )
+            {
+                buf.append( ", " );
+            }
+
+            buf.append( a[i] );
+        }
+
+        return buf.toString();
     }
 
     /***************************************************************************
