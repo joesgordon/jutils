@@ -143,7 +143,7 @@ public class ChartView implements IView<JComponent>
         this.fileLoadedListeners = new ItemActionList<>();
 
         recentFiles.setData( options.getOptions().recentFiles.toList() );
-        recentFiles.setListeners( ( f, c ) -> importData( f, c ) );
+        recentFiles.setListeners( ( f, c ) -> handleImport( f, c ) );
 
         // mainPanel.setBorder( new LineBorder( Color.blue, 4 ) );
         mainPanel.setObject( chartWidget );
@@ -186,11 +186,7 @@ public class ChartView implements IView<JComponent>
 
         boolean addData = fde.getActionType() == DropActionType.COPY;
 
-        for( int i = 0; i < files.size(); i++ )
-        {
-            importData( files.get( i ), addData );
-            addData = true;
-        }
+        handleImport( files, addData );
     }
 
     /***************************************************************************
@@ -291,6 +287,9 @@ public class ChartView implements IView<JComponent>
         return action;
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private ActionListener createOpenListener()
     {
         OpenListener ol = new OpenListener( this );
@@ -445,10 +444,47 @@ public class ChartView implements IView<JComponent>
     /***************************************************************************
      * @param files
      **************************************************************************/
-    public void importData( List<File> files )
+    private void handleImport( List<File> files )
     {
-        boolean addData = false;
+        handleImport( files, false );
+    }
 
+    /***************************************************************************
+     * @param files
+     * @param addData
+     **************************************************************************/
+    private void handleImport( List<File> files, boolean addData )
+    {
+        SwingUtils.getComponentsWindow( getView() ).setCursor(
+            new Cursor( Cursor.WAIT_CURSOR ) );
+
+        importData( files, addData );
+
+        SwingUtils.getComponentsWindow( getView() ).setCursor(
+            new Cursor( Cursor.DEFAULT_CURSOR ) );
+    }
+
+    /***************************************************************************
+     * @param file
+     * @param addData
+     **************************************************************************/
+    private void handleImport( File file, boolean addData )
+    {
+        SwingUtils.getComponentsWindow( getView() ).setCursor(
+            new Cursor( Cursor.WAIT_CURSOR ) );
+
+        importData( file, addData );
+
+        SwingUtils.getComponentsWindow( getView() ).setCursor(
+            new Cursor( Cursor.DEFAULT_CURSOR ) );
+    }
+
+    /***************************************************************************
+     * @param files
+     * @param addData
+     **************************************************************************/
+    public void importData( List<File> files, boolean addData )
+    {
         clear();
 
         for( File file : files )
@@ -456,44 +492,6 @@ public class ChartView implements IView<JComponent>
             importData( file, addData );
             addData = true;
         }
-    }
-
-    /***************************************************************************
-     * @param file
-     * @param addData
-     **************************************************************************/
-    public Series addSeries( ISeriesData<?> data, String name, String resource,
-        boolean addData )
-    {
-        Series s = new Series( data );
-
-        Color c;
-        if( addData )
-        {
-            c = palette.next();
-        }
-        else
-        {
-            palette.reset();
-            c = palette.next();
-        }
-
-        s.name = name;
-        s.resource = resource;
-        s.marker.color = c;
-        s.highlight.color = c;
-        s.line.color = c;
-
-        addSeries( s, addData );
-
-        // LogUtils.printDebug( String.format( "x => (%f,%f)",
-        // chart.plot.context.xMin, chart.plot.context.xMax ) );
-        //
-        // LogUtils.printDebug( String.format( "y => (%f,%f)",
-        // chart.plot.context.yMin, chart.plot.context.yMax ) );
-        // LogUtils.printDebug( "" );
-
-        return s;
     }
 
     /***************************************************************************
@@ -544,25 +542,52 @@ public class ChartView implements IView<JComponent>
     }
 
     /***************************************************************************
+     * @param file
+     * @param addData
+     **************************************************************************/
+    public Series addSeries( ISeriesData<?> data, String name, String resource,
+        boolean addData )
+    {
+        Series s = new Series( data );
+
+        Color c;
+        if( addData )
+        {
+            c = palette.next();
+        }
+        else
+        {
+            palette.reset();
+            c = palette.next();
+        }
+
+        s.name = name;
+        s.resource = resource;
+        s.marker.color = c;
+        s.highlight.color = c;
+        s.line.color = c;
+
+        addSeries( s, addData );
+
+        // LogUtils.printDebug( String.format( "x => (%f,%f)",
+        // chart.plot.context.xMin, chart.plot.context.xMax ) );
+        //
+        // LogUtils.printDebug( String.format( "y => (%f,%f)",
+        // chart.plot.context.yMin, chart.plot.context.yMax ) );
+        // LogUtils.printDebug( "" );
+
+        return s;
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     public void clear()
     {
-        chart.title.text = "Title";
-        chart.title.visible = false;
-        chart.domainAxis.title.text = "Domain";
-        chart.domainAxis.title.visible = false;
-        chart.rangeAxis.title.text = "Range";
-        chart.rangeAxis.title.visible = false;
-        chart.secDomainAxis.title.text = "Secondary Domain";
-        chart.secDomainAxis.title.visible = false;
-        chart.secRangeAxis.title.text = "Secondary Range";
-        chart.secRangeAxis.title.visible = false;
-        chart.legend.visible = false;
+        chart.clear();
 
         propertiesView.clear();
 
-        chart.series.clear();
         chartWidget.clear();
 
         // restoreAndRepaintChart();
@@ -841,13 +866,20 @@ public class ChartView implements IView<JComponent>
      **************************************************************************/
     private static class OpenListener implements ILastFiles, IFilesSelected
     {
+        /**  */
         private final ChartView view;
 
+        /**
+         * @param view
+         */
         public OpenListener( ChartView view )
         {
             this.view = view;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public File [] getLastFiles()
         {
@@ -855,12 +887,15 @@ public class ChartView implements IView<JComponent>
             return f == null ? new File[] {} : new File[] { f };
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void filesChosen( File [] files )
         {
             List<File> fileList = Arrays.asList( files );
 
-            view.importData( fileList );
+            view.handleImport( fileList );
         }
     }
 

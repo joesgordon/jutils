@@ -1,18 +1,27 @@
 package org.jutils.chart.app;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 
 import org.jutils.IconConstants;
+import org.jutils.SwingUtils;
 import org.jutils.chart.ChartIcons;
 import org.jutils.chart.ChartUtils;
 import org.jutils.chart.model.ISeriesData;
 import org.jutils.chart.model.Series;
 import org.jutils.chart.ui.ChartView;
 import org.jutils.ui.StandardFrameView;
+import org.jutils.ui.event.ActionAdapter;
 import org.jutils.ui.model.IView;
 
 /*******************************************************************************
@@ -56,6 +65,21 @@ public class JChartFrameView implements IView<JFrame>
         chartView.chart.secRangeAxis.title.text = "Sec Y Values";
 
         chartView.chart.legend.visible = true;
+
+        Action action = new ActionAdapter( ( e ) -> generateDefaultData(),
+            "GenerateDefault", null );
+        SwingUtils.addKeyListener( ( JComponent )getView().getContentPane(),
+            "control shift G", action, true );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void generateDefaultData()
+    {
+        getView().setCursor( new Cursor( Cursor.WAIT_CURSOR ) );
+
+        chartView.clear();
 
         Series s;
         ISeriesData<?> data;
@@ -107,6 +131,10 @@ public class JChartFrameView implements IView<JFrame>
         // s.line.color = new Color( 0x227722 );
         // s.line.weight = 4;
         // chartView.addSeries( s, true );
+
+        // chartView.zoomRestore();
+
+        getView().setCursor( new Cursor( Cursor.DEFAULT_CURSOR ) );
     }
 
     /***************************************************************************
@@ -118,7 +146,8 @@ public class JChartFrameView implements IView<JFrame>
     }
 
     /***************************************************************************
-     * @param menuBar
+     * @param menubar
+     * @param fileMenu
      * @return
      **************************************************************************/
     private JMenuBar createMenubar( JMenuBar menubar, JMenu fileMenu )
@@ -131,6 +160,7 @@ public class JChartFrameView implements IView<JFrame>
     }
 
     /***************************************************************************
+     * @param menu
      * @return
      **************************************************************************/
     private JMenu createFileMenu( JMenu menu )
@@ -187,13 +217,20 @@ public class JChartFrameView implements IView<JFrame>
      **************************************************************************/
     private static class ChartWindowListener extends WindowAdapter
     {
+        /**  */
         private final JChartFrameView view;
 
+        /**
+         * @param view
+         */
         public ChartWindowListener( JChartFrameView view )
         {
             this.view = view;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void windowClosing( WindowEvent e )
         {

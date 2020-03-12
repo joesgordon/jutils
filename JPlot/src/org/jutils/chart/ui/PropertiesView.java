@@ -1,14 +1,25 @@
 package org.jutils.chart.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.jutils.chart.model.*;
+import org.jutils.chart.model.Axis;
+import org.jutils.chart.model.Chart;
+import org.jutils.chart.model.Legend;
+import org.jutils.chart.model.Series;
 import org.jutils.ui.TitleView;
 import org.jutils.ui.model.IDataView;
 import org.jutils.ui.model.IView;
@@ -149,9 +160,21 @@ public class PropertiesView implements IView<JPanel>
     {
         seriesViews.clear();
 
-        while( navModel.size() > FIRST_SERIES_INDEX )
+        List<IListNode> nodesToRemove = new ArrayList<>();
+
+        for( int i = 0; i < navModel.getSize(); i++ )
         {
-            navModel.remove( FIRST_SERIES_INDEX );
+            IListNode node = navModel.get( i );
+
+            if( node instanceof SeriesNode )
+            {
+                nodesToRemove.add( node );
+            }
+        }
+
+        for( IListNode node : nodesToRemove )
+        {
+            navModel.removeElement( node );
         }
     }
 

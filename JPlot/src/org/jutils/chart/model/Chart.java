@@ -57,4 +57,24 @@ public class Chart
         subtitle.font = subtitle.font.deriveFont( 12.0f );
         subtitle.visible = false;
     }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void clear()
+    {
+        title.text = "Title";
+        title.visible = false;
+        domainAxis.title.text = "Domain";
+        domainAxis.title.visible = false;
+        rangeAxis.title.text = "Range";
+        rangeAxis.title.visible = false;
+        secDomainAxis.title.text = "Secondary Domain";
+        secDomainAxis.title.visible = false;
+        secRangeAxis.title.text = "Secondary Range";
+        secRangeAxis.title.visible = false;
+        legend.visible = false;
+
+        series.clear();
+    }
 }

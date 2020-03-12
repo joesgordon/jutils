@@ -120,7 +120,7 @@ public class SplitButtonView<T> implements IView<JComponent>
         popup.hide();
 
         // LogUtils.printDebug( "%s selected", item );
-        fireListeners( item, ctrlPressed );
+        SwingUtilities.invokeLater( () -> fireListeners( item, ctrlPressed ) );
     }
 
     /***************************************************************************
