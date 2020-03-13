@@ -23,6 +23,8 @@ public class PlotWidget implements IChartWidget
 {
     /**  */
     public final Series series;
+    /**  */
+    private final PlotContext context;
 
     /**  */
     public final CircleMarker marker;
@@ -34,11 +36,11 @@ public class PlotWidget implements IChartWidget
     private SimpleLine line;
 
     /**  */
-    private final PlotContext context;
-    /**  */
     public boolean trackPoint;
     /**  */
     public Point highlightLocation;
+    /**  */
+    public IPixelListener pixelListener;
 
     /***************************************************************************
      * @param series
@@ -54,12 +56,14 @@ public class PlotWidget implements IChartWidget
         this.highlight = new CircleBorderMarker();
         this.line = new SimpleLine();
 
+        this.trackPoint = true;
+        this.highlightLocation = null;
+        this.pixelListener = null;
+
         marker.color = series.marker.color;
         highlight.color = series.highlight.color;
         line.color = series.line.color;
         selectedMarker.color = SwingUtils.inverseColor( series.marker.color );
-
-        trackPoint = true;
 
         highlight.setSize( 10 );
     }
@@ -150,6 +154,11 @@ public class PlotWidget implements IChartWidget
                 if( series.line.visible && last.x != -100 )
                 {
                     line.draw( graphics, last, p );
+
+                    if( pixelListener != null )
+                    {
+                        pixelListener.pixelDrawn( p );
+                    }
                 }
 
                 if( series.marker.visible )
@@ -214,5 +223,14 @@ public class PlotWidget implements IChartWidget
     public void setHighlightLocation( Point point )
     {
         this.highlightLocation = point;
+    }
+
+    public static interface IPixelListener
+    {
+        /**
+         * @param x
+         * @param y
+         */
+        public void pixelDrawn( Point point );
     }
 }

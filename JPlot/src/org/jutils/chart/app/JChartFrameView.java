@@ -73,6 +73,14 @@ public class JChartFrameView implements IView<JFrame>
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    public ChartView getChart()
+    {
+        return chartView;
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     private void generateDefaultData()
@@ -95,13 +103,16 @@ public class JChartFrameView implements IView<JFrame>
 
         int pointCount = 1000000;
 
-        data = ChartUtils.createLineSeries( pointCount, -1.0, 0.0, -5.0, 5.0 );
+        data = ChartUtils.createLineSeries( pointCount, -1.0 / 5, 0.0, -5.0,
+            5.0 );
         s = new Series( data );
         s.name = "y = -x";
         s.marker.color = new Color( 0xFF9933 );
         s.highlight.color = new Color( 0xFF9933 );
         s.line.color = new Color( 0xCC6622 );
         chartView.addSeries( s, true );
+
+        Series minusX = s;
 
         data = ChartUtils.createSinSeries( pointCount, 1.0, 4.0, 0.0, -5.0,
             5.0 );
@@ -112,6 +123,8 @@ public class JChartFrameView implements IView<JFrame>
         s.line.color = new Color( 0x227722 );
         s.line.weight = 4;
         chartView.addSeries( s, true );
+
+        chartView.chart.fill( minusX, s );
 
         data = ChartUtils.createLineSeries( pointCount, 1.0, 0.0, 5.1, 10.9 );
         s = new Series( data );
@@ -135,14 +148,6 @@ public class JChartFrameView implements IView<JFrame>
         // chartView.zoomRestore();
 
         getView().setCursor( new Cursor( Cursor.DEFAULT_CURSOR ) );
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public ChartView getChart()
-    {
-        return chartView;
     }
 
     /***************************************************************************
@@ -204,7 +209,7 @@ public class JChartFrameView implements IView<JFrame>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JFrame getView()

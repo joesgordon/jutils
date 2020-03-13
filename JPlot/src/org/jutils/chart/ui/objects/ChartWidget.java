@@ -1,6 +1,9 @@
 package org.jutils.chart.ui.objects;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
 
 import org.jutils.chart.model.Chart;
 import org.jutils.chart.model.HorizontalAlignment;
@@ -92,7 +95,7 @@ public class ChartWidget implements IChartWidget
         drawSubtitle( graphics, wLoc, wSize );
 
         // ---------------------------------------------------------------------
-        //
+        // Draw the legend.
         // ---------------------------------------------------------------------
         wLoc.y += 10;
         wSize.height -= 20;
@@ -114,6 +117,8 @@ public class ChartWidget implements IChartWidget
         // ---------------------------------------------------------------------
         wLoc = new Point( context.x, context.y );
         wSize = new Dimension( context.width, context.height );
+        plots.fills.clear();
+        plots.fills.addAll( chart.fills );
         plots.layout( wSize );
         plots.draw( ( Graphics2D )graphics.create( wLoc.x, wLoc.y, wSize.width,
             wSize.height ), null, null );

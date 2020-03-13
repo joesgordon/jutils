@@ -31,8 +31,6 @@ public class PropertiesView implements IView<JPanel>
 {
     /**  */
     private static final String DEFAULT_TITLE = "<- Select a category to the left";
-    /**  */
-    private static final int FIRST_SERIES_INDEX = 7;
 
     /**  */
     private final JPanel view;

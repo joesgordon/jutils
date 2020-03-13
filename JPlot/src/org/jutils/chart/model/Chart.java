@@ -29,6 +29,8 @@ public class Chart
 
     /**  */
     public final List<Series> series;
+    /**  */
+    public final List<FillSet> fills;
 
     /***************************************************************************
      * 
@@ -46,6 +48,7 @@ public class Chart
         this.legend = new Legend();
 
         this.series = new ArrayList<>();
+        this.fills = new ArrayList<>();
 
         topBottomLabel.font = topBottomLabel.font.deriveFont( 10.0f );
         topBottomLabel.visible = false;
@@ -76,5 +79,48 @@ public class Chart
         legend.visible = false;
 
         series.clear();
+    }
+
+    /***************************************************************************
+     * @param s1
+     * @param s2
+     **************************************************************************/
+    public void fill( Series s1, Series s2 )
+    {
+        FillSet set = new FillSet( s1, s2 );
+
+        fills.add( set );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static final class FillSet
+    {
+        /**  */
+        public final Series s1;
+        /**  */
+        public final Series s2;
+
+        /**  */
+        public double x1;
+        /**  */
+        public double x2;
+
+        /**
+         * @param s1
+         * @param s2
+         */
+        public FillSet( Series s1, Series s2 )
+        {
+            this.s1 = s1;
+            this.s2 = s2;
+
+            Interval d1 = s1.calcDomainSpan();
+            Interval d2 = s2.calcDomainSpan();
+
+            this.x1 = Math.min( d1.min, d2.min );
+            this.x2 = Math.min( d1.max, d2.max );
+        }
     }
 }
