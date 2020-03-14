@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jutils.chart.model.Chart.FillSet;
+import org.jutils.chart.model.Series;
 import org.jutils.chart.ui.IChartWidget;
 import org.jutils.chart.ui.Layer2d;
 import org.jutils.chart.ui.objects.PlotWidget.IPixelListener;
@@ -18,6 +19,8 @@ import org.jutils.chart.ui.objects.PlotWidget.IPixelListener;
  ******************************************************************************/
 public class PlotsWidget implements IChartWidget
 {
+    /**  */
+    private final Layer2d fillLayer;
     /**  */
     private final Layer2d seriesLayer;
     /**  */
@@ -40,6 +43,7 @@ public class PlotsWidget implements IChartWidget
     {
         this.context = context;
 
+        this.fillLayer = new Layer2d();
         this.seriesLayer = new Layer2d();
         this.highlightLayer = new Layer2d();
         this.selection = new SelectionWidget( context );
@@ -55,6 +59,7 @@ public class PlotsWidget implements IChartWidget
      **************************************************************************/
     public Dimension layout( Dimension size )
     {
+        fillLayer.setSize( size );
         seriesLayer.setSize( size );
         highlightLayer.setSize( size );
 
@@ -84,6 +89,7 @@ public class PlotsWidget implements IChartWidget
         g2d = seriesLayer.getGraphics();
         if( seriesLayer.repaint )
         {
+            fillLayer.clear();
             seriesLayer.clear();
 
             for( FillSet f : fills )
@@ -112,11 +118,13 @@ public class PlotsWidget implements IChartWidget
 
             for( FillListener f : fillShapes )
             {
-                f.draw( g2d );
+                f.draw( fillLayer.getGraphics() );
             }
 
             seriesLayer.repaint = false;
         }
+
+        fillLayer.paint( graphics, 0, 0 );
         seriesLayer.paint( graphics, 0, 0 );
 
         // ---------------------------------------------------------------------
@@ -159,49 +167,57 @@ public class PlotsWidget implements IChartWidget
      **************************************************************************/
     public void repaint()
     {
+        fillLayer.repaint = true;
         seriesLayer.repaint = true;
         highlightLayer.repaint = true;
     }
 
+    /**
+     * 
+     */
     private static final class FillListener implements IPixelListener
     {
-        private final List<Point> s1;
-        private final List<Point> s2;
+        /**  */
+        private final Polygon fill;
 
+        /**  */
+        private Series s1;
+        /**  */
+        private Series s2;
+        /**  */
+        private int s2Idx;
+
+        /**
+         * 
+         */
         public FillListener()
         {
-            this.s1 = new ArrayList<>();
-            this.s2 = new ArrayList<>();
+            this.fill = new Polygon();
+
+            this.s1 = null;
+            this.s2 = null;
+            this.s2Idx = -1;
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public void pixelDrawn( Point point )
+        public void pixelDrawn( Series s, Point point )
         {
-            point = new Point( point );
+            fill.addPoint( point.x, point.y );
 
-            if( !s2.isEmpty() )
-            {
-                s2.add( point );
-            }
-            else if( s1.isEmpty() )
-            {
-                s1.add( point );
-            }
-            else
-            {
-                Point lp = s1.get( s1.size() - 1 );
+            // LogUtils.printDebug( "Adding point %d %d,%d of series %s",
+            // fill.npoints - 1, point.x, point.y, s.name );
 
-                if( lp.x > point.x )
-                {
-                    s2.add( point );
-                }
-                else
-                {
-                    s1.add( point );
-                }
+            if( s1 == null )
+            {
+                s1 = s;
+            }
+            else if( s2 == null && s1 != s )
+            {
+                s2 = s;
+                s2Idx = fill.npoints - 1;
             }
         }
 
@@ -210,18 +226,19 @@ public class PlotsWidget implements IChartWidget
          */
         public void draw( Graphics2D g )
         {
-            Polygon fill = new Polygon();
+            // LogUtils.printDebug( "s2Idx is %d of %d", s2Idx, fill.npoints );
 
-            for( int i1 = 0; i1 < s1.size(); i1++ )
+            for( int i = s2Idx, j = fill.npoints - 1; i < j; i++, j-- )
             {
-                Point p1 = s1.get( i1 );
-                fill.addPoint( p1.x, p1.y );
-            }
+                int d;
 
-            for( int i2 = s2.size() - 1; i2 > -1; i2-- )
-            {
-                Point p2 = s2.get( i2 );
-                fill.addPoint( p2.x, p2.y );
+                d = fill.xpoints[i];
+                fill.xpoints[i] = fill.xpoints[j];
+                fill.xpoints[j] = d;
+
+                d = fill.ypoints[i];
+                fill.ypoints[i] = fill.ypoints[j];
+                fill.ypoints[j] = d;
             }
 
             g.setColor( Color.yellow );

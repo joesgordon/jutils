@@ -157,7 +157,7 @@ public class PlotWidget implements IChartWidget
 
                     if( pixelListener != null )
                     {
-                        pixelListener.pixelDrawn( p );
+                        pixelListener.pixelDrawn( series, p );
                     }
                 }
 
@@ -225,12 +225,14 @@ public class PlotWidget implements IChartWidget
         this.highlightLocation = point;
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     public static interface IPixelListener
     {
         /**
-         * @param x
-         * @param y
+         * @param point
          */
-        public void pixelDrawn( Point point );
+        public void pixelDrawn( Series s, Point point );
     }
 }
