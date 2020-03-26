@@ -4,10 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
 
 import org.jutils.IconConstants;
 import org.jutils.SwingUtils;
+import org.jutils.chart.model.Chart;
 import org.jutils.chart.model.Series;
 import org.jutils.chart.ui.event.SaveSeriesDataListener;
 import org.jutils.ui.JGoodiesToolBar;
@@ -31,13 +37,17 @@ public class SeriesPropertiesView implements IDataView<Series>
     private final Action saveAction;
 
     /**  */
+    private final Chart chart;
+    /**  */
     private Series series;
 
     /***************************************************************************
-     * 
+     * @param chart
      **************************************************************************/
-    public SeriesPropertiesView()
+    public SeriesPropertiesView( Chart chart )
     {
+        this.chart = chart;
+
         this.dataView = new SeriesDataView();
         this.seriesView = new SeriesView();
 
@@ -96,10 +106,7 @@ public class SeriesPropertiesView implements IDataView<Series>
         ActionListener listener;
         Icon icon;
 
-        SaveSeriesDataListener ssdl = new SaveSeriesDataListener( this );
-
-        listener = new FileChooserListener( view, "Choose File to Save", true,
-            ssdl, ssdl );
+        listener = ( e ) -> handleSavePressed();
         icon = IconConstants.getIcon( IconConstants.SAVE_AS_16 );
         action = new ActionAdapter( listener, "Save", icon );
 
@@ -109,6 +116,20 @@ public class SeriesPropertiesView implements IDataView<Series>
     /***************************************************************************
      * 
      **************************************************************************/
+    private void handleSavePressed()
+    {
+        SaveSeriesDataListener ssdl = new SaveSeriesDataListener( this,
+            chart.options.removalMethod );
+
+        FileChooserListener listener = new FileChooserListener( view,
+            "Choose File to Save", true, ssdl, ssdl );
+
+        listener.showDialog();
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public Series getData()
     {
@@ -116,7 +137,7 @@ public class SeriesPropertiesView implements IDataView<Series>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setData( Series series )
@@ -136,7 +157,7 @@ public class SeriesPropertiesView implements IDataView<Series>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JPanel getView()

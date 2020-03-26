@@ -1,19 +1,37 @@
 package org.jutils.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.LineBorder;
-import javax.swing.text.*;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
 import org.jutils.data.FontDescription;
-import org.jutils.ui.app.AppRunner;
-import org.jutils.ui.app.IApplication;
 import org.jutils.ui.event.ItemActionListener;
-import org.jutils.ui.model.*;
+import org.jutils.ui.model.IDataView;
+import org.jutils.ui.model.IView;
+import org.jutils.ui.model.ItemComboBoxModel;
 
 /*******************************************************************************
  * TODO use auto combo boxes
@@ -86,6 +104,9 @@ public class FontChooserView implements IDataView<FontDescription>
 
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private JPanel createView()
     {
         JPanel contentPanel = new JPanel( new GridBagLayout() );
@@ -125,6 +146,9 @@ public class FontChooserView implements IDataView<FontDescription>
         return contentPanel;
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private Component createEffectsPanel()
     {
         JPanel effectsPanel = new JPanel( new GridBagLayout() );
@@ -176,6 +200,9 @@ public class FontChooserView implements IDataView<FontDescription>
         return effectsPanel;
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private Component createColorPanel()
     {
         JPanel colorPanel = new JPanel( new GridBagLayout() );
@@ -197,6 +224,9 @@ public class FontChooserView implements IDataView<FontDescription>
         return colorPanel;
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private Component createPreviewPanel()
     {
         JPanel previewPanel = new JPanel( new GridBagLayout() );
@@ -210,6 +240,9 @@ public class FontChooserView implements IDataView<FontDescription>
         return previewPanel;
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private Component createFontPanel()
     {
         JPanel fontPanel = new JPanel( new GridBagLayout() );
@@ -232,7 +265,7 @@ public class FontChooserView implements IDataView<FontDescription>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public FontDescription getData()
@@ -251,7 +284,7 @@ public class FontChooserView implements IDataView<FontDescription>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setData( FontDescription data )
@@ -274,7 +307,7 @@ public class FontChooserView implements IDataView<FontDescription>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Component getView()
@@ -292,43 +325,6 @@ public class FontChooserView implements IDataView<FontDescription>
         desc.getAttributes( attributes );
         previewLabel.setAttributes( attributes );
         // LogUtils.printDebug( "attr: " + attributes );
-    }
-
-    /***************************************************************************
-     * @param argv
-     **************************************************************************/
-    public static void main( String argv[] )
-    {
-        IApplication app = new IApplication()
-        {
-            @Override
-            public void createAndShowUi()
-            {
-                FontChooserView chooser = new FontChooserView();
-                OkDialogView dialogView = new OkDialogView( null,
-                    chooser.getView() );
-                JDialog dlg = dialogView.getView();
-                dlg.addWindowListener( new WindowAdapter()
-                {
-                    @Override
-                    public void windowClosing( WindowEvent e )
-                    {
-                        System.exit( 0 );
-                    }
-                } );
-                dlg.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
-                dlg.pack();
-                dlg.setLocationByPlatform( true );
-                dlg.setVisible( true );
-            }
-
-            @Override
-            public String getLookAndFeelName()
-            {
-                return null;
-            }
-        };
-        AppRunner.invokeLater( app );
     }
 
     /***************************************************************************
@@ -359,9 +355,14 @@ public class FontChooserView implements IDataView<FontDescription>
      **************************************************************************/
     private static class FontLabel implements IView<JPanel>
     {
+        /**  */
         private final JPanel panel;
+        /**  */
         private final JTextPane textPane;
 
+        /**
+         * @param text
+         */
         public FontLabel( String text )
         {
             this.panel = new JPanel( new GridBagLayout() );
@@ -387,6 +388,9 @@ public class FontChooserView implements IDataView<FontDescription>
             centerText();
         }
 
+        /**
+         * 
+         */
         private void centerText()
         {
             MutableAttributeSet standard = new SimpleAttributeSet();
@@ -396,6 +400,9 @@ public class FontChooserView implements IDataView<FontDescription>
                 textPane.getStyledDocument().getLength(), standard, true );
         }
 
+        /**
+         * @param s
+         */
         public void setAttributes( MutableAttributeSet s )
         {
             StyleConstants.setAlignment( s, StyleConstants.ALIGN_CENTER );
@@ -404,6 +411,9 @@ public class FontChooserView implements IDataView<FontDescription>
                 textPane.getStyledDocument().getLength(), s, true );
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public JPanel getView()
         {
@@ -416,15 +426,23 @@ public class FontChooserView implements IDataView<FontDescription>
      **************************************************************************/
     private static class ColorComboRenderer implements ListCellRenderer<Color>
     {
+        /**  */
         private final JLabel label;
+        /**  */
         private final ColorIcon icon;
 
+        /**
+         * 
+         */
         public ColorComboRenderer()
         {
             this.icon = new ColorIcon( Color.black );
             this.label = new IconLabel( icon );
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public Component getListCellRendererComponent(
             JList<? extends Color> list, Color value, int index,
@@ -441,11 +459,17 @@ public class FontChooserView implements IDataView<FontDescription>
      **************************************************************************/
     private static final class IconLabel extends JLabel
     {
+        /**  */
         private static final long serialVersionUID = 4915435822380319297L;
+        /**  */
         private final ColorIcon icon;
 
+        /**  */
         private static final int ICON_MARGIN = 3;
 
+        /**
+         * @param icon
+         */
         public IconLabel( ColorIcon icon )
         {
             this.icon = icon;
@@ -455,6 +479,9 @@ public class FontChooserView implements IDataView<FontDescription>
             setIcon( icon );
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void paint( Graphics g )
         {

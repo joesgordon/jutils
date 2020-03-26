@@ -101,6 +101,6 @@ public class BuildInfoView implements IDataView<BuildInfo>
 
         view.setData( info );
 
-        dialog.show( "JUtils Build Info", null );
+        dialog.show( "JUtils Build Info" );
     }
 }

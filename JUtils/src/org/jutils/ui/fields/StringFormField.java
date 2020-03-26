@@ -1,16 +1,13 @@
 package org.jutils.ui.fields;
 
-import java.awt.event.MouseListener;
-
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 import org.jutils.io.IParser;
 import org.jutils.io.parsers.StringLengthParser;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
  * Defines an {@link IFormField} that contains a double validator.
@@ -18,21 +15,16 @@ import org.jutils.ui.validators.ITextValidator;
 public class StringFormField implements IDataFormField<String>
 {
     /**  */
-    private final String name;
+    private final JTextField textField;
     /**  */
-    private final ValidationTextView textField;
-
-    /**  */
-    private IUpdater<String> updater;
-    /**  */
-    private String value;
+    private final ParserFormField<String> field;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
     public StringFormField( String name )
     {
-        this( name, 20, 1, null );
+        this( name, null, null );
     }
 
     /***************************************************************************
@@ -42,93 +34,95 @@ public class StringFormField implements IDataFormField<String>
      **************************************************************************/
     public StringFormField( String name, Integer minLen, Integer maxLen )
     {
-        this( name, 20, minLen, maxLen );
+        this( name, minLen, maxLen, true );
     }
 
     /***************************************************************************
      * @param name
-     * @param columns
+     * @param minLen
+     * @param maxLen
+     * @param trim
      **************************************************************************/
-    public StringFormField( String name, int columns, Integer minLen,
-        Integer maxLen )
+    public StringFormField( String name, Integer minLen, Integer maxLen,
+        boolean trim )
     {
-        this.name = name;
-        this.textField = new ValidationTextView( null, columns );
-
-        this.updater = null;
-
-        ITextValidator textValidator;
-        IParser<String> dataValidator;
-        IUpdater<String> updater = new ValueUpdater( this );
-
-        dataValidator = new StringLengthParser( minLen, maxLen );
-        textValidator = new DataTextValidator<>( dataValidator, updater );
-        textField.getField().setValidator( textValidator );
+        this( name, minLen, maxLen, trim, 20 );
     }
 
     /***************************************************************************
-     * 
+     * @param name
+     * @param minLen
+     * @param maxLen
+     * @param trim
+     * @param columns
+     **************************************************************************/
+    public StringFormField( String name, Integer minLen, Integer maxLen,
+        boolean trim, int columns )
+    {
+        IParser<String> parser = new StringLengthParser( minLen, maxLen, trim );
+        IDescriptor<String> descriptor = ( d ) -> d == null ? "" : d;
+
+        this.textField = new JTextField( columns );
+        this.field = new ParserFormField<>( name, parser, textField, descriptor,
+            textField );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getName()
     {
-        return name;
+        return field.getName();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
     {
-        return textField.getView();
+        return field.getView();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getValue()
     {
-        return value;
+        return field.getValue();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setValue( String value )
     {
-        this.value = value;
-
-        String text = value == null ? "" : "" + value;
-
-        IUpdater<String> u = this.updater;
-        this.updater = null;
-        textField.setText( text );
-        this.updater = u;
+        field.setValue( value );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setUpdater( IUpdater<String> updater )
     {
-        this.updater = updater;
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public IUpdater<String> getUpdater()
     {
-        return updater;
+        return field.getUpdater();
     }
 
     /***************************************************************************
-     * @param editable
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setEditable( boolean editable )
@@ -137,30 +131,30 @@ public class StringFormField implements IDataFormField<String>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().addValidityChanged( l );
+        field.addValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().removeValidityChanged( l );
+        field.removeValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
-        return textField.getField().getValidity();
+        return field.getValidity();
     }
 
     /***************************************************************************
@@ -168,37 +162,6 @@ public class StringFormField implements IDataFormField<String>
      **************************************************************************/
     public JTextField getTextField()
     {
-        return textField.getField().getView();
-    }
-
-    /***************************************************************************
-     * @param ml
-     **************************************************************************/
-    public void addMouseListener( MouseListener ml )
-    {
-        textField.getField().getView().addMouseListener( ml );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class ValueUpdater implements IUpdater<String>
-    {
-        private final StringFormField view;
-
-        public ValueUpdater( StringFormField view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void update( String data )
-        {
-            view.value = data;
-            if( view.updater != null )
-            {
-                view.updater.update( data );
-            }
-        }
+        return textField;
     }
 }

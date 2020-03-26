@@ -463,12 +463,26 @@ public final class Utils
      **************************************************************************/
     public static BufferedImage createTransparentImage( int width, int height )
     {
+        return createImage( width, height, Transparency.TRANSLUCENT );
+    }
+
+    /***************************************************************************
+     * Creates a transparent buffered image for the current device.
+     * @param width the width of the image to be created.
+     * @param height the height of the image to be created.
+     * @return the newly created image.
+     * @param transparency a transparency value from {@link Transparency}.
+     * @return the newly created image.
+     **************************************************************************/
+    public static BufferedImage createImage( int width, int height,
+        int transparency )
+    {
+
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         GraphicsConfiguration gc = gd.getDefaultConfiguration();
 
-        return gc.createCompatibleImage( width, height,
-            Transparency.TRANSLUCENT );
+        return gc.createCompatibleImage( width, height, transparency );
     }
 
     /***************************************************************************

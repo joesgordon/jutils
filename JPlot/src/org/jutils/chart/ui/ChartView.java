@@ -11,11 +11,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Transparency;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -67,8 +68,6 @@ import org.jutils.ui.event.FileChooserListener.IFilesSelected;
 import org.jutils.ui.event.FileChooserListener.ILastFiles;
 import org.jutils.ui.event.FileDropTarget;
 import org.jutils.ui.event.FileDropTarget.DropActionType;
-import org.jutils.ui.event.FileDropTarget.IFileDropEvent;
-import org.jutils.ui.event.ItemActionEvent;
 import org.jutils.ui.event.ItemActionList;
 import org.jutils.ui.event.ItemActionListener;
 import org.jutils.ui.model.IDataView;
@@ -142,6 +141,8 @@ public class ChartView implements IView<JComponent>
 
         this.fileLoadedListeners = new ItemActionList<>();
 
+        this.propertiesDialog = null;
+
         recentFiles.setData( options.getOptions().recentFiles.toList() );
         recentFiles.setListeners( ( f, c ) -> handleImport( f, c ) );
 
@@ -160,9 +161,10 @@ public class ChartView implements IView<JComponent>
 
         if( allowOpen )
         {
-            addFileLoadedListener( new FileLoadedListener( this ) );
-            mainComp.setDropTarget(
-                new FileDropTarget( ( e ) -> handleDrop( e ) ) );
+            addFileLoadedListener( ( e ) -> handleFileLoaded( e.getItem() ) );
+            mainComp.setDropTarget( new FileDropTarget(
+                ( e ) -> handleImport( e.getItem().getFiles(),
+                    e.getItem().getActionType() == DropActionType.COPY ) ) );
         }
 
         mainComp.setFocusable( true );
@@ -177,22 +179,17 @@ public class ChartView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param event
+     * @param f
      **************************************************************************/
-    private void handleDrop( ItemActionEvent<IFileDropEvent> event )
+    private void handleFileLoaded( File f )
     {
-        IFileDropEvent fde = event.getItem();
-        List<File> files = fde.getFiles();
-
-        boolean addData = fde.getActionType() == DropActionType.COPY;
-
-        handleImport( files, addData );
+        options.getOptions().recentFiles.push( f );
+        options.write();
+        recentFiles.setData( options.getOptions().recentFiles.toList() );
     }
 
     /***************************************************************************
-     * @param allowOpen
-     * @param gradientToolbar
-     * @return
+     * @return the main view for this control.
      **************************************************************************/
     private JPanel createView()
     {
@@ -218,9 +215,11 @@ public class ChartView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param allowOpen
-     * @param gradientToolbar
-     * @return
+     * @param allowOpen installs the {@link #recentFiles} on the toolbar if
+     * {@code true}.
+     * @param gradientToolbar creates a gradient toolbar if {@code true}; flat
+     * if {@code false}.
+     * @return the new toolbar.
      **************************************************************************/
     private JToolBar createToolbar( boolean allowOpen, boolean gradientToolbar )
     {
@@ -292,10 +291,19 @@ public class ChartView implements IView<JComponent>
      **************************************************************************/
     private ActionListener createOpenListener()
     {
-        OpenListener ol = new OpenListener( this );
+        ILastFiles ilf = () -> {
+            File f = options.getOptions().recentFiles.first();
+            return f == null ? new File[] {} : new File[] { f };
+        };
+
+        IFilesSelected ifs = ( files ) -> {
+            List<File> fileList = Arrays.asList( files );
+            handleImport( fileList );
+        };
+
         FileChooserListener listener = new FileChooserListener( getView(),
-            "Choose Data File", false, ol, ol );
-        // TODO Auto-generated method stub
+            "Choose Data File", false, ifs, ilf );
+
         return listener;
     }
 
@@ -329,7 +337,7 @@ public class ChartView implements IView<JComponent>
 
         name = "Save Data";
         icon = IconConstants.getIcon( IconConstants.SAVE_AS_16 );
-        listener = new SaveDataListener( this );
+        listener = ( e ) -> saveData();
         action = new ActionAdapter( listener, name, icon );
 
         return action;
@@ -347,7 +355,7 @@ public class ChartView implements IView<JComponent>
 
         name = "Properties";
         icon = IconConstants.getIcon( IconConstants.CONFIG_16 );
-        listener = new PropertiesDialogListener( this );
+        listener = ( e ) -> showProperties();
         action = new ActionAdapter( listener, name, icon );
 
         return action;
@@ -365,7 +373,7 @@ public class ChartView implements IView<JComponent>
 
         name = "Zoom In";
         icon = ChartIcons.getIcon( ChartIcons.ZOOM_IN_016 );
-        listener = new ZoomInListener( this );
+        listener = ( e ) -> zoomIn( ZoomDirection.get( e ) );
         action = new ActionAdapter( listener, name, icon );
 
         return action;
@@ -383,10 +391,32 @@ public class ChartView implements IView<JComponent>
 
         name = "Zoom Out";
         icon = ChartIcons.getIcon( ChartIcons.ZOOM_OUT_016 );
-        listener = new ZoomOutListener( this );
+        listener = ( e ) -> zoomOut( ZoomDirection.get( e ) );
         action = new ActionAdapter( listener, name, icon );
 
         return action;
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void showProperties()
+    {
+        OkDialogView okView = new OkDialogView( getView(),
+            propertiesView.getView(), ModalityType.MODELESS,
+            OkDialogButtons.OK_APPLY );
+
+        propertiesDialog = okView.getView();
+
+        boolean okPressed = okView.show( "Chart Properties",
+            ChartIcons.getChartImages(), new Dimension( 650, 400 ) );
+
+        if( okPressed )
+        {
+            chartWidget.calculateAutoBounds();
+            chartWidget.latchBounds();
+            repaintChart();
+        }
     }
 
     /***************************************************************************
@@ -450,8 +480,9 @@ public class ChartView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param files
-     * @param addData
+     * @param files the list of files dropped.
+     * @param addData whether the files are to be added to the current series if
+     * {@code true}, or replaces the current series if {@code false}.
      **************************************************************************/
     private void handleImport( List<File> files, boolean addData )
     {
@@ -542,8 +573,12 @@ public class ChartView implements IView<JComponent>
     }
 
     /***************************************************************************
+     * @param data
+     * @param name
+     * @param resource
      * @param file
      * @param addData
+     * @return
      **************************************************************************/
     public Series addSeries( ISeriesData<?> data, String name, String resource,
         boolean addData )
@@ -594,6 +629,25 @@ public class ChartView implements IView<JComponent>
         chartWidget.calculateAutoBounds();
         chartWidget.latchBounds();
         repaintChart();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void saveData()
+    {
+        FileChooserListener listener;
+
+        for( Series s : chart.series )
+        {
+            IDataView<Series> sv = new SeriesViewAdapter( s, this );
+            SaveSeriesDataListener ssdl = new SaveSeriesDataListener( sv,
+                chart.options.removalMethod );
+            listener = new FileChooserListener( getView(),
+                "Choose File to Save", true, ssdl, ssdl );
+
+            listener.actionPerformed( new ActionEvent( this, 0, null ) );
+        }
     }
 
     /***************************************************************************
@@ -724,6 +778,11 @@ public class ChartView implements IView<JComponent>
     {
         // System.out.println( "Deleting points..." );
 
+        if( !chart.options.removalEnabled )
+        {
+            return;
+        }
+
         for( PlotWidget series : chartWidget.plots.plots )
         {
             for( IDataPoint xy : series.series.data )
@@ -784,13 +843,43 @@ public class ChartView implements IView<JComponent>
      * @param size
      **************************************************************************/
     public void saveAsImage( File file, Dimension size )
+        throws IllegalArgumentException
     {
         view.setCursor( Cursor.getPredefinedCursor( Cursor.WAIT_CURSOR ) );
+
+        String ext = IOUtils.getFileExtension(
+            file.getAbsoluteFile() ).toUpperCase();
+
+        boolean isTransparent = false;
+
+        switch( ext )
+        {
+            case "PNG":
+                ext = "PNG";
+                isTransparent = true;
+                break;
+
+            case "JPG":
+                ext = "JPEG";
+                isTransparent = false;
+                break;
+
+            case "BMP":
+                ext = "BMP";
+                isTransparent = false;
+                break;
+
+            default:
+                throw new IllegalArgumentException(
+                    "Cannot save images of type " + ext );
+        }
 
         int w = size.width;
         int h = size.height;
 
-        BufferedImage image = Utils.createTransparentImage( w, h );
+        BufferedImage image = isTransparent
+            ? Utils.createTransparentImage( w, h )
+            : Utils.createImage( w, h, Transparency.OPAQUE );
         Graphics2D g2d = image.createGraphics();
 
         g2d.setRenderingHint( RenderingHints.KEY_INTERPOLATION,
@@ -803,16 +892,17 @@ public class ChartView implements IView<JComponent>
             RenderingHints.VALUE_STROKE_PURE );
 
         repaintChart();
+
         chartWidget.setTrackingVisible( false );
         chartWidget.draw( g2d, new Point(), size );
         chartWidget.setTrackingVisible( true );
 
         try
         {
-            if( !ImageIO.write( image, "png", file ) )
+            if( !ImageIO.write( image, ext, file ) )
             {
-                throw new IllegalStateException(
-                    "No writer found for PNG files!" );
+                throw new IllegalArgumentException(
+                    "No writer found for " + ext + " files!" );
             }
         }
         catch( IOException ex )
@@ -858,13 +948,13 @@ public class ChartView implements IView<JComponent>
      **************************************************************************/
     public void setRemovalEnabled( boolean enabled )
     {
-        // TODO Auto-generated method stub
+        chart.options.removalEnabled = enabled;
     }
 
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class OpenListener implements ILastFiles, IFilesSelected
+    private static class SaveListener implements ActionListener
     {
         /**  */
         private final ChartView view;
@@ -872,52 +962,18 @@ public class ChartView implements IView<JComponent>
         /**
          * @param view
          */
-        public OpenListener( ChartView view )
-        {
-            this.view = view;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public File [] getLastFiles()
-        {
-            File f = view.options.getOptions().recentFiles.first();
-            return f == null ? new File[] {} : new File[] { f };
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void filesChosen( File [] files )
-        {
-            List<File> fileList = Arrays.asList( files );
-
-            view.handleImport( fileList );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class SaveListener
-        implements ActionListener, ItemActionListener<Boolean>
-    {
-        private final ChartView view;
-
-        private SaveView saveView;
-
         public SaveListener( ChartView view )
         {
             this.view = view;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void actionPerformed( ActionEvent e )
         {
-            saveView = new SaveView();
+            SaveView saveView = new SaveView();
             SaveOptions options = new SaveOptions();
             OkDialogView okView = new OkDialogView( view.getView(),
                 saveView.getView(), ModalityType.DOCUMENT_MODAL,
@@ -930,31 +986,25 @@ public class ChartView implements IView<JComponent>
 
             saveView.setData( options );
 
-            okView.addOkListener( this );
-
             dialog.setTitle( "Save Chart" );
-            dialog.pack();
-            dialog.setLocationRelativeTo( view.getView() );
-            dialog.setVisible( true );
-        }
 
-        @Override
-        public void actionPerformed( ItemActionEvent<Boolean> event )
-        {
-            if( !event.getItem() )
+            Window w = SwingUtils.getComponentsWindow( view.getView() );
+
+            if( okView.show( "Save Chart", w.getIconImages() ) )
             {
-                return;
+                options = saveView.getData();
+
+                view.options.getOptions().lastImageFile = options.file;
+                view.options.write();
+
+                view.saveAsImage( options.file, options.size );
             }
-
-            SaveOptions options = saveView.getData();
-
-            view.options.getOptions().lastImageFile = options.file;
-            view.options.write();
-
-            view.saveAsImage( options.file, options.size );
         }
 
-        public File getDefaultFile()
+        /**
+         * @return
+         */
+        private File getDefaultFile()
         {
             File f = view.options.getOptions().lastImageFile;
 
@@ -975,58 +1025,44 @@ public class ChartView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class SaveDataListener implements ActionListener
-    {
-        private final ChartView view;
-
-        public SaveDataListener( ChartView view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            FileChooserListener listener;
-
-            for( Series s : view.chart.series )
-            {
-                IDataView<Series> sv = new SeriesViewAdapter( s, view );
-                SaveSeriesDataListener ssdl = new SaveSeriesDataListener( sv );
-                listener = new FileChooserListener( view.getView(),
-                    "Choose File to Save", true, ssdl, ssdl );
-
-                listener.actionPerformed( new ActionEvent( this, 0, null ) );
-            }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
     private static class SeriesViewAdapter implements IDataView<Series>
     {
+        /**  */
         private final Series s;
+        /**  */
         private final ChartView view;
 
+        /**
+         * @param s
+         * @param view
+         */
         public SeriesViewAdapter( Series s, ChartView view )
         {
             this.s = s;
             this.view = view;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public Component getView()
         {
             return view.getView();
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public Series getData()
         {
             return s;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void setData( Series data )
         {
@@ -1038,13 +1074,20 @@ public class ChartView implements IView<JComponent>
      **************************************************************************/
     private static class ChartComponentListener extends ComponentAdapter
     {
+        /**  */
         private final ChartView view;
 
+        /**
+         * @param view
+         */
         public ChartComponentListener( ChartView view )
         {
             this.view = view;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void componentResized( ComponentEvent e )
         {
@@ -1053,177 +1096,6 @@ public class ChartView implements IView<JComponent>
             view.chartWidget.plots.highlightLayer.clear();
             view.chartWidget.plots.highlightLayer.repaint = false;
             view.mainPanel.repaint();
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static class SeriesChangedEvent
-    {
-        public final Series s;
-        public final int index;
-        public final boolean added;
-
-        public SeriesChangedEvent( Series s, int index, boolean added )
-        {
-            this.s = s;
-            this.index = index;
-            this.added = added;
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class PropertiesDialogListener
-        implements ActionListener, ItemActionListener<Boolean>
-    {
-        private final ChartView view;
-
-        public PropertiesDialogListener( ChartView view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            JDialog dialog = createDialog();
-
-            if( !dialog.isVisible() )
-            {
-                dialog.setVisible( true );
-            }
-            else
-            {
-                dialog.toFront();
-            }
-        }
-
-        private JDialog createDialog()
-        {
-            // if( view.propertiesDialog == null )
-            // {
-            OkDialogView okView = new OkDialogView( view.getView(),
-                view.propertiesView.getView(), ModalityType.MODELESS,
-                OkDialogButtons.OK_APPLY );
-
-            view.propertiesDialog = okView.getView();
-
-            okView.addOkListener( this );
-
-            view.propertiesDialog.setIconImages( ChartIcons.getChartImages() );
-            view.propertiesDialog.setTitle( "Chart Properties" );
-            view.propertiesDialog.setSize( 650, 400 );
-            view.propertiesDialog.validate();
-            view.propertiesDialog.setLocationRelativeTo( view.getView() );
-            // }
-
-            return view.propertiesDialog;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void actionPerformed( ItemActionEvent<Boolean> event )
-        {
-            if( event.getItem() )
-            {
-                view.chartWidget.calculateAutoBounds();
-                view.chartWidget.latchBounds();
-                view.repaintChart();
-            }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class ZoomInListener implements ActionListener
-    {
-        /**  */
-        private final ChartView view;
-
-        /**
-         * @param view
-         */
-        public ZoomInListener( ChartView view )
-        {
-            this.view = view;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            int mods = e.getModifiers();
-            boolean shift = ( mods & InputEvent.SHIFT_DOWN_MASK ) != 0;
-            boolean ctrl = ( mods & InputEvent.CTRL_DOWN_MASK ) != 0;
-
-            view.zoomIn( ZoomDirection.get( shift, ctrl ) );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class ZoomOutListener implements ActionListener
-    {
-        /**  */
-        private final ChartView view;
-
-        /**
-         * @param view
-         */
-        public ZoomOutListener( ChartView view )
-        {
-            this.view = view;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            int mods = e.getModifiers();
-            boolean shift = ( mods & InputEvent.SHIFT_DOWN_MASK ) != 0;
-            boolean ctrl = ( mods & InputEvent.CTRL_DOWN_MASK ) != 0;
-
-            view.zoomOut( ZoomDirection.get( shift, ctrl ) );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class FileLoadedListener implements ItemActionListener<File>
-    {
-        /**  */
-        private final ChartView view;
-
-        /**
-         * @param view
-         */
-        public FileLoadedListener( ChartView view )
-        {
-            this.view = view;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void actionPerformed( ItemActionEvent<File> event )
-        {
-            view.options.getOptions().recentFiles.push( event.getItem() );
-            view.options.write();
-            view.recentFiles.setData(
-                view.options.getOptions().recentFiles.toList() );
         }
     }
 }

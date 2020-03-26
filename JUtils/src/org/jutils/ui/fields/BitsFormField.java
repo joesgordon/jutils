@@ -4,9 +4,8 @@ import javax.swing.JComponent;
 
 import org.jutils.io.parsers.BinaryParser;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 import org.jutils.utils.BitArray;
 
 /*******************************************************************************
@@ -15,43 +14,27 @@ import org.jutils.utils.BitArray;
 public class BitsFormField implements IDataFormField<BitArray>
 {
     /**  */
-    private final String name;
-    /**  */
-    private final ValidationTextView textField;
-
-    /**  */
-    public BitArray value;
-    /**  */
-    private IUpdater<BitArray> updater;
+    private final ParserFormField<BitArray> textField;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
     public BitsFormField( String name )
     {
-        this.name = name;
-        this.textField = new ValidationTextView( null, 20 );
-        this.value = null;
-        this.updater = null;
-
-        ITextValidator textValidator;
-
-        textValidator = new DataTextValidator<>( new BinaryParser(),
-            new ValueUpdater( this ) );
-        textField.getField().setValidator( textValidator );
+        this.textField = new ParserFormField<>( name, new BinaryParser() );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getName()
     {
-        return name;
+        return textField.getName();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -60,47 +43,43 @@ public class BitsFormField implements IDataFormField<BitArray>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public BitArray getValue()
     {
-        return value;
+        return textField.getValue();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setValue( BitArray value )
     {
-        this.value = value;
-
-        String text = value == null ? "" : value.toString();
-
-        textField.setText( text );
+        textField.setValue( value );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setUpdater( IUpdater<BitArray> updater )
     {
-        this.updater = updater;
+        textField.setUpdater( updater );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public IUpdater<BitArray> getUpdater()
     {
-        return updater;
+        return textField.getUpdater();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setEditable( boolean editable )
@@ -109,53 +88,29 @@ public class BitsFormField implements IDataFormField<BitArray>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().addValidityChanged( l );
+        textField.addValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().removeValidityChanged( l );
+        textField.removeValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
-        return textField.getField().getValidity();
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class ValueUpdater implements IUpdater<BitArray>
-    {
-        private final BitsFormField view;
-
-        public ValueUpdater( BitsFormField view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void update( BitArray data )
-        {
-            view.value = data;
-
-            if( view.updater != null )
-            {
-                view.updater.update( data );
-            }
-        }
+        return textField.getValidity();
     }
 }

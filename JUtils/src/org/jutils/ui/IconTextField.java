@@ -3,7 +3,9 @@ package org.jutils.ui;
 import java.awt.BorderLayout;
 import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.JTextComponent;
 
@@ -73,12 +75,11 @@ public class IconTextField implements IView<JPanel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JPanel getView()
     {
         return panel;
     }
-
 }

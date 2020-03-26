@@ -9,25 +9,66 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jutils.chart.data.XYPoint;
+import org.jutils.chart.model.ChartOptions.PointRemovalMethod;
 import org.jutils.chart.model.ISeriesData;
 import org.jutils.io.FilePrintStream;
 import org.jutils.io.IOUtils;
 
 /*******************************************************************************
- * 
+ * Writes {@link ISeriesData} to a file (or from one file to another).
  ******************************************************************************/
 public class FilteredWriter
 {
     /***************************************************************************
-     * @param fromFile
-     * @param toFile
-     * @param data
-     * @throws FileNotFoundException
-     * @throws IOException
+     * Writes the series data to the specified file in a tab-delimited format.
+     * @param toFile the file to write the series data to.
+     * @param data the series data to be written.
+     * @param removalMethod specifies how hidden points are handled.
+     * @throws FileNotFoundException if a problem occurs opening the file for
+     * writing.
+     * @throws IOException if a problem occurs when writing the file.
      **************************************************************************/
-    public static void write( File fromFile, File toFile, ISeriesData<?> data )
+    public static void write( File toFile, ISeriesData<?> data,
+        PointRemovalMethod removalMethod )
+        throws FileNotFoundException, IOException
+    {
+        try( FilePrintStream stream = new FilePrintStream( toFile ) )
+        {
+            for( int i = 0; i < data.getCount(); i++ )
+            {
+                if( data.isHidden( i ) )
+                {
+                    if( removalMethod != PointRemovalMethod.DELETE )
+                    {
+                        stream.println(
+                            data.getX( i ) + "\t" + removalMethod.value );
+                    }
+                }
+                else
+                {
+                    stream.println( data.getX( i ) + "\t" + data.getY( i ) );
+                }
+            }
+        }
+    }
+
+    /***************************************************************************
+     * Writes the series data to the specified file by copying the data from the
+     * original file (retains non-data columns of data).
+     * @param fromFile The original data file.
+     * @param toFile the file to write the series data to.
+     * @param data the series data to be written.
+     * @param removalMethod specifies how hidden points are handled.
+     * @throws FileNotFoundException if a problem occurs opening the file for
+     * writing.
+     * @throws IOException if a problem occurs when writing the file.
+     **************************************************************************/
+    public static void write( File fromFile, File toFile, ISeriesData<?> data,
+        PointRemovalMethod removalMethod )
         throws FileNotFoundException, IOException
     {
         File temp = fromFile;
@@ -50,13 +91,30 @@ public class FilteredWriter
                 int idx = 0;
                 XYPoint point = null;
 
+                Pattern p = Pattern.compile( "(.+)\\s\\S+\\S*$" );
+
                 while( ( line = reader.readLine() ) != null )
                 {
                     point = DataLineReader.read( line );
 
                     if( point != null )
                     {
-                        if( !data.isHidden( idx ) )
+                        if( data.isHidden( idx ) )
+                        {
+                            if( removalMethod != PointRemovalMethod.DELETE )
+                            {
+                                Matcher m = p.matcher( line );
+
+                                if( m.matches() )
+                                {
+                                    stream.println(
+                                        m.group( 1 ) + removalMethod.value );
+                                }
+
+                                // stream.println( line );
+                            }
+                        }
+                        else
                         {
                             stream.println( line );
                         }
@@ -77,27 +135,6 @@ public class FilteredWriter
             {
                 throw new IOException(
                     "Cannot delete temporary file: " + temp.getAbsolutePath() );
-            }
-        }
-    }
-
-    /***************************************************************************
-     * @param toFile
-     * @param data
-     * @throws FileNotFoundException
-     * @throws IOException
-     **************************************************************************/
-    public static void write( File toFile, ISeriesData<?> data )
-        throws FileNotFoundException, IOException
-    {
-        try( FilePrintStream stream = new FilePrintStream( toFile ) )
-        {
-            for( int i = 0; i < data.getCount(); i++ )
-            {
-                if( !data.isHidden( i ) )
-                {
-                    stream.println( data.getX( i ) + "\t" + data.getY( i ) );
-                }
             }
         }
     }

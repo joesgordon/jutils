@@ -28,6 +28,7 @@ import org.jutils.OptionUtils.YncAnswer;
 import org.jutils.Utils;
 import org.jutils.ValidationException;
 import org.jutils.data.SystemProperty;
+import org.jutils.io.parsers.ExistenceType;
 
 /*******************************************************************************
  * Utility class for general I/O functions.
@@ -680,6 +681,56 @@ public final class IOUtils
         {
             throw new ValidationException( "Cannot write to the specified " +
                 name + " directory: " + dir.getAbsolutePath() );
+        }
+    }
+
+    /***************************************************************************
+     * Validates the provided file against the provided existence.
+     * @param file the file to be validated.
+     * @param existence the existence to be checked.
+     * @throws ValidationException if the existence check is invalid.
+     **************************************************************************/
+    public static void validateFile( File file, ExistenceType existence )
+        throws ValidationException
+    {
+        if( existence == ExistenceType.DO_NOT_CHECK )
+        {
+            File parent = file.getAbsoluteFile().getParentFile();
+
+            if( parent != null && !parent.exists() )
+            {
+                throw new ValidationException( "Parent Path does not exist" );
+            }
+
+            return;
+        }
+
+        // LogUtils.printDebug( "Testing path " + text );
+
+        if( !file.exists() )
+        {
+            throw new ValidationException( "Path does not exist" );
+        }
+
+        boolean isFile = file.isFile();
+        boolean isDir = file.isDirectory();
+
+        if( existence != ExistenceType.DO_NOT_CHECK )
+        {
+            if( existence == ExistenceType.DIRECTORY_ONLY && !isDir )
+            {
+                throw new ValidationException( "Path is not a directory" );
+            }
+            else if( existence == ExistenceType.FILE_ONLY && !isFile )
+            {
+                throw new ValidationException( "Path is not a file" );
+            }
+            else if( existence == ExistenceType.FILE_OR_DIRECTORY && !isFile &&
+                !isDir )
+            {
+                throw new ValidationException(
+                    "Path is not a file or directory" );
+            }
         }
     }
 

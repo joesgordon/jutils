@@ -5,9 +5,8 @@ import javax.swing.JTextField;
 
 import org.jutils.io.parsers.LongParser;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
  * Defines an {@link IFormField} that contains a double validater.
@@ -15,21 +14,16 @@ import org.jutils.ui.validators.ITextValidator;
 public class LongFormField implements IDataFormField<Long>
 {
     /**  */
-    private final String name;
+    private final JTextField textField;
     /**  */
-    private final ValidationTextView textField;
-
-    /**  */
-    private IUpdater<Long> updater;
-    /**  */
-    private Long value;
+    private final ParserFormField<Long> field;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
     public LongFormField( String name )
     {
-        this( name, ( String )null );
+        this( name, null );
     }
 
     /***************************************************************************
@@ -38,7 +32,7 @@ public class LongFormField implements IDataFormField<Long>
      **************************************************************************/
     public LongFormField( String name, String units )
     {
-        this( name, units, 20, null, null );
+        this( name, units, 20 );
     }
 
     /***************************************************************************
@@ -68,19 +62,16 @@ public class LongFormField implements IDataFormField<Long>
      * @param columns
      * @param min
      * @param max
+     * @param updater
      **************************************************************************/
     public LongFormField( String name, String units, int columns, Long min,
         Long max )
     {
-        this.name = name;
-        this.textField = new ValidationTextView( units, columns );
-        this.updater = null;
+        IDescriptor<Long> descriptor = ( d ) -> toString( d );
 
-        ITextValidator textValidator;
-
-        textValidator = new DataTextValidator<>( new LongParser( min, max ),
-            new ValueUpdater( this ) );
-        textField.getField().setValidator( textValidator );
+        this.textField = new JTextField( columns );
+        this.field = new ParserFormField<>( name, new LongParser( min, max ),
+            textField, descriptor, textField, units );
     }
 
     /***************************************************************************
@@ -89,7 +80,7 @@ public class LongFormField implements IDataFormField<Long>
     @Override
     public String getName()
     {
-        return name;
+        return field.getName();
     }
 
     /***************************************************************************
@@ -98,7 +89,7 @@ public class LongFormField implements IDataFormField<Long>
     @Override
     public JComponent getView()
     {
-        return textField.getView();
+        return field.getView();
     }
 
     /***************************************************************************
@@ -107,7 +98,7 @@ public class LongFormField implements IDataFormField<Long>
     @Override
     public Long getValue()
     {
-        return value;
+        return field.getValue();
     }
 
     /***************************************************************************
@@ -116,13 +107,7 @@ public class LongFormField implements IDataFormField<Long>
     @Override
     public void setValue( Long value )
     {
-        this.value = value;
-
-        IUpdater<Long> up = updater;
-        this.updater = null;
-        String text = value == null ? null : "" + value;
-        textField.setText( text );
-        this.updater = up;
+        field.setValue( value );
     }
 
     /***************************************************************************
@@ -131,7 +116,7 @@ public class LongFormField implements IDataFormField<Long>
     @Override
     public void setUpdater( IUpdater<Long> updater )
     {
-        this.updater = updater;
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
@@ -140,15 +125,7 @@ public class LongFormField implements IDataFormField<Long>
     @Override
     public IUpdater<Long> getUpdater()
     {
-        return updater;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public JTextField getTextField()
-    {
-        return textField.getField().getView();
+        return field.getUpdater();
     }
 
     /***************************************************************************
@@ -166,47 +143,41 @@ public class LongFormField implements IDataFormField<Long>
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().addValidityChanged( l );
+        field.addValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().removeValidityChanged( l );
+        field.removeValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
-        return textField.getField().getValidity();
+        return field.getValidity();
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    private static class ValueUpdater implements IUpdater<Long>
+    public JTextField getTextField()
     {
-        private final LongFormField view;
+        return textField;
+    }
 
-        public ValueUpdater( LongFormField view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void update( Long data )
-        {
-            view.value = data;
-            if( view.updater != null )
-            {
-                view.updater.update( data );
-            }
-        }
+    /***************************************************************************
+     * @param value
+     * @return
+     **************************************************************************/
+    private String toString( Long value )
+    {
+        return value == null ? "" : Long.toString( value );
     }
 }

@@ -6,8 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -208,6 +213,15 @@ public class FileChooserListener implements ActionListener
      **************************************************************************/
     @Override
     public void actionPerformed( ActionEvent event )
+    {
+        showDialog();
+    }
+
+    /***************************************************************************
+     * Shows a {@link JFileChooser} over the parent component provided in the
+     * constructor.
+     **************************************************************************/
+    public void showDialog()
     {
         int choice;
         File [] selected = null;

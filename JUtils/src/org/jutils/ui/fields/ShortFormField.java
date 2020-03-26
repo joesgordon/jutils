@@ -5,9 +5,8 @@ import javax.swing.JTextField;
 
 import org.jutils.io.parsers.ShortParser;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
  * Defines an {@link IFormField} that contains a double validater.
@@ -15,30 +14,16 @@ import org.jutils.ui.validators.ITextValidator;
 public class ShortFormField implements IDataFormField<Short>
 {
     /**  */
-    private final String name;
+    private final JTextField textField;
     /**  */
-    private final ValidationTextView textField;
-
-    /**  */
-    private IUpdater<Short> updater;
-    /**  */
-    private short value;
+    private final ParserFormField<Short> field;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
     public ShortFormField( String name )
     {
-        this( name, ( String )null );
-    }
-
-    /***************************************************************************
-     * @param name
-     * @param updater
-     **************************************************************************/
-    public ShortFormField( String name, IUpdater<Short> updater )
-    {
-        this( name, null, 20, updater );
+        this( name, null );
     }
 
     /***************************************************************************
@@ -47,7 +32,7 @@ public class ShortFormField implements IDataFormField<Short>
      **************************************************************************/
     public ShortFormField( String name, String units )
     {
-        this( name, units, 20, null );
+        this( name, units, 20 );
     }
 
     /***************************************************************************
@@ -57,27 +42,36 @@ public class ShortFormField implements IDataFormField<Short>
      **************************************************************************/
     public ShortFormField( String name, String units, int columns )
     {
-        this( name, units, columns, null );
+        this( name, units, columns, null, null );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param units
+     * @param min
+     * @param max
+     **************************************************************************/
+    public ShortFormField( String name, String units, Short min, Short max )
+    {
+        this( name, units, 20, min, max );
     }
 
     /***************************************************************************
      * @param name
      * @param units
      * @param columns
+     * @param min
+     * @param max
      * @param updater
      **************************************************************************/
-    public ShortFormField( String name, String units, int columns,
-        IUpdater<Short> updater )
+    public ShortFormField( String name, String units, int columns, Short min,
+        Short max )
     {
-        this.name = name;
-        this.textField = new ValidationTextView( units, columns );
-        this.updater = updater;
+        IDescriptor<Short> descriptor = ( d ) -> toString( d );
 
-        ITextValidator textValidator;
-
-        textValidator = new DataTextValidator<>( new ShortParser(),
-            new ValueUpdater( this ) );
-        textField.getField().setValidator( textValidator );
+        this.textField = new JTextField( columns );
+        this.field = new ParserFormField<>( name, new ShortParser( min, max ),
+            textField, descriptor, textField, units );
     }
 
     /***************************************************************************
@@ -86,7 +80,7 @@ public class ShortFormField implements IDataFormField<Short>
     @Override
     public String getName()
     {
-        return name;
+        return field.getName();
     }
 
     /***************************************************************************
@@ -95,7 +89,7 @@ public class ShortFormField implements IDataFormField<Short>
     @Override
     public JComponent getView()
     {
-        return textField.getView();
+        return field.getView();
     }
 
     /***************************************************************************
@@ -104,7 +98,7 @@ public class ShortFormField implements IDataFormField<Short>
     @Override
     public Short getValue()
     {
-        return value;
+        return field.getValue();
     }
 
     /***************************************************************************
@@ -113,14 +107,7 @@ public class ShortFormField implements IDataFormField<Short>
     @Override
     public void setValue( Short value )
     {
-        this.value = value == null ? this.value : value;
-
-        String text = value == null ? "" : "" + value;
-        IUpdater<Short> updater = this.updater;
-
-        this.updater = null;
-        textField.setText( text );
-        this.updater = updater;
+        field.setValue( value );
     }
 
     /***************************************************************************
@@ -129,7 +116,7 @@ public class ShortFormField implements IDataFormField<Short>
     @Override
     public void setUpdater( IUpdater<Short> updater )
     {
-        this.updater = updater;
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
@@ -138,15 +125,7 @@ public class ShortFormField implements IDataFormField<Short>
     @Override
     public IUpdater<Short> getUpdater()
     {
-        return updater;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public JTextField getTextField()
-    {
-        return textField.getField().getView();
+        return field.getUpdater();
     }
 
     /***************************************************************************
@@ -164,47 +143,41 @@ public class ShortFormField implements IDataFormField<Short>
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().addValidityChanged( l );
+        field.addValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().removeValidityChanged( l );
+        field.removeValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
-        return textField.getField().getValidity();
+        return field.getValidity();
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    private static class ValueUpdater implements IUpdater<Short>
+    public JTextField getTextField()
     {
-        private final ShortFormField view;
+        return textField;
+    }
 
-        public ValueUpdater( ShortFormField view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void update( Short data )
-        {
-            view.value = data;
-            if( view.updater != null )
-            {
-                view.updater.update( data );
-            }
-        }
+    /***************************************************************************
+     * @param value
+     * @return
+     **************************************************************************/
+    private String toString( Short value )
+    {
+        return value == null ? "" : Short.toString( value );
     }
 }

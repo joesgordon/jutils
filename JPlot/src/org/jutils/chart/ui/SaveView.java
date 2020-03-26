@@ -36,6 +36,10 @@ public class SaveView implements IDataView<SaveOptions>
 
         setData( new SaveOptions() );
 
+        outputField.addExtension( "PNG file", "png" );
+        outputField.addExtension( "JPEG file", "jpg" );
+        outputField.addExtension( "BMP file", "bmp" );
+
         outputField.setUpdater( ( f ) -> options.file = f );
         widthField.setUpdater( ( i ) -> options.size.width = i );
         heightField.setUpdater( ( i ) -> options.size.height = i );

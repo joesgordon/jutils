@@ -8,7 +8,8 @@ import org.jutils.ui.validation.IValidityChangedListener;
 import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
- * 
+ * @param <F>
+ * @param <T>
  ******************************************************************************/
 public class ConvField<F, T> implements IDataFormField<T>
 {

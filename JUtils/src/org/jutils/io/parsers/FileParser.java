@@ -3,20 +3,22 @@ package org.jutils.io.parsers;
 import java.io.File;
 
 import org.jutils.ValidationException;
+import org.jutils.io.IOUtils;
 import org.jutils.io.IParser;
 
-/***************************************************************************
- * 
- **************************************************************************/
+/*******************************************************************************
+ * Parses a path string into a {@link File}.
+ ******************************************************************************/
 public class FileParser implements IParser<File>
 {
-    /**  */
-    private final ExistenceType type;
-    /**  */
-    private final boolean required;
+    /** The existence to be checked. */
+    public final ExistenceType type;
+    /** Required path strings must be non-empty. */
+    public final boolean required;
 
     /***************************************************************************
-     * 
+     * Creates a new parser that ensures path strings are
+     * {@link ExistenceType#FILE_ONLY} (paths must be non-empty).
      **************************************************************************/
     public FileParser()
     {
@@ -24,7 +26,9 @@ public class FileParser implements IParser<File>
     }
 
     /***************************************************************************
-     * @param type
+     * Creates a new parser that checks path strings with the provided existence
+     * type (paths must be non-empty).
+     * @param type the existence type to be checked.
      **************************************************************************/
     public FileParser( ExistenceType type )
     {
@@ -32,8 +36,9 @@ public class FileParser implements IParser<File>
     }
 
     /***************************************************************************
-     * @param type
-     * @param required
+     * Creates a new parser that checks path strings with the provided values.
+     * @param type the existence type to be checked.
+     * @param required an empty string is invalid if {@code true}.
      **************************************************************************/
     public FileParser( ExistenceType type, boolean required )
     {
@@ -42,7 +47,7 @@ public class FileParser implements IParser<File>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public File parse( String text ) throws ValidationException
@@ -59,45 +64,7 @@ public class FileParser implements IParser<File>
 
         File f = new File( text );
 
-        if( type == ExistenceType.DO_NOT_CHECK )
-        {
-            File parent = f.getAbsoluteFile().getParentFile();
-
-            if( parent != null && !parent.exists() )
-            {
-                throw new ValidationException( "Parent Path does not exist" );
-            }
-
-            return f;
-        }
-
-        // LogUtils.printDebug( "Testing path " + text );
-
-        if( !f.exists() )
-        {
-            throw new ValidationException( "Path does not exist" );
-        }
-
-        boolean isFile = f.isFile();
-        boolean isDir = f.isDirectory();
-
-        if( type != ExistenceType.DO_NOT_CHECK )
-        {
-            if( type == ExistenceType.DIRECTORY_ONLY && !isDir )
-            {
-                throw new ValidationException( "Path is not a directory" );
-            }
-            else if( type == ExistenceType.FILE_ONLY && !isFile )
-            {
-                throw new ValidationException( "Path is not a file" );
-            }
-            else if( type == ExistenceType.FILE_OR_DIRECTORY && !isFile &&
-                !isDir )
-            {
-                throw new ValidationException(
-                    "Path is not a file or directory" );
-            }
-        }
+        IOUtils.validateFile( f, type );
 
         return f.getAbsoluteFile();
     }

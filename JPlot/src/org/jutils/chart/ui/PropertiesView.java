@@ -200,7 +200,7 @@ public class PropertiesView implements IView<JPanel>
      **************************************************************************/
     public void addSeries( Series series, int index )
     {
-        SeriesPropertiesView view = new SeriesPropertiesView();
+        SeriesPropertiesView view = new SeriesPropertiesView( chart );
 
         view.setData( series );
 

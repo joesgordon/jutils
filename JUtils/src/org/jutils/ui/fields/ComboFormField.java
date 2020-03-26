@@ -16,7 +16,7 @@ import org.jutils.ui.validation.ValidationComboField;
 import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
- * 
+ * @param <T>
  ******************************************************************************/
 public final class ComboFormField<T> implements IDataFormField<T>
 {
@@ -85,6 +85,26 @@ public final class ComboFormField<T> implements IDataFormField<T>
         {
             updater.update( getValue() );
         }
+    }
+
+    /***************************************************************************
+     * @param parser
+     * @param str
+     * @return
+     * @throws ValidationException
+     **************************************************************************/
+    private T parseEditableText( IParser<T> parser, String str )
+        throws ValidationException
+    {
+        T item = parser.parse( str );
+
+        if( updater != null )
+        {
+            updater.update( item );
+        }
+
+        return item;
+
     }
 
     /***************************************************************************
@@ -211,17 +231,19 @@ public final class ComboFormField<T> implements IDataFormField<T>
         return field.getItems();
     }
 
-    /***************************************************************************
+    /**
      * @param parser
      **************************************************************************/
     public void setUserEditable( IParser<T> parser )
     {
+        IParser<T> vcfParser = null;
+
         if( parser != null )
         {
-            parser = new ParserListener<T>( parser, this );
+            vcfParser = ( t ) -> parseEditableText( parser, t );
         }
 
-        field.setEditable( parser );
+        field.setEditable( vcfParser );
     }
 
     /***************************************************************************
@@ -233,30 +255,27 @@ public final class ComboFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    private static class ParserListener<T> implements IParser<T>
+    public int getItemCount()
     {
-        private final IParser<T> parser;
-        private final ComboFormField<T> field;
+        return getView().getItemCount();
+    }
 
-        public ParserListener( IParser<T> parser, ComboFormField<T> field )
-        {
-            this.parser = parser;
-            this.field = field;
-        }
+    /***************************************************************************
+     * @param index
+     * @return
+     **************************************************************************/
+    public T getItemAt( int index )
+    {
+        return getView().getItemAt( index );
+    }
 
-        @Override
-        public T parse( String str ) throws ValidationException
-        {
-            T item = parser.parse( str );
-
-            if( field.updater != null )
-            {
-                field.updater.update( item );
-            }
-
-            return item;
-        }
+    /***************************************************************************
+     * @param index
+     **************************************************************************/
+    public void setSelectedIndex( int index )
+    {
+        getView().setSelectedIndex( index );
     }
 }

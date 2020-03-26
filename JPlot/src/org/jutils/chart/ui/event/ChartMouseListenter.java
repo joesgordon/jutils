@@ -1,7 +1,9 @@
 package org.jutils.chart.ui.event;
 
 import java.awt.Point;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -11,8 +13,10 @@ import org.jutils.chart.data.XYPoint;
 import org.jutils.chart.model.Interval;
 import org.jutils.chart.ui.ChartView;
 import org.jutils.chart.ui.ZoomDirection;
-import org.jutils.chart.ui.objects.*;
+import org.jutils.chart.ui.objects.ChartWidget;
+import org.jutils.chart.ui.objects.PlotContext;
 import org.jutils.chart.ui.objects.PlotContext.IAxisCoords;
+import org.jutils.chart.ui.objects.PlotWidget;
 
 /*******************************************************************************
  * 
@@ -68,21 +72,14 @@ public class ChartMouseListenter extends MouseAdapter
         if( e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL )
         {
             int zoomAmount = e.getWheelRotation();
-            int exmod = e.getModifiersEx();
-
-            boolean shift = ( MouseWheelEvent.SHIFT_DOWN_MASK &
-                exmod ) == MouseWheelEvent.SHIFT_DOWN_MASK;
-
-            boolean ctrl = ( MouseWheelEvent.CTRL_DOWN_MASK &
-                exmod ) == MouseWheelEvent.CTRL_DOWN_MASK;
 
             if( zoomAmount < 0 )
             {
-                view.zoomIn( ZoomDirection.get( shift, ctrl ) );
+                view.zoomIn( ZoomDirection.get( e ) );
             }
             else
             {
-                view.zoomOut( ZoomDirection.get( shift, ctrl ) );
+                view.zoomOut( ZoomDirection.get( e ) );
             }
         }
     }

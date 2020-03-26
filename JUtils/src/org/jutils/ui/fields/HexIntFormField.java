@@ -5,9 +5,9 @@ import javax.swing.JTextField;
 
 import org.jutils.io.parsers.HexIntegerParser;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
+import org.jutils.ui.hex.HexUtils;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
  * Defines an {@link IFormField} that contains a double validater.
@@ -15,14 +15,7 @@ import org.jutils.ui.validators.ITextValidator;
 public class HexIntFormField implements IDataFormField<Integer>
 {
     /**  */
-    private final String name;
-    /**  */
-    private final ValidationTextView textField;
-
-    /**  */
-    private IUpdater<Integer> updater;
-    /**  */
-    private int value;
+    private final ParserFormField<Integer> field;
 
     /***************************************************************************
      * @param name
@@ -30,15 +23,6 @@ public class HexIntFormField implements IDataFormField<Integer>
     public HexIntFormField( String name )
     {
         this( name, ( String )null );
-    }
-
-    /***************************************************************************
-     * @param name
-     * @param updater
-     **************************************************************************/
-    public HexIntFormField( String name, IUpdater<Integer> updater )
-    {
-        this( name, null, 20, updater );
     }
 
     /***************************************************************************
@@ -69,7 +53,7 @@ public class HexIntFormField implements IDataFormField<Integer>
     public HexIntFormField( String name, String units, Integer min,
         Integer max )
     {
-        this( name, units, 20, null, min, max );
+        this( name, units, 20, min, max );
     }
 
     /***************************************************************************
@@ -78,69 +62,50 @@ public class HexIntFormField implements IDataFormField<Integer>
      * @param columns
      * @param updater
      **************************************************************************/
-    public HexIntFormField( String name, String units, int columns,
-        IUpdater<Integer> updater )
+    public HexIntFormField( String name, String units, int columns, Integer min,
+        Integer max )
     {
-        this( name, units, columns, updater, null, null );
+        JTextField textField = new JTextField( columns );
+
+        this.field = new ParserFormField<>( name,
+            new HexIntegerParser( min, max ), textField, ( d ) -> toString( d ),
+            textField, units );
     }
 
     /***************************************************************************
-     * @param name
-     * @param units
-     * @param columns
-     * @param updater
-     **************************************************************************/
-    public HexIntFormField( String name, String units, int columns,
-        IUpdater<Integer> updater, Integer min, Integer max )
-    {
-        this.name = name;
-        this.textField = new ValidationTextView( units, columns );
-        this.updater = updater;
-
-        ITextValidator textValidator;
-
-        textValidator = new DataTextValidator<>(
-            new HexIntegerParser( min, max ), new ValueUpdater( this ) );
-        textField.getField().setValidator( textValidator );
-    }
-
-    /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getName()
     {
-        return name;
+        return field.getName();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
     {
-        return textField.getView();
+        return field.getView();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Integer getValue()
     {
-        return value;
+        return field.getValue();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setValue( Integer value )
     {
-        this.value = value == null ? this.value : value;
-        String text = value == null ? ""
-            : Integer.toHexString( value ).toUpperCase();
-        textField.setText( text );
+        field.setValue( value );
     }
 
     /***************************************************************************
@@ -149,82 +114,75 @@ public class HexIntFormField implements IDataFormField<Integer>
     @Override
     public void setUpdater( IUpdater<Integer> updater )
     {
-        this.updater = updater;
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public IUpdater<Integer> getUpdater()
     {
-        return updater;
+        return field.getUpdater();
     }
 
     /***************************************************************************
-     * @return
-     **************************************************************************/
-    public JTextField getTextField()
-    {
-        return textField.getField().getView();
-    }
-
-    /***************************************************************************
-     * @param editable
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setEditable( boolean editable )
     {
-        textField.setEditable( editable );
+        field.setEditable( editable );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().addValidityChanged( l );
+        field.addValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().removeValidityChanged( l );
+        field.removeValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
-        return textField.getField().getValidity();
+        return field.getValidity();
     }
 
     /***************************************************************************
-     * 
+     * @param value
+     * @return
      **************************************************************************/
-    private static class ValueUpdater implements IUpdater<Integer>
+    private String toString( Integer value )
     {
-        private final HexIntFormField view;
+        String text = "";
 
-        public ValueUpdater( HexIntFormField view )
+        if( value != null )
         {
-            this.view = view;
+            int i = value;
+
+            byte b3 = ( byte )( ( i >> 24 ) & 0xFF );
+            byte b2 = ( byte )( ( i >> 16 ) & 0xFF );
+            byte b1 = ( byte )( ( i >> 8 ) & 0xFF );
+            byte b0 = ( byte )( ( i >> 0 ) & 0xFF );
+
+            text = HexUtils.toHexString( b3 ) + HexUtils.toHexString( b2 ) +
+                HexUtils.toHexString( b1 ) + HexUtils.toHexString( b0 );
         }
 
-        @Override
-        public void update( Integer data )
-        {
-            view.value = data;
-            if( view.updater != null )
-            {
-                view.updater.update( data );
-            }
-        }
+        return text;
     }
 }

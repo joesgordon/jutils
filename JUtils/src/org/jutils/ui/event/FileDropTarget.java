@@ -1,14 +1,16 @@
 package org.jutils.ui.event;
 
 import java.awt.datatransfer.DataFlavor;
-import java.awt.dnd.*;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 
 import org.jutils.io.LogUtils;
-import org.jutils.io.parsers.ExistenceType;
 
 /*******************************************************************************
  * Class be added to a {@link JComponent} when the user drags a file onto the
@@ -30,7 +32,7 @@ public class FileDropTarget extends DropTarget
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public synchronized void drop( DropTargetDropEvent evt )
@@ -61,10 +63,10 @@ public class FileDropTarget extends DropTarget
         }
     }
 
-    /**
+    /***************************************************************************
      * @param action
      * @return
-     */
+     **************************************************************************/
     private static DropActionType getAction( int action )
     {
         switch( action )
@@ -85,28 +87,51 @@ public class FileDropTarget extends DropTarget
      **************************************************************************/
     public static interface IFileDropEvent
     {
+        /**
+         * @return
+         */
         public DropTargetDropEvent getEvent();
 
+        /**
+         * @return
+         */
         public List<File> getFiles();
 
+        /**
+         * @return
+         */
         public DropActionType getActionType();
+    }
+
+    /***************************************************************************
+     * Enumeration for constants in {@link DnDConstants} that start with
+     * {@code ACTION_}. Those not listed are treated as
+     * {@link DropActionType#MOVE}.
+     **************************************************************************/
+    public static enum DropActionType
+    {
+        /** Enumerated value for {@link DnDConstants#ACTION_LINK}. */
+        LINK,
+        /** Enumerated value for {@link DnDConstants#ACTION_COPY}. */
+        COPY,
+        /** Enumerated value for {@link DnDConstants#ACTION_MOVE}. */
+        MOVE;
     }
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public static enum DropActionType
-    {
-        LINK,
-        COPY,
-        MOVE;
-    }
-
     private static class ItemActionRunnable<T> implements Runnable
     {
+        /**  */
         private final ItemActionListener<T> listener;
+        /**  */
         private final ItemActionEvent<T> event;
 
+        /**
+         * @param listener
+         * @param event
+         */
         public ItemActionRunnable( ItemActionListener<T> listener,
             ItemActionEvent<T> event )
         {
@@ -114,12 +139,20 @@ public class FileDropTarget extends DropTarget
             this.event = event;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void run()
         {
             listener.actionPerformed( event );
         }
 
+        /**
+         * @param <T>
+         * @param listener
+         * @param event
+         */
         public static <T> void invokeLater( ItemActionListener<T> listener,
             ItemActionEvent<T> event )
         {
@@ -133,10 +166,18 @@ public class FileDropTarget extends DropTarget
      **************************************************************************/
     private static class DefaultFileDropEvent implements IFileDropEvent
     {
+        /**  */
         private final DropTargetDropEvent event;
+        /**  */
         private final List<File> files;
+        /**  */
         private final DropActionType action;
 
+        /**
+         * @param event
+         * @param files
+         * @param action
+         */
         public DefaultFileDropEvent( DropTargetDropEvent event,
             List<File> files, DropActionType action )
         {
@@ -145,82 +186,31 @@ public class FileDropTarget extends DropTarget
             this.action = action;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public DropTargetDropEvent getEvent()
         {
             return event;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public List<File> getFiles()
         {
             return files;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public DropActionType getActionType()
         {
             return action;
-        }
-    }
-
-    /***************************************************************************
-     * Generic implementation of an {@link ItemActionListener} for use in a
-     * {@link FileDropTarget}
-     **************************************************************************/
-    public static class JTextFieldFilesListener
-        implements ItemActionListener<IFileDropEvent>
-    {
-        private final JTextField field;
-        private final ExistenceType existence;
-
-        public JTextFieldFilesListener( JTextField field )
-        {
-            this( field, ExistenceType.FILE_OR_DIRECTORY );
-        }
-
-        public JTextFieldFilesListener( JTextField field,
-            ExistenceType existence )
-        {
-            this.existence = existence;
-            this.field = field;
-        }
-
-        @Override
-        public void actionPerformed( ItemActionEvent<IFileDropEvent> event )
-        {
-            List<File> files = event.getItem().getFiles();
-            StringBuilder paths = new StringBuilder();
-
-            for( int i = 0; i < files.size(); i++ )
-            {
-                File file = files.get( i );
-
-                if( existence == ExistenceType.DIRECTORY_ONLY &&
-                    !file.isDirectory() )
-                {
-                    continue;
-                }
-                else if( existence == ExistenceType.FILE_ONLY &&
-                    !file.isFile() )
-                {
-                    continue;
-                }
-                else if( existence == ExistenceType.FILE_OR_DIRECTORY &&
-                    !file.exists() )
-                {
-                    continue;
-                }
-
-                if( paths.length() > 0 )
-                {
-                    paths.append( File.pathSeparator );
-                }
-
-                paths.append( file.getAbsolutePath() );
-            }
-
-            field.setText( paths.toString() );
         }
     }
 }

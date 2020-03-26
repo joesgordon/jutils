@@ -317,6 +317,25 @@ public final class HexUtils
     }
 
     /***************************************************************************
+     * Converts the array of integers into an array of bytes as a convenience
+     * function rather than casting each of the integers in the list that are
+     * greater than {@code 0x3F}.
+     * @param values the list of byte values.
+     * @return the array of bytes.
+     **************************************************************************/
+    public static byte [] asArray( int... values )
+    {
+        byte [] buf = new byte[values.length];
+
+        for( int i = 0; i < buf.length; i++ )
+        {
+            buf[i] = ( byte )values[i];
+        }
+
+        return buf;
+    }
+
+    /***************************************************************************
      * Converts the byte from binary coded decimal (BCD) to its two's complement
      * form. E.g. the byte 0x10 will be returned as 0x0A. This function performs
      * no error checking on the BCD byte.

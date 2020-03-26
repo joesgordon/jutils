@@ -141,7 +141,7 @@ public class OkDialogViewMain
             view.addOkListener(
                 ( e ) -> notifyUser( "Ok Listener Called: " + e.getItem() ) );
 
-            if( view.show( null ) )
+            if( view.show() )
             {
                 notifyUser( "OK Pressed" );
             }

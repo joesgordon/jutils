@@ -6,40 +6,27 @@ import javax.swing.JTextField;
 import org.jutils.io.parsers.HexBytesParser;
 import org.jutils.ui.event.updater.IUpdater;
 import org.jutils.ui.hex.HexUtils;
-import org.jutils.ui.validation.*;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
- * Defines an {@link IFormField} that contains a byte [] validater.
+ * Defines an {@link IFormField} that validates strings as hexadecimal byte [].
  ******************************************************************************/
 public class HexBytesFormField implements IDataFormField<byte []>
 {
-    /**  */
+    /** The name of the field. */
     private final String name;
     /**  */
-    private final ValidationTextView textField;
-
+    private final JTextField textField;
     /**  */
-    private IUpdater<byte []> updater;
-    /**  */
-    private byte [] value;
+    private final ParserFormField<byte []> field;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
     public HexBytesFormField( String name )
     {
-        this( name, null );
-    }
-
-    /***************************************************************************
-     * @param name
-     * @param updater
-     **************************************************************************/
-    public HexBytesFormField( String name, IUpdater<byte []> updater )
-    {
-        this( name, 20, updater );
+        this( name, 20 );
     }
 
     /***************************************************************************
@@ -47,22 +34,16 @@ public class HexBytesFormField implements IDataFormField<byte []>
      * @param columns
      * @param updater
      **************************************************************************/
-    public HexBytesFormField( String name, int columns,
-        IUpdater<byte []> updater )
+    public HexBytesFormField( String name, int columns )
     {
         this.name = name;
-        this.textField = new ValidationTextView( null, columns );
-        this.updater = updater;
-
-        ITextValidator textValidator;
-
-        textValidator = new DataTextValidator<>( new HexBytesParser(),
-            new ValueUpdater( this ) );
-        textField.getField().setValidator( textValidator );
+        this.textField = new JTextField( columns );
+        this.field = new ParserFormField<>( name, new HexBytesParser(),
+            textField, ( d ) -> toString( d ) );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getName()
@@ -71,52 +52,48 @@ public class HexBytesFormField implements IDataFormField<byte []>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
     {
-        return textField.getView();
+        return field.getView();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public byte [] getValue()
     {
-        return value;
+        return field.getValue();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setValue( byte [] value )
     {
-        this.value = value;
-
-        String text = value == null ? "" : HexUtils.toHexString( value );
-
-        textField.setText( text );
+        field.setValue( value );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setUpdater( IUpdater<byte []> updater )
     {
-        this.updater = updater;
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public IUpdater<byte []> getUpdater()
     {
-        return updater;
+        return field.getUpdater();
     }
 
     /***************************************************************************
@@ -124,7 +101,7 @@ public class HexBytesFormField implements IDataFormField<byte []>
      **************************************************************************/
     public JTextField getTextField()
     {
-        return textField.getField().getView();
+        return textField;
     }
 
     /***************************************************************************
@@ -137,53 +114,38 @@ public class HexBytesFormField implements IDataFormField<byte []>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().addValidityChanged( l );
+        field.addValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().removeValidityChanged( l );
+        field.removeValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
-        return textField.getField().getValidity();
+        return field.getValidity();
     }
 
     /***************************************************************************
-     * 
+     * @param value
+     * @return
      **************************************************************************/
-    private static class ValueUpdater implements IUpdater<byte []>
+    private String toString( byte [] value )
     {
-        private final HexBytesFormField view;
-
-        public ValueUpdater( HexBytesFormField view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void update( byte [] data )
-        {
-            view.value = data;
-
-            if( view.updater != null )
-            {
-                view.updater.update( data );
-            }
-        }
+        return value == null ? "" : HexUtils.toHexString( value );
     }
 }

@@ -9,6 +9,7 @@ import org.jutils.Utils;
 import org.jutils.chart.app.JChartAppConstants;
 import org.jutils.chart.app.UserData;
 import org.jutils.chart.io.FilteredWriter;
+import org.jutils.chart.model.ChartOptions.PointRemovalMethod;
 import org.jutils.chart.model.Series;
 import org.jutils.io.IOUtils;
 import org.jutils.io.options.OptionsSerializer;
@@ -23,13 +24,18 @@ public class SaveSeriesDataListener implements ILastFile, IFileSelected
 {
     /**  */
     private final IDataView<Series> view;
+    /**  */
+    private final PointRemovalMethod removalMethod;
 
     /***************************************************************************
      * @param view
+     * @param removalMethod
      **************************************************************************/
-    public SaveSeriesDataListener( IDataView<Series> view )
+    public SaveSeriesDataListener( IDataView<Series> view,
+        PointRemovalMethod removalMethod )
     {
         this.view = view;
+        this.removalMethod = removalMethod;
     }
 
     /***************************************************************************
@@ -80,7 +86,7 @@ public class SaveSeriesDataListener implements ILastFile, IFileSelected
 
         try
         {
-            saveFile( s, fromFile, toFile );
+            saveFile( s, fromFile, toFile, removalMethod );
         }
         catch( IOException ex )
         {
@@ -95,13 +101,15 @@ public class SaveSeriesDataListener implements ILastFile, IFileSelected
     /***************************************************************************
      * @param s
      * @param toFile
+     * @param removalMethod
      * @throws FileNotFoundException
      * @throws IOException
      **************************************************************************/
-    public static void saveFile( Series s, File toFile )
+    public static void saveFile( Series s, File toFile,
+        PointRemovalMethod removalMethod )
         throws FileNotFoundException, IOException
     {
-        saveFile( s, null, toFile );
+        saveFile( s, null, toFile, removalMethod );
     }
 
     /***************************************************************************
@@ -111,7 +119,8 @@ public class SaveSeriesDataListener implements ILastFile, IFileSelected
      * @throws FileNotFoundException
      * @throws IOException
      **************************************************************************/
-    public static void saveFile( Series s, File fromFile, File toFile )
+    public static void saveFile( Series s, File fromFile, File toFile,
+        PointRemovalMethod removalMethod )
         throws FileNotFoundException, IOException
     {
         OptionsSerializer<UserData> options = JChartAppConstants.getOptions();
@@ -120,11 +129,11 @@ public class SaveSeriesDataListener implements ILastFile, IFileSelected
 
         if( fromFile == null )
         {
-            FilteredWriter.write( toFile, s.data );
+            FilteredWriter.write( toFile, s.data, removalMethod );
         }
         else
         {
-            FilteredWriter.write( fromFile, toFile, s.data );
+            FilteredWriter.write( fromFile, toFile, s.data, removalMethod );
         }
     }
 }

@@ -1,33 +1,23 @@
 package org.jutils.ui.fields;
 
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 import org.jutils.io.parsers.DoubleParser;
 import org.jutils.ui.event.updater.IUpdater;
 import org.jutils.ui.validation.IValidityChangedListener;
-import org.jutils.ui.validation.ValidationTextField;
-import org.jutils.ui.validation.ValidationTextView;
 import org.jutils.ui.validation.Validity;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
 
 /*******************************************************************************
- * Defines an {@link IFormField} that contains a double validater.
+ * Defines an {@link IFormField} that validates text as {@link Double}s.
  ******************************************************************************/
 public class DoubleFormField implements IDataFormField<Double>
 {
     /**  */
-    private final String name;
-    /**  */
-    private final ValidationTextView textField;
+    private final ParserFormField<Double> textField;
 
-    /**  */
-    private IUpdater<Double> updater;
     /**  */
     private String format;
-
-    /**  */
-    private double value;
 
     /***************************************************************************
      * @param name
@@ -44,7 +34,7 @@ public class DoubleFormField implements IDataFormField<Double>
      **************************************************************************/
     public DoubleFormField( String name, Double min, Double max )
     {
-        this( name, null, 20, null, min, max );
+        this( name, null, min, max );
     }
 
     /***************************************************************************
@@ -55,7 +45,7 @@ public class DoubleFormField implements IDataFormField<Double>
      **************************************************************************/
     public DoubleFormField( String name, String units, Double min, Double max )
     {
-        this( name, units, 20, null, min, max );
+        this( name, units, 20, min, max );
     }
 
     /***************************************************************************
@@ -74,19 +64,7 @@ public class DoubleFormField implements IDataFormField<Double>
      **************************************************************************/
     public DoubleFormField( String name, String units, int columns )
     {
-        this( name, units, columns, null );
-    }
-
-    /***************************************************************************
-     * @param name
-     * @param units
-     * @param columns
-     * @param updater
-     **************************************************************************/
-    public DoubleFormField( String name, String units, int columns,
-        IUpdater<Double> updater )
-    {
-        this( name, units, columns, updater, null, null );
+        this( name, units, columns, null, null );
     }
 
     /***************************************************************************
@@ -97,21 +75,15 @@ public class DoubleFormField implements IDataFormField<Double>
      * @param min
      * @param max
      **************************************************************************/
-    public DoubleFormField( String name, String units, int columns,
-        IUpdater<Double> updater, Double min, Double max )
+    public DoubleFormField( String name, String units, int columns, Double min,
+        Double max )
     {
-        this.name = name;
-        this.textField = new ValidationTextView( units, columns );
+        JTextField jtf = new JTextField( columns );
 
-        this.updater = updater;
+        this.textField = new ParserFormField<>( name,
+            new DoubleParser( min, max ), jtf, ( d ) -> toString( d ), jtf,
+            units );
         this.format = null;
-        this.value = 0.0;
-
-        ITextValidator textValidator;
-
-        textValidator = new DataTextValidator<>( new DoubleParser( min, max ),
-            new ValueUpdater( this ) );
-        textField.getField().setValidator( textValidator );
     }
 
     /***************************************************************************
@@ -120,7 +92,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public String getName()
     {
-        return name;
+        return textField.getName();
     }
 
     /***************************************************************************
@@ -132,23 +104,13 @@ public class DoubleFormField implements IDataFormField<Double>
         return textField.getView();
     }
 
-    public ValidationTextField getValidationField()
-    {
-        return textField.getField();
-    }
-
-    public JComponent getTextField()
-    {
-        return textField.getField().getView();
-    }
-
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
     public Double getValue()
     {
-        return value;
+        return textField.getValue();
     }
 
     /***************************************************************************
@@ -157,27 +119,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public void setValue( Double value )
     {
-        this.value = value == null ? this.value : value;
-
-        String text = "";
-
-        if( value != null )
-        {
-            if( format != null )
-            {
-                text = String.format( format, value );
-            }
-            else
-            {
-                text = Double.toString( value );
-            }
-        }
-
-        IUpdater<Double> updater = this.updater;
-
-        this.updater = null;
-        textField.setText( text );
-        this.updater = updater;
+        textField.setValue( value );
     }
 
     /***************************************************************************
@@ -195,7 +137,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public void setUpdater( IUpdater<Double> updater )
     {
-        this.updater = updater;
+        textField.setUpdater( updater );
     }
 
     /***************************************************************************
@@ -204,7 +146,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public IUpdater<Double> getUpdater()
     {
-        return updater;
+        return textField.getUpdater();
     }
 
     /***************************************************************************
@@ -213,7 +155,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().addValidityChanged( l );
+        textField.addValidityChanged( l );
     }
 
     /***************************************************************************
@@ -222,7 +164,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().removeValidityChanged( l );
+        textField.removeValidityChanged( l );
     }
 
     /***************************************************************************
@@ -231,7 +173,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public Validity getValidity()
     {
-        return textField.getField().getValidity();
+        return textField.getValidity();
     }
 
     /***************************************************************************
@@ -243,32 +185,25 @@ public class DoubleFormField implements IDataFormField<Double>
     }
 
     /***************************************************************************
-     * 
+     * @param value
+     * @return
      **************************************************************************/
-    private static class ValueUpdater implements IUpdater<Double>
+    private String toString( Double value )
     {
-        /**  */
-        private final DoubleFormField view;
+        String text = "";
 
-        /**
-         * @param view
-         */
-        public ValueUpdater( DoubleFormField view )
+        if( value != null )
         {
-            this.view = view;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void update( Double data )
-        {
-            view.value = data;
-            if( view.updater != null )
+            if( format != null )
             {
-                view.updater.update( data );
+                text = String.format( format, value );
+            }
+            else
+            {
+                text = Double.toString( value );
             }
         }
+
+        return text;
     }
 }

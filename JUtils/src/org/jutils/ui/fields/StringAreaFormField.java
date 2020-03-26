@@ -1,76 +1,45 @@
 package org.jutils.ui.fields;
 
 import java.awt.Font;
-import java.nio.charset.Charset;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import org.jutils.io.parsers.StringLengthParser;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 
-/***************************************************************************
+/*******************************************************************************
  * 
- **************************************************************************/
+ ******************************************************************************/
 public class StringAreaFormField implements IDataFormField<String>
 {
     /**  */
-    public static final Charset UTF8 = Charset.forName( "UTF-8" );
-
+    private final JTextArea textField;
     /**  */
-    private final String name;
-    /**  */
-    private final ValidationTextAreaField inputField;
-    /**  */
-    private final ValidationView view;
-
-    /**  */
-    private IUpdater<String> updater;
+    private final ParserFormField<String> field;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
     public StringAreaFormField( String name )
     {
-        this.name = name;
-        this.inputField = new ValidationTextAreaField();
-
-        JScrollPane pane = new JScrollPane( inputField.getView() );
+        this.textField = new JTextArea();
+        JScrollPane pane = new JScrollPane( textField );
+        this.field = new ParserFormField<>( name,
+            new StringLengthParser( 0, null ), textField, ( d ) -> d, pane );
 
         pane.setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
         pane.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
 
-        this.view = new ValidationView( inputField, null, pane, true );
-
-        this.updater = null;
-
-        ITextValidator validator;
-
-        validator = new DataTextValidator<>( new StringLengthParser( 0, null ),
-            ( d ) -> fireUpdaters( d ) );
-        inputField.setValidator( validator );
-
-        JTextArea field = inputField.getView();
-
-        field.setLineWrap( true );
-        field.setColumns( 20 );
-        field.setRows( 5 );
-        field.setFont( new Font( "Courier New", Font.PLAIN, 18 ) );
-    }
-
-    /***************************************************************************
-     * @param data
-     **************************************************************************/
-    private void fireUpdaters( String data )
-    {
-        if( updater != null )
-        {
-            updater.update( data );
-        }
+        textField.setLineWrap( true );
+        textField.setColumns( 20 );
+        textField.setRows( 5 );
+        textField.setFont( new Font( "Courier New", Font.PLAIN, 18 ) );
     }
 
     /***************************************************************************
@@ -79,16 +48,16 @@ public class StringAreaFormField implements IDataFormField<String>
     @Override
     public String getValue()
     {
-        return inputField.getText();
+        return field.getValue();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setValue( String text )
+    public void setValue( String value )
     {
-        inputField.setText( text );
+        field.setValue( value );
     }
 
     /***************************************************************************
@@ -97,7 +66,7 @@ public class StringAreaFormField implements IDataFormField<String>
     @Override
     public void setUpdater( IUpdater<String> updater )
     {
-        this.updater = updater;
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
@@ -106,7 +75,7 @@ public class StringAreaFormField implements IDataFormField<String>
     @Override
     public IUpdater<String> getUpdater()
     {
-        return updater;
+        return field.getUpdater();
     }
 
     /***************************************************************************
@@ -115,8 +84,7 @@ public class StringAreaFormField implements IDataFormField<String>
     @Override
     public void setEditable( boolean editable )
     {
-        view.setEditable( editable );
-        inputField.getView().setEditable( editable );
+        field.setEditable( editable );
     }
 
     /***************************************************************************
@@ -125,7 +93,7 @@ public class StringAreaFormField implements IDataFormField<String>
     @Override
     public String getName()
     {
-        return name;
+        return field.getName();
     }
 
     /***************************************************************************
@@ -134,7 +102,7 @@ public class StringAreaFormField implements IDataFormField<String>
     @Override
     public JComponent getView()
     {
-        return view.getView();
+        return field.getView();
     }
 
     /***************************************************************************
@@ -143,7 +111,7 @@ public class StringAreaFormField implements IDataFormField<String>
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        inputField.addValidityChanged( l );
+        field.addValidityChanged( l );
     }
 
     /***************************************************************************
@@ -152,7 +120,7 @@ public class StringAreaFormField implements IDataFormField<String>
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        inputField.removeValidityChanged( l );
+        field.removeValidityChanged( l );
     }
 
     /***************************************************************************
@@ -161,7 +129,7 @@ public class StringAreaFormField implements IDataFormField<String>
     @Override
     public Validity getValidity()
     {
-        return inputField.getValidity();
+        return field.getValidity();
     }
 
     /***************************************************************************
@@ -169,14 +137,6 @@ public class StringAreaFormField implements IDataFormField<String>
      **************************************************************************/
     public JTextArea getTextArea()
     {
-        return inputField.getView();
-    }
-
-    /***************************************************************************
-     * @param text
-     **************************************************************************/
-    public void setText( String text )
-    {
-        inputField.setText( text );
+        return textField;
     }
 }

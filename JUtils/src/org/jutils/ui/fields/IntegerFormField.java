@@ -5,9 +5,8 @@ import javax.swing.JTextField;
 
 import org.jutils.io.parsers.IntegerParser;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
  * Defines an {@link IFormField} that contains a integer validator.
@@ -15,14 +14,9 @@ import org.jutils.ui.validators.ITextValidator;
 public class IntegerFormField implements IDataFormField<Integer>
 {
     /**  */
-    private final String name;
+    private final JTextField textField;
     /**  */
-    private final ValidationTextView textField;
-
-    /**  */
-    private IUpdater<Integer> updater;
-    /**  */
-    private int value;
+    private final ParserFormField<Integer> field;
 
     /***************************************************************************
      * @param name
@@ -34,21 +28,32 @@ public class IntegerFormField implements IDataFormField<Integer>
 
     /***************************************************************************
      * @param name
-     * @param min
-     * @param max
+     * @param units
      **************************************************************************/
-    public IntegerFormField( String name, Integer min, Integer max )
+    public IntegerFormField( String name, String units )
     {
-        this( name, null, 20, min, max );
+        this( name, units, 20 );
     }
 
     /***************************************************************************
      * @param name
      * @param units
+     * @param columns
      **************************************************************************/
-    public IntegerFormField( String name, String units )
+    public IntegerFormField( String name, String units, int columns )
     {
-        this( name, units, 20, null, null );
+        this( name, units, columns, null, null );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param units
+     * @param min
+     * @param max
+     **************************************************************************/
+    public IntegerFormField( String name, Integer min, Integer max )
+    {
+        this( name, null, min, max );
     }
 
     /***************************************************************************
@@ -67,31 +72,18 @@ public class IntegerFormField implements IDataFormField<Integer>
      * @param name
      * @param units
      * @param columns
-     **************************************************************************/
-    public IntegerFormField( String name, String units, int columns )
-    {
-        this( name, units, columns, null, null );
-    }
-
-    /***************************************************************************
-     * @param name
-     * @param units
-     * @param columns
      * @param min
      * @param max
+     * @param updater
      **************************************************************************/
     public IntegerFormField( String name, String units, int columns,
         Integer min, Integer max )
     {
-        this.name = name;
-        this.textField = new ValidationTextView( units, columns );
-        this.updater = null;
+        IDescriptor<Integer> descriptor = ( d ) -> toString( d );
 
-        ITextValidator textValidator;
-
-        textValidator = new DataTextValidator<>( new IntegerParser( min, max ),
-            new ValueUpdater( this ) );
-        textField.getField().setValidator( textValidator );
+        this.textField = new JTextField( columns );
+        this.field = new ParserFormField<>( name, new IntegerParser( min, max ),
+            textField, descriptor, textField, units );
     }
 
     /***************************************************************************
@@ -100,7 +92,7 @@ public class IntegerFormField implements IDataFormField<Integer>
     @Override
     public String getName()
     {
-        return name;
+        return field.getName();
     }
 
     /***************************************************************************
@@ -109,7 +101,7 @@ public class IntegerFormField implements IDataFormField<Integer>
     @Override
     public JComponent getView()
     {
-        return textField.getView();
+        return field.getView();
     }
 
     /***************************************************************************
@@ -118,7 +110,7 @@ public class IntegerFormField implements IDataFormField<Integer>
     @Override
     public Integer getValue()
     {
-        return value;
+        return field.getValue();
     }
 
     /***************************************************************************
@@ -127,14 +119,7 @@ public class IntegerFormField implements IDataFormField<Integer>
     @Override
     public void setValue( Integer value )
     {
-        this.value = value == null ? this.value : value;
-
-        String text = value == null ? "" : "" + value;
-        IUpdater<Integer> updater = this.updater;
-
-        this.updater = null;
-        textField.setText( text );
-        this.updater = updater;
+        field.setValue( value );
     }
 
     /***************************************************************************
@@ -143,7 +128,7 @@ public class IntegerFormField implements IDataFormField<Integer>
     @Override
     public void setUpdater( IUpdater<Integer> updater )
     {
-        this.updater = updater;
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
@@ -152,15 +137,7 @@ public class IntegerFormField implements IDataFormField<Integer>
     @Override
     public IUpdater<Integer> getUpdater()
     {
-        return updater;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public JTextField getTextField()
-    {
-        return textField.getField().getView();
+        return field.getUpdater();
     }
 
     /***************************************************************************
@@ -178,47 +155,41 @@ public class IntegerFormField implements IDataFormField<Integer>
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().addValidityChanged( l );
+        field.addValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        textField.getField().removeValidityChanged( l );
+        field.removeValidityChanged( l );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
-        return textField.getField().getValidity();
+        return field.getValidity();
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    private static class ValueUpdater implements IUpdater<Integer>
+    public JTextField getTextField()
     {
-        private final IntegerFormField view;
+        return textField;
+    }
 
-        public ValueUpdater( IntegerFormField view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void update( Integer data )
-        {
-            view.value = data;
-            if( view.updater != null )
-            {
-                view.updater.update( data );
-            }
-        }
+    /***************************************************************************
+     * @param value
+     * @return
+     **************************************************************************/
+    private String toString( Integer value )
+    {
+        return value == null ? "" : Integer.toString( value );
     }
 }

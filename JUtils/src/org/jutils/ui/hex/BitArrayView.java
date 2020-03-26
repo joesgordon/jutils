@@ -1,6 +1,8 @@
 package org.jutils.ui.hex;
 
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -8,24 +10,33 @@ import javax.swing.JPanel;
 import org.jutils.ui.event.updater.IUpdater;
 import org.jutils.ui.fields.BitsFormField;
 import org.jutils.ui.model.IDataView;
-import org.jutils.ui.validation.*;
+import org.jutils.ui.validation.AggregateValidityChangedManager;
+import org.jutils.ui.validation.IValidationField;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 import org.jutils.utils.BitArray;
 
 /*******************************************************************************
- * 
+ * Defines the UI for editing a {@link BitArray}: a bit field (which can be any
+ * number of bits), a left-shifted hexadecimal field (which represents the bits
+ * shifted to the leftmost byte and zero-padded on the right), and a
+ * right-shifted hexadecimal field (which represents the bits shifted to the
+ * rightmost byte and zero-padded on the left). E.g. the bits {@code 0b11001}
+ * can be represented as {@code 0xC8} ({@code 0b11001000}) if left-shifted and
+ * {@code 0x19} if right-shifted ({@code 0b00011001}.
  ******************************************************************************/
 public class BitArrayView implements IDataView<BitArray>, IValidationField
 {
-    /**  */
+    /** Contains the components which display the {@link BitArray}. */
     private final JPanel view;
-    /**  */
+    /** Displays the bits of the array. */
     private final BitsFormField bitsField;
-    /**  */
+    /** Displays the bits as a left-align hexadecimal value. */
     private final HexBytesField leftField;
-    /**  */
+    /** Displays the bits as a right-align hexadecimal value. */
     private final HexBytesField rightField;
 
-    /**  */
+    /** The manager combining the validity of all components. */
     private final AggregateValidityChangedManager validityManager;
     /**  */
     private final BitsUpdater bitsUpdater;
@@ -41,13 +52,13 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
     private BitArray bits;
 
     /***************************************************************************
-     * 
+     * @param quickList
      **************************************************************************/
     public BitArrayView( List<byte []> quickList )
     {
         this.bitsField = new BitsFormField( "Bits" );
-        this.leftField = new HexBytesField( quickList );
-        this.rightField = new HexBytesField( quickList );
+        this.leftField = new HexBytesField( "Left", quickList );
+        this.rightField = new HexBytesField( "Right", quickList );
         this.view = createView();
 
         this.validityManager = new AggregateValidityChangedManager();
@@ -163,17 +174,24 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
     }
 
     /***************************************************************************
-     * 
+     * @param <T>
      **************************************************************************/
     private static abstract class AbstractUpdater<T> implements IUpdater<T>
     {
+        /**  */
         private boolean enabled = true;
 
+        /**
+         * @param enabled
+         */
         public void setEnabled( boolean enabled )
         {
-            this.enabled = enabled;
+            // this.enabled = enabled;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public final void update( T data )
         {
@@ -183,6 +201,9 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
             }
         }
 
+        /**
+         * @param value
+         */
         public abstract void updateValue( T value );
     }
 
@@ -191,13 +212,20 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
      **************************************************************************/
     private static class BitsUpdater extends AbstractUpdater<BitArray>
     {
+        /**  */
         private final BitArrayView view;
 
+        /**
+         * @param view
+         */
         public BitsUpdater( BitArrayView view )
         {
             this.view = view;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void updateValue( BitArray bits )
         {
@@ -227,13 +255,20 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
      **************************************************************************/
     private static class LeftUpdater extends AbstractUpdater<byte []>
     {
+        /**  */
         private final BitArrayView view;
 
+        /**
+         * @param view
+         */
         public LeftUpdater( BitArrayView view )
         {
             this.view = view;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void updateValue( byte [] data )
         {
@@ -259,13 +294,20 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
      **************************************************************************/
     private static class RightUpdater extends AbstractUpdater<byte []>
     {
+        /**  */
         private final BitArrayView view;
 
+        /**
+         * @param view
+         */
         public RightUpdater( BitArrayView view )
         {
             this.view = view;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void updateValue( byte [] data )
         {

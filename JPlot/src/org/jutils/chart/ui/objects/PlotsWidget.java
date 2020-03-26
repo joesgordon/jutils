@@ -96,8 +96,6 @@ public class PlotsWidget implements IChartWidget
             {
                 FillListener ipl = new FillListener();
 
-                fillShapes.add( ipl );
-
                 for( PlotWidget p : plots )
                 {
                     if( p.series == f.s1 )
@@ -108,6 +106,11 @@ public class PlotsWidget implements IChartWidget
                     {
                         p.pixelListener = ipl;
                     }
+                }
+
+                if( f.s1.visible && f.s2.visible )
+                {
+                    fillShapes.add( ipl );
                 }
             }
 

@@ -108,7 +108,7 @@ public final class ValidationTextField implements IValidationField
     }
 
     /***************************************************************************
-     * @param name
+     * @param text
      **************************************************************************/
     public void setText( String text )
     {

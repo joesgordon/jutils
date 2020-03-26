@@ -1,22 +1,33 @@
 package org.jutils.chart.ui;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.Dialog.ModalityType;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
 
 import org.jutils.IconConstants;
 import org.jutils.chart.model.TextLabel;
-import org.jutils.io.parsers.StringLengthParser;
 import org.jutils.ui.OkDialogView;
-import org.jutils.ui.event.*;
+import org.jutils.ui.event.ActionAdapter;
+import org.jutils.ui.event.ItemActionEvent;
+import org.jutils.ui.event.ItemActionListener;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.fields.*;
-import org.jutils.ui.validation.*;
-import org.jutils.ui.validators.DataTextValidator;
-import org.jutils.ui.validators.ITextValidator;
+import org.jutils.ui.fields.BooleanFormField;
+import org.jutils.ui.fields.ColorField;
+import org.jutils.ui.fields.IDataFormField;
+import org.jutils.ui.fields.StringFormField;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
  * 
@@ -24,14 +35,12 @@ import org.jutils.ui.validators.ITextValidator;
 public class TextLabelField implements IDataFormField<TextLabel>
 {
     /**  */
-    private final String name;
-    /**  */
     private final JPanel view;
 
     /**  */
     private final BooleanFormField visibleField;
     /**  */
-    private final ValidationTextField textField;
+    private final StringFormField textField;
     /**  */
     private final Action fontAction;
     /**  */
@@ -45,10 +54,8 @@ public class TextLabelField implements IDataFormField<TextLabel>
      **************************************************************************/
     public TextLabelField( String name )
     {
-        this.name = name;
-
         this.visibleField = new BooleanFormField( "Visible" );
-        this.textField = new ValidationTextField();
+        this.textField = new StringFormField( name, 0, null );
         this.fontAction = createFontAction();
         this.colorView = new ColorField( "Color", Color.red, 16, false );
 
@@ -56,13 +63,7 @@ public class TextLabelField implements IDataFormField<TextLabel>
 
         setValue( new TextLabel() );
 
-        ITextValidator itv;
-
         visibleField.setUpdater( ( b ) -> label.visible = b );
-
-        itv = new DataTextValidator<>( new StringLengthParser( 0, null ),
-            ( s ) -> label.text = s );
-        textField.setValidator( itv );
 
         colorView.setUpdater( ( c ) -> label.color = c );
     }
@@ -117,16 +118,16 @@ public class TextLabelField implements IDataFormField<TextLabel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getName()
     {
-        return name;
+        return textField.getName();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -135,7 +136,7 @@ public class TextLabelField implements IDataFormField<TextLabel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public TextLabel getValue()
@@ -144,7 +145,7 @@ public class TextLabelField implements IDataFormField<TextLabel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setValue( TextLabel value )
@@ -154,20 +155,20 @@ public class TextLabelField implements IDataFormField<TextLabel>
         if( value != null )
         {
             visibleField.setValue( value.visible );
-            textField.setText( value.text );
+            textField.setValue( value.text );
             textField.getView().setFont( value.font );
             colorView.setValue( value.color );
         }
         else
         {
             visibleField.setValue( false );
-            textField.setText( "" );
+            textField.setValue( "" );
             colorView.setValue( Color.black );
         }
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setUpdater( IUpdater<TextLabel> updater )
@@ -176,7 +177,7 @@ public class TextLabelField implements IDataFormField<TextLabel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public IUpdater<TextLabel> getUpdater()
@@ -185,7 +186,7 @@ public class TextLabelField implements IDataFormField<TextLabel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setEditable( boolean editable )
@@ -194,7 +195,7 @@ public class TextLabelField implements IDataFormField<TextLabel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
@@ -203,7 +204,7 @@ public class TextLabelField implements IDataFormField<TextLabel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
@@ -212,7 +213,7 @@ public class TextLabelField implements IDataFormField<TextLabel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
@@ -226,14 +227,23 @@ public class TextLabelField implements IDataFormField<TextLabel>
     private static class FontListener
         implements ActionListener, ItemActionListener<Boolean>
     {
+        /**  */
         private final TextLabelField field;
+
+        /**  */
         private FontView fontView;
 
+        /**
+         * @param field
+         */
         public FontListener( TextLabelField field )
         {
             this.field = field;
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void actionPerformed( ActionEvent e )
         {
@@ -251,6 +261,9 @@ public class TextLabelField implements IDataFormField<TextLabel>
             dialog.setVisible( true );
         }
 
+        /**
+         * @{@inheritDoc}
+         */
         @Override
         public void actionPerformed( ItemActionEvent<Boolean> event )
         {

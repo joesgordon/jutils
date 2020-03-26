@@ -1,35 +1,60 @@
 package org.jutils.ui.fields;
 
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
+import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
+import org.jutils.IconConstants;
 import org.jutils.io.parsers.ExistenceType;
+import org.jutils.io.parsers.FileParser;
+import org.jutils.ui.FileContextMenu;
+import org.jutils.ui.FileIcon;
+import org.jutils.ui.IconTextField;
+import org.jutils.ui.event.DirectoryChooserListener;
+import org.jutils.ui.event.FileChooserListener;
+import org.jutils.ui.event.FileChooserListener.IFileSelected;
+import org.jutils.ui.event.FileDropTarget;
+import org.jutils.ui.event.TextFieldFilesListener;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.Validity;
 
 /*******************************************************************************
  * Defines a form field that edits a file path.
  ******************************************************************************/
 public class FileFormField implements IDataFormField<File>
 {
-    /** The name of this field. */
-    private final String name;
-    /**
-     * The validation view that provides feedback to the user when the field is
-     * invalid.
-     */
-    private final ValidationView view;
-    /** The file validation field. */
-    private final FileField field;
+    /** The panel that contains all the components in this view. */
+    private final JPanel view;
+    /**  */
+    private final JTextField jtf;
+    /** The field used to display the file path and its associated icon. */
+    private final IconTextField textField;
+    /** The validation field used to display the {@link #textField}. */
+    private final ParserFormField<File> parserField;
+    /** The button used to display an open file dialog. */
+    private final JButton button;
+    /** The listener called when the user clicks the browse button. */
+    private final FileChooserListener fileListener;
+    /** The icon shown in {@link #textField}. */
+    private final FileIcon icon;
+    /** The parser to be used for {@link #parserField}. */
+    private final FileParser parser;
 
-    /** The callback invoked when the control is changed by the user. */
+    /**  */
     private IUpdater<File> updater;
-    /**
-     * If {@code true}, the data is being set programmatically; {@code false}
-     * indicates that data is being set by the user.
-     */
-    private boolean settingData;
 
     /***************************************************************************
      * Creates a file form field with the provided name and an
@@ -85,56 +110,144 @@ public class FileFormField implements IDataFormField<File>
     }
 
     /***************************************************************************
-     * Creates a file form field with the provided name and
-     * {@link ExistenceType} that ensures the file exists if {@code required}
-     * and shows "Save" text if {@code isSave} and shows a browse button if
-     * {@code showBrowse}.
+     * Creates a File view according to the parameters provided:
      * @param name the name of this field.
-     * @param existence type of existence to be checked.
+     * @param existence type of existence to be checked: file/dir/either/none.
      * @param required if the path can be empty or is required.
      * @param isSave if the path is to be be save to (alt. read from).
-     * @param showBrowse denotes whether the browse button should be shown.
+     * @param showButton denotes whether the browse button should be shown.
      **************************************************************************/
     public FileFormField( String name, ExistenceType existence,
-        boolean required, boolean isSave, boolean showBrowse )
+        boolean required, boolean isSave, boolean showButton )
     {
-        this.name = name;
-        this.field = new FileField( existence, required, isSave, showBrowse );
-        this.view = new ValidationView( field );
-        this.settingData = false;
+        this.jtf = new JTextField( 20 );
+        this.parser = new FileParser( existence, required );
+
+        this.parserField = new ParserFormField<>( name, parser, jtf,
+            ( f ) -> f == null ? "" : f.getAbsolutePath() );
+        this.textField = new IconTextField( jtf );
+        this.button = new JButton();
+        this.icon = new FileIcon();
+
+        this.fileListener = createBrowseListener( existence, isSave );
+        this.view = createView( showButton, isSave );
+
+        this.textField.setIcon( icon );
+
+        // textField.setIcon( icon );
+
+        jtf.setText( "" );
+
+        parserField.addValidityChanged( ( v ) -> handleValidityChanged( v ) );
+        parserField.setUpdater( ( d ) -> handleDataChanged( d ) );
     }
 
     /***************************************************************************
-     * Calls the updater with the provided file if non-{@code null}.
-     * @param file the file used when calling the updater.
+     * Invoked when the edited value is valid.
+     * @param file the new file object.
      **************************************************************************/
-    private void callUpdater( File file )
+    private void handleDataChanged( File file )
     {
-        if( !settingData && updater != null )
+        // LogUtils.printDebug( "File changed to " + file.getAbsolutePath()
+        // );
+        icon.setFile( file );
+
+        if( updater != null )
         {
             updater.update( file );
         }
     }
 
     /***************************************************************************
-     * Adds the provided extension description and list of exts. <p><code>
-     * addExtension( "JPEG Files", "jpg", jpeg" ); </code></p>
-     * @param description a short description of the type of file denoted by the
-     * provided list of extensions.
-     * @param extensions list of extensions with no '.'.
+     * Invoked when the validity changes on the {@link #parserField}.
+     * @param v
      **************************************************************************/
-    public void addExtension( String description, String... extensions )
+    private void handleValidityChanged( Validity v )
     {
-        field.addExtension( description, extensions );
+        if( !v.isValid )
+        {
+            icon.setErrorIcon();
+        }
+        else if( !getValue().exists() &&
+            parser.type == ExistenceType.DO_NOT_CHECK )
+        {
+            icon.setCheckIcon();
+        }
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * Creates the listener for the browse button.
+     * @param existence the type of existence to be checked.
+     * @param isSave indicates if the file is being saved ({@code false}
+     * indicates open).
+     * @return the listener for the browse button.
      **************************************************************************/
-    @Override
-    public String getName()
+    private FileChooserListener createBrowseListener( ExistenceType existence,
+        boolean isSave )
     {
-        return name;
+        FileChooserListener fcl = null;
+
+        if( existence != ExistenceType.DIRECTORY_ONLY )
+        {
+            IFileSelected ifs = ( f ) -> {
+                setValue( f );
+                handleDataChanged( f );
+            };
+            fcl = new FileChooserListener( getView(), "Choose File", isSave,
+                ifs, () -> getDefaultFile() );
+        }
+
+        return fcl;
+    }
+
+    /***************************************************************************
+     * Creates the main panel for this view.
+     * @param showButton denotes whether the browse button should be shown.
+     * @return the newly created panel.
+     **************************************************************************/
+    private JPanel createView( boolean showButton, boolean isSave )
+    {
+        JPanel panel = new JPanel( new GridBagLayout() );
+        GridBagConstraints constraints;
+        ActionListener browseListener;
+
+        if( parser.type == ExistenceType.DIRECTORY_ONLY )
+        {
+            IFileSelected ifs = ( f ) -> setValue( f );
+            browseListener = new DirectoryChooserListener( panel,
+                "Choose Directory", ifs, () -> getDefaultFile() );
+        }
+        else
+        {
+            browseListener = fileListener;
+        }
+
+        parserField.getView().setDropTarget( new FileDropTarget(
+            new TextFieldFilesListener( jtf, parser.type ) ) );
+
+        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
+            GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
+        panel.add( textField.getView(), constraints );
+
+        if( showButton )
+        {
+            Icon icon = isSave ? IconConstants.getIcon( IconConstants.SAVE_16 )
+                : IconConstants.getIcon( IconConstants.OPEN_FOLDER_16 );
+
+            button.setIcon( icon );
+            button.addActionListener( browseListener );
+            button.setToolTipText( "Browse (Right-click to open path)" );
+
+            constraints = new GridBagConstraints( 1, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.WEST, GridBagConstraints.NONE,
+                new Insets( 0, 4, 0, 0 ), 0, 0 );
+            panel.add( button, constraints );
+
+            button.addMouseListener( new MenuListener( this, panel ) );
+        }
+
+        return panel;
     }
 
     /***************************************************************************
@@ -143,7 +256,7 @@ public class FileFormField implements IDataFormField<File>
     @Override
     public JComponent getView()
     {
-        return view.getView();
+        return view;
     }
 
     /***************************************************************************
@@ -152,18 +265,65 @@ public class FileFormField implements IDataFormField<File>
     @Override
     public File getValue()
     {
-        return field.getData();
+        return parserField.getValue();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setValue( File value )
+    public void setValue( File file )
     {
-        this.settingData = true;
-        field.setData( value );
-        this.settingData = false;
+        // LogUtils.printDebug( "Setting data to: \"" + text + "\"" );
+
+        parserField.setValue( file );
+        icon.setFile( file );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void addValidityChanged( IValidityChangedListener l )
+    {
+        parserField.addValidityChanged( l );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void removeValidityChanged( IValidityChangedListener l )
+    {
+        parserField.removeValidityChanged( l );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public Validity getValidity()
+    {
+        return parserField.getValidity();
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setEditable( boolean editable )
+    {
+        button.setEnabled( editable );
+        parserField.setEditable( editable );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public String getName()
+    {
+        return parserField.getName();
     }
 
     /***************************************************************************
@@ -173,8 +333,6 @@ public class FileFormField implements IDataFormField<File>
     public void setUpdater( IUpdater<File> updater )
     {
         this.updater = updater;
-
-        field.addUpdater( ( f ) -> callUpdater( f ) );
     }
 
     /***************************************************************************
@@ -183,43 +341,85 @@ public class FileFormField implements IDataFormField<File>
     @Override
     public IUpdater<File> getUpdater()
     {
-        return updater;
+        return this.updater;
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * Adds the provided extension description and extensions to the file
+     * dialog.
+     * @param description the description of the file type denoted by the
+     * extension list.
+     * @param extensions the list of extensions of a file type (do not include
+     * the '.').
+     * @throws IllegalStateException if this field was initialized with
+     * {@link ExistenceType#DIRECTORY_ONLY}.
+     * @see FileChooserListener#addExtension(String, String...)
      **************************************************************************/
-    @Override
-    public void setEditable( boolean editable )
+    public void addExtension( String description, String... extensions )
+        throws IllegalStateException
     {
-        field.setEditable( editable );
-        view.setEditable( editable );
+        if( fileListener == null )
+        {
+            throw new IllegalStateException(
+                "Cannot add extensions to a chooser that is directory only" );
+        }
+
+        fileListener.addExtension( description, extensions );
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * Returns either the current path or the closest parent path that exists.
+     * @return the closest known existing path to the current path.
      **************************************************************************/
-    @Override
-    public void addValidityChanged( IValidityChangedListener l )
+    private File getDefaultFile()
     {
-        field.addValidityChanged( l );
+        File f = getValue();
+
+        while( f != null && !f.exists() )
+        {
+            f = f.getParentFile();
+        }
+
+        return f;
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * Displays the context menu on the button on right-click.
      **************************************************************************/
-    @Override
-    public void removeValidityChanged( IValidityChangedListener l )
+    private static class MenuListener extends MouseAdapter
     {
-        field.removeValidityChanged( l );
-    }
+        /** The field on which the menu is displayed. */
+        private final FileFormField field;
+        /** The menu to be displayed. */
+        private final FileContextMenu menu;
 
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public Validity getValidity()
-    {
-        return field.getValidity();
+        /**
+         * @param field the field on which the menu is displayed.
+         * @param parent the component to be used as the parent of the menu.
+         */
+        public MenuListener( FileFormField field, Component parent )
+        {
+            this.field = field;
+            this.menu = new FileContextMenu( parent );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void mouseClicked( MouseEvent e )
+        {
+            File file = field.getValue();
+
+            if( SwingUtilities.isRightMouseButton( e ) &&
+                e.getClickCount() == 1 )
+            {
+                Component c = e.getComponent();
+                int x = c.getWidth() / 2; // e.getX();
+                int y = c.getHeight() / 2; // e.getY();
+
+                menu.show( file, c, x, y );
+            }
+        }
     }
 }

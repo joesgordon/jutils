@@ -1,15 +1,30 @@
 package org.jutils.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 import org.jutils.SwingUtils;
-import org.jutils.ui.event.*;
+import org.jutils.ui.event.ItemActionEvent;
+import org.jutils.ui.event.ItemActionList;
+import org.jutils.ui.event.ItemActionListener;
 import org.jutils.ui.model.IView;
 
 /*******************************************************************************
@@ -252,7 +267,7 @@ public class OkDialogView implements IView<JDialog>
      **************************************************************************/
     public boolean show()
     {
-        return show( null );
+        return show( ( Dimension )null );
     }
 
     /***************************************************************************
@@ -290,6 +305,17 @@ public class OkDialogView implements IView<JDialog>
      * Shows the dialog after setting the provided parameters.
      * @param title the text displayed in the dialog's border; a {@code null}
      * value results in an empty title.
+     * @return {@code true} if the ok button was pressed, false otherwise.
+     **************************************************************************/
+    public boolean show( String title )
+    {
+        return show( title, ( Dimension )null );
+    }
+
+    /***************************************************************************
+     * Shows the dialog after setting the provided parameters.
+     * @param title the text displayed in the dialog's border; a {@code null}
+     * value results in an empty title.
      * @param size the desired size of the dialog shown or {@code null} to pack.
      * @return {@code true} if the ok button was pressed, false otherwise.
      **************************************************************************/
@@ -298,6 +324,18 @@ public class OkDialogView implements IView<JDialog>
         dialog.setTitle( title );
 
         return show( size );
+    }
+
+    /***************************************************************************
+     * Shows the dialog after setting the provided parameters.
+     * @param title the text displayed in the dialog's border; a {@code null}
+     * value results in an empty title.
+     * @param iconImages the list of icons displayed when asked by the system.
+     * @return {@code true} if the ok button was pressed, false otherwise.
+     **************************************************************************/
+    public boolean show( String title, List<Image> iconImages )
+    {
+        return show( title, iconImages, null );
     }
 
     /***************************************************************************

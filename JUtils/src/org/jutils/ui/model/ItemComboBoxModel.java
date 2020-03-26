@@ -1,6 +1,12 @@
 package org.jutils.ui.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import javax.swing.MutableComboBoxModel;
 import javax.swing.event.ListDataEvent;
@@ -20,8 +26,11 @@ public class ItemComboBoxModel<T> implements List<T>, MutableComboBoxModel<T>
     private final boolean autoAdd;
     /**  */
     private final List<T> items;
+
     /**  */
     private int selectedIndex;
+    /**  */
+    private T selectedItem;
 
     /***************************************************************************
      * 
@@ -58,6 +67,7 @@ public class ItemComboBoxModel<T> implements List<T>, MutableComboBoxModel<T>
 
         this.ldListeners = new ArrayList<ListDataListener>();
         this.selectedIndex = -1;
+        this.selectedItem = null;
     }
 
     /***************************************************************************
@@ -144,7 +154,7 @@ public class ItemComboBoxModel<T> implements List<T>, MutableComboBoxModel<T>
     @Override
     public T getSelectedItem()
     {
-        return selectedIndex > -1 ? items.get( selectedIndex ) : null;
+        return selectedItem;
     }
 
     /***************************************************************************
@@ -158,14 +168,16 @@ public class ItemComboBoxModel<T> implements List<T>, MutableComboBoxModel<T>
             @SuppressWarnings( "unchecked")
             T item = ( T )anItem;
 
+            this.selectedItem = item;
+
             if( item != null && item.toString().length() > 0 )
             {
                 selectedIndex = items.indexOf( item );
 
                 if( selectedIndex < 0 && autoAdd )
                 {
+                    selectedIndex = items.size();
                     items.add( item );
-                    selectedIndex = items.indexOf( item );
                 }
             }
             else

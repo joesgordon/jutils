@@ -48,7 +48,7 @@ public class StringLengthParser implements IParser<String>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String parse( String text ) throws ValidationException

@@ -216,7 +216,7 @@ public class TextHexView implements IDataView<byte []>
             button.setToolTipText( hexTooltip );
             String text = new String( view.hexField.getValue(),
                 HexAreaFormField.HEXSET );
-            view.textField.setText( text );
+            view.textField.setValue( text );
             view.msgView.setComponent( view.textField.getView() );
         }
     }
@@ -282,7 +282,7 @@ public class TextHexView implements IDataView<byte []>
     @Override
     public void setData( byte [] text )
     {
-        textField.setText( new String( text ) );
+        textField.setValue( new String( text, HexAreaFormField.HEXSET ) );
         hexField.setValue( text );
     }
 
@@ -318,7 +318,7 @@ public class TextHexView implements IDataView<byte []>
      **************************************************************************/
     public void setText( String text )
     {
-        textField.setText( text );
+        textField.setValue( text );
         hexField.setText( text );
     }
 }

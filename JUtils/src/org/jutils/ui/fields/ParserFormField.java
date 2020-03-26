@@ -8,7 +8,10 @@ import javax.swing.text.JTextComponent;
 
 import org.jutils.io.IParser;
 import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.validation.*;
+import org.jutils.ui.validation.IValidityChangedListener;
+import org.jutils.ui.validation.ValidationTextComponentField;
+import org.jutils.ui.validation.ValidationView;
+import org.jutils.ui.validation.Validity;
 import org.jutils.ui.validators.DataTextValidator;
 import org.jutils.ui.validators.ITextValidator;
 
@@ -32,6 +35,8 @@ public class ParserFormField<T> implements IDataFormField<T>
     private IUpdater<T> updater;
     /**  */
     private T value;
+    /**  */
+    private boolean isSetting;
 
     /***************************************************************************
      * @param name
@@ -73,21 +78,52 @@ public class ParserFormField<T> implements IDataFormField<T>
     public ParserFormField( String name, IParser<T> parser, JTextComponent comp,
         IDescriptor<T> itemDescriptor )
     {
+        this( name, parser, comp, itemDescriptor, comp );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param parser
+     * @param comp
+     * @param itemDescriptor
+     * @param fieldView
+     **************************************************************************/
+    public ParserFormField( String name, IParser<T> parser, JTextComponent comp,
+        IDescriptor<T> itemDescriptor, JComponent fieldView )
+    {
+        this( name, parser, comp, itemDescriptor, fieldView, null );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param parser
+     * @param comp
+     * @param itemDescriptor
+     * @param fieldView
+     **************************************************************************/
+    public ParserFormField( String name, IParser<T> parser, JTextComponent comp,
+        IDescriptor<T> itemDescriptor, JComponent fieldView, String units )
+    {
         this.name = name;
         this.textField = new ValidationTextComponentField<>( comp );
-        this.view = new ValidationView( textField );
+        this.view = new ValidationView( textField, units, fieldView );
         this.itemDescriptor = itemDescriptor == null
-            ? new DefaultItemDescriptor<T>() : itemDescriptor;
+            ? new DefaultItemDescriptor<T>()
+            : itemDescriptor;
+
+        this.updater = null;
+        this.value = null;
+        this.isSetting = false;
 
         ITextValidator textValidator;
-        IUpdater<T> updater = ( d ) -> update( d );
+        IUpdater<T> updater = ( d ) -> handleDataUpdated( d );
 
         textValidator = new DataTextValidator<>( parser, updater );
         textField.setValidator( textValidator );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getName()
@@ -96,7 +132,7 @@ public class ParserFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -105,7 +141,7 @@ public class ParserFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public T getValue()
@@ -114,7 +150,7 @@ public class ParserFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setValue( T value )
@@ -123,14 +159,13 @@ public class ParserFormField<T> implements IDataFormField<T>
 
         String text = itemDescriptor.getDescription( value );
 
-        IUpdater<T> updater = this.updater;
-        this.updater = null;
+        this.isSetting = true;
         textField.setText( text );
-        this.updater = updater;
+        this.isSetting = false;
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setUpdater( IUpdater<T> updater )
@@ -139,7 +174,7 @@ public class ParserFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public IUpdater<T> getUpdater()
@@ -148,7 +183,7 @@ public class ParserFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setEditable( boolean editable )
@@ -157,7 +192,7 @@ public class ParserFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
@@ -166,7 +201,7 @@ public class ParserFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
@@ -175,7 +210,7 @@ public class ParserFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
@@ -186,11 +221,11 @@ public class ParserFormField<T> implements IDataFormField<T>
     /***************************************************************************
      * @param data
      **************************************************************************/
-    private void update( T data )
+    private void handleDataUpdated( T data )
     {
         value = data;
 
-        if( updater != null )
+        if( updater != null && !isSetting )
         {
             updater.update( data );
         }

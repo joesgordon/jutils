@@ -12,7 +12,7 @@ import org.jutils.data.UIProperty;
 import org.jutils.ui.validators.ITextValidator;
 
 /*******************************************************************************
- * 
+ * @param <T>
  ******************************************************************************/
 public class ValidationTextComponentField<T extends JTextComponent>
     implements IValidationField
@@ -48,10 +48,18 @@ public class ValidationTextComponentField<T extends JTextComponent>
         this.validator = null;
 
         field.getDocument().addDocumentListener(
-            new ValidationDocumentListener( this ) );
+            new ValidationDocumentListener( () -> handleTextChanged() ) );
         field.setBackground( validBackground );
 
         setComponentValid( listenerList.getValidity().isValid );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void handleTextChanged()
+    {
+        validateText();
     }
 
     /***************************************************************************
@@ -174,7 +182,7 @@ public class ValidationTextComponentField<T extends JTextComponent>
     }
 
     /***************************************************************************
-     * @param name
+     * @param text
      **************************************************************************/
     public void setText( String text )
     {
@@ -182,6 +190,7 @@ public class ValidationTextComponentField<T extends JTextComponent>
 
         if( text == null )
         {
+            // TODO Is this needed? If so leave a comment saying why.
             listenerList.signalValidity();
             setComponentValid( true );
         }
@@ -221,15 +230,14 @@ public class ValidationTextComponentField<T extends JTextComponent>
     private static class ValidationDocumentListener implements DocumentListener
     {
         /**  */
-        private ValidationTextComponentField<?> field;
+        private final Runnable callback;
 
         /**
-         * @param field
+         * @param callback
          */
-        public ValidationDocumentListener(
-            ValidationTextComponentField<?> field )
+        public ValidationDocumentListener( Runnable callback )
         {
-            this.field = field;
+            this.callback = callback;
         }
 
         /**
@@ -239,7 +247,7 @@ public class ValidationTextComponentField<T extends JTextComponent>
         public void removeUpdate( DocumentEvent e )
         {
             // LogUtils.printDebug( "Updating text" );
-            field.validateText();
+            callback.run();
         }
 
         /**
@@ -249,7 +257,7 @@ public class ValidationTextComponentField<T extends JTextComponent>
         public void insertUpdate( DocumentEvent e )
         {
             // LogUtils.printDebug( "Inserting text" );
-            field.validateText();
+            callback.run();
         }
 
         /**
@@ -259,7 +267,7 @@ public class ValidationTextComponentField<T extends JTextComponent>
         public void changedUpdate( DocumentEvent e )
         {
             // LogUtils.printDebug( "Changing text" );
-            field.validateText();
+            callback.run();
         }
     }
 }
