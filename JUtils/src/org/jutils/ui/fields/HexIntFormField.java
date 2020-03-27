@@ -2,6 +2,7 @@ package org.jutils.ui.fields;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 import org.jutils.io.parsers.HexIntegerParser;
 import org.jutils.ui.event.updater.IUpdater;
@@ -184,5 +185,10 @@ public class HexIntFormField implements IDataFormField<Integer>
         }
 
         return text;
+    }
+
+    public JTextComponent getTextField()
+    {
+        return field.getTextField();
     }
 }

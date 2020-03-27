@@ -238,4 +238,12 @@ public class ParserFormField<T> implements IDataFormField<T>
     {
         textField.getView().addMouseListener( listener );
     }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JTextComponent getTextField()
+    {
+        return textField.getView();
+    }
 }
