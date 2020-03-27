@@ -15,19 +15,19 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import org.jutils.IconConstants;
 import org.jutils.chart.model.TextLabel;
-import org.jutils.ui.OkDialogView;
-import org.jutils.ui.event.ActionAdapter;
-import org.jutils.ui.event.ItemActionEvent;
-import org.jutils.ui.event.ItemActionListener;
-import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.fields.BooleanFormField;
-import org.jutils.ui.fields.ColorField;
-import org.jutils.ui.fields.IDataFormField;
-import org.jutils.ui.fields.StringFormField;
-import org.jutils.ui.validation.IValidityChangedListener;
-import org.jutils.ui.validation.Validity;
+import org.jutils.core.IconConstants;
+import org.jutils.core.ui.OkDialogView;
+import org.jutils.core.ui.event.ActionAdapter;
+import org.jutils.core.ui.event.ItemActionEvent;
+import org.jutils.core.ui.event.ItemActionListener;
+import org.jutils.core.ui.event.updater.IUpdater;
+import org.jutils.core.ui.fields.BooleanFormField;
+import org.jutils.core.ui.fields.ColorField;
+import org.jutils.core.ui.fields.IDataFormField;
+import org.jutils.core.ui.fields.StringFormField;
+import org.jutils.core.ui.validation.IValidityChangedListener;
+import org.jutils.core.ui.validation.Validity;
 
 /*******************************************************************************
  * 

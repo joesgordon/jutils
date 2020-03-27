@@ -4,13 +4,13 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jutils.Utils;
 import org.jutils.chart.data.Tick;
 import org.jutils.chart.data.TickGen;
 import org.jutils.chart.model.*;
 import org.jutils.chart.ui.IChartWidget;
 import org.jutils.chart.ui.Layer2d;
 import org.jutils.chart.ui.objects.PlotContext.IAxisCoords;
+import org.jutils.core.Utils;
 
 /*******************************************************************************
  * 

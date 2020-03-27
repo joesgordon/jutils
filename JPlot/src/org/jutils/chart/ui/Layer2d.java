@@ -3,7 +3,7 @@ package org.jutils.chart.ui;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import org.jutils.Utils;
+import org.jutils.core.Utils;
 
 /*******************************************************************************
  * 

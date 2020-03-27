@@ -4,10 +4,10 @@ import java.awt.Component;
 
 import org.jutils.chart.data.QuadSide;
 import org.jutils.chart.model.Legend;
-import org.jutils.ui.StandardFormView;
-import org.jutils.ui.TitleView;
-import org.jutils.ui.fields.*;
-import org.jutils.ui.model.IDataView;
+import org.jutils.core.ui.StandardFormView;
+import org.jutils.core.ui.TitleView;
+import org.jutils.core.ui.fields.*;
+import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
  * 

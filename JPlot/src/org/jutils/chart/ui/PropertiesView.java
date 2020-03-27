@@ -20,9 +20,9 @@ import org.jutils.chart.model.Axis;
 import org.jutils.chart.model.Chart;
 import org.jutils.chart.model.Legend;
 import org.jutils.chart.model.Series;
-import org.jutils.ui.TitleView;
-import org.jutils.ui.model.IDataView;
-import org.jutils.ui.model.IView;
+import org.jutils.core.ui.TitleView;
+import org.jutils.core.ui.model.IDataView;
+import org.jutils.core.ui.model.IView;
 
 /*******************************************************************************
  * 

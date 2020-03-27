@@ -4,9 +4,9 @@ import java.awt.*;
 
 import javax.swing.JComponent;
 
-import org.jutils.ui.IPaintable;
-import org.jutils.ui.PaintingComponent;
-import org.jutils.ui.model.IView;
+import org.jutils.core.ui.IPaintable;
+import org.jutils.core.ui.PaintingComponent;
+import org.jutils.core.ui.model.IView;
 
 /*******************************************************************************
  * 

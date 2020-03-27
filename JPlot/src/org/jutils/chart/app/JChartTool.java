@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import org.jutils.chart.ChartIcons;
-import org.jutils.ui.IToolView;
+import org.jutils.core.ui.IToolView;
 
 /*******************************************************************************
  * 

@@ -13,16 +13,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
-import org.jutils.IconConstants;
-import org.jutils.SwingUtils;
 import org.jutils.chart.ChartIcons;
 import org.jutils.chart.ChartUtils;
 import org.jutils.chart.model.ISeriesData;
 import org.jutils.chart.model.Series;
 import org.jutils.chart.ui.ChartView;
-import org.jutils.ui.StandardFrameView;
-import org.jutils.ui.event.ActionAdapter;
-import org.jutils.ui.model.IView;
+import org.jutils.core.IconConstants;
+import org.jutils.core.SwingUtils;
+import org.jutils.core.ui.StandardFrameView;
+import org.jutils.core.ui.event.ActionAdapter;
+import org.jutils.core.ui.model.IView;
 
 /*******************************************************************************
  * 
