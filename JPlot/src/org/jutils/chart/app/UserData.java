@@ -2,7 +2,7 @@ package org.jutils.chart.app;
 
 import java.io.File;
 
-import org.jutils.utils.MaxQueue;
+import org.jutils.core.utils.MaxQueue;
 
 /*******************************************************************************
  * 

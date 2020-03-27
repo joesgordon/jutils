@@ -11,15 +11,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 
-import org.jutils.IconConstants;
-import org.jutils.SwingUtils;
 import org.jutils.chart.model.Chart;
 import org.jutils.chart.model.Series;
 import org.jutils.chart.ui.event.SaveSeriesDataListener;
-import org.jutils.ui.JGoodiesToolBar;
-import org.jutils.ui.event.ActionAdapter;
-import org.jutils.ui.event.FileChooserListener;
-import org.jutils.ui.model.IDataView;
+import org.jutils.core.IconConstants;
+import org.jutils.core.SwingUtils;
+import org.jutils.core.ui.JGoodiesToolBar;
+import org.jutils.core.ui.event.ActionAdapter;
+import org.jutils.core.ui.event.FileChooserListener;
+import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
  * 

@@ -14,9 +14,9 @@ import java.util.regex.Pattern;
 
 import org.jutils.chart.data.XYPoint;
 import org.jutils.chart.model.ChartOptions.PointRemovalMethod;
+import org.jutils.core.io.FilePrintStream;
+import org.jutils.core.io.IOUtils;
 import org.jutils.chart.model.ISeriesData;
-import org.jutils.io.FilePrintStream;
-import org.jutils.io.IOUtils;
 
 /*******************************************************************************
  * Writes {@link ISeriesData} to a file (or from one file to another).

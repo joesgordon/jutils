@@ -4,11 +4,11 @@ import java.awt.Component;
 
 import org.jutils.chart.model.Chart;
 import org.jutils.chart.model.ChartOptions.PointRemovalMethod;
-import org.jutils.ui.StandardFormView;
-import org.jutils.ui.fields.BooleanFormField;
-import org.jutils.ui.fields.ComboFormField;
-import org.jutils.ui.fields.NamedItemDescriptor;
-import org.jutils.ui.model.IDataView;
+import org.jutils.core.ui.StandardFormView;
+import org.jutils.core.ui.fields.BooleanFormField;
+import org.jutils.core.ui.fields.ComboFormField;
+import org.jutils.core.ui.fields.NamedItemDescriptor;
+import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
  * Defines the set of components that edit a {@link Chart}'s properties.

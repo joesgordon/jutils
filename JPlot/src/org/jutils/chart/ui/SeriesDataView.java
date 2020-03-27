@@ -5,12 +5,12 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 
-import org.jutils.Utils;
 import org.jutils.chart.model.ISeriesData;
-import org.jutils.data.UIProperty;
-import org.jutils.ui.model.IDataView;
-import org.jutils.ui.model.LabelTableCellRenderer;
-import org.jutils.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
+import org.jutils.core.Utils;
+import org.jutils.core.data.UIProperty;
+import org.jutils.core.ui.model.IDataView;
+import org.jutils.core.ui.model.LabelTableCellRenderer;
+import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
 
 /*******************************************************************************
  * 

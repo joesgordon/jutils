@@ -9,12 +9,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import org.jutils.ValidationException;
 import org.jutils.chart.data.DefaultSeries;
 import org.jutils.chart.data.XYPoint;
 import org.jutils.chart.model.ISeriesData;
-import org.jutils.io.IOUtils;
-import org.jutils.io.IReader;
+import org.jutils.core.ValidationException;
+import org.jutils.core.io.IOUtils;
+import org.jutils.core.io.IReader;
 
 /*******************************************************************************
  * 

@@ -4,18 +4,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.jutils.OptionUtils;
-import org.jutils.Utils;
 import org.jutils.chart.app.JChartAppConstants;
 import org.jutils.chart.app.UserData;
 import org.jutils.chart.io.FilteredWriter;
 import org.jutils.chart.model.ChartOptions.PointRemovalMethod;
+import org.jutils.core.OptionUtils;
+import org.jutils.core.Utils;
+import org.jutils.core.io.IOUtils;
+import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
+import org.jutils.core.ui.event.FileChooserListener.ILastFile;
+import org.jutils.core.ui.model.IDataView;
 import org.jutils.chart.model.Series;
-import org.jutils.io.IOUtils;
-import org.jutils.io.options.OptionsSerializer;
-import org.jutils.ui.event.FileChooserListener.IFileSelected;
-import org.jutils.ui.event.FileChooserListener.ILastFile;
-import org.jutils.ui.model.IDataView;
 
 /***************************************************************************
  * 

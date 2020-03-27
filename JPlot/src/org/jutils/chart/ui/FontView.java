@@ -6,13 +6,13 @@ import java.util.List;
 
 import javax.swing.*;
 
-import org.jutils.ui.FontChooserView;
-import org.jutils.ui.StandardFormView;
-import org.jutils.ui.event.updater.IUpdater;
-import org.jutils.ui.event.updater.ListUpdater;
-import org.jutils.ui.model.IDataView;
-import org.jutils.ui.model.LabelListCellRenderer;
-import org.jutils.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
+import org.jutils.core.ui.FontChooserView;
+import org.jutils.core.ui.StandardFormView;
+import org.jutils.core.ui.event.updater.IUpdater;
+import org.jutils.core.ui.event.updater.ListUpdater;
+import org.jutils.core.ui.model.IDataView;
+import org.jutils.core.ui.model.LabelListCellRenderer;
+import org.jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
 
 /*******************************************************************************
  * 

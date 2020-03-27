@@ -2,9 +2,9 @@ package org.jutils.chart.io;
 
 import java.util.List;
 
-import org.jutils.Utils;
 import org.jutils.chart.data.XYPoint;
 import org.jutils.chart.model.ChartOptions;
+import org.jutils.core.Utils;
 
 /*******************************************************************************
  * 

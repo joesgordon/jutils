@@ -8,11 +8,11 @@ import javax.swing.JPanel;
 import org.jutils.chart.data.DefaultSeries;
 import org.jutils.chart.data.XYPoint;
 import org.jutils.chart.model.Series;
-import org.jutils.ui.StandardFormView;
-import org.jutils.ui.TitleView;
-import org.jutils.ui.fields.BooleanFormField;
-import org.jutils.ui.fields.StringFormField;
-import org.jutils.ui.model.IDataView;
+import org.jutils.core.ui.StandardFormView;
+import org.jutils.core.ui.TitleView;
+import org.jutils.core.ui.fields.BooleanFormField;
+import org.jutils.core.ui.fields.StringFormField;
+import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
  * 

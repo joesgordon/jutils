@@ -3,11 +3,11 @@ package org.jutils.chart.ui;
 import java.awt.Component;
 
 import org.jutils.chart.data.SaveOptions;
-import org.jutils.io.parsers.ExistenceType;
-import org.jutils.ui.StandardFormView;
-import org.jutils.ui.fields.FileFormField;
-import org.jutils.ui.fields.IntegerFormField;
-import org.jutils.ui.model.IDataView;
+import org.jutils.core.io.parsers.ExistenceType;
+import org.jutils.core.ui.StandardFormView;
+import org.jutils.core.ui.fields.FileFormField;
+import org.jutils.core.ui.fields.IntegerFormField;
+import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
  * 

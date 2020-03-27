@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.jutils.chart.data.TickGen.TickMetrics;
 import org.jutils.chart.model.Axis;
 import org.jutils.chart.model.Interval;
-import org.jutils.io.LogUtils;
+import org.jutils.core.io.LogUtils;
 
 /*******************************************************************************
  * 

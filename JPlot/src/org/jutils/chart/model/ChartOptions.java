@@ -1,6 +1,6 @@
 package org.jutils.chart.model;
 
-import org.jutils.INamedItem;
+import org.jutils.core.INamedItem;
 
 /*******************************************************************************
  * Defines the options for a chart.

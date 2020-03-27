@@ -6,9 +6,9 @@ import javax.swing.JPanel;
 
 import org.jutils.chart.model.MarkerStyle;
 import org.jutils.chart.model.MarkerType;
-import org.jutils.ui.StandardFormView;
-import org.jutils.ui.fields.*;
-import org.jutils.ui.model.IDataView;
+import org.jutils.core.ui.StandardFormView;
+import org.jutils.core.ui.fields.*;
+import org.jutils.core.ui.model.IDataView;
 
 public class MarkerStyleView implements IDataView<MarkerStyle>
 {

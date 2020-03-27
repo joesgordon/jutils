@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
-import org.jutils.SwingUtils;
 import org.jutils.chart.ChartUtils;
 import org.jutils.chart.model.IDataPoint;
 import org.jutils.chart.model.Interval;
@@ -15,6 +14,7 @@ import org.jutils.chart.ui.lines.SimpleLine;
 import org.jutils.chart.ui.markers.CircleBorderMarker;
 import org.jutils.chart.ui.markers.CircleMarker;
 import org.jutils.chart.ui.objects.PlotContext.IAxisCoords;
+import org.jutils.core.SwingUtils;
 
 /*******************************************************************************
  * 

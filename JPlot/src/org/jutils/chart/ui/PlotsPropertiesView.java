@@ -6,9 +6,9 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import org.jutils.chart.model.Series;
-import org.jutils.ui.ListView;
-import org.jutils.ui.ListView.IItemListModel;
-import org.jutils.ui.model.IDataView;
+import org.jutils.core.ui.ListView;
+import org.jutils.core.ui.ListView.IItemListModel;
+import org.jutils.core.ui.model.IDataView;
 
 /***************************************************************************
  * 

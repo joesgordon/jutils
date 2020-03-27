@@ -6,13 +6,13 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-import org.jutils.*;
-import org.jutils.io.LogUtils;
-import org.jutils.ui.JGoodiesToolBar;
-import org.jutils.ui.StandardFrameView;
-import org.jutils.ui.app.FrameRunner;
-import org.jutils.ui.app.IFrameApp;
-import org.jutils.ui.event.ActionAdapter;
+import org.jutils.core.*;
+import org.jutils.core.io.LogUtils;
+import org.jutils.core.ui.JGoodiesToolBar;
+import org.jutils.core.ui.StandardFrameView;
+import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.IFrameApp;
+import org.jutils.core.ui.event.ActionAdapter;
 
 /*******************************************************************************
  * 

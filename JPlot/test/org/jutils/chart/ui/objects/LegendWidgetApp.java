@@ -6,15 +6,15 @@ import java.util.List;
 
 import javax.swing.*;
 
-import org.jutils.IconConstants;
 import org.jutils.chart.ChartUtils;
 import org.jutils.chart.data.QuadSide;
 import org.jutils.chart.model.*;
 import org.jutils.chart.ui.WidgetPanel;
-import org.jutils.ui.JGoodiesToolBar;
-import org.jutils.ui.StandardFrameView;
-import org.jutils.ui.app.FrameRunner;
-import org.jutils.ui.app.IFrameApp;
+import org.jutils.core.IconConstants;
+import org.jutils.core.ui.JGoodiesToolBar;
+import org.jutils.core.ui.StandardFrameView;
+import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.IFrameApp;
 
 public class LegendWidgetApp
 {

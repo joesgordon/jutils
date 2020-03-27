@@ -2,8 +2,8 @@ package org.jutils.chart.app;
 
 import java.io.File;
 
-import org.jutils.io.IOUtils;
-import org.jutils.io.options.OptionsSerializer;
+import org.jutils.core.io.IOUtils;
+import org.jutils.core.io.options.OptionsSerializer;
 
 /*******************************************************************************
  * 
