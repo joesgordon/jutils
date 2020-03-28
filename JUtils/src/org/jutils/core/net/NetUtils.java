@@ -81,11 +81,66 @@ public final class NetUtils
         return nics;
     }
 
+    /**
+     * @param nicString
+     * @return
+     */
+    public static NicInfo lookupInfo( String nicString )
+    {
+        NicInfo info = null;
+        List<NicInfo> nics = buildNicList();
+
+        if( nicString == null )
+        {
+            info = getAnyInfo();
+        }
+        else
+        {
+            for( NicInfo ni : nics )
+            {
+                if( ni.name.toLowerCase().equals( nicString.toLowerCase() ) )
+                {
+                    info = ni;
+                    break;
+                }
+                else if( ni.addressString.equals( nicString ) )
+                {
+                    info = ni;
+                    break;
+                }
+            }
+
+            if( info == null )
+            {
+                List<String> octects = Utils.split( nicString, '.' );
+
+                if( octects.size() < 3 )
+                {
+                    return null;
+                }
+
+                String firstThree = octects.get( 0 ) + "." + octects.get( 1 ) +
+                    "." + octects.get( 2 ) + ".";
+
+                for( NicInfo ni : nics )
+                {
+                    if( ni.addressString.startsWith( firstThree ) )
+                    {
+                        info = ni;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return info;
+    }
+
     /***************************************************************************
      * @param nicString
      * @return
      **************************************************************************/
-    public static InetAddress lookupNic( String nicString )
+    public static InetAddress lookupNetAddress( String nicString )
     {
         InetAddress address = null;
         List<NicInfo> nics = buildNicList();
@@ -150,7 +205,7 @@ public final class NetUtils
     public static void validateNicString( String nicString, String name )
         throws ValidationException
     {
-        if( lookupNic( nicString ) == null )
+        if( lookupNetAddress( nicString ) == null )
         {
             throw new ValidationException(
                 "No Network Interface found for string \"" + name + "\"" );
@@ -169,7 +224,7 @@ public final class NetUtils
      * never happen and it is unclear from the documentation when/why the latter
      * would happen.
      **************************************************************************/
-    public static InetAddress getNicAddress( String nicName )
+    public static InetAddress getNetAddress( String nicName )
         throws RuntimeException
     {
         InetAddress nicAddr = null;
@@ -180,7 +235,7 @@ public final class NetUtils
             {
                 NetworkInterface nic = NetworkInterface.getByName( nicName );
 
-                nicAddr = getNicAddress( nic );
+                nicAddr = getNetAddress( nic );
             }
             catch( SocketException ex )
             {
@@ -191,7 +246,7 @@ public final class NetUtils
 
         if( nicAddr == null )
         {
-            nicAddr = getAnyLocalAddress();
+            nicAddr = getAnyNetAddress();
         }
 
         return nicAddr;
@@ -203,7 +258,7 @@ public final class NetUtils
      * @return The first address of the network interface of the provided name
      * or {@code null} if none found or privoded interface is {@code null}.
      **************************************************************************/
-    public static InetAddress getNicAddress( NetworkInterface nic )
+    public static InetAddress getNetAddress( NetworkInterface nic )
     {
         if( nic != null )
         {
@@ -223,7 +278,7 @@ public final class NetUtils
      * @throws RuntimeException if the implementing JRE is so strange as to not
      * recognize 0.0.0.0 as a valid address.
      **************************************************************************/
-    public static InetAddress getAnyLocalAddress()
+    public static InetAddress getAnyNetAddress()
     {
         byte [] inAddrAnyBytes = new byte[] { 0, 0, 0, 0 };
 
@@ -235,6 +290,26 @@ public final class NetUtils
         {
             throw new RuntimeException(
                 "0.0.0.0 not recognized as a valid address", ex );
+        }
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static NicInfo getAnyInfo()
+    {
+        InetAddress address = getAnyNetAddress();
+        try
+        {
+            NetworkInterface nic = NetworkInterface.getByInetAddress( address );
+            NicInfo info = new NicInfo( nic, address );
+
+            return info;
+        }
+        catch( SocketException ex )
+        {
+            throw new IllegalStateException(
+                "ANY address not found: " + ex.getMessage() );
         }
     }
 

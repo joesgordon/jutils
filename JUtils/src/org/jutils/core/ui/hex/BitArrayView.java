@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import org.jutils.core.ui.event.updater.IUpdater;
 import org.jutils.core.ui.fields.BitsFormField;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.validation.AggregateValidityChangedManager;
@@ -38,15 +37,6 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
 
     /** The manager combining the validity of all components. */
     private final AggregateValidityChangedManager validityManager;
-    /**  */
-    private final BitsUpdater bitsUpdater;
-    /**  */
-    private final LeftUpdater leftUpdater;
-    /**  */
-    private final RightUpdater rightUpdater;
-
-    /**  */
-    private IUpdater<BitArray> updater;
 
     /**  */
     private BitArray bits;
@@ -62,11 +52,6 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
         this.view = createView();
 
         this.validityManager = new AggregateValidityChangedManager();
-        this.bitsUpdater = new BitsUpdater( this );
-        this.leftUpdater = new LeftUpdater( this );
-        this.rightUpdater = new RightUpdater( this );
-
-        this.updater = null;
 
         bitsField.getView().setToolTipText( "Bits Text" );
         leftField.getView().setToolTipText( "Left Aligned Hex Text" );
@@ -78,13 +63,51 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
         validityManager.addField( leftField );
         validityManager.addField( rightField );
 
-        bitsField.setUpdater( bitsUpdater );
-        leftField.setUpdater( leftUpdater );
-        rightField.setUpdater( rightUpdater );
+        bitsField.setUpdater( ( d ) -> handleBitsChanged( d ) );
+        leftField.setUpdater( ( d ) -> handleLeftChanged( d ) );
+        rightField.setUpdater( ( d ) -> handleRightChanged( d ) );
     }
 
     /***************************************************************************
-     * @return
+     * @param bits
+     **************************************************************************/
+    private void handleBitsChanged( BitArray bits )
+    {
+        this.bits.set( bits );
+
+        byte [] aligned;
+
+        aligned = bits.getLeftAligned();
+        leftField.setValue( aligned );
+
+        aligned = bits.getRightAligned();
+        rightField.setValue( aligned );
+    }
+
+    /***************************************************************************
+     * @param data
+     **************************************************************************/
+    private void handleLeftChanged( byte [] data )
+    {
+        bits.set( data );
+
+        bitsField.setValue( bits );
+        rightField.setValue( bits.getRightAligned() );
+    }
+
+    /***************************************************************************
+     * @param data
+     **************************************************************************/
+    private void handleRightChanged( byte [] data )
+    {
+        bits.set( data );
+
+        bitsField.setValue( bits );
+        leftField.setValue( bits.getLeftAligned() );
+    }
+
+    /***************************************************************************
+     * @return the new main panel for this view.
      **************************************************************************/
     private JPanel createView()
     {
@@ -110,15 +133,7 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
     }
 
     /***************************************************************************
-     * @param updater
-     **************************************************************************/
-    public void setUpdater( IUpdater<BitArray> updater )
-    {
-        this.updater = updater;
-    }
-
-    /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JPanel getView()
@@ -127,7 +142,7 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public BitArray getData()
@@ -136,7 +151,7 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setData( BitArray bits )
@@ -147,7 +162,7 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
@@ -156,7 +171,7 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
@@ -165,166 +180,11 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
         return validityManager.getValidity();
-    }
-
-    /***************************************************************************
-     * @param <T>
-     **************************************************************************/
-    private static abstract class AbstractUpdater<T> implements IUpdater<T>
-    {
-        /**  */
-        private boolean enabled = true;
-
-        /**
-         * @param enabled
-         */
-        public void setEnabled( boolean enabled )
-        {
-            // this.enabled = enabled;
-        }
-
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public final void update( T data )
-        {
-            if( enabled )
-            {
-                updateValue( data );
-            }
-        }
-
-        /**
-         * @param value
-         */
-        public abstract void updateValue( T value );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class BitsUpdater extends AbstractUpdater<BitArray>
-    {
-        /**  */
-        private final BitArrayView view;
-
-        /**
-         * @param view
-         */
-        public BitsUpdater( BitArrayView view )
-        {
-            this.view = view;
-        }
-
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public void updateValue( BitArray bits )
-        {
-            view.bits.set( bits );
-
-            byte [] aligned;
-
-            aligned = view.bits.getLeftAligned();
-            view.leftUpdater.setEnabled( false );
-            view.leftField.setValue( aligned );
-            view.leftUpdater.setEnabled( true );
-
-            aligned = view.bits.getRightAligned();
-            view.rightUpdater.setEnabled( false );
-            view.rightField.setValue( aligned );
-            view.rightUpdater.setEnabled( true );
-
-            if( view.updater != null )
-            {
-                view.updater.update( view.bits );
-            }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class LeftUpdater extends AbstractUpdater<byte []>
-    {
-        /**  */
-        private final BitArrayView view;
-
-        /**
-         * @param view
-         */
-        public LeftUpdater( BitArrayView view )
-        {
-            this.view = view;
-        }
-
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public void updateValue( byte [] data )
-        {
-            view.bits.set( data );
-
-            view.bitsUpdater.setEnabled( false );
-            view.bitsField.setValue( view.bits );
-            view.bitsUpdater.setEnabled( true );
-
-            view.rightUpdater.setEnabled( false );
-            view.rightField.setValue( view.bits.getRightAligned() );
-            view.rightUpdater.setEnabled( true );
-
-            if( view.updater != null )
-            {
-                view.updater.update( view.bits );
-            }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class RightUpdater extends AbstractUpdater<byte []>
-    {
-        /**  */
-        private final BitArrayView view;
-
-        /**
-         * @param view
-         */
-        public RightUpdater( BitArrayView view )
-        {
-            this.view = view;
-        }
-
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public void updateValue( byte [] data )
-        {
-            view.bits.set( data );
-
-            view.bitsUpdater.setEnabled( false );
-            view.bitsField.setValue( view.bits );
-            view.bitsUpdater.setEnabled( true );
-
-            view.leftUpdater.setEnabled( false );
-            view.leftField.setValue( view.bits.getLeftAligned() );
-            view.leftUpdater.setEnabled( true );
-
-            if( view.updater != null )
-            {
-                view.updater.update( view.bits );
-            }
-        }
     }
 }

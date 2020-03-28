@@ -2,7 +2,10 @@ package org.jutils.core.net;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 /*******************************************************************************
  * 
@@ -18,7 +21,7 @@ public class TcpServer implements Closeable
      **************************************************************************/
     public TcpServer( TcpInputs inputs ) throws IOException
     {
-        InetAddress nicAddr = NetUtils.lookupNic( inputs.nic );
+        InetAddress nicAddr = NetUtils.lookupNetAddress( inputs.nic );
 
         if( nicAddr == null )
         {

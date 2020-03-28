@@ -1,7 +1,12 @@
 package org.jutils.core.net;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 
 /*******************************************************************************
@@ -27,7 +32,7 @@ public class UdpConnection implements IConnection
     public UdpConnection( UdpInputs inputs ) throws IOException, SocketException
     {
         DatagramSocket socket;
-        InetAddress nicAddr = NetUtils.lookupNic( inputs.nic );
+        InetAddress nicAddr = NetUtils.lookupNetAddress( inputs.nic );
 
         if( nicAddr == null )
         {

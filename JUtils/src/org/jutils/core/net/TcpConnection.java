@@ -1,8 +1,17 @@
 package org.jutils.core.net;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jutils.core.io.IOUtils;
 
@@ -100,7 +109,7 @@ public class TcpConnection implements IConnection
     {
         Socket socket = null;
 
-        InetAddress nicAddr = NetUtils.lookupNic( inputs.nic );
+        InetAddress nicAddr = NetUtils.lookupNetAddress( inputs.nic );
 
         if( nicAddr == null )
         {

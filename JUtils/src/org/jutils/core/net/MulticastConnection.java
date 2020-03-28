@@ -1,8 +1,16 @@
 package org.jutils.core.net;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.StandardSocketOptions;
 import java.util.Arrays;
+
+import org.jutils.core.net.NetUtils.NicInfo;
 
 /*******************************************************************************
  * 
@@ -29,6 +37,9 @@ public class MulticastConnection implements IConnection
      **************************************************************************/
     public MulticastConnection( MulticastInputs inputs ) throws IOException
     {
+        // ---------------------------------------------------------------------
+        // Check inputs
+        // ---------------------------------------------------------------------
         if( inputs.port < 1 || inputs.port > 65535 )
         {
             throw new IOException( "Invalid port: " + inputs.port );
@@ -39,6 +50,16 @@ public class MulticastConnection implements IConnection
             throw new IOException( "Invalid Time to Live: " + inputs.ttl );
         }
 
+        // ---------------------------------------------------------------------
+        // Lookup NIC.
+        // ---------------------------------------------------------------------
+
+        NicInfo info = NetUtils.lookupInfo( inputs.nic );
+
+        // ---------------------------------------------------------------------
+        // Set members and open the socket.
+        // ---------------------------------------------------------------------
+
         this.address = inputs.group.getInetAddress();
         this.rxBuffer = new byte[65536];
         this.socket = new MulticastSocket( inputs.port );
@@ -46,38 +67,17 @@ public class MulticastConnection implements IConnection
             inputs.port );
         this.port = inputs.port;
 
-        this.socket.setLoopbackMode( !inputs.loopback );
+        this.socket.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
+            inputs.loopback );
         this.socket.setTimeToLive( inputs.ttl );
         this.socket.setSoTimeout( inputs.timeout );
 
-        InetAddress any = InetAddress.getByAddress( new byte[] { 0, 0, 0, 0 } );
-        InetAddress nicAddr = null;
-
-        if( inputs.nic != null )
-        {
-            nicAddr = NetUtils.lookupNic( inputs.nic );
-
-            if( nicAddr == null )
-            {
-                throw new IOException( "Nic not found: " + inputs.nic );
-            }
-
-            if( !nicAddr.equals( any ) )
-            {
-                // this.socket.setNetworkInterface( nic );
-                this.socket.setInterface( nicAddr );
-            }
-        }
-        else
-        {
-            nicAddr = any;
-        }
-
-        this.localAddress = nicAddr.getHostAddress();
+        this.localAddress = info.addressString;
 
         try
         {
-            this.socket.joinGroup( address );
+            SocketAddress maddr = new InetSocketAddress( address, port );
+            this.socket.joinGroup( maddr, info.nic );
         }
         catch( SocketException ex )
         {
