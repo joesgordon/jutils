@@ -22,17 +22,18 @@ public class ExtensionFilter extends FileFilter implements java.io.FileFilter
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public boolean accept( File f )
     {
+        LogUtils.printDebug( "Checking %s", f.getAbsoluteFile() );
         return f.isDirectory() ||
             ( f.isFile() && f.getName().endsWith( extension ) );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getDescription()

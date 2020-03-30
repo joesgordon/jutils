@@ -3,7 +3,6 @@ package org.jutils.core.io;
 import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,13 +19,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.jutils.core.OptionUtils;
+import org.jutils.core.OptionUtils.YncAnswer;
 import org.jutils.core.Utils;
 import org.jutils.core.ValidationException;
-import org.jutils.core.OptionUtils.YncAnswer;
 import org.jutils.core.data.SystemProperty;
 import org.jutils.core.io.parsers.ExistenceType;
 
@@ -845,12 +843,19 @@ public final class IOUtils
      **************************************************************************/
     public static List<File> getAllFiles( File dir, String ext )
     {
-        FileFilter filter = new ExtensionFilter( ext );
-        File [] fa = dir.listFiles( filter );
-        fa = fa == null ? new File[0] : fa;
-        List<File> files = new ArrayList<>( fa.length );
+        List<File> files = new ArrayList<>();
 
-        Collections.addAll( files, fa );
+        try
+        {
+            Files.walk( dir.toPath() ).filter( Files::isRegularFile ).filter(
+                ( p ) -> p.toString().endsWith( "." + ext ) ).forEach(
+                    ( f ) -> files.add( f.toFile() ) );
+        }
+        catch( IOException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         return files;
     }
