@@ -213,7 +213,7 @@ public class ShiftHexView implements IView<JComponent>
     /***************************************************************************
      * @return
      **************************************************************************/
-    public BitPosition getSelectedPostion()
+    public BitPosition getSelectedPosition()
     {
         BitPosition pos = null;
         int selectedByte = hexPanel.getSelectedByte();
@@ -380,7 +380,7 @@ public class ShiftHexView implements IView<JComponent>
 
             if( view.lastSearch != null )
             {
-                BitPosition pos = view.getSelectedPostion();
+                BitPosition pos = view.getSelectedPosition();
 
                 if( pos == null )
                 {
