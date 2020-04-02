@@ -10,6 +10,7 @@ import org.jutils.core.SwingUtils;
 import org.jutils.plot.ChartUtils;
 import org.jutils.plot.model.IDataPoint;
 import org.jutils.plot.model.Interval;
+import org.jutils.plot.model.LineType;
 import org.jutils.plot.model.Series;
 import org.jutils.plot.ui.IChartWidget;
 import org.jutils.plot.ui.Layer2d;
