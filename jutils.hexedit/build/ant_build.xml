@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="all" name="Builds jutils and creates jars">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+
+    <property name="dir.proj" location=".." />
+    <property name="dir.projs" location="../.." />
+    <property name="dir.src" location="${dir.proj}/src" />
+    <property name="dir.bin" location="./bin" />
+    <property name="dir.jutils" location="${dir.projs}/jutils" />
+    <property name="dir.jchartlib" location="${dir.projs}/JChartLib" />
+	
+    <property name="jar.jgoodies" location="${dir.proj}/../libs/jgoodies.jar" />
+    <property name="jar.xstream" location="${dir.proj}/../libs/xstream_min.jar" />
+    <property name="jar.jutils" location="${dir.jutils}/build/jutils.jar" />
+    <property name="jar.jutils_src" location="${dir.jutils}/build/jutils_src.jar" />
+    <property name="jar.jchartlib" location="${jar.jchartlib}/build/jchart.jar" />
+    <property name="jar.jchartlib_src" location="${jar.jchartlib}/build/jchart_src.jar" />
+    <property name="jar.bin" location="./jhex.jar" />
+    <property name="jar.src" location="./jhex_src.jar" />
+	
+    <property name="file.version" location="${dir.src}/org/jutils/icons/info.properties" />
+	
+    
+    <target name="clean">
+        <delete dir="${dir.bin}" failonerror="false" quiet="true"/>
+        <delete file="${jar.bin}" failonerror="false" quiet="true"/>
+        <delete file="${jar.src}" failonerror="false" quiet="true"/>
+    </target>
+    
+    <target name="build_jutils">
+        <ant antfile="${dir.jutils}/build/build.xml"/>
+    </target>
+    
+    <target name="build_jchartlib">
+        <ant antfile="${dir.jchartlib}/build/build.xml"/>
+    </target>
+    
+    <target name="build_src" depends="build_jutils,build_jchartlib">
+        <mkdir dir="${dir.bin}" />
+        <javac srcdir="${dir.src}"
+            destdir="${dir.bin}"
+            classpath="${jar.jgoodies};${jar.xstream}"
+            debug="off"
+            source="1.8"
+            target="1.8"
+            includeantruntime="false"/>
+        <propertyfile file="${file.version}">
+            <entry key="version" default="2.0" />
+            <entry key="buildtime"
+              type="date" default="now" pattern="yyyy-MM-dd HHmmss.SSS"
+              operation="=" value="0"/>
+            <entry key="subversion" type="int" default="0" operation="+"/>
+        </propertyfile>
+        <copy todir="${dir.bin}">
+            <fileset dir="${dir.src}" excludes="**/*.java"/>
+        </copy>
+    </target>
+	
+    <target name="create_all_jar">
+        <jar destfile="${jar.bin}" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="org.jutils.JUtilsInfoMain"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${dir.bin}"/>
+            <zipfileset excludes="META-INF/*.SF,**/*.java" src="${jar.jgoodies}"/>
+            <zipfileset excludes="META-INF/*.SF,**/*.java" src="${jar.xstream}"/>
+        </jar>
+    </target>
+    
+    <target name="create_all_src_jar">
+        <jar destfile="${jar.src}" filesetmanifest="mergewithoutmain">
+            <fileset dir="${dir.proj}/src"/>
+            <zipfileset excludes="META-INF/*.SF,**/*.class" src="${dir.proj}/../libs/jgoodies.zip"/>
+            <zipfileset excludes="META-INF/*.SF,**/*.class" src="${dir.proj}/../libs/xstream_min.jar"/>
+        </jar>
+    </target>
+
+    <target name="all" depends="clean,build_src,create_all_jar,create_all_src_jar"/>
+	
+</project>
