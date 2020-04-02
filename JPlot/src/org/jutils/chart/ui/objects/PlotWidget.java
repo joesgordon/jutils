@@ -1,13 +1,16 @@
 package org.jutils.chart.ui.objects;
 
+import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Stroke;
 
 import org.jutils.SwingUtils;
 import org.jutils.chart.ChartUtils;
 import org.jutils.chart.model.IDataPoint;
 import org.jutils.chart.model.Interval;
+import org.jutils.chart.model.LineType;
 import org.jutils.chart.model.Series;
 import org.jutils.chart.ui.IChartWidget;
 import org.jutils.chart.ui.Layer2d;
@@ -137,6 +140,14 @@ public class PlotWidget implements IChartWidget
 
         // int count = 0;
 
+        Stroke dashed = new BasicStroke( series.line.weight,
+            BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.0f,
+            new float[] { 5.0f }, 0.0f );
+        Stroke solid = new BasicStroke( series.line.weight,
+            BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL );
+        Stroke lineStroke = series.line.type == LineType.DASHED ? dashed
+            : solid;
+
         for( int i = start; i < end; i++ )
         {
             dp = series.data.get( i );
@@ -153,12 +164,13 @@ public class PlotWidget implements IChartWidget
             {
                 if( series.line.visible && last.x != -100 )
                 {
+                    Stroke s = graphics.getStroke();
+
+                    graphics.setStroke( lineStroke );
+
                     line.draw( graphics, last, p );
 
-                    if( pixelListener != null )
-                    {
-                        pixelListener.pixelDrawn( series, p );
-                    }
+                    graphics.setStroke( s );
                 }
 
                 if( series.marker.visible )
@@ -167,6 +179,11 @@ public class PlotWidget implements IChartWidget
 
                     // m.draw( graphics, p, size );
                     l2d.paint( graphics, p.x - r, p.y - r );
+                }
+
+                if( pixelListener != null )
+                {
+                    pixelListener.pixelDrawn( series, p );
                 }
 
                 last.x = p.x;

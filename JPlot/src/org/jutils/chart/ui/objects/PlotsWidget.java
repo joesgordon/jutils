@@ -141,8 +141,8 @@ public class PlotsWidget implements IChartWidget
 
             for( PlotWidget p : plots )
             {
-                if( p.series.visible && p.trackPoint &&
-                    p.highlightLocation != null )
+                if( p.series.visible && p.series.highlight.visible &&
+                    p.trackPoint && p.highlightLocation != null )
                 {
                     p.highlight.draw( g2d, p.highlightLocation );
                 }
@@ -190,6 +190,8 @@ public class PlotsWidget implements IChartWidget
         /**  */
         private int s2Idx;
 
+        private Color fillColor;
+
         /**
          * 
          */
@@ -200,6 +202,11 @@ public class PlotsWidget implements IChartWidget
             this.s1 = null;
             this.s2 = null;
             this.s2Idx = -1;
+
+            Color c = Color.yellow;
+
+            this.fillColor = new Color( c.getRed(), c.getGreen(), c.getBlue(),
+                100 );
         }
 
         /**
@@ -208,8 +215,6 @@ public class PlotsWidget implements IChartWidget
         @Override
         public void pixelDrawn( Series s, Point point )
         {
-            fill.addPoint( point.x, point.y );
-
             // LogUtils.printDebug( "Adding point %d %d,%d of series %s",
             // fill.npoints - 1, point.x, point.y, s.name );
 
@@ -220,8 +225,10 @@ public class PlotsWidget implements IChartWidget
             else if( s2 == null && s1 != s )
             {
                 s2 = s;
-                s2Idx = fill.npoints - 1;
+                s2Idx = fill.npoints;
             }
+
+            fill.addPoint( point.x, point.y );
         }
 
         /**
@@ -244,7 +251,9 @@ public class PlotsWidget implements IChartWidget
                 fill.ypoints[j] = d;
             }
 
-            g.setColor( Color.yellow );
+            fill.addPoint( fill.xpoints[0], fill.ypoints[0] );
+
+            g.setColor( fillColor );
             g.fill( fill );
         }
     }
