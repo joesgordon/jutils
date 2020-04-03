@@ -12,15 +12,15 @@ import org.jutils.plot.ChartIcons;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class JChartTool implements IToolView
+public class PlotTool implements IToolView
 {
     /**  */
-    private JChartFrameView view;
+    private PlotFrameView view;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public JChartTool()
+    public PlotTool()
     {
         this.view = null;
     }
@@ -33,7 +33,7 @@ public class JChartTool implements IToolView
     {
         if( view == null )
         {
-            this.view = new JChartFrameView( JChartAppConstants.APP_NAME );
+            this.view = new PlotFrameView( PlotConstants.APP_NAME );
 
             view.getView().setSize( 500, 500 );
             view.getView().validate();

@@ -27,7 +27,7 @@ import org.jutils.plot.ui.ChartView;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class JChartFrameView implements IView<JFrame>
+public class PlotFrameView implements IView<JFrame>
 {
     /**  */
     private final StandardFrameView frameView;
@@ -38,7 +38,7 @@ public class JChartFrameView implements IView<JFrame>
      * @param title
      * @param options
      **************************************************************************/
-    public JChartFrameView( String title )
+    public PlotFrameView( String title )
     {
         this.frameView = new StandardFrameView();
         this.chartView = new ChartView();
@@ -223,12 +223,12 @@ public class JChartFrameView implements IView<JFrame>
     private static class ChartWindowListener extends WindowAdapter
     {
         /**  */
-        private final JChartFrameView view;
+        private final PlotFrameView view;
 
         /**
          * @param view
          */
-        public ChartWindowListener( JChartFrameView view )
+        public ChartWindowListener( PlotFrameView view )
         {
             this.view = view;
         }

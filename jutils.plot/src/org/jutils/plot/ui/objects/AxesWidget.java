@@ -1,13 +1,21 @@
 package org.jutils.plot.ui.objects;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jutils.core.Utils;
 import org.jutils.plot.data.Tick;
 import org.jutils.plot.data.TickGen;
-import org.jutils.plot.model.*;
+import org.jutils.plot.model.Chart;
+import org.jutils.plot.model.HorizontalAlignment;
+import org.jutils.plot.model.TextLabel;
 import org.jutils.plot.ui.IChartWidget;
 import org.jutils.plot.ui.Layer2d;
 import org.jutils.plot.ui.objects.PlotContext.IAxisCoords;
@@ -51,6 +59,7 @@ public class AxesWidget implements IChartWidget
 
     /***************************************************************************
      * @param context
+     * @param chart
      **************************************************************************/
     public AxesWidget( PlotContext context, Chart chart )
     {
@@ -246,9 +255,8 @@ public class AxesWidget implements IChartWidget
             p.x = textSpace.left + location.x;
             p.y = location.y + size.height - d.height;
 
-            domainTitle.draw( graphics, p, d );
-
             // LogUtils.printDebug( "Label is: " + domainTitle.label.text );
+            domainTitle.draw( graphics, p, d );
 
             size.height -= d.height;
         }
@@ -534,6 +542,7 @@ public class AxesWidget implements IChartWidget
      * @param ticks
      * @param y
      * @param h
+     * @param canvasSize
      **************************************************************************/
     private void drawDomainLabels( Graphics2D g2d, List<Tick> ticks, int y,
         int h, Dimension canvasSize )

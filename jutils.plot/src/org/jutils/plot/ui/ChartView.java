@@ -43,22 +43,22 @@ import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.OkDialogView;
-import org.jutils.core.ui.RecentFilesViews;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
+import org.jutils.core.ui.RecentFilesViews;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.FileChooserListener;
-import org.jutils.core.ui.event.FileDropTarget;
-import org.jutils.core.ui.event.ItemActionList;
-import org.jutils.core.ui.event.ItemActionListener;
 import org.jutils.core.ui.event.FileChooserListener.IFilesSelected;
 import org.jutils.core.ui.event.FileChooserListener.ILastFiles;
+import org.jutils.core.ui.event.FileDropTarget;
 import org.jutils.core.ui.event.FileDropTarget.DropActionType;
+import org.jutils.core.ui.event.ItemActionList;
+import org.jutils.core.ui.event.ItemActionListener;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.model.IView;
 import org.jutils.plot.ChartIcons;
 import org.jutils.plot.IPalette;
 import org.jutils.plot.PresetPalette;
-import org.jutils.plot.app.JChartAppConstants;
+import org.jutils.plot.app.PlotConstants;
 import org.jutils.plot.app.UserData;
 import org.jutils.plot.data.SaveOptions;
 import org.jutils.plot.io.DataFileReader;
@@ -127,7 +127,7 @@ public class ChartView implements IView<JComponent>
      **************************************************************************/
     public ChartView( boolean allowOpen, boolean gradientToolbar )
     {
-        this.options = JChartAppConstants.getOptions();
+        this.options = PlotConstants.getOptions();
         this.chart = new Chart();
         this.mainPanel = new WidgetPanel();
         this.chartWidget = new ChartWidget( chart );
@@ -408,15 +408,17 @@ public class ChartView implements IView<JComponent>
 
         propertiesDialog = okView.getView();
 
-        boolean okPressed = okView.show( "Chart Properties",
-            ChartIcons.getChartImages(), new Dimension( 650, 400 ) );
-
-        if( okPressed )
-        {
+        ItemActionListener<Boolean> applyListener = ( b ) -> {
             chartWidget.calculateAutoBounds();
             chartWidget.latchBounds();
             repaintChart();
-        }
+            zoomRestore();
+        };
+
+        okView.addOkListener( applyListener );
+
+        okView.show( "Chart Properties", ChartIcons.getChartImages(),
+            new Dimension( 650, 400 ) );
     }
 
     /***************************************************************************

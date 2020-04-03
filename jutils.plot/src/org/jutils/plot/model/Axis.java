@@ -2,6 +2,8 @@ package org.jutils.plot.model;
 
 import java.awt.Font;
 
+import org.jutils.core.utils.Usable;
+
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -13,22 +15,20 @@ public class Axis
     public final TextLabel subtitle;
     /**  */
     public boolean isUsed;
+
     /**  */
-    public boolean autoTicks;
+    public Usable<Double> tickStart;
     /**  */
-    public boolean dockZero;
+    public Usable<Double> tickEnd;
     /**  */
-    public double tickStart;
+    public Usable<Double> tickInterval;
+
     /**  */
-    public double tickEnd;
-    /**  */
-    public double tickWidth;
-    /**  */
-    private Interval bounds;
+    private Interval currentBounds;
     /**  */
     private Interval autoBounds;
     /**  */
-    private boolean calcBounds;
+    private boolean useAutoBounds;
 
     /***************************************************************************
      * 
@@ -37,14 +37,15 @@ public class Axis
     {
         this.title = new TextLabel();
         this.subtitle = new TextLabel();
-        this.autoTicks = true;
-        this.tickStart = -5.0;
-        this.tickEnd = 5.0;
-        this.tickWidth = 1.0;
-        this.dockZero = false;
-        this.bounds = new Interval( -5.0, 5.0 );
+
+        this.tickStart = new Usable<>( false, -5.0 );
+        this.tickEnd = new Usable<>( false, 5.0 );
+
+        this.tickInterval = new Usable<>( false, 1.0 );
+
+        this.currentBounds = new Interval( -5.0, 5.0 );
         this.autoBounds = new Interval( -5.0, 5.0 );
-        this.calcBounds = true;
+        this.useAutoBounds = true;
 
         title.alignment = HorizontalAlignment.CENTER;
         title.font = title.font.deriveFont( 14.0f ).deriveFont( Font.BOLD );
@@ -61,7 +62,18 @@ public class Axis
      **************************************************************************/
     public Interval getBounds()
     {
-        return calcBounds ? autoBounds : bounds;
+        Interval bounds = null;
+
+        if( useAutoBounds )
+        {
+            bounds = this.autoBounds;
+        }
+        else
+        {
+            bounds = this.currentBounds;
+        }
+
+        return bounds;
     }
 
     /***************************************************************************
@@ -69,8 +81,8 @@ public class Axis
      **************************************************************************/
     public void setBounds( Interval bounds )
     {
-        this.calcBounds = false;
-        this.bounds = bounds;
+        this.useAutoBounds = false;
+        this.currentBounds = bounds;
     }
 
     /***************************************************************************
@@ -87,7 +99,7 @@ public class Axis
      **************************************************************************/
     public void restoreAuto()
     {
-        this.calcBounds = true;
+        this.useAutoBounds = true;
     }
 
     /***************************************************************************
@@ -95,6 +107,6 @@ public class Axis
      **************************************************************************/
     public boolean isAutoBounds()
     {
-        return calcBounds;
+        return useAutoBounds;
     }
 }

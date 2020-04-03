@@ -1,26 +1,36 @@
 package org.jutils.plot.app;
 
-import org.jutils.core.ui.app.FrameRunner;
+import javax.swing.JFrame;
+
+import org.jutils.core.ui.app.IFrameApp;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class JChartAppMain
+public class PlotApp implements IFrameApp
 {
     /***************************************************************************
      * 
      **************************************************************************/
-    private JChartAppMain()
+    @Override
+    public JFrame createFrame()
     {
+        PlotFrameView view = new PlotFrameView(
+            PlotConstants.APP_NAME );
+        JFrame frame = view.getView();
+
+        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+
+        frame.setSize( 700, 700 );
+
+        return frame;
     }
 
     /***************************************************************************
-     * @param args
+     * 
      **************************************************************************/
-    public static void main( String [] args )
+    @Override
+    public void finalizeGui()
     {
-        JChartApp runnable = new JChartApp();
-
-        FrameRunner.invokeLater( runnable );
     }
 }

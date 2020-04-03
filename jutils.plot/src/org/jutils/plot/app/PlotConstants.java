@@ -8,7 +8,7 @@ import org.jutils.core.io.options.OptionsSerializer;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class JChartAppConstants
+public class PlotConstants
 {
     /**  */
     public static final String APP_NAME = "JChart";
@@ -30,7 +30,7 @@ public class JChartAppConstants
     /***************************************************************************
      * 
      **************************************************************************/
-    private JChartAppConstants()
+    private PlotConstants()
     {
     }
 

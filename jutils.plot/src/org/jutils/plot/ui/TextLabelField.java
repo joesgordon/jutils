@@ -16,6 +16,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.jutils.core.IconConstants;
+import org.jutils.core.io.LogUtils;
 import org.jutils.core.ui.OkDialogView;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.ItemActionEvent;
@@ -63,9 +64,12 @@ public class TextLabelField implements IDataFormField<TextLabel>
 
         setValue( new TextLabel() );
 
-        visibleField.setUpdater( ( b ) -> label.visible = b );
-
-        colorView.setUpdater( ( c ) -> label.color = c );
+        visibleField.setUpdater( ( d ) -> label.visible = d );
+        textField.setUpdater( ( d ) -> {
+            label.text = d;
+            LogUtils.printDebug( "Set text to %s", d );
+        } );
+        colorView.setUpdater( ( d ) -> label.color = d );
     }
 
     /***************************************************************************

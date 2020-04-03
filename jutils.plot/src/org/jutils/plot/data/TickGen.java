@@ -10,17 +10,18 @@ import org.jutils.plot.model.Interval;
  ******************************************************************************/
 public class TickGen
 {
-    /**  */
+    /** A half inch in pixels. */
     private static final int DEFAULT_MIN_SIZE = ( int )( 96 * 0.5 );
-    /**  */
+    /** An inch and a quarter in pixels. */
     private static final int DEFAULT_MAX_SIZE = ( int )( 96 * 1.25 );
+
     /**  */
     private int minTickSize;
     /**  */
     private int maxTickSize;
 
     /***************************************************************************
-     * @param axis
+     * 
      **************************************************************************/
     public TickGen()
     {
@@ -29,30 +30,47 @@ public class TickGen
     }
 
     /***************************************************************************
-     * @param axis
-     * @param dist
-     * @param ticks
+     * @param axis the axis for which ticks are generated.
+     * @param dist the distance in pixels to draw all the ticks.
+     * @param ticks the list of ticks generated (empty if the axis has no
+     * bounds).
      **************************************************************************/
     public void genTicks( Axis axis, int dist, List<Tick> ticks )
     {
-        Interval bounds = axis.getBounds();
+        Interval axisBounds = axis.getBounds();
 
         ticks.clear();
 
-        if( bounds == null )
+        if( axisBounds == null )
         {
             return;
         }
 
-        TickMetrics tickMets;
+        double minTick = axisBounds.min;
+        double maxTick = axisBounds.max;
 
-        if( axis.autoTicks )
+        if( axis.tickStart.isUsed )
         {
-            tickMets = generateTickMetrics( dist, bounds );
+            minTick = axis.tickStart.data;
+        }
+
+        if( axis.tickEnd.isUsed )
+        {
+            maxTick = axis.tickEnd.data;
+        }
+
+        Interval tickBounds = new Interval( minTick, maxTick );
+
+        TickMetrics tickMets = null;
+
+        if( axis.tickInterval.isUsed )
+        {
+            tickMets = calculateTickMetrics( tickBounds,
+                axis.tickInterval.data );
         }
         else
         {
-            tickMets = calculateMetrics( axis );
+            tickMets = generateTickMetrics( dist, tickBounds );
         }
 
         int order = Math.abs( tickMets.tickOrder );
@@ -69,25 +87,28 @@ public class TickGen
 
         for( int i = 0; i < tickMets.tickCount; i++ )
         {
-            double d = tickMets.tickStart + tickMets.tickWidth * i;
+            double d = tickMets.tickStart + tickMets.tickInterval * i;
 
             ticks.add( new Tick( d, String.format( fmt, d ) ) );
         }
     }
 
     /***************************************************************************
+     * @param bounds
+     * @param tickInterval the interval in series space between ticks.
      * @return
      **************************************************************************/
-    private static TickMetrics calculateMetrics( Axis axis )
+    private static TickMetrics calculateTickMetrics( Interval bounds,
+        double tickInterval )
     {
         TickMetrics metrics = new TickMetrics();
 
-        metrics.tickStart = axis.tickStart;
-        metrics.tickWidth = axis.tickWidth;
-        metrics.tickCount = ( int )( ( axis.tickEnd - axis.tickStart ) /
-            axis.tickWidth ) + 1;
+        metrics.tickStart = bounds.min;
+        metrics.tickInterval = tickInterval;
+        metrics.tickCount = ( int )( ( bounds.max - bounds.min ) /
+            tickInterval ) + 1;
         metrics.tickOrder = ( int )Math.floor(
-            Math.log10( metrics.tickWidth ) );
+            Math.log10( metrics.tickInterval ) );
 
         return metrics;
     }
@@ -169,7 +190,7 @@ public class TickGen
             ( tickStop - tickStart ) / tickWidthCs ) ) + 1;
         metrics.tickOrder = ( int )tickCsOrder;
         metrics.tickStart = tickStart;
-        metrics.tickWidth = tickWidthCs;
+        metrics.tickInterval = tickWidthCs;
 
         // LogUtils.printDebug( "tick count = " + metrics.tickCount + " for " +
         // dist + " w/ " + span );
@@ -182,7 +203,7 @@ public class TickGen
      **************************************************************************/
     static class TickMetrics
     {
-        public double tickWidth;
+        public double tickInterval;
         public double tickStart;
         public int tickCount;
         public int tickOrder;

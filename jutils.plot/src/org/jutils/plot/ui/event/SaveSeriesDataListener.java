@@ -11,7 +11,7 @@ import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.FileChooserListener.ILastFile;
 import org.jutils.core.ui.model.IDataView;
-import org.jutils.plot.app.JChartAppConstants;
+import org.jutils.plot.app.PlotConstants;
 import org.jutils.plot.app.UserData;
 import org.jutils.plot.io.FilteredWriter;
 import org.jutils.plot.model.Series;
@@ -66,7 +66,7 @@ public class SaveSeriesDataListener implements ILastFile, IFileSelected
         }
         else
         {
-            OptionsSerializer<UserData> options = JChartAppConstants.getOptions();
+            OptionsSerializer<UserData> options = PlotConstants.getOptions();
 
             file = options.getOptions().lastDataFile;
         }
@@ -123,7 +123,7 @@ public class SaveSeriesDataListener implements ILastFile, IFileSelected
         PointRemovalMethod removalMethod )
         throws FileNotFoundException, IOException
     {
-        OptionsSerializer<UserData> options = JChartAppConstants.getOptions();
+        OptionsSerializer<UserData> options = PlotConstants.getOptions();
 
         options.getOptions().lastDataFile = toFile;
 

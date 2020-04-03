@@ -3,8 +3,8 @@ package org.jutils.plot.ui;
 import java.awt.Component;
 
 import org.jutils.core.ui.StandardFormView;
-import org.jutils.core.ui.fields.BooleanFormField;
 import org.jutils.core.ui.fields.DoubleFormField;
+import org.jutils.core.ui.fields.UsableFormField;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.plot.model.Axis;
 
@@ -20,16 +20,13 @@ public class AxisPropertiesView implements IDataView<Axis>
     private final TextLabelField titleField;
     /**  */
     private final TextLabelField subtitleField;
+
     /**  */
-    private final BooleanFormField autoTicksField;
+    private final UsableFormField<Double> tickStartField;
     /**  */
-    private final DoubleFormField tickStartField;
+    private final UsableFormField<Double> tickEndField;
     /**  */
-    private final DoubleFormField tickEndField;
-    /**  */
-    private final DoubleFormField tickWidthField;
-    /**  */
-    private final BooleanFormField dockZeroField;
+    private final UsableFormField<Double> tickIntervalField;
 
     /**  */
     private Axis axis;
@@ -41,24 +38,16 @@ public class AxisPropertiesView implements IDataView<Axis>
     {
         this.titleField = new TextLabelField( "Title" );
         this.subtitleField = new TextLabelField( "Subtitle" );
-        this.autoTicksField = new BooleanFormField( "Auto Ticks" );
-        this.tickStartField = new DoubleFormField( "Tick Start" );
-        this.tickEndField = new DoubleFormField( "Tick End" );
-        this.tickWidthField = new DoubleFormField( "Tick Width" );
-        this.dockZeroField = new BooleanFormField( "Dock Zero" );
+        this.tickStartField = new UsableFormField<>(
+            new DoubleFormField( "Tick Start" ) );
+        this.tickEndField = new UsableFormField<>(
+            new DoubleFormField( "Tick End" ) );
+        this.tickIntervalField = new UsableFormField<>(
+            new DoubleFormField( "Tick Width" ) );
 
         this.form = createView();
 
         setData( new Axis() );
-
-        autoTicksField.setUpdater( ( d ) -> {
-            setAutoTicksEnabled( d );
-            axis.autoTicks = d;
-        } );
-        tickStartField.setUpdater( ( d ) -> axis.tickStart = d );
-        tickEndField.setUpdater( ( d ) -> axis.tickEnd = d );
-        tickWidthField.setUpdater( ( d ) -> axis.tickWidth = d );
-        dockZeroField.setUpdater( ( d ) -> axis.dockZero = d );
     }
 
     /***************************************************************************
@@ -70,11 +59,9 @@ public class AxisPropertiesView implements IDataView<Axis>
 
         form.addField( titleField );
         form.addField( subtitleField );
-        form.addField( autoTicksField );
         form.addField( tickStartField );
         form.addField( tickEndField );
-        form.addField( tickWidthField );
-        form.addField( dockZeroField );
+        form.addField( tickIntervalField );
 
         return form;
     }
@@ -107,24 +94,8 @@ public class AxisPropertiesView implements IDataView<Axis>
 
         titleField.setValue( data.title );
         subtitleField.setValue( data.subtitle );
-        autoTicksField.setValue( data.autoTicks );
         tickStartField.setValue( data.tickStart );
         tickEndField.setValue( data.tickEnd );
-        tickWidthField.setValue( data.tickWidth );
-        dockZeroField.setValue( data.dockZero );
-
-        setAutoTicksEnabled( data.autoTicks );
-    }
-
-    /***************************************************************************
-     * @param autoEnabled
-     **************************************************************************/
-    public void setAutoTicksEnabled( Boolean autoEnabled )
-    {
-        tickStartField.setEditable( !autoEnabled );
-        tickEndField.setEditable( !autoEnabled );
-        tickWidthField.setEditable( !autoEnabled );
-        dockZeroField.setEditable( autoEnabled );
-        dockZeroField.setValue( autoEnabled && dockZeroField.getValue() );
+        tickIntervalField.setValue( data.tickInterval );
     }
 }
