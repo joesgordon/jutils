@@ -146,6 +146,16 @@ public final class ComboFormField<T> implements IDataFormField<T>
     }
 
     /***************************************************************************
+     * @param index
+     **************************************************************************/
+    public void setSelectedIndex( int index )
+    {
+        isSetting = true;
+        field.setSelectedIndex( index );
+        isSetting = false;
+    }
+
+    /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
@@ -269,13 +279,5 @@ public final class ComboFormField<T> implements IDataFormField<T>
     public T getItemAt( int index )
     {
         return getView().getItemAt( index );
-    }
-
-    /***************************************************************************
-     * @param index
-     **************************************************************************/
-    public void setSelectedIndex( int index )
-    {
-        getView().setSelectedIndex( index );
     }
 }

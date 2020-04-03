@@ -7,7 +7,11 @@ import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.ComboBoxEditor;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComboBox;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.IParser;
@@ -107,6 +111,14 @@ public final class ValidationComboField<T> implements IValidationField
         {
             model.setSelectedItem( null );
         }
+    }
+
+    /***************************************************************************
+     * @param index
+     **************************************************************************/
+    public void setSelectedIndex( int index )
+    {
+        model.setSelectedIndex( index );
     }
 
     /***************************************************************************

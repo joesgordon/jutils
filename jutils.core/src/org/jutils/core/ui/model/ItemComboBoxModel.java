@@ -194,6 +194,14 @@ public class ItemComboBoxModel<T> implements List<T>, MutableComboBoxModel<T>
         }
     }
 
+    public void setSelectedIndex( int index )
+    {
+        this.selectedIndex = index;
+        this.selectedItem = index < 0 ? null : items.get( index );
+
+        fireIntervalChanged( -1, -1 );
+    }
+
     /***************************************************************************
      * 
      **************************************************************************/
