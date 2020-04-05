@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.ui.IToolView;
-import org.jutils.core.ui.app.IFrameApp;
 
 /*******************************************************************************
  * 
@@ -39,9 +38,7 @@ public class FileSpyTool implements IToolView
     @Override
     public JFrame getView()
     {
-        IFrameApp frameApp = new org.jutils.filespy.FileSpyApp();
-
-        return frameApp.createFrame();
+        return FileSpyMain.createFrame();
     }
 
     /***************************************************************************

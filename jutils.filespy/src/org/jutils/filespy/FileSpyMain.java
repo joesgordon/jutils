@@ -2,13 +2,15 @@ package org.jutils.filespy;
 
 import java.io.File;
 
+import javax.swing.JFrame;
+
 import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.ui.app.FrameRunner;
-import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.filespy.data.FileSpyData;
+import org.jutils.filespy.ui.FileSpyFrameView;
 
 /*******************************************************************************
  *
@@ -34,8 +36,18 @@ public class FileSpyMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        IFrameApp app = new FileSpyApp();
-        FrameRunner.invokeLater( app );
+        FrameRunner.invokeLater( () -> createFrame() );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static JFrame createFrame()
+    {
+        FileSpyFrameView frameView = new FileSpyFrameView();
+        JFrame frame = frameView.getView();
+
+        return frame;
     }
 
     /***************************************************************************

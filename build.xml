@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="jutils" default="all">
+
+	<dirname property="jutils.projdir" file="${ant.file}" />
+
+	<import file="${jutils.projdir}/ant/importprops.xml" />
+
+	<macrodef name="calldir">
+		<attribute name="target" />
+		<attribute name="dir" />
+		<sequential>
+			<ant dir="@{dir}" target="@{target}" useNativeBasedir="true" inheritAll="false" inheritRefs="false" />
+		</sequential>
+	</macrodef>
+
+	<target name="release" description="Builds a release jar that includes source and libs">
+		<calldir dir="jutils.libs" target="build" />
+		<calldir dir="jutils.core" target="release" />
+		<calldir dir="jutils.plot" target="release" />
+		<calldir dir="jutils.duak" target="release" />
+		<calldir dir="jutils.explorer" target="release" />
+		<calldir dir="jutils.filespy" target="release" />
+		<calldir dir="jutils.hexedit" target="release" />
+		<calldir dir="jutils.mines" target="release" />
+		<calldir dir="jutils.multicon" target="release" />
+		<calldir dir="jutils.summer" target="release" />
+	</target>
+
+	<target name="combined" description="Builds a release jar that includes source and libs">
+		<property name="jutils.combined" location="${props.releases}/jutils_combined" />
+		<mkdir dir="${jutils.combined}" />
+
+		<jar destfile="${jutils.combined}/jutils.jar" filesetmanifest="merge">
+			<manifest>
+				<attribute name="Main-Class" value="org.jutils.core.JUtilsInfo" />
+			</manifest>
+
+			<zipfileset src="${props.reljutils}/jutils.duak.jar" />
+			<zipfileset src="${props.reljutils}/jutils.explorer.jar" />
+			<zipfileset src="${props.reljutils}/jutils.filespy.jar" />
+			<zipfileset src="${props.reljutils}/jutils.hexedit.jar" />
+			<zipfileset src="${props.reljutils}/jutils.mines.jar" />
+			<zipfileset src="${props.reljutils}/jutils.multicon.jar" />
+			<zipfileset src="${props.reljutils}/jutils.plot.jar" />
+			<zipfileset src="${props.reljutils}/jutils.summer.jar" />
+			<zipfileset src="${props.reljutils}/jutils.core.jar" />
+		</jar>
+
+		<mkdir dir="${jutils.combined}/libs" />
+
+		<copy todir="${jutils.combined}/libs">
+			<fileset dir="${props.reljutils}/libs" includes="*.jar" />
+		</copy>
+
+	</target>
+
+	<target name="single" description="Builds a release jar that includes source and libs">
+		<property name="jutils.single" location="${props.releases}/jutils_single" />
+		<mkdir dir="${jutils.single}" />
+
+		<jar destfile="${jutils.single}/jutils.jar" filesetmanifest="merge">
+			<zipfileset src="${props.reljutils}/jutils.duak.jar" />
+			<zipfileset src="${props.reljutils}/jutils.explorer.jar" />
+			<zipfileset src="${props.reljutils}/jutils.filespy.jar" />
+			<zipfileset src="${props.reljutils}/jutils.hexedit.jar" />
+			<zipfileset src="${props.reljutils}/jutils.mines.jar" />
+			<zipfileset src="${props.reljutils}/jutils.multicon.jar" />
+			<zipfileset src="${props.reljutils}/jutils.plot.jar" />
+			<zipfileset src="${props.reljutils}/jutils.summer.jar" />
+			<zipfileset src="${props.jars.jgoodies}" />
+			<zipfileset src="${props.jars.xmlpull}" />
+			<zipfileset src="${props.jars.xpp3}" />
+			<zipfileset src="${props.jars.xstream}" />
+			<zipfileset src="${props.reljutils}/jutils.core.jar" />
+		</jar>
+	</target>
+	
+	<target name="all" depends="release,combined,single" description="Runs the release, combined, and single targets" />
+
+</project>

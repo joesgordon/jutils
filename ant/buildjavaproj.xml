@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="buildjavaproj" default="jar">
+
+	<dirname property="buildjavaproj.projdir" file="${ant.file}" />
+	<dirname property="buildjavaproj.antdir" file="${ant.file.buildjavaproj}" />
+
+	<import file="${buildjavaproj.antdir}/importprops.xml" />
+
+	<fail unless="buildjavaproj.name" message="Property 'buildjava.jar' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjavaproj.main" message="Property 'buildjava.main' was not set by the importing build script ${ant.file}" />
+	<!-- buildjavaproj.infoprops is an optional property -->
+
+	<property name="buildjava.jar" location="${props.reljutils}/${buildjavaproj.name}.jar" />
+	<property name="buildjava.main" value="${buildjavaproj.main}" />
+	<property name="buildjava.src" location="${buildjavaproj.projdir}/src" />
+	<property name="buildjava.build" location="${props.bin}/${buildjavaproj.name}" />
+	<property name="buildjava.javaversion" value="${props.javaversion}" />
+	<property name="buildjava.javac" location="${props.javac}" />
+
+	<path id="buildjava.jars">
+		<fileset file="${props.jars.jgoodies}" />
+		<fileset file="${props.jars.xmlpull}" />
+		<fileset file="${props.jars.xpp3}" />
+		<fileset file="${props.jars.xstream}" />
+		<path refid="buildjavaproj.jars" />
+	</path>
+
+	<import file="${buildjavaproj.antdir}/buildjava.xml" />
+
+	<target name="info" depends="importprops.info,buildjava.info">
+		<echo message="buildjavaproj.projdir = ${buildjavaproj.projdir}" />
+		<echo message="buildjavaproj.antdir = ${buildjavaproj.antdir}" />
+
+		<echo message="buildjavaproj.name = ${buildjavaproj.name}" />
+		<echo message="buildjavaproj.main = ${buildjavaproj.main}" />
+		<echo message="buildjavaproj.infoprops = ${buildjavaproj.infoprops}" />
+		<echo message="buildjavaproj.jars = ${buildjavaproj.jars}" />
+	</target>
+
+	<target name="checkpaths" depends="importprops.checkpaths" description="Checks the paths loaded">
+		<fail unless="available.jars.jgoodies" message="JGoodies jar path doesn't exist: ${props.jars.jgoodies}" />
+		<fail unless="available.jars.xmlpull" message="XMLPull jar path doesn't exist: ${props.jars.xmlpull}" />
+		<fail unless="available.jars.xpp3" message="XPP3 jar path doesn't exist: ${props.jars.xpp3}" />
+		<fail unless="available.jars.xstream" message="XStream jar path doesn't exist: ${props.jars.xstream}" />
+	</target>
+
+	<target name="update.version" if="buildjavaproj.infoprops">
+		<property name="buildjavaproj.isrelease" value="true" />
+		<propertyfile file="${buildjavaproj.infoprops}">
+			<entry key="version" default="3.0" />
+			<entry key="buildtime" type="date" default="now" pattern="yyyy-MM-dd HHmmss.SSS" operation="=" value="0" />
+			<entry key="minor.version" type="int" default="0" operation="+" />
+			<entry key="eng.version" operation="del" />
+		</propertyfile>
+	</target>
+
+	<target name="update.eng.version" if="buildjavaproj.infoprops" unless="buildjavaproj.isrelease">
+		<propertyfile file="${buildjavaproj.infoprops}">
+			<entry key="version" default="0.0" />
+			<entry key="buildtime" type="date" default="now" pattern="yyyy-MM-dd HHmmss.SSS" />
+			<entry key="minor.version" type="int" default="0" />
+			<entry key="eng.version" type="int" default="0" operation="+" />
+		</propertyfile>
+	</target>
+
+	<target name="build" depends="checkpaths,buildjava.build" description="" />
+
+	<target name="jar" depends="update.eng.version,buildjava.jar" description="" />
+
+	<target name="release" depends="update.version,jar" description="" if="buildjavaproj.infoprops" />
+
+</project>

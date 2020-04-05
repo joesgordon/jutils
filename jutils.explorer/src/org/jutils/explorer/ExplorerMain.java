@@ -5,34 +5,24 @@ import java.io.File;
 import javax.swing.JFrame;
 
 import org.jutils.core.ui.app.FrameRunner;
-import org.jutils.core.ui.app.IFrameApp;
 
 /*******************************************************************************
  * This class defines the application that will display the main applications
  * contained in JUtils.
  ******************************************************************************/
-public class JExplorerMain implements IFrameApp
+public class ExplorerMain
 {
     /***************************************************************************
-     * Create the AppGalley frame.
+     * Create the Explorer frame.
      * @return
      **************************************************************************/
-    @Override
-    public JFrame createFrame()
+    public static JFrame createFrame()
     {
-        JExplorerFrame frame = new JExplorerFrame();
+        ExplorerFrame frame = new ExplorerFrame();
 
         frame.setDirectory( new File( "/" ) );
 
         return frame.getView();
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    @Override
-    public void finalizeGui()
-    {
     }
 
     /***************************************************************************
@@ -41,6 +31,6 @@ public class JExplorerMain implements IFrameApp
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new JExplorerMain() );
+        FrameRunner.invokeLater( () -> createFrame() );
     }
 }

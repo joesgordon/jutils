@@ -10,19 +10,19 @@ import org.jutils.core.io.IconLoader;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class MsIcons
+public class MinesIcons
 {
     /**  */
     public static final String APP_PREFIX = "bomb";
 
     /** The loader used to access the icons. */
-    public final static IconLoader loader = new IconLoader( MsIcons.class,
+    public final static IconLoader loader = new IconLoader( MinesIcons.class,
         "icons" );
 
     /***************************************************************************
      * Private default constructor to prevent instantiation of this class.
      **************************************************************************/
-    private MsIcons()
+    private MinesIcons()
     {
     }
 

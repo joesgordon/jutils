@@ -7,12 +7,12 @@ import javax.swing.Icon;
 
 import org.jutils.core.IconConstants;
 
-public class JExplorerIcons
+public class ExplorerIcons
 {
     /***************************************************************************
      * Private constructor to prevent instantiation.
      **************************************************************************/
-    private JExplorerIcons()
+    private ExplorerIcons()
     {
     }
 

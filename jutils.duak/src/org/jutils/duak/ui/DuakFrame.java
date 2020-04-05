@@ -4,18 +4,35 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
 import org.jutils.core.IconConstants;
+import org.jutils.core.JUtilsInfo;
+import org.jutils.core.data.BuildInfo;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.task.TaskView;
-import org.jutils.core.ui.*;
-import org.jutils.core.ui.event.*;
+import org.jutils.core.ui.BuildInfoView;
+import org.jutils.core.ui.JGoodiesToolBar;
+import org.jutils.core.ui.RecentFilesViews;
+import org.jutils.core.ui.StandardFrameView;
+import org.jutils.core.ui.event.DirectoryChooserListener;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.FileChooserListener.ILastFile;
+import org.jutils.core.ui.event.FileDropTarget;
 import org.jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import org.jutils.core.ui.event.ItemActionEvent;
+import org.jutils.core.ui.event.ItemActionListener;
 import org.jutils.core.ui.model.IView;
-import org.jutils.duak.*;
+import org.jutils.duak.DuakConstants;
+import org.jutils.duak.DuakIcons;
+import org.jutils.duak.DuakOptions;
 import org.jutils.duak.data.FileInfo;
 import org.jutils.duak.task.DuakTask;
 import org.jutils.duak.utils.HistoryList;
@@ -61,7 +78,7 @@ public class DuakFrame implements IView<JFrame>
         frame.setTitle( "Disk Usage Analysis Kit" );
         frame.setDropTarget( new FileDropTarget( new FileDropped( this ) ) );
 
-        createMenubar( frameView.getFileMenu() );
+        createMenubar( frameView.getMenuBar(), frameView.getFileMenu() );
         frameView.setToolbar( createToolbar() );
         frameView.setContent( duakPanel.getView() );
 
@@ -70,10 +87,22 @@ public class DuakFrame implements IView<JFrame>
     }
 
     /***************************************************************************
-     * @param menubar
+     * @param menuBar
      * @param fileMenu
      **************************************************************************/
-    private void createMenubar( JMenu fileMenu )
+    private void createMenubar( JMenuBar menuBar, JMenu fileMenu )
+    {
+        createFileMenu( fileMenu );
+
+        // menuBar.add( Box.createHorizontalGlue() );
+
+        menuBar.add( createHelpMenu() );
+    }
+
+    /***************************************************************************
+     * @param fileMenu
+     **************************************************************************/
+    private void createFileMenu( JMenu fileMenu )
     {
         int i = 0;
 
@@ -83,7 +112,31 @@ public class DuakFrame implements IView<JFrame>
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    private JMenu createHelpMenu()
+    {
+        JMenu menu = new JMenu( "Help" );
+        JMenuItem item;
+
+        item = new JMenuItem( "About" );
+        item.addActionListener( ( e ) -> showAbout() );
+        menu.add( item );
+
+        return menu;
+    }
+
+    /***************************************************************************
      * 
+     **************************************************************************/
+    private void showAbout()
+    {
+        BuildInfo info = JUtilsInfo.load();
+        BuildInfoView.show( getView(), "About Duak", info );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JFrame getView()

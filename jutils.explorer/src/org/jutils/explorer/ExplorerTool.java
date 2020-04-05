@@ -7,12 +7,11 @@ import javax.swing.Icon;
 import javax.swing.JFrame;
 
 import org.jutils.core.ui.IToolView;
-import org.jutils.core.ui.app.IFrameApp;
 
 /*******************************************************************************
  *
  ******************************************************************************/
-public class JExplorerTool implements IToolView
+public class ExplorerTool implements IToolView
 {
     /***************************************************************************
      * {@inheritDoc}
@@ -20,7 +19,7 @@ public class JExplorerTool implements IToolView
     @Override
     public Icon getIcon24()
     {
-        return JExplorerIcons.getApp24Icon();
+        return ExplorerIcons.getApp24Icon();
     }
 
     /***************************************************************************
@@ -29,7 +28,7 @@ public class JExplorerTool implements IToolView
     @Override
     public String getName()
     {
-        return "JExplorer";
+        return "Explorer";
     }
 
     /***************************************************************************
@@ -38,9 +37,7 @@ public class JExplorerTool implements IToolView
     @Override
     public JFrame getView()
     {
-        IFrameApp r = new JExplorerMain();
-
-        return r.createFrame();
+        return ExplorerMain.createFrame();
     }
 
     /***************************************************************************
@@ -58,6 +55,6 @@ public class JExplorerTool implements IToolView
     @Override
     public List<Image> getImages()
     {
-        return JExplorerIcons.getAppImages();
+        return ExplorerIcons.getAppImages();
     }
 }

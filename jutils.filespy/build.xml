@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="jutilsfilespy" default="jar">
+
+    <dirname property="jutilsfilespy.projdir" file="${ant.file}" />
+
+    <import file="${jutilsfilespy.projdir}/../ant/importprops.xml" />
+
+    <property name="buildjavaproj.name" value="jutils.filespy" />
+    
+    <property name="buildjavaproj.main" value="org.jutils.filespy.FileSpyMain" />
+
+    <path id="buildjavaproj.jars">
+        <fileset file="${props.reljutils}/jutils.core.jar" />
+    </path>
+
+    <import file="${jutilsfilespy.projdir}/../ant/buildjavaproj.xml" />
+
+</project>

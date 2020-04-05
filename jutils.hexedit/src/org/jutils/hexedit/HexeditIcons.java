@@ -10,10 +10,10 @@ import org.jutils.core.io.IconLoader;
 /*******************************************************************************
  * Defines the methods for accessing the icons needed in the JHex application.
  ******************************************************************************/
-public class JHexIcons
+public class HexeditIcons
 {
     /** The icon loader needed to access the project icons. */
-    public static final IconLoader loader = new IconLoader( JHexIcons.class,
+    public static final IconLoader loader = new IconLoader( HexeditIcons.class,
         "icons" );
 
     /** Represents a go-to operation. */
@@ -26,7 +26,7 @@ public class JHexIcons
     /***************************************************************************
      * Private default constructor to prevent instantiation of this class.
      **************************************************************************/
-    private JHexIcons()
+    private HexeditIcons()
     {
     }
 

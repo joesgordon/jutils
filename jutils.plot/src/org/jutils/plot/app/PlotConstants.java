@@ -11,12 +11,10 @@ import org.jutils.core.io.options.OptionsSerializer;
 public class PlotConstants
 {
     /**  */
-    public static final String APP_NAME = "JChart";
-    /**  */
-    public static final File USER_APP_DIR = IOUtils.getUsersFile( ".jchart" );
+    public static final String APP_NAME = "Plot";
     /**  */
     private static final File USER_OPTIONS_FILE = IOUtils.getUsersFile(
-        ".jutils", "jchart", "options.xml" );
+        ".jutils", "plot", "options.xml" );
 
     /**  */
     private static final OptionsSerializer<UserData> OPTIONS;

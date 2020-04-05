@@ -12,7 +12,7 @@ import org.jutils.core.ui.app.IFrameApp;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class JHexTool implements IToolView
+public class HexeditTool implements IToolView
 {
     /***************************************************************************
      * {@inheritDoc}
@@ -20,7 +20,7 @@ public class JHexTool implements IToolView
     @Override
     public Icon getIcon24()
     {
-        return JHexIcons.loader.getIcon( JHexIcons.APP_024 );
+        return HexeditIcons.loader.getIcon( HexeditIcons.APP_024 );
     }
 
     /***************************************************************************
@@ -38,7 +38,7 @@ public class JHexTool implements IToolView
     @Override
     public JFrame getView()
     {
-        IFrameApp frameApp = new org.jutils.hexedit.JHexApp();
+        IFrameApp frameApp = new org.jutils.hexedit.HexeditApp();
 
         return frameApp.createFrame();
     }
@@ -58,6 +58,6 @@ public class JHexTool implements IToolView
     @Override
     public List<Image> getImages()
     {
-        return JHexIcons.getAppImages();
+        return HexeditIcons.getAppImages();
     }
 }

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="importprops" default="info">
+
+	<dirname property="props.antdir" file="${ant.file.importprops}" />
+	<property name="props.jutilsdir" location="${props.antdir}/.." />
+	<property name="props.build" location="${props.jutilsdir}/build" />
+	<property name="props.releases" location="${props.build}/release" />
+	<property name="props.reljutils" location="${props.releases}/jutils" />
+	<property name="props.bin" location="${props.build}/bin" />
+
+	<property name="props.buildprops" location="${props.jutilsdir}/build.properties" />
+
+	<property file="${props.buildprops}" />
+
+	<fail unless="JAVA.VERSION" message="Property 'JAVA.VERSION' not defined in ${props.buildprops}" />
+	<fail unless="PATHS.JAVA" message="Property 'JAVA.VERSION' not defined in ${props.buildprops}" />
+	<fail unless="PATHS.L4J" message="Property 'JAVA.VERSION' not defined in ${props.buildprops}" />
+
+	<property name="props.javaversion" value="${JAVA.VERSION}" />
+	<property name="props.java" location="${PATHS.JAVA}" />
+	<property name="props.javac" location="${PATHS.JAVA}/bin/javac.exe" />
+	<property name="props.l4j" location="${PATHS.L4J}" />
+	<property name="props.l4j.jar" location="${PATHS.L4J}/launch4j.jar" />
+
+	<available property="available.java" file="${props.java}" type="dir" />
+	<available property="available.javac" file="${props.javac}" type="file" />
+	<available property="available.l4j" file="${props.l4j}" type="dir" />
+	<available property="available.l4j.jar" file="${props.l4j.jar}" type="file" />
+
+	<property name="props.libs.dir" location="${props.jutilsdir}/jutils.libs/libs" />
+	<property name="props.libs.jgoodies" location="${props.libs.dir}/jgoodies.jar" />
+	<property name="props.libs.xmlpull" location="${props.libs.dir}/xmlpull-1.1.3.1.jar" />
+	<property name="props.libs.xpp3" location="${props.libs.dir}/xpp3_min-1.1.4c.jar" />
+	<property name="props.libs.xstream" location="${props.libs.dir}/xstream-1.4.11.1.jar" />
+
+	<available property="available.libs.jgoodies" file="${props.libs.jgoodies}" type="file" />
+	<available property="available.libs.xmlpull" file="${props.libs.xmlpull}" type="file" />
+	<available property="available.libs.xpp3" file="${props.libs.xpp3}" type="file" />
+	<available property="available.libs.xstream" file="${props.libs.xstream}" type="file" />
+
+	<property name="props.jars.dir" location="${props.reljutils}/libs" />
+	<property name="props.jars.jgoodies" location="${props.jars.dir}/jgoodies.jar" />
+	<property name="props.jars.xmlpull" location="${props.jars.dir}/xmlpull-1.1.3.1.jar" />
+	<property name="props.jars.xpp3" location="${props.jars.dir}/xpp3_min-1.1.4c.jar" />
+	<property name="props.jars.xstream" location="${props.jars.dir}/xstream-1.4.11.1.jar" />
+
+	<available property="available.jars.jgoodies" file="${props.jars.jgoodies}" type="file" />
+	<available property="available.jars.xmlpull" file="${props.jars.xmlpull}" type="file" />
+	<available property="available.jars.xpp3" file="${props.jars.xpp3}" type="file" />
+	<available property="available.jars.xstream" file="${props.jars.xstream}" type="file" />
+
+	<available property="available.l4j.jar" file="${props.l4j.jar}" type="file" />
+
+	<mkdir dir="${props.build}" />
+	<mkdir dir="${props.releases}" />
+	<mkdir dir="${props.reljutils}" />
+	<mkdir dir="${props.jars.dir}" />
+	<mkdir dir="${props.bin}" />
+
+	<target name="info" description="Prints properties loaded">
+		<echo message="       props.antdir = ${props.antdir}" />
+		<echo message="    props.jutilsdir = ${props.jutilsdir}" />
+		<echo message="        props.build = ${props.build}" />
+		<echo message="     props.releases = ${props.releases}" />
+		<echo message="    props.reljutils = ${props.reljutils}" />
+		<echo message="          props.bin = ${props.bin}" />
+		<echo message="   props.buildprops = ${props.buildprops}" />
+
+		<echo message="  props.javaversion = ${props.javaversion}" />
+		<echo message="         props.java = ${props.java}" />
+		<echo message="        props.javac = ${props.javac}" />
+		<echo message="          props.l4j = ${props.l4j}" />
+		<echo message="      props.l4j.jar = ${props.l4j.jar}" />
+
+		<echo message="     props.libs.dir = ${props.libs.dir}" />
+		<echo message="props.libs.jgoodies = ${props.libs.jgoodies}" />
+		<echo message=" props.libs.xmlpull = ${props.libs.xmlpull}" />
+		<echo message="    props.libs.xpp3 = ${props.libs.xpp3}" />
+		<echo message=" props.libs.xstream = ${props.libs.xstream}" />
+
+		<echo message="     props.jars.dir = ${props.jars.dir}" />
+		<echo message="props.jars.jgoodies = ${props.jars.jgoodies}" />
+		<echo message=" props.jars.xmlpull = ${props.jars.xmlpull}" />
+		<echo message="    props.jars.xpp3 = ${props.jars.xpp3}" />
+		<echo message=" props.jars.xstream = ${props.jars.xstream}" />
+		<!-- <echo message=" = ${}" /> -->
+	</target>
+
+	<target name="checkpaths" description="Checks the paths loaded">
+		<fail unless="available.java" message="Java path doesn't exist: ${props.java}" />
+		<fail unless="available.javac" message="Javac path doesn't exist: ${props.javac}" />
+		<fail unless="available.l4j" message="Launch4J path doesn't exist: ${props.l4j}" />
+		<fail unless="available.l4j.jar" message="Launch4J jar path doesn't exist: ${props.l4j.jar}" />
+
+		<fail unless="available.libs.jgoodies" message="JGoodies jar path doesn't exist: ${props.libs.jgoodies}" />
+		<fail unless="available.libs.xmlpull" message="XMLPull jar path doesn't exist: ${props.libs.xmlpull}" />
+		<fail unless="available.libs.xpp3" message="XPP3 jar path doesn't exist: ${props.libs.xpp3}" />
+		<fail unless="available.libs.xstream" message="XStream jar path doesn't exist: ${props.libs.xstream}" />
+	</target>
+
+</project>

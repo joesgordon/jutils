@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="jutilsduak" default="jar">
+
+	<dirname property="jutilsduak.projdir" file="${ant.file}" />
+
+	<import file="${jutilsduak.projdir}/../ant/importprops.xml" />
+
+	<property name="buildjavaproj.name" value="jutils.duak" />
+	<property name="buildjavaproj.main" value="org.jutils.duak.DuakMain" />
+
+	<path id="buildjavaproj.jars">
+	    <fileset file="${props.reljutils}/jutils.core.jar" />
+	</path>
+
+	<import file="${jutilsduak.projdir}/../ant/buildjavaproj.xml" />
+
+</project>

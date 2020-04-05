@@ -92,8 +92,19 @@ public class BuildInfoView implements IDataView<BuildInfo>
 
     /***************************************************************************
      * @param parent
+     * @param info
      **************************************************************************/
-    private static void show( Component parent, BuildInfo info )
+    public static void show( Component parent, BuildInfo info )
+    {
+        show( parent, "Build Info", info );
+    }
+
+    /***************************************************************************
+     * @param parent
+     * @param title
+     * @param info
+     **************************************************************************/
+    public static void show( Component parent, String title, BuildInfo info )
     {
         BuildInfoView view = new BuildInfoView();
         OkDialogView dialog = new OkDialogView( parent, view.createView(),
@@ -101,6 +112,6 @@ public class BuildInfoView implements IDataView<BuildInfo>
 
         view.setData( info );
 
-        dialog.show( "JUtils Build Info" );
+        dialog.show( title );
     }
 }

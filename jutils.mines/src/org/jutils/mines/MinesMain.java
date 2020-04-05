@@ -1,32 +1,31 @@
-package org.jutils.filespy;
+package org.jutils.mines;
 
 import javax.swing.JFrame;
 
-import org.jutils.core.ui.app.IFrameApp;
-import org.jutils.filespy.ui.FileSpyFrameView;
+import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.mines.ui.MinesFrameView;
 
 /*******************************************************************************
- *
+ * 
  ******************************************************************************/
-public class FileSpyApp implements IFrameApp
+public class MinesMain
 {
     /***************************************************************************
-     * 
+     * @param args
      **************************************************************************/
-    @Override
-    public JFrame createFrame()
+    public static void main( String [] args )
     {
-        FileSpyFrameView frameView = new FileSpyFrameView();
-        JFrame frame = frameView.getView();
-
-        return frame;
+        FrameRunner.invokeLater( () -> createFrame(), false );
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    @Override
-    public void finalizeGui()
+    private static JFrame createFrame()
     {
+        MinesFrameView frameView = new MinesFrameView();
+        JFrame frame = frameView.getView();
+
+        return frame;
     }
 }

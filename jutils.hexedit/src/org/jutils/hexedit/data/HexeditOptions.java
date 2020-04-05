@@ -9,7 +9,7 @@ import org.jutils.core.utils.MaxQueue;
 /*******************************************************************************
  * Defines the user options for the JHex application.
  ******************************************************************************/
-public class JHexOptions
+public class HexeditOptions
 {
     /** The file last accessed by the application. */
     public final MaxQueue<File> lastAccessedFiles;
@@ -17,7 +17,7 @@ public class JHexOptions
     /***************************************************************************
      * Creates a new set of user options with default values.
      **************************************************************************/
-    public JHexOptions()
+    public HexeditOptions()
     {
         this.lastAccessedFiles = new MaxQueue<File>( 10 );
     }
@@ -27,7 +27,7 @@ public class JHexOptions
      * @param options the options to be copied.
      * @throws NullPointerException if the provided options are null.
      **************************************************************************/
-    public JHexOptions( JHexOptions options )
+    public HexeditOptions( HexeditOptions options )
     {
         this();
 

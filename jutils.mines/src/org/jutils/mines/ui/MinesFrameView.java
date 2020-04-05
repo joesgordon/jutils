@@ -15,32 +15,32 @@ import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.model.IView;
-import org.jutils.mines.MsIcons;
+import org.jutils.mines.MinesIcons;
 import org.jutils.mines.data.GameOptions;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class MsFrameView implements IView<JFrame>
+public class MinesFrameView implements IView<JFrame>
 {
     /**  */
     private final StandardFrameView view;
     /**  */
-    private final MsView gameView;
+    private final MinesView gameView;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public MsFrameView()
+    public MinesFrameView()
     {
         this.view = new StandardFrameView();
-        this.gameView = new MsView();
+        this.gameView = new MinesView();
 
         view.setTitle( "Minesweeper" );
         view.setContent( gameView.getView() );
         view.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         view.setSize( 800, 800 );
-        view.getView().setIconImages( MsIcons.getAppImages() );
+        view.getView().setIconImages( MinesIcons.getAppImages() );
         view.getView().setResizable( false );
 
         createMenus( view.getMenuBar() );

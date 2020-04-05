@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="buildjava" default="jar">
+
+	<fail unless="buildjava.jar" message="Property 'buildjava.jar' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjava.main" message="Property 'buildjava.main' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjava.src" message="Property 'buildjava.src' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjava.build" message="Property 'buildjava.build' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjava.javaversion" message="Property 'buildjava.javaversion' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjava.javac" message="Property 'buildjava.javac' was not set by the importing build script ${ant.file}" />
+
+	<path id="buildjava.lib.jars">
+		<path refid="buildjava.jars" />
+	</path>
+
+	<dirname property="buildjava.jardir" file="${buildjava.jar}" />
+	<basename property="buildjava.jarname" file="${buildjava.jar}" />
+
+	<target name="info" depends="build_paths" description="Prints properties loaded">
+		<echo message="        buildjava.jar = ${buildjava.jar}" />
+		<echo message="       buildjava.main = ${buildjava.main}" />
+		<echo message="        buildjava.src = ${buildjava.src}" />
+		<echo message="      buildjava.build = ${buildjava.build}" />
+		<echo message="buildjava.javaversion = ${buildjava.javaversion}" />
+		<echo message="      buildjava.javac = ${buildjava.javac}" />
+		<echo message="     buildjava.jardir = ${paths.l4j}" />
+		<echo message="    buildjava.jarname = ${paths.l4j.jar}" />
+		<echo message="   buildjava.basepath = ${buildjava.basepath}" />
+		<echo message="   buildjava.libpaths = ${buildjava.libpaths}" />
+	</target>
+
+	<target name="build_paths">
+		<dirname file="${buildjava.jar}" property="buildjava.jardir"/>
+		<property name="buildjava.basepath" location="${props.reljutils}" relative="true" basedir="${buildjava.jardir}" />
+
+		<pathconvert property="buildjava.libpaths" dirsep="/" pathsep=" ">
+			<path refid="buildjava.lib.jars" />
+			<map from="${props.reljutils}/" to="${buildjava.basepath}" />
+		</pathconvert>
+	</target>
+
+	<target name="clean" description="Delete Class Files and Jar File">
+		<delete dir="${buildjava.jar}" failonerror="true" />
+		<delete dir="${buildjava.build}" failonerror="true" />
+	</target>
+
+	<target name="build" depends="clean" description="Build Class Files">
+
+		<!-- <echo message="buildjava.jardir = ${buildjava.jardir}" /> -->
+
+		<!-- Make Build Directory -->
+		<mkdir dir="${buildjava.build}" />
+
+		<!-- Compile Java Source Code -->
+		<javac debug="false" debuglevel="none" destdir="${buildjava.build}" includeantruntime="false" release="${buildjava.javaversion}" executable="${buildjava.javac}">
+			<classpath refid="buildjava.lib.jars" />
+			<src path="${buildjava.src}" />
+		</javac>
+
+		<!-- Copy Resource Files (e.g. Images) to Build Directory -->
+		<copy includeemptydirs="false" todir="${buildjava.build}" preservelastmodified="true" overwrite="true">
+			<fileset dir="${buildjava.src}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="build_paths,build" description="Builds the jar to the the path specified by 'buildjava.jar'.">
+
+		<!-- Make Distrubution Directory -->
+		<mkdir dir="${buildjava.jardir}" />
+
+		<!-- <echo message="buildjava.jar=${buildjava.jar}" /> -->
+		<!-- <echo message="buildjava.build=${buildjava.build}" /> -->
+		<!-- <echo message="buildjava.libpaths=${buildjava.libpaths}" /> -->
+
+		<!-- Create Jar File -->
+		<delete file="${buildjava.jar}" failonerror="false" />
+
+		<jar destfile="${buildjava.jar}" basedir="${buildjava.build}">
+			<manifest>
+				<!-- Information about the program itself -->
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Implementation-Vendor" value="SMDC" />
+				<attribute name="Implementation-Title" value="${ant.project.name}" />
+
+				<attribute name="Class-Path" value="${buildjava.libpaths}" />
+				<attribute name="Main-Class" value="${buildjava.main}" />
+			</manifest>
+		</jar>
+	</target>
+
+</project>

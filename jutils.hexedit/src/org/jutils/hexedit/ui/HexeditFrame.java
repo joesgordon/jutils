@@ -32,15 +32,15 @@ import org.jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import org.jutils.core.ui.fields.ComboFormField;
 import org.jutils.core.ui.hex.HexBufferSize;
 import org.jutils.core.ui.model.IView;
-import org.jutils.hexedit.JHexIcons;
-import org.jutils.hexedit.JHexMain;
-import org.jutils.hexedit.data.JHexOptions;
+import org.jutils.hexedit.HexeditIcons;
+import org.jutils.hexedit.HexeditMain;
+import org.jutils.hexedit.data.HexeditOptions;
 
 /*******************************************************************************
  * Represents the view that builds and contains the main frame for the
  * application.
  ******************************************************************************/
-public class JHexFrame implements IView<JFrame>
+public class HexeditFrame implements IView<JFrame>
 {
     // -------------------------------------------------------------------------
     // Main panel widgets
@@ -50,7 +50,7 @@ public class JHexFrame implements IView<JFrame>
     /** The file tree displaying the directories in the given file system. */
     private final HexFileView editor;
     /** The serializer to access user options. */
-    private final OptionsSerializer<JHexOptions> options;
+    private final OptionsSerializer<HexeditOptions> options;
     /** The recent files menu. */
     private final RecentFilesViews recentFiles;
 
@@ -60,7 +60,7 @@ public class JHexFrame implements IView<JFrame>
     /***************************************************************************
      * Creates a new frame that closes the file when the frame closes.
      **************************************************************************/
-    public JHexFrame()
+    public HexeditFrame()
     {
         this( true );
     }
@@ -71,9 +71,9 @@ public class JHexFrame implements IView<JFrame>
      * @param closeFileWithFrame closes the file when the frame is closed if
      * {@code true}.
      **************************************************************************/
-    public JHexFrame( boolean closeFileWithFrame )
+    public HexeditFrame( boolean closeFileWithFrame )
     {
-        this.options = JHexMain.getOptions();
+        this.options = HexeditMain.getOptions();
 
         this.frameView = new StandardFrameView();
         this.editor = new HexFileView();
@@ -99,7 +99,7 @@ public class JHexFrame implements IView<JFrame>
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.setTitle( "JHex" );
 
-        frame.setIconImages( JHexIcons.getAppImages() );
+        frame.setIconImages( HexeditIcons.getAppImages() );
 
         recentFiles.setListeners( ( f, c ) -> openFile( f ) );
         editor.getView().setDropTarget(
@@ -189,7 +189,7 @@ public class JHexFrame implements IView<JFrame>
      **************************************************************************/
     private void updateFileMenu()
     {
-        JHexOptions options = this.options.getOptions();
+        HexeditOptions options = this.options.getOptions();
 
         recentFiles.setData( options.lastAccessedFiles.toList() );
     }
@@ -273,7 +273,7 @@ public class JHexFrame implements IView<JFrame>
             return;
         }
 
-        JHexOptions options = this.options.getOptions();
+        HexeditOptions options = this.options.getOptions();
 
         options.lastAccessedFiles.push( f );
         this.options.write();
@@ -299,7 +299,7 @@ public class JHexFrame implements IView<JFrame>
 
         JFileChooser chooser = new JFileChooser();
         int choice = JFileChooser.CANCEL_OPTION;
-        JHexOptions options = this.options.getOptions();
+        HexeditOptions options = this.options.getOptions();
 
         chooser.setSelectedFile( options.getLastFile() );
         choice = chooser.showSaveDialog( getView() );
@@ -347,13 +347,13 @@ public class JHexFrame implements IView<JFrame>
         implements ItemActionListener<IFileDropEvent>
     {
         /** The view to open the dropped file. */
-        private final JHexFrame view;
+        private final HexeditFrame view;
 
         /**
          * Creates a new listener for a dropped file.
          * @param view the view to open the dropped file.
          */
-        public FileDroppedListener( JHexFrame view )
+        public FileDroppedListener( HexeditFrame view )
         {
             this.view = view;
         }
@@ -383,7 +383,7 @@ public class JHexFrame implements IView<JFrame>
          * The frame that contains the resource to be closed when the frame
          * closes.
          */
-        private final JHexFrame frame;
+        private final HexeditFrame frame;
 
         /**
          * Creates a new window listener that closes the resources of the
@@ -391,7 +391,7 @@ public class JHexFrame implements IView<JFrame>
          * @param frame the frame that contains the resource to be closed when
          * the frame closes.
          */
-        public WindowCloseListener( JHexFrame frame )
+        public WindowCloseListener( HexeditFrame frame )
         {
             this.frame = frame;
         }

@@ -51,7 +51,7 @@ import org.jutils.core.ui.model.IView;
  * Frame that displays the contents of the file system in a explorer like
  * interface.
  ******************************************************************************/
-public class JExplorerFrame implements IView<JFrame>
+public class ExplorerFrame implements IView<JFrame>
 {
     /**  */
     private static final String NEXT_TIP = "You must go back before going forward";
@@ -114,7 +114,7 @@ public class JExplorerFrame implements IView<JFrame>
     /***************************************************************************
      * Creates a JExplorer frame.
      **************************************************************************/
-    public JExplorerFrame()
+    public ExplorerFrame()
     {
         this.view = new StandardFrameView();
         this.addressField = new JTextField();
@@ -143,7 +143,7 @@ public class JExplorerFrame implements IView<JFrame>
 
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.setTitle( "JExplorer" );
-        frame.setIconImages( JExplorerIcons.getAppImages() );
+        frame.setIconImages( ExplorerIcons.getAppImages() );
         frame.setSize( new Dimension( 600, 450 ) );
 
         createMenubar( view.getMenuBar() );
@@ -543,9 +543,9 @@ public class JExplorerFrame implements IView<JFrame>
 
     private static class DirTreeMouseListener extends MouseAdapter
     {
-        private final JExplorerFrame view;
+        private final ExplorerFrame view;
 
-        public DirTreeMouseListener( JExplorerFrame adaptee )
+        public DirTreeMouseListener( ExplorerFrame adaptee )
         {
             this.view = adaptee;
         }
@@ -562,9 +562,9 @@ public class JExplorerFrame implements IView<JFrame>
 
     private static class FileTableMouseListener extends MouseAdapter
     {
-        private final JExplorerFrame view;
+        private final ExplorerFrame view;
 
-        public FileTableMouseListener( JExplorerFrame adaptee )
+        public FileTableMouseListener( ExplorerFrame adaptee )
         {
             this.view = adaptee;
         }

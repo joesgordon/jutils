@@ -37,7 +37,7 @@ import org.jutils.mines.data.GameStatus.GameResult;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class MsView implements IView<JComponent>
+public class MinesView implements IView<JComponent>
 {
     /**  */
     private final JComponent view;
@@ -60,7 +60,7 @@ public class MsView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    public MsView()
+    public MinesView()
     {
         this.difficultyField = new ComboFormField<Difficulty>( "Difficulty",
             Difficulty.values(), new NamedItemDescriptor<>() );

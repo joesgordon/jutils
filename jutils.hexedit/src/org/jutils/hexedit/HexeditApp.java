@@ -5,12 +5,12 @@ import java.io.File;
 import javax.swing.JFrame;
 
 import org.jutils.core.ui.app.IFrameApp;
-import org.jutils.hexedit.ui.JHexFrame;
+import org.jutils.hexedit.ui.HexeditFrame;
 
 /*******************************************************************************
  * Defines the {@link IFrameApp} that starts the JHex application.
  ******************************************************************************/
-public class JHexApp implements IFrameApp
+public class HexeditApp implements IFrameApp
 {
     /** The file to be loaded when the application is started. */
     private final File file;
@@ -18,13 +18,13 @@ public class JHexApp implements IFrameApp
     private final boolean closeFileWithFrame;
 
     /** The view created by {@link #createFrame()}. */
-    private JHexFrame view;
+    private HexeditFrame view;
 
     /***************************************************************************
      * Creates a new app with no file that closes the file when the frame is
      * closed.
      **************************************************************************/
-    public JHexApp()
+    public HexeditApp()
     {
         this( null );
     }
@@ -34,7 +34,7 @@ public class JHexApp implements IFrameApp
      * frame is closed.
      * @param file the file to be displayed when the application is started.
      **************************************************************************/
-    public JHexApp( File file )
+    public HexeditApp( File file )
     {
         this( file, true );
     }
@@ -46,7 +46,7 @@ public class JHexApp implements IFrameApp
      * @param closeFileWithFrame closes the file when the frame is closed if
      * {@code true}.
      **************************************************************************/
-    public JHexApp( File file, boolean closeFileWithFrame )
+    public HexeditApp( File file, boolean closeFileWithFrame )
     {
         this.file = file;
         this.closeFileWithFrame = closeFileWithFrame;
@@ -56,7 +56,7 @@ public class JHexApp implements IFrameApp
      * Returns the created view.
      * @return the view created by {@link #createFrame()}.
      **************************************************************************/
-    public JHexFrame getView()
+    public HexeditFrame getView()
     {
         return view;
     }
@@ -67,7 +67,7 @@ public class JHexApp implements IFrameApp
     @Override
     public JFrame createFrame()
     {
-        view = new JHexFrame( closeFileWithFrame );
+        view = new HexeditFrame( closeFileWithFrame );
         JFrame frame = view.getView();
 
         return frame;

@@ -14,7 +14,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
 import org.jutils.core.ui.model.IView;
-import org.jutils.mines.MsIcons;
+import org.jutils.mines.MinesIcons;
 import org.jutils.mines.data.GameOptions;
 import org.jutils.mines.data.GridSpace;
 
@@ -63,7 +63,7 @@ public class GridSpaceView implements IView<JComponent>
 
         this.label = new JLabel();
         this.flag = new FlagIcon( 22 );
-        this.mine = MsIcons.getIcon( "bomb024.png" );
+        this.mine = MinesIcons.getIcon( "bomb024.png" );
 
         label.setFont(
             label.getFont().deriveFont( 24.0f ).deriveFont( Font.BOLD ) );

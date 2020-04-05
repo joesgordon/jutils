@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="jutilslibs" default="build">
+
+	<dirname property="jutilslibs.projdir" file="${ant.file}" />
+
+	<import file="${jutilslibs.projdir}/../ant/importprops.xml" />
+
+	<target name="build">
+		<copy file="${props.libs.jgoodies}" tofile="${props.jars.jgoodies}" failonerror="true" />
+		<copy file="${props.libs.xmlpull}" tofile="${props.jars.xmlpull}" failonerror="true" />
+		<copy file="${props.libs.xpp3}" tofile="${props.jars.xpp3}" failonerror="true" />
+		<copy file="${props.libs.xstream}" tofile="${props.jars.xstream}" failonerror="true" />
+	</target>
+
+</project>

@@ -59,7 +59,7 @@ import org.jutils.core.ui.validation.AggregateValidityChangedManager;
 import org.jutils.core.ui.validation.IValidationField;
 import org.jutils.core.ui.validation.IValidityChangedListener;
 import org.jutils.core.ui.validation.Validity;
-import org.jutils.hexedit.JHexIcons;
+import org.jutils.hexedit.HexeditIcons;
 import org.jutils.hexedit.task.DataDistributionTask;
 import org.jutils.hexedit.task.SearchTask;
 import org.jutils.plot.ChartIcons;
@@ -132,7 +132,7 @@ public class HexFileView implements IDataView<File>
         this.searchAction = new ActionAdapter( ( e ) -> showSearchDialog(),
             "Search", IconConstants.getIcon( IconConstants.FIND_16 ) );
         this.gotoAction = new ActionAdapter( ( e ) -> showGotoDialog(),
-            "Go To Byte", JHexIcons.loader.getIcon( JHexIcons.GOTO ) );
+            "Go To Byte", HexeditIcons.loader.getIcon( HexeditIcons.GOTO ) );
 
         this.analyzeAction = new ActionAdapter( ( e ) -> showAnalyzer(),
             "Analyze", IconConstants.getIcon( IconConstants.ANALYZE_16 ) );
@@ -396,7 +396,7 @@ public class HexFileView implements IDataView<File>
 
             dialogView.setOkButtonText( "Close" );
 
-            dialogView.show( "Data Plot", JHexIcons.getAppImages(),
+            dialogView.show( "Data Plot", HexeditIcons.getAppImages(),
                 new Dimension( 640, 480 ) );
         }
         catch( FileNotFoundException ex )

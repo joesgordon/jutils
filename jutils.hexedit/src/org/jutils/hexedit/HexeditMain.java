@@ -7,12 +7,12 @@ import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.ui.app.FrameRunner;
-import org.jutils.hexedit.data.JHexOptions;
+import org.jutils.hexedit.data.HexeditOptions;
 
 /*******************************************************************************
  * Contains the entry point for the JHex application.
  ******************************************************************************/
-public class JHexMain
+public class HexeditMain
 {
     /** The path to the user options file. */
     public static final File USER_OPTIONS_FILE = IOUtils.getUsersFile(
@@ -22,7 +22,7 @@ public class JHexMain
      * The single user options shared by all instances of the calling
      * application.
      */
-    private static OptionsSerializer<JHexOptions> OPTIONS;
+    private static OptionsSerializer<HexeditOptions> OPTIONS;
 
     /***************************************************************************
      * Starts the JHex application.
@@ -44,7 +44,7 @@ public class JHexMain
             }
         }
 
-        JHexApp hexApp = new JHexApp( file );
+        HexeditApp hexApp = new HexeditApp( file );
         FrameRunner.invokeLater( hexApp );
     }
 
@@ -53,11 +53,11 @@ public class JHexMain
      * @return the single user options shared by all instances of the calling
      * application.
      **************************************************************************/
-    public static OptionsSerializer<JHexOptions> getOptions()
+    public static OptionsSerializer<HexeditOptions> getOptions()
     {
         if( OPTIONS == null )
         {
-            OPTIONS = OptionsSerializer.getOptions( JHexOptions.class,
+            OPTIONS = OptionsSerializer.getOptions( HexeditOptions.class,
                 USER_OPTIONS_FILE, new JHexOptionsCreator() );
         }
         return OPTIONS;
@@ -67,24 +67,24 @@ public class JHexMain
      * 
      **************************************************************************/
     private static final class JHexOptionsCreator
-        implements IOptionsCreator<JHexOptions>
+        implements IOptionsCreator<HexeditOptions>
     {
         /**
          * {@inheritDoc}
          */
         @Override
-        public JHexOptions createDefaultOptions()
+        public HexeditOptions createDefaultOptions()
         {
-            return new JHexOptions();
+            return new HexeditOptions();
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public JHexOptions initialize( JHexOptions options )
+        public HexeditOptions initialize( HexeditOptions options )
         {
-            options = new JHexOptions( options );
+            options = new HexeditOptions( options );
 
             options.removeNonExistentRecents();
 

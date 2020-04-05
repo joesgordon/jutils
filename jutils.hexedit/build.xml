@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="jutilshexedit" default="jar">
+
+	<dirname property="jutilshexedit.projdir" file="${ant.file}" />
+
+	<import file="${jutilshexedit.projdir}/../ant/importprops.xml" />
+
+	<property name="buildjavaproj.name" value="jutils.hexedit" />
+
+	<property name="buildjavaproj.main" value="org.jutils.hexedit.HexeditMain" />
+
+	<path id="buildjavaproj.jars">
+		<fileset file="${props.reljutils}/jutils.core.jar" />
+		<fileset file="${props.reljutils}/jutils.plot.jar" />
+	</path>
+
+	<import file="${jutilshexedit.projdir}/../ant/buildjavaproj.xml" />
+
+</project>
