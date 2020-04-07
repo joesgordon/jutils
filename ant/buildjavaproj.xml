@@ -6,22 +6,23 @@
 
 	<import file="${buildjavaproj.antdir}/importprops.xml" />
 
-	<fail unless="buildjavaproj.name" message="Property 'buildjava.jar' was not set by the importing build script ${ant.file}" />
-	<fail unless="buildjavaproj.main" message="Property 'buildjava.main' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjavaproj.releasebase" message="Property 'buildjavaproj.relbase' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjavaproj.reljardir" message="Property 'buildjavaproj.jar' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjavaproj.name" message="Property 'buildjavaproj.name' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjavaproj.main" message="Property 'buildjavaproj.main' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjavaproj.reldir" message="Property 'buildjavaproj.reldir' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjavaproj.bindir" message="Property 'buildjavaproj.bindir' was not set by the importing build script ${ant.file}" />
 	<!-- buildjavaproj.infoprops is an optional property -->
 
-	<property name="buildjava.jar" location="${props.reljutils}/${buildjavaproj.name}.jar" />
+	<property name="buildjava.releasebase" location="${buildjavaproj.releasebase}" />
+	<property name="buildjava.reljar" value="${buildjavaproj.reljardir}/${buildjavaproj.name}.jar" />
 	<property name="buildjava.main" value="${buildjavaproj.main}" />
 	<property name="buildjava.src" location="${buildjavaproj.projdir}/src" />
-	<property name="buildjava.build" location="${props.bin}/${buildjavaproj.name}" />
+	<property name="buildjava.build" location="${buildjavaproj.bindir}/${buildjavaproj.name}" />
 	<property name="buildjava.javaversion" value="${props.javaversion}" />
 	<property name="buildjava.javac" location="${props.javac}" />
 
 	<path id="buildjava.jars">
-		<fileset file="${props.jars.jgoodies}" />
-		<fileset file="${props.jars.xmlpull}" />
-		<fileset file="${props.jars.xpp3}" />
-		<fileset file="${props.jars.xstream}" />
 		<path refid="buildjavaproj.jars" />
 	</path>
 
@@ -35,13 +36,6 @@
 		<echo message="buildjavaproj.main = ${buildjavaproj.main}" />
 		<echo message="buildjavaproj.infoprops = ${buildjavaproj.infoprops}" />
 		<echo message="buildjavaproj.jars = ${buildjavaproj.jars}" />
-	</target>
-
-	<target name="checkpaths" depends="importprops.checkpaths" description="Checks the paths loaded">
-		<fail unless="available.jars.jgoodies" message="JGoodies jar path doesn't exist: ${props.jars.jgoodies}" />
-		<fail unless="available.jars.xmlpull" message="XMLPull jar path doesn't exist: ${props.jars.xmlpull}" />
-		<fail unless="available.jars.xpp3" message="XPP3 jar path doesn't exist: ${props.jars.xpp3}" />
-		<fail unless="available.jars.xstream" message="XStream jar path doesn't exist: ${props.jars.xstream}" />
 	</target>
 
 	<target name="update.version" if="buildjavaproj.infoprops">

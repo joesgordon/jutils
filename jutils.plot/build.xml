@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="jutilsplot" default="jar">
 
-    <dirname property="jutilsplot.projdir" file="${ant.file}" />
+	<dirname property="proj.projdir" file="${ant.file}" />
 
-    <import file="${jutilsplot.projdir}/../ant/importprops.xml" />
+	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
-    <property name="buildjavaproj.name" value="jutils.plot" />
-    
-    <property name="buildjavaproj.main" value="org.jutils.plot.app.PlotMain" />
+	<property name="jutilsbuild.name" value="jutils.plot" />
+	<property name="jutilsbuild.main" value="org.jutils.plot.app.PlotMain" />
 
-    <path id="buildjavaproj.jars">
-        <fileset file="${props.reljutils}/jutils.core.jar" />
-    </path>
+	<path id="jutilsbuild.jars">
+		<fileset file="${juprops.releaseindv}/jutils.core.jar" />
+	</path>
 
-    <import file="${jutilsplot.projdir}/../ant/buildjavaproj.xml" />
+	<import file="${proj.projdir}/../ant/jutilsbuild.xml" />
 
 </project>

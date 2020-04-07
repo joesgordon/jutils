@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="jutilsbuild" default="jar">
+
+	<dirname property="jutilsbuild.projdir" file="${ant.file}" />
+	<dirname property="jutilsbuild.antdir" file="${ant.file.jutilsbuild}" />
+
+	<import file="${jutilsbuild.antdir}/jutilsimport.xml" />
+
+	<fail unless="jutilsbuild.name" message="Property 'jutilsbuild.name' was not set by the importing build script ${ant.file}" />
+	<fail unless="jutilsbuild.main" message="Property 'jutilsbuild.main' was not set by the importing build script ${ant.file}" />
+	<!-- jutilsbuild.infoprops is an optional property -->
+
+	<property name="buildjavaproj.releasebase" location="${juprops.releaseindv}" />
+	<property name="buildjavaproj.reljardir" value="." />
+	<property name="buildjavaproj.name" value="${jutilsbuild.name}" />
+	<property name="buildjavaproj.main" value="${jutilsbuild.main}" />
+	<property name="buildjavaproj.reldir" location="${jutilsbuild.projdir}/src" />
+	<property name="buildjavaproj.bindir" location="${juprops.bin}" />
+	
+	<condition property="buildjavaproj.infoprops" value="${jutilsbuild.infoprops}">
+		<isset property="jutilsbuild.infoprops" />
+	</condition>
+    
+	<echo message="  jutilsbuild.infoprops = ${jutilsbuild.infoprops}" />
+	<echo message="  buildjavaproj.infoprops = ${buildjavaproj.infoprops}" />
+
+	<path id="buildjavaproj.jars">
+		<fileset file="${juprops.jars.jgoodies}" />
+		<fileset file="${juprops.jars.xmlpull}" />
+		<fileset file="${juprops.jars.xpp3}" />
+		<fileset file="${juprops.jars.xstream}" />
+		<path refid="jutilsbuild.jars" />
+	</path>
+
+	<import file="${jutilsbuild.antdir}/buildjavaproj.xml" />
+
+	<target name="info" depends="jutilsimport.info,buildjavaproj.info">
+		<echo message="  jutilsbuild.projdir = ${jutilsbuild.projdir}" />
+		<echo message="   jutilsbuild.antdir = ${jutilsbuild.antdir}" />
+
+		<echo message="     jutilsbuild.name = ${jutilsbuild.name}" />
+		<echo message="     jutilsbuild.main = ${jutilsbuild.main}" />
+		<echo message="jutilsbuild.infoprops = ${jutilsbuild.infoprops}" />
+		<echo message="     jutilsbuild.jars = ${jutilsbuild.jars}" />
+	</target>
+
+	<target name="checkpaths" depends="jutilsimport.checkpaths" description="Checks the paths loaded">
+		<fail unless="available.jars.jgoodies" message="JGoodies jar path doesn't exist: ${juprops.jars.jgoodies}" />
+		<fail unless="available.jars.xmlpull" message="XMLPull jar path doesn't exist: ${juprops.jars.xmlpull}" />
+		<fail unless="available.jars.xpp3" message="XPP3 jar path doesn't exist: ${juprops.jars.xpp3}" />
+		<fail unless="available.jars.xstream" message="XStream jar path doesn't exist: ${juprops.jars.xstream}" />
+	</target>
+
+</project>

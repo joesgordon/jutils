@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="jutilscore" default="jar">
 
-	<dirname property="jutilscore.projdir" file="${ant.file}" />
+	<dirname property="proj.projdir" file="${ant.file}" />
 
-	<property name="buildjavaproj.name" value="jutils.core" />
-	<property name="buildjavaproj.main" value="org.jutils.core.JUtilsInfo" />
-	<property name="buildjavaproj.infoprops" value="${jutilscore.projdir}/src/org/jutils/core/icons/info.properties" />
+	<property name="jutilsbuild.name" value="jutils.core" />
+    <property name="jutilsbuild.main" value="org.jutils.core.JUtilsInfo" />
+	<property name="jutilsbuild.infoprops" value="${proj.projdir}/src/org/jutils/core/icons/info.properties" />
 
-	<path id="buildjavaproj.jars">
+	<path id="jutilsbuild.jars">
 	</path>
 
-	<import file="${jutilscore.projdir}/../ant/buildjavaproj.xml" />
+	<import file="${proj.projdir}/../ant/jutilsbuild.xml" />
 
 </project>

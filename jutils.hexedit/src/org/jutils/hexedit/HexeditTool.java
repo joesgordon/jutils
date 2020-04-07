@@ -29,7 +29,7 @@ public class HexeditTool implements IToolView
     @Override
     public String getName()
     {
-        return "JHex";
+        return "Hexedit";
     }
 
     /***************************************************************************

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="jutilssummer" default="jar">
 
-    <dirname property="jutilssummer.projdir" file="${ant.file}" />
+	<dirname property="proj.projdir" file="${ant.file}" />
 
-    <import file="${jutilssummer.projdir}/../ant/importprops.xml" />
+	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
-    <property name="buildjavaproj.name" value="jutils.summer" />
-    
-    <property name="buildjavaproj.main" value="org.jutils.summer.SummerMain" />
+	<property name="jutilsbuild.name" value="jutils.summer" />
+	<property name="jutilsbuild.main" value="org.jutils.summer.SummerMain" />
 
-    <path id="buildjavaproj.jars">
-        <fileset file="${props.reljutils}/jutils.core.jar" />
-    </path>
+	<path id="jutilsbuild.jars">
+		<fileset file="${juprops.releaseindv}/jutils.core.jar" />
+	</path>
 
-    <import file="${jutilssummer.projdir}/../ant/buildjavaproj.xml" />
+	<import file="${proj.projdir}/../ant/jutilsbuild.xml" />
 
 </project>

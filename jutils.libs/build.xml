@@ -3,13 +3,18 @@
 
 	<dirname property="jutilslibs.projdir" file="${ant.file}" />
 
-	<import file="${jutilslibs.projdir}/../ant/importprops.xml" />
+	<import file="${jutilslibs.projdir}/../ant/jutilsimport.xml" />
 
 	<target name="build">
-		<copy file="${props.libs.jgoodies}" tofile="${props.jars.jgoodies}" failonerror="true" />
-		<copy file="${props.libs.xmlpull}" tofile="${props.jars.xmlpull}" failonerror="true" />
-		<copy file="${props.libs.xpp3}" tofile="${props.jars.xpp3}" failonerror="true" />
-		<copy file="${props.libs.xstream}" tofile="${props.jars.xstream}" failonerror="true" />
+		<copy file="${juprops.libs.jgoodies}" todir="${juprops.releaseindv}" failonerror="true" />
+		<copy file="${juprops.libs.xmlpull}" todir="${juprops.releaseindv}" failonerror="true" />
+		<copy file="${juprops.libs.xpp3}" todir="${juprops.releaseindv}" failonerror="true" />
+		<copy file="${juprops.libs.xstream}" todir="${juprops.releaseindv}" failonerror="true" />
+
+		<copy file="${juprops.libs.jgoodies}" todir="${juprops.releasecomb}" failonerror="true" />
+		<copy file="${juprops.libs.xmlpull}" todir="${juprops.releasecomb}" failonerror="true" />
+		<copy file="${juprops.libs.xpp3}" todir="${juprops.releasecomb}" failonerror="true" />
+		<copy file="${juprops.libs.xstream}" todir="${juprops.releasecomb}" failonerror="true" />
 	</target>
 
 </project>
