@@ -21,7 +21,7 @@ public class MinesMain
     /***************************************************************************
      * @return
      **************************************************************************/
-    private static JFrame createFrame()
+    public static JFrame createFrame()
     {
         MinesFrameView frameView = new MinesFrameView();
         JFrame frame = frameView.getView();

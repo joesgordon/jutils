@@ -7,7 +7,7 @@ import java.util.List;
 import org.jutils.core.utils.MaxQueue;
 
 /*******************************************************************************
- * Defines the user options for the JHex application.
+ * Defines the user options for the Hexedit application.
  ******************************************************************************/
 public class HexeditOptions
 {

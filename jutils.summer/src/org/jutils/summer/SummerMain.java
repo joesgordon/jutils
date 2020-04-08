@@ -219,7 +219,7 @@ public class SummerMain
     }
 
     /***************************************************************************
-     * Gets (or creates) the user options for the JHex application.
+     * Gets (or creates) the user options for the Summer application.
      * @return the single user options shared by all instances of the calling
      * application.
      **************************************************************************/

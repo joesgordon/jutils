@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="jutilsapps" default="jar">
+
+	<dirname property="proj.projdir" file="${ant.file}" />
+
+	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
+
+	<property name="jutilsbuild.name" value="jutils.apps" />
+	<property name="jutilsbuild.main" value="org.jutils.apps.AppsMain" />
+
+	<path id="jutilsbuild.jars">
+		<fileset file="${juprops.releaseindv}/jutils.core.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.duak.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.explorer.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.filespy.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.hexedit.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.mines.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.multicon.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.plot.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.summer.jar" />
+	</path>
+
+	<import file="${proj.projdir}/../ant/jutilsbuild.xml" />
+
+</project>

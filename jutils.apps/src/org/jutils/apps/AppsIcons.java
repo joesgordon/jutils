@@ -1,51 +1,45 @@
-package org.jutils.mines;
+package org.jutils.apps;
 
 import java.awt.Image;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
 import org.jutils.core.io.IconLoader;
 
 /*******************************************************************************
- * 
+ * Defines methods of returning the icons for this application.
  ******************************************************************************/
-public class MinesIcons
+public final class AppsIcons
 {
-    /**  */
-    public static final String APP_PREFIX = "bomb";
+    /** The name of the 16 x 16 pixel icon for this application. */
+    public static final String APP_16 = "jutils016.png";
 
-    /** The loader used to access the icons. */
-    public final static IconLoader loader = new IconLoader( MinesIcons.class,
-        "icons" );
-
-    /**  */
-    public static final String MINES_024 = APP_PREFIX + "024.png";
+    /** The loader used to access icons in this application. */
+    public static final IconLoader loader = new IconLoader(
+        AppsIcons.class, "icons" );
 
     /***************************************************************************
      * Private default constructor to prevent instantiation of this class.
      **************************************************************************/
-    private MinesIcons()
+    private AppsIcons()
     {
     }
 
     /***************************************************************************
-     * Builds and returns the list of application images.
-     * @return the list of application images or an empty list if a programmatic
-     * error occurs.
+     * Loads all the different sized icons that represent this application.
+     * @return the icons for this application.
      **************************************************************************/
     public static List<Image> getAppImages()
     {
-        return loader.getImages( IconLoader.buildNameList( APP_PREFIX ) );
+        return loader.getImages( IconLoader.buildNameList( "jutils" ) );
     }
 
     /***************************************************************************
-     * Returns the icon with the provided name.
-     * @param name the name/relative path to the icon.
-     * @return the icon loaded or null if none found.
+     * Loads the image with the provided name.
+     * @param name the name of the image to be loaded.
+     * @return the image of the provided name.
      **************************************************************************/
-    public static ImageIcon getIcon( String name )
+    public static Image getImage( String name )
     {
-        return loader.getIcon( name );
+        return loader.getImage( name );
     }
 }

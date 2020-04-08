@@ -23,12 +23,12 @@ import org.jutils.core.ui.RecentFilesViews;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.FileChooserListener;
-import org.jutils.core.ui.event.FileDropTarget;
-import org.jutils.core.ui.event.ItemActionEvent;
-import org.jutils.core.ui.event.ItemActionListener;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.FileChooserListener.ILastFile;
+import org.jutils.core.ui.event.FileDropTarget;
 import org.jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import org.jutils.core.ui.event.ItemActionEvent;
+import org.jutils.core.ui.event.ItemActionListener;
 import org.jutils.core.ui.fields.ComboFormField;
 import org.jutils.core.ui.hex.HexBufferSize;
 import org.jutils.core.ui.model.IView;
@@ -97,7 +97,7 @@ public class HexeditFrame implements IView<JFrame>
             frame.addWindowListener( new WindowCloseListener( this ) );
         }
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        frame.setTitle( "JHex" );
+        frame.setTitle( "Hexedit" );
 
         frame.setIconImages( HexeditIcons.getAppImages() );
 

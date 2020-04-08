@@ -8,7 +8,7 @@ import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.hexedit.ui.HexeditFrame;
 
 /*******************************************************************************
- * Defines the {@link IFrameApp} that starts the JHex application.
+ * Defines the {@link IFrameApp} that starts the Hexedit application.
  ******************************************************************************/
 public class HexeditApp implements IFrameApp
 {

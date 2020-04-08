@@ -27,15 +27,12 @@
 		<calldir dir="jutils.mines" target="release" />
 		<calldir dir="jutils.multicon" target="release" />
 		<calldir dir="jutils.summer" target="release" />
+		<calldir dir="jutils.apps" target="release" />
 	</target>
 
 	<target name="combined" description="Builds a release jar that includes source and libs">
 
 		<jar destfile="${juprops.releasecomb}/jutils.jar" filesetmanifest="merge">
-			<manifest>
-				<attribute name="Main-Class" value="org.jutils.core.JUtilsInfo" />
-			</manifest>
-
 			<zipfileset src="${juprops.releaseindv}/jutils.duak.jar" />
 			<zipfileset src="${juprops.releaseindv}/jutils.explorer.jar" />
 			<zipfileset src="${juprops.releaseindv}/jutils.filespy.jar" />
@@ -45,6 +42,7 @@
 			<zipfileset src="${juprops.releaseindv}/jutils.plot.jar" />
 			<zipfileset src="${juprops.releaseindv}/jutils.summer.jar" />
 			<zipfileset src="${juprops.releaseindv}/jutils.core.jar" />
+			<zipfileset src="${juprops.releaseindv}/jutils.apps.jar" />
 		</jar>
 
 		<copy todir="${juprops.releasecomb}">
@@ -56,6 +54,7 @@
 	<target name="single" description="Builds a release jar that includes source and libs">
 
 		<jar destfile="${juprops.releasesing}/jutils.jar" filesetmanifest="merge">
+			<zipfileset src="${juprops.releaseindv}/jutils.core.jar" />
 			<zipfileset src="${juprops.releaseindv}/jutils.duak.jar" />
 			<zipfileset src="${juprops.releaseindv}/jutils.explorer.jar" />
 			<zipfileset src="${juprops.releaseindv}/jutils.filespy.jar" />
@@ -68,7 +67,7 @@
 			<zipfileset src="${juprops.jars.xmlpull}" />
 			<zipfileset src="${juprops.jars.xpp3}" />
 			<zipfileset src="${juprops.jars.xstream}" />
-			<zipfileset src="${juprops.releaseindv}/jutils.core.jar" />
+			<zipfileset src="${juprops.releaseindv}/jutils.apps.jar" />
 		</jar>
 
 	</target>

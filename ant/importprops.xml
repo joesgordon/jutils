@@ -9,18 +9,13 @@
 
 	<fail unless="JAVA.VERSION" message="Property 'JAVA.VERSION' not defined in ${props.buildprops}" />
 	<fail unless="PATHS.JAVA" message="Property 'JAVA.VERSION' not defined in ${props.buildprops}" />
-	<fail unless="PATHS.L4J" message="Property 'JAVA.VERSION' not defined in ${props.buildprops}" />
 
 	<property name="props.javaversion" value="${JAVA.VERSION}" />
 	<property name="props.java" location="${PATHS.JAVA}" />
 	<property name="props.javac" location="${PATHS.JAVA}/bin/javac.exe" />
-	<property name="props.l4j" location="${PATHS.L4J}" />
-	<property name="props.l4j.jar" location="${PATHS.L4J}/launch4j.jar" />
 
 	<available property="props.java.avail" file="${props.java}" type="dir" />
 	<available property="props.javac.avail" file="${props.javac}" type="file" />
-	<available property="props.l4j.avail" file="${props.l4j}" type="dir" />
-	<available property="props.l4j.jar.avail" file="${props.l4j.jar}" type="file" />
 
 	<target name="info" description="Prints properties loaded">
 		<echo message="       props.antdir = ${props.antdir}" />
@@ -30,21 +25,15 @@
 		<echo message="  props.javaversion = ${props.javaversion}" />
 		<echo message="         props.java = ${props.java}" />
 		<echo message="        props.javac = ${props.javac}" />
-		<echo message="          props.l4j = ${props.l4j}" />
-		<echo message="      props.l4j.jar = ${props.l4j.jar}" />
 		<echo message="" />
 		<echo message="     props.java.avail = ${props.java.avail}" />
 		<echo message="    props.javac.avail = ${props.javac.avail}" />
-		<echo message="      props.l4j.avail = ${props.l4j.avail}" />
-		<echo message="  props.l4j.jar.avail = ${props.l4j.jar.avail}" />
 		<!-- <echo message=" = ${}" /> -->
 	</target>
 
 	<target name="checkpaths" description="Checks the paths loaded">
 		<fail unless="props.java.avail" message="Java path doesn't exist: ${props.java}" />
 		<fail unless="props.javac.avail" message="Javac path doesn't exist: ${props.javac}" />
-		<fail unless="props.l4j.avail" message="Launch4J path doesn't exist: ${props.l4j}" />
-		<fail unless="props.l4j.jar.avail" message="Launch4J jar path doesn't exist: ${props.l4j.jar}" />
 	</target>
 
 </project>

@@ -10,7 +10,7 @@ import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.hexedit.data.HexeditOptions;
 
 /*******************************************************************************
- * Contains the entry point for the JHex application.
+ * Contains the entry point for the Hexedit application.
  ******************************************************************************/
 public class HexeditMain
 {
@@ -25,7 +25,7 @@ public class HexeditMain
     private static OptionsSerializer<HexeditOptions> OPTIONS;
 
     /***************************************************************************
-     * Starts the JHex application.
+     * Starts the Hexedit application.
      * @param args either an empty array or the path to the file to be displayed
      * when the application starts.
      **************************************************************************/
@@ -49,7 +49,7 @@ public class HexeditMain
     }
 
     /***************************************************************************
-     * Gets (or creates) the user options for the JHex application.
+     * Gets (or creates) the user options for the Hexedit application.
      * @return the single user options shared by all instances of the calling
      * application.
      **************************************************************************/
@@ -58,7 +58,7 @@ public class HexeditMain
         if( OPTIONS == null )
         {
             OPTIONS = OptionsSerializer.getOptions( HexeditOptions.class,
-                USER_OPTIONS_FILE, new JHexOptionsCreator() );
+                USER_OPTIONS_FILE, new HexeditOptionsCreator() );
         }
         return OPTIONS;
     }
@@ -66,7 +66,7 @@ public class HexeditMain
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class JHexOptionsCreator
+    private static final class HexeditOptionsCreator
         implements IOptionsCreator<HexeditOptions>
     {
         /**
