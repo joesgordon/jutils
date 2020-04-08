@@ -159,6 +159,9 @@ public class BitArrayView implements IDataView<BitArray>, IValidationField
         this.bits = bits;
 
         bitsField.setValue( bits );
+
+        leftField.setValue( bits.getLeftAligned() );
+        rightField.setValue( bits.getRightAligned() );
     }
 
     /***************************************************************************
