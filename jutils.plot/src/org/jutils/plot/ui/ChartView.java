@@ -616,6 +616,11 @@ public class ChartView implements IView<JComponent>
         return s;
     }
 
+    public void addDrawCallback( IPlotDrawer drawer )
+    {
+        chartWidget.addDrawCallback( drawer );
+    }
+
     /***************************************************************************
      * 
      **************************************************************************/
@@ -995,11 +1000,30 @@ public class ChartView implements IView<JComponent>
             if( okView.show( "Save Chart", w.getIconImages() ) )
             {
                 options = saveView.getData();
+                File file = options.file;
 
-                view.options.getOptions().lastImageFile = options.file;
+                String ext = IOUtils.getFileExtension( file );
+
+                if( ext.isEmpty() )
+                {
+                    String name = file.getName();
+
+                    ext = name.endsWith( "." ) ? "png" : ".png";
+                    file = new File( file.getParentFile(), name + ext );
+                }
+
+                view.options.getOptions().lastImageFile = file;
                 view.options.write();
 
-                view.saveAsImage( options.file, options.size );
+                try
+                {
+                    view.saveAsImage( file, options.size );
+                }
+                catch( IllegalArgumentException ex )
+                {
+                    OptionUtils.showErrorMessage( view.getView(),
+                        ex.getMessage(), "Save Error" );
+                }
             }
         }
 

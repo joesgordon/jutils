@@ -4,10 +4,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jutils.plot.model.Chart;
 import org.jutils.plot.model.HorizontalAlignment;
 import org.jutils.plot.ui.IChartWidget;
+import org.jutils.plot.ui.IPlotDrawer;
 
 /*******************************************************************************
  * 
@@ -28,6 +31,8 @@ public class ChartWidget implements IChartWidget
     public final PlotsWidget plots;
     /**  */
     public final TextWidget topBottom;
+    /**  */
+    private final List<IPlotDrawer> drawers;
 
     /**  */
     final Chart chart;
@@ -47,10 +52,11 @@ public class ChartWidget implements IChartWidget
         this.plots = new PlotsWidget( context );
         this.axes = new AxesWidget( context, chart );
         this.legend = new LegendWidget( chart.legend, plots.plots );
+        this.drawers = new ArrayList<>();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Dimension calculateSize( Dimension canvasSize )
@@ -59,7 +65,8 @@ public class ChartWidget implements IChartWidget
     }
 
     /***************************************************************************
-     * 
+     * @param size
+     * @return
      **************************************************************************/
     public Dimension layout( Dimension size )
     {
@@ -120,8 +127,15 @@ public class ChartWidget implements IChartWidget
         plots.fills.clear();
         plots.fills.addAll( chart.fills );
         plots.layout( wSize );
-        plots.draw( ( Graphics2D )graphics.create( wLoc.x, wLoc.y, wSize.width,
-            wSize.height ), null, null );
+
+        Graphics2D plotGraphics = ( Graphics2D )graphics.create( wLoc.x, wLoc.y,
+            wSize.width, wSize.height );
+        plots.draw( plotGraphics, null, null );
+
+        for( IPlotDrawer drawer : drawers )
+        {
+            drawer.draw( plots.context, plotGraphics );
+        }
     }
 
     /***************************************************************************
@@ -323,5 +337,13 @@ public class ChartWidget implements IChartWidget
         legend.repaint();
         plots.repaint();
         axes.repaint();
+    }
+
+    /***************************************************************************
+     * @param drawer
+     **************************************************************************/
+    public void addDrawCallback( IPlotDrawer drawer )
+    {
+        drawers.add( drawer );
     }
 }
