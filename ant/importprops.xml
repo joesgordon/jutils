@@ -8,7 +8,7 @@
 	<property file="${props.buildprops}" />
 
 	<fail unless="JAVA.VERSION" message="Property 'JAVA.VERSION' not defined in ${props.buildprops}" />
-	<fail unless="PATHS.JAVA" message="Property 'JAVA.VERSION' not defined in ${props.buildprops}" />
+	<fail unless="PATHS.JAVA" message="Property 'PATHS.JAVA' not defined in ${props.buildprops}" />
 
 	<property name="props.javaversion" value="${JAVA.VERSION}" />
 	<property name="props.java" location="${PATHS.JAVA}" />
