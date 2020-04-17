@@ -1,4 +1,4 @@
-package org.jutils.core.io;
+package org.jutils.core.io.xs;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,12 +26,12 @@ import com.thoughtworks.xstream.XStreamException;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public final class XStreamUtils
+public final class XsUtils
 {
     /***************************************************************************
      * Declare the default and only constructor private to prevent instances.
      **************************************************************************/
-    private XStreamUtils()
+    private XsUtils()
     {
         ;
     }

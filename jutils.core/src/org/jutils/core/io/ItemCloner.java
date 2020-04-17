@@ -3,6 +3,7 @@ package org.jutils.core.io;
 import java.io.IOException;
 
 import org.jutils.core.ValidationException;
+import org.jutils.core.io.xs.XsUtils;
 
 /*******************************************************************************
  * Deep clones objects, retaining the intermediate buffer from call to call.
@@ -42,10 +43,10 @@ public class ItemCloner<T>
             stream.setLength( 0 );
 
             stream.seek( 0 );
-            XStreamUtils.writeObjectXStream( item, outputStream );
+            XsUtils.writeObjectXStream( item, outputStream );
 
             stream.seek( 0 );
-            clone = XStreamUtils.readObjectXStream( inputStream );
+            clone = XsUtils.readObjectXStream( inputStream );
         }
         catch( IOException | ValidationException ex )
         {

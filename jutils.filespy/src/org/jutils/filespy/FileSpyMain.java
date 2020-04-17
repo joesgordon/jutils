@@ -8,6 +8,7 @@ import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsOptions;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.filespy.data.FileSpyData;
 import org.jutils.filespy.ui.FileSpyFrameView;
@@ -26,7 +27,7 @@ public class FileSpyMain
 
     static
     {
-        OPTIONS = OptionsSerializer.getOptions( FileSpyData.class,
+        OPTIONS = XsOptions.getOptions( FileSpyData.class,
             USER_OPTIONS_FILE, new OptionsCreator() );
     }
 

@@ -52,7 +52,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.jutils.core.io.XStreamUtils;
+import org.jutils.core.io.xs.XsUtils;
 import org.jutils.core.ui.StatusBarPanel;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.ItemActionEvent;
@@ -356,7 +356,7 @@ public final class SwingUtils
             T data = view.getData();
             try
             {
-                String str = XStreamUtils.writeObjectXStream( data );
+                String str = XsUtils.writeObjectXStream( data );
                 Utils.setClipboardText( str );
             }
             catch( IOException ex )
@@ -388,7 +388,7 @@ public final class SwingUtils
             try
             {
                 String str = Utils.getClipboardText();
-                T data = XStreamUtils.readObjectXStream( str );
+                T data = XsUtils.readObjectXStream( str );
 
                 itemListener.actionPerformed(
                     new ItemActionEvent<T>( itemListener, data ) );

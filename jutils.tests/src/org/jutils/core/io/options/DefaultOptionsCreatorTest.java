@@ -5,8 +5,7 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jutils.core.io.options.DefaultOptionsCreator;
-import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsOptions;
 
 /*******************************************************************************
  *
@@ -79,14 +78,14 @@ public class DefaultOptionsCreatorTest
         }
 
         DefaultOptionsCreator<T> creator = new DefaultOptionsCreator<>( cls );
-        OptionsSerializer<T> serializer = OptionsSerializer.getOptions( cls,
-            file, creator );
+        OptionsSerializer<T> serializer = XsOptions.getOptions( cls, file,
+            creator );
 
         T obj = creator.createDefaultOptions();
 
         obj.setData( 50.0 );
         serializer.write( obj );
-        serializer = OptionsSerializer.getOptions( cls, file, creator );
+        serializer = XsOptions.getOptions( cls, file, creator );
         obj = serializer.getOptions();
 
         Assert.assertEquals( 50.0, obj.getData(), 0.000001 );

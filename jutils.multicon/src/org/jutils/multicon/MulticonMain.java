@@ -2,10 +2,10 @@ package org.jutils.multicon;
 
 import java.io.File;
 
-import org.jutils.core.io.IOUtils;
-import org.jutils.core.io.LogUtils;
+import org.jutils.core.io.*;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsOptions;
 import org.jutils.core.ui.app.FrameRunner;
 
 /*******************************************************************************
@@ -35,7 +35,7 @@ public class MulticonMain
     {
         if( userOptions == null )
         {
-            userOptions = OptionsSerializer.getOptions( MulticonOptions.class,
+            userOptions = XsOptions.getOptions( MulticonOptions.class,
                 OPTIONS_FILE, new McCommOptionsCreator() );
         }
 

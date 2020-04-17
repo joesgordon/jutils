@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsOptions;
 
 /*******************************************************************************
  * 
@@ -21,7 +22,7 @@ public class PlotConstants
 
     static
     {
-        OPTIONS = OptionsSerializer.getOptions( UserData.class,
+        OPTIONS = XsOptions.getOptions( UserData.class,
             USER_OPTIONS_FILE );
     }
 

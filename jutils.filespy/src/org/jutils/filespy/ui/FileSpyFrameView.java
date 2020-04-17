@@ -20,19 +20,25 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import org.jutils.core.IconConstants;
+import org.jutils.core.JUtilsInfo;
 import org.jutils.core.OptionUtils;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.Utils;
 import org.jutils.core.ValidationException;
-import org.jutils.core.io.XStreamUtils;
+import org.jutils.core.data.BuildInfo;
 import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsUtils;
 import org.jutils.core.licensing.LicenseDialog;
 import org.jutils.core.time.TimeUtils;
+import org.jutils.core.ui.BuildInfoView;
 import org.jutils.core.ui.JGoodiesToolBar;
+import org.jutils.core.ui.OkDialogView;
+import org.jutils.core.ui.OkDialogView.OkDialogButtons;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.StatusBarPanel;
 import org.jutils.core.ui.event.ActionAdapter;
@@ -288,11 +294,31 @@ public class FileSpyFrameView implements IView<JFrame>
         JMenuItem aboutMenuItem = new JMenuItem( "About" );
         aboutMenuItem.setToolTipText(
             "Presents infomation about this program." );
-        aboutMenuItem.addActionListener( new AboutListener( getView() ) );
+        aboutMenuItem.addActionListener( ( e ) -> showAbout() );
 
         helpMenu.add( aboutMenuItem );
 
         return helpMenu;
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void showAbout()
+    {
+        LicenseDialog view = new LicenseDialog();
+        JTabbedPane pane = view.getView();
+        BuildInfo info = JUtilsInfo.load();
+        OkDialogView dialogView = new OkDialogView( getView(), pane,
+            OkDialogButtons.OK_ONLY );
+        BuildInfoView infoView = new BuildInfoView();
+
+        infoView.setData( info );
+        pane.insertTab( "Build Information", null, infoView.getView(), null,
+            0 );
+        pane.setSelectedIndex( 0 );
+
+        dialogView.show( "About", new Dimension( 700, 500 ) );
     }
 
     /***************************************************************************
@@ -321,7 +347,7 @@ public class FileSpyFrameView implements IView<JFrame>
             {
                 try
                 {
-                    params = XStreamUtils.readObjectXStream( fileChosen );
+                    params = XsUtils.readObjectXStream( fileChosen );
                     spyPanel.setData( params );
                 }
                 catch( IOException | ValidationException ex )
@@ -365,7 +391,7 @@ public class FileSpyFrameView implements IView<JFrame>
 
             try
             {
-                XStreamUtils.writeObjectXStream( params, fileChosen );
+                XsUtils.writeObjectXStream( params, fileChosen );
             }
             catch( IOException ex )
             {
@@ -536,29 +562,6 @@ public class FileSpyFrameView implements IView<JFrame>
             {
                 stopSearch();
             }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class AboutListener implements ActionListener
-    {
-        private final JFrame frame;
-
-        public AboutListener( JFrame frame )
-        {
-            this.frame = frame;
-        }
-
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            LicenseDialog ld = new LicenseDialog( frame );
-            JDialog d = ld.getView();
-
-            d.setLocationRelativeTo( frame );
-            d.setVisible( true );
         }
     }
 

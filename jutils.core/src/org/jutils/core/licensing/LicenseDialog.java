@@ -1,13 +1,18 @@
 package org.jutils.core.licensing;
 
 import java.awt.BorderLayout;
-import java.awt.Frame;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import org.jutils.core.io.ResourceLoader;
+import org.jutils.core.ui.OkDialogView;
+import org.jutils.core.ui.OkDialogView.OkDialogButtons;
 import org.jutils.core.ui.ScrollableEditorPaneView;
 import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IApplication;
@@ -16,7 +21,7 @@ import org.jutils.core.ui.model.IView;
 /***************************************************************************
  * 
  **************************************************************************/
-public class LicenseDialog implements IView<JDialog>
+public class LicenseDialog implements IView<JComponent>
 {
     /**  */
     private static final String LICENSE_FORMS = "jgoodiesFormsLicense.html";
@@ -34,16 +39,13 @@ public class LicenseDialog implements IView<JDialog>
     private static final String LICENSE_CRYSTALCLEAR = "crystalClearLicense.html";
 
     /**  */
-    private final JDialog dialog;
-    /**  */
     private final JTabbedPane tabbedPane;
 
     /***************************************************************************
-     * @param owner
+     * 
      **************************************************************************/
-    public LicenseDialog( Frame owner )
+    public LicenseDialog()
     {
-        this.dialog = new JDialog( owner, true );
         this.tabbedPane = new JTabbedPane();
 
         ResourceLoader loader = new ResourceLoader( getClass(), "./" );
@@ -63,10 +65,6 @@ public class LicenseDialog implements IView<JDialog>
         LicensePanel openIconPanel = new LicensePanel(
             loader.getUrl( LICENSE_OPENICON ) );
 
-        dialog.setLayout( new BorderLayout() );
-
-        dialog.add( tabbedPane, BorderLayout.CENTER );
-
         tabbedPane.addTab( "JGoodies Forms", jgFormsPanel.getView() );
         tabbedPane.addTab( "JGoodies Looks", jgLooksPanel.getView() );
         tabbedPane.addTab( "XPP3", xpp3Panel.getView() );
@@ -74,9 +72,6 @@ public class LicenseDialog implements IView<JDialog>
         tabbedPane.addTab( "Crystal Clear Icons", crystalClearPanel.getView() );
         tabbedPane.addTab( "Farm-Fresh Web Icons", farmFreshPanel.getView() );
         tabbedPane.addTab( "Open Icon Library", openIconPanel.getView() );
-
-        dialog.setTitle( "License Information" );
-        dialog.setSize( 400, 400 );
     }
 
     /***************************************************************************
@@ -95,13 +90,11 @@ public class LicenseDialog implements IView<JDialog>
             @Override
             public void createAndShowUi()
             {
-                LicenseDialog d = new LicenseDialog( null );
+                LicenseDialog view = new LicenseDialog();
+                OkDialogView dialogView = new OkDialogView( null,
+                    view.getView(), OkDialogButtons.OK_ONLY );
 
-                d.dialog.setDefaultCloseOperation( JDialog.EXIT_ON_CLOSE );
-
-                d.dialog.validate();
-                d.dialog.setLocationRelativeTo( null );
-                d.dialog.setVisible( true );
+                dialogView.show( "Licenses", new Dimension( 700, 500 ) );
             }
         } );
     }
@@ -110,9 +103,9 @@ public class LicenseDialog implements IView<JDialog>
      * 
      **************************************************************************/
     @Override
-    public JDialog getView()
+    public JTabbedPane getView()
     {
-        return dialog;
+        return tabbedPane;
     }
 
     /***************************************************************************

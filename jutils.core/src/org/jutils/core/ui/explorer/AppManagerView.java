@@ -15,7 +15,7 @@ import javax.swing.JTabbedPane;
 
 import org.jutils.core.OptionUtils;
 import org.jutils.core.ValidationException;
-import org.jutils.core.io.XStreamUtils;
+import org.jutils.core.io.xs.XsUtils;
 import org.jutils.core.ui.OkDialogView;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
 import org.jutils.core.ui.explorer.data.AppManagerConfig;
@@ -145,7 +145,7 @@ public class AppManagerView implements IDataView<AppManagerConfig>
     {
         try
         {
-            AppManagerConfig cfg = XStreamUtils.readObjectXStream( file );
+            AppManagerConfig cfg = XsUtils.readObjectXStream( file );
 
             setData( cfg );
         }
@@ -175,7 +175,7 @@ public class AppManagerView implements IDataView<AppManagerConfig>
 
         try
         {
-            XStreamUtils.writeObjectXStream( cfg, file );
+            XsUtils.writeObjectXStream( cfg, file );
         }
         catch( IOException e )
         {

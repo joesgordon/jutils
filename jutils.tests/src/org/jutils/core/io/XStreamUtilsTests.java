@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.LogUtils;
-import org.jutils.core.io.XStreamUtils;
+import org.jutils.core.io.xs.XsUtils;
 import org.jutils.core.ui.ColorMapView;
 
 /*******************************************************************************
@@ -25,7 +25,7 @@ public class XStreamUtilsTests
     {
         try
         {
-            XStreamUtils.writeObjectXStream( 42.0 );
+            XsUtils.writeObjectXStream( 42.0 );
         }
         catch( ValidationException ex )
         {
@@ -48,9 +48,9 @@ public class XStreamUtilsTests
         try
         {
             Double expected = 42.0;
-            String xml = XStreamUtils.writeObjectXStream( expected,
+            String xml = XsUtils.writeObjectXStream( expected,
                 FileState.class.getPackage().getName() );
-            Double d = XStreamUtils.readObjectXStream( xml,
+            Double d = XsUtils.readObjectXStream( xml,
                 FileState.class.getPackage().getName() );
 
             Assert.assertEquals( expected, d );
@@ -77,9 +77,9 @@ public class XStreamUtilsTests
         {
             File file = new File( "C:\\Windows\\System32\\Calc.exe" );
             FileState expected = new FileState( file );
-            String xml = XStreamUtils.writeObjectXStream( expected,
+            String xml = XsUtils.writeObjectXStream( expected,
                 FileState.class.getPackage().getName() );
-            FileState actual = XStreamUtils.readObjectXStream( xml, "org",
+            FileState actual = XsUtils.readObjectXStream( xml, "org",
                 FileState.class.getPackage().getName() );
 
             Assert.assertEquals( expected, actual );
@@ -102,7 +102,7 @@ public class XStreamUtilsTests
     @Test
     public void test_buildDependencyList()
     {
-        List<String> pkgs = XStreamUtils.buildDependencyList(
+        List<String> pkgs = XsUtils.buildDependencyList(
             ColorMapView.class );
 
         for( String pkg : pkgs )

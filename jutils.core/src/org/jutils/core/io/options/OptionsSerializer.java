@@ -1,9 +1,12 @@
 package org.jutils.core.io.options;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.jutils.core.ValidationException;
-import org.jutils.core.io.*;
+import org.jutils.core.io.IOUtils;
+import org.jutils.core.io.IStdSerializer;
 
 /*******************************************************************************
  * Default serializer for user options.
@@ -204,34 +207,5 @@ public class OptionsSerializer<T>
             creator.warn( "Unable to write options because of an I/O error: " +
                 ex.getMessage() );
         }
-    }
-
-    /***************************************************************************
-     * Creates an options serializer with the specified file and options creator
-     * by ensuring the directory structure exists for the file before creation.
-     * @param <T> the type of object to be serialized.
-     * @param cls the class of the object to be serialized.
-     * @param creator the default creator to be used.
-     * @param file the file to be used for serialization.
-     * @return the new options serializer.
-     **************************************************************************/
-    public static <T> OptionsSerializer<T> getOptions( Class<T> cls, File file,
-        IOptionsCreator<T> creator )
-    {
-        IStdSerializer<T, File> serializer = new XStreamFileSerializer<>( cls );
-        return new OptionsSerializer<T>( creator, file, serializer );
-    }
-
-    /***************************************************************************
-     * Creates an options serializer with the specified file and class of the
-     * item type.
-     * @param cls the class of the object to be serialized.
-     * @param file the file to be used for serialization.
-     * @param <T> the type of object to be serialized.
-     * @return the new options serializer.
-     **************************************************************************/
-    public static <T> OptionsSerializer<T> getOptions( Class<T> cls, File file )
-    {
-        return getOptions( cls, file, new DefaultOptionsCreator<T>( cls ) );
     }
 }

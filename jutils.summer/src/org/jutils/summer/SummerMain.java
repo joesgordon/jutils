@@ -11,6 +11,7 @@ import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsOptions;
 import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IApplication;
@@ -227,7 +228,7 @@ public class SummerMain
     {
         if( OPTIONS == null )
         {
-            OPTIONS = OptionsSerializer.getOptions( SummerOptions.class,
+            OPTIONS = XsOptions.getOptions( SummerOptions.class,
                 USER_OPTIONS_FILE, new SummerOptionsCreator() );
         }
         return OPTIONS;

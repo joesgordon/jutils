@@ -9,9 +9,8 @@ import org.junit.Test;
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.FilePrintStream;
 import org.jutils.core.io.LogUtils;
-import org.jutils.core.io.XStreamUtils;
-import org.jutils.core.io.options.IOptionsCreator;
-import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsOptions;
+import org.jutils.core.io.xs.XsUtils;
 
 public class OptionsSerializerTests
 {
@@ -35,7 +34,7 @@ public class OptionsSerializerTests
 
         try
         {
-            xml = XStreamUtils.writeObjectXStream( testObj );
+            xml = XsUtils.writeObjectXStream( testObj );
         }
         catch( IOException ex )
         {
@@ -64,7 +63,7 @@ public class OptionsSerializerTests
             return;
         }
 
-        OptionsSerializer<TestType> os = OptionsSerializer.getOptions(
+        OptionsSerializer<TestType> os = XsOptions.getOptions(
             TestType.class, file, new TestTypeCreator() );
 
         os.read();

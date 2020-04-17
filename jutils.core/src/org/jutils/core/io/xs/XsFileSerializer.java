@@ -1,50 +1,40 @@
-package org.jutils.core.io;
+package org.jutils.core.io.xs;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.jutils.core.ValidationException;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
+import org.jutils.core.io.IStdSerializer;
 
 /*******************************************************************************
- * @param <T>
+ * Serializes items to XML using XStream.
+ * @param <T> the type of item to be serialized.
  ******************************************************************************/
-public class XStreamStreamSerializer<T>
-    implements ISerializer<T, InputStream, OutputStream>
+public class XsFileSerializer<T> implements IStdSerializer<T, File>
 {
     /**  */
-    private final XStream xstream;
+    private final XsStreamSerializer<T> serializer;
 
     /***************************************************************************
      * @param clss
      * @throws ValidationException
      **************************************************************************/
-    public XStreamStreamSerializer( Class<?>... clss )
+    public XsFileSerializer( Class<?>... clss )
     {
-        this.xstream = XStreamUtils.createXStream( clss );
+        this.serializer = new XsStreamSerializer<>( clss );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public T read( InputStream stream ) throws IOException, ValidationException
+    public T read( File file ) throws IOException, ValidationException
     {
-        try
+        try( FileInputStream fis = new FileInputStream( file ) )
         {
-            Object obj = xstream.fromXML( stream );
-
-            @SuppressWarnings( "unchecked")
-            T item = ( T )obj;
-
-            return item;
-        }
-        catch( XStreamException ex )
-        {
-            throw new ValidationException( ex.getMessage(), ex );
+            return serializer.read( fis );
         }
     }
 
@@ -52,8 +42,11 @@ public class XStreamStreamSerializer<T>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void write( T item, OutputStream stream ) throws IOException
+    public void write( T item, File file ) throws IOException
     {
-        xstream.toXML( item, stream );
+        try( FileOutputStream stream = new FileOutputStream( file ) )
+        {
+            serializer.write( item, stream );
+        }
     }
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsOptions;
 
 /*******************************************************************************
  * 
@@ -32,7 +33,7 @@ public final class DuakConstants
     {
         if( options == null )
         {
-            options = OptionsSerializer.getOptions( DuakOptions.class,
+            options = XsOptions.getOptions( DuakOptions.class,
                 OPTIONS_FILE, new OptionsCreator() );
         }
 

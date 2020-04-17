@@ -6,6 +6,7 @@ import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsOptions;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.hexedit.data.HexeditOptions;
 
@@ -57,7 +58,7 @@ public class HexeditMain
     {
         if( OPTIONS == null )
         {
-            OPTIONS = OptionsSerializer.getOptions( HexeditOptions.class,
+            OPTIONS = XsOptions.getOptions( HexeditOptions.class,
                 USER_OPTIONS_FILE, new HexeditOptionsCreator() );
         }
         return OPTIONS;
