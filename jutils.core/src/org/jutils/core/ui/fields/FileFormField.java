@@ -24,9 +24,9 @@ import org.jutils.core.ui.FileIcon;
 import org.jutils.core.ui.IconTextField;
 import org.jutils.core.ui.event.DirectoryChooserListener;
 import org.jutils.core.ui.event.FileChooserListener;
+import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.FileDropTarget;
 import org.jutils.core.ui.event.TextFieldFilesListener;
-import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.updater.IUpdater;
 import org.jutils.core.ui.validation.IValidityChangedListener;
 import org.jutils.core.ui.validation.Validity;
@@ -222,7 +222,7 @@ public class FileFormField implements IDataFormField<File>
             browseListener = fileListener;
         }
 
-        parserField.getView().setDropTarget( new FileDropTarget(
+        parserField.getTextField().setDropTarget( new FileDropTarget(
             new TextFieldFilesListener( jtf, parser.type ) ) );
 
         constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
