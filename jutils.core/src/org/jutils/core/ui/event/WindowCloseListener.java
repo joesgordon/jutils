@@ -1,36 +1,30 @@
-package org.jutils.core.ui;
+package org.jutils.core.ui.event;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import javax.swing.JComponent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PaintingComponent extends JComponent
+public class WindowCloseListener extends WindowAdapter
 {
     /**  */
-    private static final long serialVersionUID = -4340666978067812946L;
-    /**  */
-    private final IPaintable paintable;
+    private final Runnable onClose;
 
     /***************************************************************************
-     * @param paintable
+     * @param onClose
      **************************************************************************/
-    public PaintingComponent( IPaintable paintable )
+    public WindowCloseListener( Runnable onClose )
     {
-        this.paintable = paintable;
+        this.onClose = onClose;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void paintComponent( Graphics g )
+    public void windowClosing( WindowEvent e )
     {
-        super.paintComponent( g );
-
-        paintable.paint( this, ( Graphics2D )g );
+        onClose.run();
     }
 }

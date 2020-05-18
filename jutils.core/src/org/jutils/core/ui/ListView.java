@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +21,6 @@ import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.OptionUtils;
@@ -83,11 +81,11 @@ public class ListView<T> implements IDataView<List<T>>
     /***************************************************************************
      * Creates a new view with the provided data view and model.
      * @param itemsModel the model for this view.
-     * @param canAddRemove shows add/remove buttons if {@code true}.
-     * @param canOrder shows order buttons if {@code true}.
+     * @param allowAddRemove shows add/remove buttons if {@code true}.
+     * @param allowOrder shows order buttons if {@code true}.
      **************************************************************************/
-    public ListView( IItemListModel<T> itemsModel, boolean canAddRemove,
-        boolean canOrder )
+    public ListView( IItemListModel<T> itemsModel, boolean allowAddRemove,
+        boolean allowOrder )
     {
         this.itemsModel = itemsModel;
 
@@ -95,12 +93,12 @@ public class ListView<T> implements IDataView<List<T>>
         this.itemsList = new JList<>( itemsListModel );
         this.itemsPane = new JScrollPane( itemsList );
         this.items = new ArrayList<>();
-        this.addAction = canAddRemove ? createAddAction() : null;
-        this.removeAction = canAddRemove ? createRemoveAction() : null;
-        this.upAction = canOrder ? createUpAction() : null;
-        this.downAction = canOrder ? createDownAction() : null;
+        this.addAction = allowAddRemove ? createAddAction() : null;
+        this.removeAction = allowAddRemove ? createRemoveAction() : null;
+        this.upAction = allowOrder ? createUpAction() : null;
+        this.downAction = allowOrder ? createDownAction() : null;
 
-        this.toolbar = createToolbar( canAddRemove, canOrder );
+        this.toolbar = createToolbar( allowAddRemove, allowOrder );
 
         this.selectedListeners = new ItemActionList<>();
         this.changeListeners = new ItemActionList<>();
@@ -135,7 +133,7 @@ public class ListView<T> implements IDataView<List<T>>
 
         itemsList.setSelectionMode(
             ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
-        itemsList.addListSelectionListener( new ItemSelctedListener<>( this ) );
+        itemsList.addListSelectionListener( ( e ) -> onItemSelected( e ) );
 
         setItemsSize( 200, 200 );
 
@@ -149,17 +147,17 @@ public class ListView<T> implements IDataView<List<T>>
 
     /***************************************************************************
      * Creates the component that provides add/remove buttons.
-     * @param canAddRemove
-     * @param canOrder
+     * @param allowAddRemove
+     * @param allowOrder
      * @return
      **************************************************************************/
-    private JToolBar createToolbar( boolean canAddRemove, boolean canOrder )
+    private JToolBar createToolbar( boolean allowAddRemove, boolean allowOrder )
     {
         JToolBar toolbar = new JToolBar();
 
         SwingUtils.setToolbarDefaults( toolbar );
 
-        if( canAddRemove )
+        if( allowAddRemove )
         {
             SwingUtils.addActionToToolbar( toolbar, addAction );
             SwingUtils.addActionToToolbar( toolbar, removeAction );
@@ -170,7 +168,7 @@ public class ListView<T> implements IDataView<List<T>>
             toolbar.addSeparator();
         }
 
-        if( canOrder )
+        if( allowOrder )
         {
             SwingUtils.addActionToToolbar( toolbar, upAction );
             SwingUtils.addActionToToolbar( toolbar, downAction );
@@ -185,8 +183,40 @@ public class ListView<T> implements IDataView<List<T>>
     private Action createAddAction()
     {
         Icon icon = IconConstants.getIcon( IconConstants.EDIT_ADD_16 );
-        ActionListener listener = new AddItemListener<T>( this );
+        ActionListener listener = ( e ) -> onAddPressed();
         return new ActionAdapter( listener, "Add", icon );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void onAddPressed()
+    {
+        T item = itemsModel.promptForNew( this );
+
+        if( item != null )
+        {
+            itemsListModel.add( item );
+            // items.add( item );
+
+            ItemChange<T> itemChange = new ItemChange<>( ChangeType.ADDED,
+                item );
+
+            changeListeners.fireListeners( this, itemChange );
+        }
+    }
+
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    private void onItemSelected( ListSelectionEvent e )
+    {
+        if( !e.getValueIsAdjusting() )
+        {
+            T item = itemsList.getSelectedValue();
+
+            selectedListeners.fireListeners( this, item );
+        }
     }
 
     /***************************************************************************
@@ -294,7 +324,8 @@ public class ListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * @param l
+     * Adds the provided listener and invokes it when an item is selected.
+     * @param l the listener invoked when an item is selected.
      **************************************************************************/
     public void addSelectedListener( ItemActionListener<T> l )
     {
@@ -504,65 +535,23 @@ public class ListView<T> implements IDataView<List<T>>
     /***************************************************************************
      * The model used for this view. This model does not provide the data, but
      * provides methods of accessing said data.
+     * @param <T>
      **************************************************************************/
     public static interface IItemListModel<T>
     {
-        /** Returns the string representation of the provided item. */
+        /**
+         * Returns the string representation of the provided item.
+         * @param item
+         * @return
+         */
         public String getTitle( T item );
 
-        /** Prompts the user for a new item. */
+        /**
+         * Prompts the user for a new item.
+         * @param view
+         * @return
+         */
         public T promptForNew( ListView<T> view );
-    }
-
-    /***************************************************************************
-     * Defines the listener to be called when an item is selected.
-     **************************************************************************/
-    private static class ItemSelctedListener<T> implements ListSelectionListener
-    {
-        private final ListView<T> view;
-
-        public ItemSelctedListener( ListView<T> view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void valueChanged( ListSelectionEvent e )
-        {
-            if( !e.getValueIsAdjusting() )
-            {
-                T item = view.itemsList.getSelectedValue();
-
-                view.selectedListeners.fireListeners( view, item );
-            }
-        }
-    }
-
-    /***************************************************************************
-     * Defines the listener to be called when the add button is pressed.
-     **************************************************************************/
-    private static class AddItemListener<T> implements ActionListener
-    {
-        private final ListView<T> itemListView;
-
-        public AddItemListener( ListView<T> itemListView )
-        {
-            this.itemListView = itemListView;
-        }
-
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            T item = itemListView.itemsModel.promptForNew( itemListView );
-
-            if( item != null )
-            {
-                itemListView.itemsListModel.add( item );
-                // itemListView.items.add( item );
-                itemListView.changeListeners.fireListeners( itemListView,
-                    new ItemChange<>( ChangeType.ADDED, item ) );
-            }
-        }
     }
 
     /***************************************************************************
@@ -591,8 +580,12 @@ public class ListView<T> implements IDataView<List<T>>
     private static final class DefaultItemListCellRenderer<T>
         implements ItemListCellRenderer<T>
     {
+        /**  */
         private final DefaultListCellRenderer renderer = new DefaultListCellRenderer();
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Component getListCellRendererComponent( JList<? extends T> list,
             T value, int index, boolean isSelected, boolean cellHasFocus,
@@ -654,18 +647,26 @@ public class ListView<T> implements IDataView<List<T>>
      **************************************************************************/
     public static enum ChangeType
     {
+        /**  */
         ADDED,
+        /**  */
         REMOVED;
     }
 
     /***************************************************************************
-     * @param <T>
+     * @param <T> the type of item listed.
      **************************************************************************/
     public static final class ItemChange<T>
     {
+        /** How the item changed. */
         public final ChangeType type;
+        /** The item that changed. */
         public final T item;
 
+        /**
+         * @param type how the item changed.
+         * @param item the item that changed.
+         */
         public ItemChange( ChangeType type, T item )
         {
             this.type = type;

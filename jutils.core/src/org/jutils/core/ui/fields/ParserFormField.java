@@ -61,6 +61,18 @@ public class ParserFormField<T> implements IDataFormField<T>
     /***************************************************************************
      * @param name
      * @param parser
+     * @param itemDescriptor
+     * @param units
+     **************************************************************************/
+    public ParserFormField( String name, IParser<T> parser,
+        IDescriptor<T> itemDescriptor, String units )
+    {
+        this( name, parser, new JTextField( 20 ), itemDescriptor, units );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param parser
      * @param comp
      **************************************************************************/
     public ParserFormField( String name, IParser<T> parser,
@@ -86,6 +98,19 @@ public class ParserFormField<T> implements IDataFormField<T>
      * @param parser
      * @param comp
      * @param itemDescriptor
+     * @param units
+     **************************************************************************/
+    public ParserFormField( String name, IParser<T> parser, JTextComponent comp,
+        IDescriptor<T> itemDescriptor, String units )
+    {
+        this( name, parser, comp, itemDescriptor, comp, units );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param parser
+     * @param comp
+     * @param itemDescriptor
      * @param fieldView
      **************************************************************************/
     public ParserFormField( String name, IParser<T> parser, JTextComponent comp,
@@ -100,6 +125,7 @@ public class ParserFormField<T> implements IDataFormField<T>
      * @param comp
      * @param itemDescriptor
      * @param fieldView
+     * @param units
      **************************************************************************/
     public ParserFormField( String name, IParser<T> parser, JTextComponent comp,
         IDescriptor<T> itemDescriptor, JComponent fieldView, String units )

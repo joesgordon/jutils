@@ -15,7 +15,6 @@ import javax.swing.JScrollPane;
 import org.jutils.core.ui.ListView.IItemListModel;
 import org.jutils.core.ui.ListView.ItemListCellRenderer;
 import org.jutils.core.ui.event.ItemActionEvent;
-import org.jutils.core.ui.event.ItemActionListener;
 import org.jutils.core.ui.event.updater.IUpdater;
 import org.jutils.core.ui.model.IDataView;
 
@@ -23,6 +22,7 @@ import org.jutils.core.ui.model.IDataView;
  * Defines a view that displays a list of items to the user. The view allows for
  * additions/deletions/reordering of the list. Each item in the list is
  * displayed with the {@link IDataView} provided.
+ * @param <T> the type of item to be listed.
  ******************************************************************************/
 public class ItemListView<T> implements IDataView<List<T>>
 {
@@ -30,12 +30,16 @@ public class ItemListView<T> implements IDataView<List<T>>
     private final JPanel view;
     /** The model of the list. */
     private final ListView<T> itemsView;
-    /** The view to display each item. */
-    private final IDataView<T> dataView;
-    /** The scroll pane containing the individual item view. */
-    private final JScrollPane itempane;
+
+    /**  */
+    private final ComponentView compView;
+    /**  */
+    private final JScrollPane scrollPane;
     /** The component to be displayed when no item is selected. */
     private final JPanel nullSelectionPanel;
+
+    /** The view to display each item. */
+    private final IDataView<T> dataView;
 
     /** The item selection listeners to be called when an item is selected. */
     private final List<IUpdater<T>> selectedListeners;
@@ -57,29 +61,48 @@ public class ItemListView<T> implements IDataView<List<T>>
      * Creates a new view with the provided data view and model.
      * @param dataView the view that displays an individual item when selected.
      * @param itemsModel the model for this view.
-     * @param canAddRemove shows add/remove buttons if {@code true}.
-     * @param canOrder shows order buttons if {@code true}.
+     * @param allowAddRemove shows add/remove buttons if {@code true}.
+     * @param allowReorder shows order buttons if {@code true}.
      **************************************************************************/
     public ItemListView( IDataView<T> dataView, IItemListModel<T> itemsModel,
-        boolean canAddRemove, boolean canOrder )
+        boolean allowAddRemove, boolean allowReorder )
+    {
+        this( dataView, itemsModel, allowAddRemove, allowReorder, true );
+    }
+
+    /***************************************************************************
+     * Creates a new view with the provided data view and model.
+     * @param dataView the view that displays an individual item when selected.
+     * @param itemsModel the model for this view.
+     * @param allowAddRemove shows add/remove buttons if {@code true}.
+     * @param allowReorder shows order buttons if {@code true}.
+     * @param useScrollPane
+     **************************************************************************/
+    public ItemListView( IDataView<T> dataView, IItemListModel<T> itemsModel,
+        boolean allowAddRemove, boolean allowReorder, boolean useScrollPane )
     {
         this.dataView = dataView;
 
-        this.itemsView = new ListView<T>( itemsModel, canAddRemove, canOrder );
-        this.items = new ArrayList<>();
+        this.itemsView = new ListView<T>( itemsModel, allowAddRemove,
+            allowReorder );
+
+        this.compView = new ComponentView();
+        this.scrollPane = useScrollPane ? new JScrollPane( dataView.getView() )
+            : null;
         this.nullSelectionPanel = createNullSelectionPanel();
-        this.itempane = new JScrollPane( nullSelectionPanel );
+
+        this.items = new ArrayList<>();
 
         this.view = createView();
 
         this.selectedListeners = new ArrayList<>();
 
-        itemsView.addSelectedListener( ( item ) -> itemSelected( item ) );
+        itemsView.addSelectedListener( ( item ) -> invokeItemSelected( item ) );
     }
 
     /***************************************************************************
      * Creates the component that is displayed when no item is selected.
-     * @return
+     * @return the panel displayed when no item is selected.
      **************************************************************************/
     private static JPanel createNullSelectionPanel()
     {
@@ -97,14 +120,21 @@ public class ItemListView<T> implements IDataView<List<T>>
 
     /***************************************************************************
      * Creates the main view.
-     * @return
+     * @return the panel that contians the main view.
      **************************************************************************/
     private JPanel createView()
     {
         JPanel panel = new JPanel( new GridBagLayout() );
         GridBagConstraints constraints;
 
-        itemsView.addSelectedListener( new ItemSelected<T>( this ) );
+        itemsView.addSelectedListener( ( e ) -> onItemSelected( e.getItem() ) );
+
+        if( scrollPane != null )
+        {
+            scrollPane.getVerticalScrollBar().setUnitIncrement( 10 );
+        }
+
+        compView.setComponent( nullSelectionPanel );
 
         constraints = new GridBagConstraints( 0, 0, 1, 1, 0.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -114,9 +144,29 @@ public class ItemListView<T> implements IDataView<List<T>>
         constraints = new GridBagConstraints( 1, 0, 1, 1, 1.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets( 8, 0, 8, 8 ), 0, 0 );
-        panel.add( itempane, constraints );
+        panel.add( compView.getView(), constraints );
 
         return panel;
+    }
+
+    /***************************************************************************
+     * @param item
+     **************************************************************************/
+    private void onItemSelected( T item )
+    {
+        Component currentComp = compView.getComponent();
+        Component comp = nullSelectionPanel;
+
+        if( item != null )
+        {
+            dataView.setData( item );
+            comp = scrollPane != null ? scrollPane : dataView.getView();
+        }
+
+        if( comp != currentComp )
+        {
+            compView.setComponent( comp );
+        }
     }
 
     /***************************************************************************
@@ -159,7 +209,8 @@ public class ItemListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * @param l
+     * Adds the provided listener and invokes it when an item is selected.
+     * @param l the listener invoked when an item is selected.
      **************************************************************************/
     public void addItemSelectedListener( IUpdater<T> l )
     {
@@ -167,7 +218,7 @@ public class ItemListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * @param button
+     * @param button the button to be added to the toolbar.
      **************************************************************************/
     public void addToToolbar( JButton button )
     {
@@ -227,43 +278,11 @@ public class ItemListView<T> implements IDataView<List<T>>
     /***************************************************************************
      * @param evt
      **************************************************************************/
-    private void itemSelected( ItemActionEvent<T> evt )
+    private void invokeItemSelected( ItemActionEvent<T> evt )
     {
         for( IUpdater<T> u : selectedListeners )
         {
             u.update( evt.getItem() );
-        }
-    }
-
-    /***************************************************************************
-     * @param <E>
-     **************************************************************************/
-    private static class ItemSelected<E> implements ItemActionListener<E>
-    {
-        private final ItemListView<E> view;
-
-        public ItemSelected( ItemListView<E> view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void actionPerformed( ItemActionEvent<E> event )
-        {
-            E item = event.getItem();
-            Component currentComp = view.itempane.getViewport().getView();
-            Component comp = view.nullSelectionPanel;
-
-            if( item != null )
-            {
-                view.dataView.setData( item );
-                comp = view.dataView.getView();
-            }
-
-            if( comp != currentComp )
-            {
-                view.itempane.setViewportView( comp );
-            }
         }
     }
 }
