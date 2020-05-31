@@ -42,13 +42,14 @@ import org.jutils.core.io.ReferenceStream;
 import org.jutils.core.net.NetMessage;
 import org.jutils.core.net.NetMessageSerializer;
 import org.jutils.core.ui.OkDialogView;
-import org.jutils.core.ui.RowHeaderNumberView;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
+import org.jutils.core.ui.RowHeaderView;
+import org.jutils.core.ui.RowHeaderView.PaginatedNumberRowHeaderModel;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.BottomScroller;
 import org.jutils.core.ui.event.FileChooserListener;
-import org.jutils.core.ui.event.ResizingTableModelListener;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
+import org.jutils.core.ui.event.ResizingTableModelListener;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.model.IView;
 import org.jutils.core.ui.model.ItemsTableModel;
@@ -71,7 +72,7 @@ public class NetMessagesView implements IView<JPanel>
     /**  */
     private final JScrollPane tablePane;
     /**  */
-    private final RowHeaderNumberView rowView;
+    private final PaginatedNumberRowHeaderModel headerModel;
 
     /**  */
     private final JButton navFirstButton;
@@ -147,7 +148,7 @@ public class NetMessagesView implements IView<JPanel>
         this.tableModel = new ItemsTableModel<>( tableCfg );
         this.table = new JTable( tableModel );
         this.tablePane = new JScrollPane( table );
-        this.rowView = new RowHeaderNumberView( table );
+        this.headerModel = new PaginatedNumberRowHeaderModel();
         this.navFirstButton = new JButton();
         this.navPreviousButton = new JButton();
         this.navNextButton = new JButton();
@@ -187,6 +188,10 @@ public class NetMessagesView implements IView<JPanel>
         JScrollBar vScrollBar = tablePane.getVerticalScrollBar();
 
         vScrollBar.addAdjustmentListener( new BottomScroller( vScrollBar ) );
+
+        RowHeaderView rowView = new RowHeaderView( table );
+
+        rowView.setModel( headerModel );
 
         tablePane.setRowHeaderView( rowView.getView() );
 
@@ -448,7 +453,7 @@ public class NetMessagesView implements IView<JPanel>
      **************************************************************************/
     private void updateRowHeader( int count )
     {
-        rowView.setData( pageStartIndex + 1, count );
+        headerModel.setData( pageStartIndex + 1, count );
     }
 
     /***************************************************************************

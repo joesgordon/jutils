@@ -42,11 +42,12 @@ import org.jutils.core.io.IStream;
 import org.jutils.core.io.IStringWriter;
 import org.jutils.core.io.ReferenceStream;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
+import org.jutils.core.ui.RowHeaderView.PaginatedNumberRowHeaderModel;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.BottomScroller;
 import org.jutils.core.ui.event.FileChooserListener;
-import org.jutils.core.ui.event.ResizingTableModelListener;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
+import org.jutils.core.ui.event.ResizingTableModelListener;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.model.ITableItemsConfig;
 import org.jutils.core.ui.model.ItemsTableModel;
@@ -71,7 +72,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     /**  */
     private final JScrollPane tablePane;
     /**  */
-    private final RowHeaderNumberView rowView;
+    private final PaginatedNumberRowHeaderModel headerModel;
 
     /**  */
     private final JButton navFirstButton;
@@ -148,7 +149,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
         this.tableModel = new ItemsTableModel<>( tableConfig );
         this.table = new JTable( tableModel );
         this.tablePane = new JScrollPane( table );
-        this.rowView = new RowHeaderNumberView( table );
+        this.headerModel = new PaginatedNumberRowHeaderModel();
         this.navFirstButton = new JButton();
         this.navPreviousButton = new JButton();
         this.navNextButton = new JButton();
@@ -209,6 +210,10 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
         JScrollBar vScrollBar = tablePane.getVerticalScrollBar();
 
         vScrollBar.addAdjustmentListener( new BottomScroller( vScrollBar ) );
+
+        RowHeaderView rowView = new RowHeaderView( table );
+
+        rowView.setModel( headerModel );
 
         tablePane.setRowHeaderView( rowView.getView() );
 
@@ -442,7 +447,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
      **************************************************************************/
     private void updateRowHeader( int count )
     {
-        rowView.setData( pageStartIndex + 1, count );
+        headerModel.setData( pageStartIndex + 1, count );
     }
 
     /***************************************************************************
