@@ -89,7 +89,10 @@ public class Chart
     {
         FillSet set = new FillSet( s1, s2 );
 
-        fills.add( set );
+        if( Double.isFinite( set.x1 ) && Double.isFinite( set.x2 ) )
+        {
+            fills.add( set );
+        }
     }
 
     /***************************************************************************
@@ -119,8 +122,10 @@ public class Chart
             Interval d1 = s1.calcDomainSpan();
             Interval d2 = s2.calcDomainSpan();
 
-            this.x1 = Math.min( d1.min, d2.min );
-            this.x2 = Math.min( d1.max, d2.max );
+            this.x1 = d1 == null || d2 == null ? Double.NaN
+                : Math.min( d1.min, d2.min );
+            this.x2 = d1 == null || d2 == null ? Double.NaN
+                : Math.min( d1.max, d2.max );
         }
     }
 }

@@ -1,7 +1,7 @@
 package org.jutils.core.io;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Formatter;
 
 import org.jutils.core.Utils;
@@ -13,11 +13,11 @@ import org.jutils.core.Utils;
 public class LogUtils
 {
     /** A date formatter for displaying debug statements. */
-    private static final SimpleDateFormat dateFormatter;
+    private static final DateTimeFormatter dateFormatter;
 
     static
     {
-        dateFormatter = new SimpleDateFormat( "HH:mm:ss:SSS" );
+        dateFormatter = DateTimeFormatter.ofPattern( "HH:mm:ss:SSS" );
     }
 
     /***************************************************************************
@@ -28,7 +28,26 @@ public class LogUtils
     }
 
     /***************************************************************************
-     * Prints the message to the log with the header "DEBUG: ".
+     * Prints the message to the log.
+     * @param message the message to be written.
+     **************************************************************************/
+    public static void print( String message )
+    {
+        System.out.println( message );
+    }
+
+    /***************************************************************************
+     * Prints the formatted message to the log.
+     * @param format a string with a {@link Formatter}.
+     * @param args the referenced by the format specifiers in the format string.
+     **************************************************************************/
+    public static void print( String format, Object... args )
+    {
+        print( String.format( format, args ) );
+    }
+
+    /***************************************************************************
+     * Prints the message to the log with the header "DEBUG [HH:mm:ss:SSS]:".
      * @param message the message to be written.
      **************************************************************************/
     public static void printDebug( String message )
@@ -37,7 +56,8 @@ public class LogUtils
     }
 
     /***************************************************************************
-     * Prints the formatted message to the log with the header "DEBUG: ".
+     * Prints the formatted message to the log with the header "DEBUG
+     * [HH:mm:ss:SSS]: ".
      * @param format a string with a {@link Formatter}.
      * @param args the referenced by the format specifiers in the format string.
      **************************************************************************/
@@ -47,7 +67,7 @@ public class LogUtils
     }
 
     /***************************************************************************
-     * Prints the message to the log with the header "WARNING: ".
+     * Prints the message to the log with the header "WARNING [HH:mm:ss:SSS]: ".
      * @param message the message to be written.
      **************************************************************************/
     public static void printWarning( String message )
@@ -56,7 +76,8 @@ public class LogUtils
     }
 
     /***************************************************************************
-     * Prints the formatted message to the log with the header "WARNING: ".
+     * Prints the formatted message to the log with the header "WARNING
+     * [HH:mm:ss:SSS]: ".
      * @param format a string with a {@link Formatter}.
      * @param args the referenced by the format specifiers in the format string.
      **************************************************************************/
@@ -66,7 +87,7 @@ public class LogUtils
     }
 
     /***************************************************************************
-     * Prints the message to the log with the header "ERROR: ".
+     * Prints the message to the log with the header "ERROR [HH:mm:ss:SSS]: ".
      * @param message the message to be written.
      **************************************************************************/
     public static void printError( String message )
@@ -75,7 +96,8 @@ public class LogUtils
     }
 
     /***************************************************************************
-     * Prints the formatted message to the log with the header "ERROR: ".
+     * Prints the formatted message to the log with the header "ERROR
+     * [HH:mm:ss:SSS]: ".
      * @param format a string with a {@link Formatter}.
      * @param args the referenced by the format specifiers in the format string.
      **************************************************************************/
@@ -85,7 +107,8 @@ public class LogUtils
     }
 
     /***************************************************************************
-     * Prints the formatted message to the log with the header "ERROR: ".
+     * Prints the formatted message to the log with the header "ERROR
+     * [HH:mm:ss:SSS]: ".
      * @param message the message to be written.
      * @param ex the exception that generated error.
      **************************************************************************/
@@ -96,7 +119,7 @@ public class LogUtils
     }
 
     /***************************************************************************
-     * Prints the message to the log with the header "INFO: ".
+     * Prints the message to the log with the header "INFO [HH:mm:ss:SSS]: ".
      * @param message the message to be written.
      **************************************************************************/
     public static void printInfo( String message )
@@ -105,7 +128,8 @@ public class LogUtils
     }
 
     /***************************************************************************
-     * Prints the formatted message to the log with the header "INFO: ".
+     * Prints the formatted message to the log with the header "INFO
+     * [HH:mm:ss:SSS]: ".
      * @param format a string with a {@link Formatter}.
      * @param args the referenced by the format specifiers in the format string.
      **************************************************************************/
@@ -121,11 +145,9 @@ public class LogUtils
      **************************************************************************/
     private static void printMessage( String msgClass, String message )
     {
-        System.out.print( msgClass );
-        System.out.print( "[" );
-        System.out.print( dateFormatter.format( new Date() ) );
-        System.out.print( "]: " );
-        System.out.println( message );
+        String timeStr = LocalTime.now().format( dateFormatter );
+
+        print( "%s[%s]: %s", msgClass, timeStr, message );
     }
 
     /***************************************************************************

@@ -147,24 +147,24 @@ public class AxesWidget implements IChartWidget
 
         // ---------------------------------------------------------------------
         // Determine tick sizes.
-        // ---------------------------------------------------------------------s
-        ticks = calculateTicks();
-        textSpace = calculateLabelInsets( ticks );
+        // ---------------------------------------------------------------------
+        // ticks = calculateTicks();
+        // textSpace = calculateLabelInsets( ticks );
 
         // ---------------------------------------------------------------------
         // Update plot size.
         // ---------------------------------------------------------------------
-        context.x = p.x + textSpace.left;
-        context.y = p.y + textSpace.top;
-        context.width = d.width - ( textSpace.left + textSpace.right ) -
-            AXIS_WEIGHT / 2;
-        context.height = d.height - ( textSpace.top + textSpace.bottom ) -
-            AXIS_WEIGHT / 2;
-
-        context.width = Math.max( 0, context.width );
-        context.height = Math.max( 0, context.height );
-
-        context.latchCoords();
+        // context.x = p.x + textSpace.left;
+        // context.y = p.y + textSpace.top;
+        // context.width = d.width - ( textSpace.left + textSpace.right ) -
+        // AXIS_WEIGHT / 2;
+        // context.height = d.height - ( textSpace.top + textSpace.bottom ) -
+        // AXIS_WEIGHT / 2;
+        //
+        // context.width = Math.max( 0, context.width );
+        // context.height = Math.max( 0, context.height );
+        //
+        // context.latchCoords();
 
         // ---------------------------------------------------------------------
         // Determine tick sizes.

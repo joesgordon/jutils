@@ -38,7 +38,7 @@
 		<delete dir="${buildjava.jar}" failonerror="true" />
 		<delete dir="${buildjava.build}" failonerror="true" />
 	</target>
-    
+
 	<target name="build" depends="clean" description="Build Class Files">
 
 		<!-- <echo message="buildjava.jardir = ${buildjava.jardir}" /> -->
@@ -66,11 +66,11 @@
 		<!-- Make Distrubution Directory -->
 		<mkdir dir="${buildjava.jardir}" />
 
-        <pathconvert property="buildjava.libpaths" dirsep="/" pathsep=" ">
-            <path refid="buildjava.lib.jars" />
-            <map from="${buildjava.jardir}/" to="${buildjava.basepath}" />
-        </pathconvert>
-        
+		<pathconvert property="buildjava.libpaths" dirsep="/" pathsep=" ">
+			<path refid="buildjava.lib.jars" />
+			<map from="${buildjava.jardir}/" to="${buildjava.basepath}" />
+		</pathconvert>
+
 		<!-- <echo message="buildjava.jar=${buildjava.jar}" /> -->
 		<!-- <echo message="buildjava.build=${buildjava.build}" /> -->
 		<!-- <echo message="buildjava.libpaths=${buildjava.libpaths}" /> -->

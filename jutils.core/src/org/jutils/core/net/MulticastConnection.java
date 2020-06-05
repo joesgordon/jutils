@@ -7,7 +7,6 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
-import java.net.StandardSocketOptions;
 import java.util.Arrays;
 
 import org.jutils.core.net.NetUtils.NicInfo;
@@ -67,8 +66,9 @@ public class MulticastConnection implements IConnection
             inputs.port );
         this.port = inputs.port;
 
-        this.socket.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
-            inputs.loopback );
+        this.socket.setLoopbackMode( !inputs.loopback );
+        // this.socket.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
+        // inputs.loopback );
         this.socket.setTimeToLive( inputs.ttl );
         this.socket.setSoTimeout( inputs.timeout );
 

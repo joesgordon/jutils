@@ -4,7 +4,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jutils.plot.model.*;
+import org.jutils.plot.model.Axis;
+import org.jutils.plot.model.Interval;
+import org.jutils.plot.model.Series;
 
 /*******************************************************************************
  * 
@@ -79,7 +81,6 @@ public class PlotContext
      **************************************************************************/
     public void latchCoords()
     {
-        // TODO Remove bread crumb
         // LogUtils.printDebug( "Latching Coords" );
         // LogUtils.printDebug( Utils.getStackTrace() );
 
@@ -253,16 +254,37 @@ public class PlotContext
      **************************************************************************/
     public static interface IAxisCoords
     {
+        /**
+         * @param s
+         * @return
+         */
         public double fromScreen( int s );
 
+        /**
+         * @param c
+         * @return
+         */
         public int fromCoord( double c );
 
+        /**
+         * @return
+         */
         public Interval getBounds();
 
+        /**
+         * @param series
+         */
         public void calculateBounds( List<Series> series );
 
+        /**
+         * @param bounds
+         * @param length
+         */
         public void latchCoords( Interval bounds, int length );
 
+        /**
+         * @return
+         */
         public Axis getAxis();
     }
 
@@ -271,11 +293,20 @@ public class PlotContext
      **************************************************************************/
     private static abstract class AbrstractCoords implements IAxisCoords
     {
+        /**  */
         private final Axis axis;
+        /**  */
         private final boolean isDomain;
+        /**  */
         private final boolean isPrimary;
+        /**  */
         protected DimensionStats stats;
 
+        /**
+         * @param axis
+         * @param isDomain
+         * @param isPrimary
+         */
         public AbrstractCoords( Axis axis, boolean isDomain, boolean isPrimary )
         {
             this.axis = axis;
@@ -284,18 +315,30 @@ public class PlotContext
             this.stats = new DimensionStats( new Interval( -5, 5 ), 500 );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public abstract double fromScreen( int s );
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public abstract int fromCoord( double c );
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public final Interval getBounds()
         {
             return stats.bounds;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public final void calculateBounds( List<Series> series )
         {
@@ -303,6 +346,9 @@ public class PlotContext
                 calculateAutoBounds( series, isDomain, isPrimary ) );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public final void latchCoords( Interval bounds, int length )
         {
@@ -316,6 +362,9 @@ public class PlotContext
             // }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Axis getAxis()
         {

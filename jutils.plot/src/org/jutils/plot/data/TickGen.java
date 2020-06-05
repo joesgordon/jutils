@@ -88,8 +88,10 @@ public class TickGen
         for( int i = 0; i < tickMets.tickCount; i++ )
         {
             double d = tickMets.tickStart + tickMets.tickInterval * i;
+            String label = String.format( fmt, d );
+            Tick tick = new Tick( d, label );
 
-            ticks.add( new Tick( d, String.format( fmt, d ) ) );
+            ticks.add( tick );
         }
     }
 
@@ -136,6 +138,7 @@ public class TickGen
             maxTickCs * 10 / Math.pow( 10, minTickCsOrder ) );
 
         int tickWidthCsNorm = 0;
+        int orderOffset = 0;
 
         if( minTickCsNorm <= 100 && 100 <= maxTickCsNorm )
         {
@@ -152,10 +155,12 @@ public class TickGen
         else if( minTickCsNorm < 25 && 25 <= maxTickCsNorm )
         {
             tickWidthCsNorm = 25;
+            orderOffset = -1;
         }
         else if( minTickCsNorm <= 75 && 75 <= maxTickCsNorm )
         {
             tickWidthCsNorm = 75;
+            orderOffset = -1;
         }
         else
         {
@@ -188,7 +193,7 @@ public class TickGen
 
         metrics.tickCount = ( int )( Math.round(
             ( tickStop - tickStart ) / tickWidthCs ) ) + 1;
-        metrics.tickOrder = ( int )tickCsOrder;
+        metrics.tickOrder = ( int )tickCsOrder + orderOffset;
         metrics.tickStart = tickStart;
         metrics.tickInterval = tickWidthCs;
 
