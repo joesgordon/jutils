@@ -74,13 +74,9 @@ public class TickGen
         }
 
         int order = Math.abs( tickMets.tickOrder );
-        String fmt = "%.0f";
+        String fmt = "%.1f";
 
-        if( order < 0 )
-        {
-            fmt = "%f";
-        }
-        else if( tickMets.tickOrder < 0 )
+        if( tickMets.tickOrder < 0 )
         {
             fmt = "%." + order + "f";
         }
@@ -147,6 +143,14 @@ public class TickGen
         else if( minTickCsNorm <= 50 && 50 <= maxTickCsNorm )
         {
             tickWidthCsNorm = 50;
+        }
+        else if( minTickCsNorm <= 40 && 40 <= maxTickCsNorm )
+        {
+            tickWidthCsNorm = 40;
+        }
+        else if( minTickCsNorm <= 20 && 20 <= maxTickCsNorm )
+        {
+            tickWidthCsNorm = 20;
         }
         // else if( minTickCsNorm <= 20 && 20 <= maxTickCsNorm )
         // {
