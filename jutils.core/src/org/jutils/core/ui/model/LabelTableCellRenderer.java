@@ -27,7 +27,7 @@ public class LabelTableCellRenderer extends DefaultTableCellRenderer
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Component getTableCellRendererComponent( JTable table, Object value,
@@ -55,7 +55,7 @@ public class LabelTableCellRenderer extends DefaultTableCellRenderer
          * @param index the index to be rendered.
          * @param isSelected {@code true} if the cell is selected.
          * @param cellHasFocus {@code true} if the cell has focus.
-         * @param row the row of the cell to be rendererd.
+         * @param row the row of the cell to be rendered.
          * @param col the column of the cell to be rendered.
          **********************************************************************/
         public void decorate( JLabel label, JTable table, Object value,

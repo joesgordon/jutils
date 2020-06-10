@@ -602,7 +602,6 @@ public final class SwingUtils
         }
 
         return nodes.isEmpty() ? null : new TreePath( nodes.toArray() );
-
     }
 
     /***************************************************************************
@@ -615,9 +614,12 @@ public final class SwingUtils
      * @param callback the listener to be called when the key is pressed.
      * @param actionName the name of the action used to bind the listener.
      * @return the action created.
+     * @throws IllegalArgumentException when the keystroke cannot be found via
+     * {@link KeyStroke#getKeyStroke(String)}.
      **************************************************************************/
     public static Action addKeyListener( JComponent view, String keystoke,
         ActionListener callback, String actionName, boolean inWindow )
+        throws IllegalArgumentException
     {
         Action action = new ActionAdapter( callback, actionName, null );
 
@@ -630,12 +632,38 @@ public final class SwingUtils
      * Binds a listener to a key on a component.
      * @param view the component on which to bind the key.
      * @param keystoke the key to be bound.
+     * @param callback the listener to be called when the key is pressed.
+     * @param actionName the name of the action used to bind the listener.
+     * @return the action created.
+     * @param condition the condition under which the key listener is called
+     * {@link JComponent#getInputMap(int)}.
+     * @return the action created.
+     * @throws IllegalArgumentException when the keystroke cannot be found via
+     * {@link KeyStroke#getKeyStroke(String)}.
+     */
+    public static Action addKeyListener( JComponent view, String keystoke,
+        ActionListener callback, String actionName, int condition )
+        throws IllegalArgumentException
+    {
+        Action action = new ActionAdapter( callback, actionName, null );
+
+        addKeyListener( view, keystoke, action, condition );
+
+        return action;
+    }
+
+    /***************************************************************************
+     * Binds a listener to a key on a component.
+     * @param view the component on which to bind the key.
+     * @param keystoke the key to be bound.
      * @param inWindow uses {@link JComponent#WHEN_IN_FOCUSED_WINDOW} for
      * binding if {@code true};
      * @param action the action to be bound to the key.
+     * @throws IllegalArgumentException when the keystroke cannot be found via
+     * {@link KeyStroke#getKeyStroke(String)}.
      **************************************************************************/
     public static void addKeyListener( JComponent view, String keystoke,
-        Action action, boolean inWindow )
+        Action action, boolean inWindow ) throws IllegalArgumentException
     {
         int condition = inWindow ? JComponent.WHEN_IN_FOCUSED_WINDOW
             : JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
@@ -660,11 +688,13 @@ public final class SwingUtils
      * @param view the component on which to bind the key.
      * @param keystoke the key to be bound.
      * @param condition the condition under which the key listener is called
-     * {@link JComponent#getInputMap(int)};
+     * {@link JComponent#getInputMap(int)}.
      * @param action the action to be bound to the key.
+     * @throws IllegalArgumentException when the keystroke cannot be found via
+     * {@link KeyStroke#getKeyStroke(String)}.
      **************************************************************************/
     public static void addKeyListener( JComponent view, String keystoke,
-        Action action, int condition )
+        Action action, int condition ) throws IllegalArgumentException
     {
         InputMap inMap = view.getInputMap( condition );
         ActionMap acMap = view.getActionMap();
