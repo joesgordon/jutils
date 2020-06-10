@@ -1,10 +1,14 @@
 package org.jutils.core.ui;
 
+import java.awt.Font;
+import java.awt.Rectangle;
+
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import org.jutils.core.ui.RowHeaderView.IRowHeaderModel;
 import org.jutils.core.ui.event.ResizingTableModelListener;
@@ -19,9 +23,13 @@ public class TabularView implements IView<JComponent>
     /**  */
     private final JComponent view;
     /**  */
+    private final JScrollPane pane;
+    /**  */
     private final JTable table;
     /**  */
     private final TabularTableModel tableModel;
+    /**  */
+    private final RowHeaderView rowHeader;
     /**  */
     private final TabularRowHeaderModel rowModel;
 
@@ -31,9 +39,11 @@ public class TabularView implements IView<JComponent>
     public TabularView()
     {
         this.tableModel = new TabularTableModel();
-        this.rowModel = new TabularRowHeaderModel();
-
         this.table = new JTable( tableModel );
+        this.pane = new JScrollPane( table );
+
+        this.rowHeader = new RowHeaderView( table );
+        this.rowModel = new TabularRowHeaderModel();
 
         this.view = createView();
     }
@@ -48,10 +58,6 @@ public class TabularView implements IView<JComponent>
         table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         table.setSelectionMode( ListSelectionModel.SINGLE_INTERVAL_SELECTION );
         table.setCellSelectionEnabled( true );
-
-        JScrollPane pane = new JScrollPane( table );
-
-        RowHeaderView rowHeader = new RowHeaderView( table );
 
         rowHeader.setModel( rowModel );
 
@@ -91,6 +97,215 @@ public class TabularView implements IView<JComponent>
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getSelectedRow()
+    {
+        return table.getSelectedRow();
+    }
+
+    /***************************************************************************
+     * @param row
+     **************************************************************************/
+    public void setSelectedRow( int row )
+    {
+        setSelectedRows( row, row );
+    }
+
+    /***************************************************************************
+     * @param rowStart
+     * @param rowEnd
+     **************************************************************************/
+    public void setSelectedRows( int rowStart, int rowEnd )
+    {
+        table.getSelectionModel().setSelectionInterval( rowStart, rowEnd );
+        scrollToRow( rowStart );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int [] getSelectedRows()
+    {
+        return table.getSelectedRows();
+    }
+
+    /***************************************************************************
+     * @param row
+     **************************************************************************/
+    private void scrollToRow( int row )
+    {
+        Rectangle rect = table.getCellRect( row, 0, true );
+
+        rect = new Rectangle( rect );
+        table.scrollRectToVisible( rect );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public Font getFont()
+    {
+        return table.getFont();
+    }
+
+    /***************************************************************************
+     * @param f
+     **************************************************************************/
+    public void setFont( Font f )
+    {
+        table.setFont( f );
+    }
+
+    /***************************************************************************
+     * @param height
+     **************************************************************************/
+    public void setRowHeight( int height )
+    {
+        table.setRowHeight( height );
+        rowHeader.setRowHeight( 36 );
+    }
+
+    /***************************************************************************
+     * @param showGrid
+     **************************************************************************/
+    public void setShowGrid( boolean showGrid )
+    {
+        table.setShowGrid( showGrid );
+    }
+
+    /***************************************************************************
+     * @param col
+     * @param renderer
+     **************************************************************************/
+    public void setColumnRenderer( int col, TableCellRenderer renderer )
+    {
+        table.getColumnModel().getColumn( col ).setCellRenderer( renderer );
+    }
+
+    /***************************************************************************
+     * @param cls
+     * @param renderer
+     **************************************************************************/
+    public void setClassRenderer( Class<?> cls, TableCellRenderer renderer )
+    {
+        table.setDefaultRenderer( cls, renderer );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JTable getTable()
+    {
+        return table;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JScrollPane getPane()
+    {
+        return pane;
+    }
+
+    public static interface ITabularNotifier
+    {
+        /**
+         * @param row
+         * @param column
+         */
+        public void fireCellUpdated( int row, int col );
+
+        /**
+         * 
+         */
+        public void fireDataChanged();
+
+        /**
+         * @param rowStart
+         * @param rowEnd
+         */
+        public void fireRowsDeleted( int rowStart, int rowEnd );
+
+        /**
+         * @param rowStart
+         * @param rowEnd
+         */
+        public void fireRowsInserted( int rowStart, int rowEnd );
+
+        /**
+         * @param rowStart
+         * @param rowEnd
+         */
+        public void fireRowsUpdated( int rowStart, int rowEnd );
+
+        /**
+         * 
+         */
+        public void fireStructureChanged();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static interface ITabularModel
+    {
+        /**
+         * @param notifier
+         */
+        public void registerNotifier( ITabularNotifier notifier );
+
+        /**
+         * @return
+         */
+        public int getRowCount();
+
+        /**
+         * @param row
+         * @return
+         */
+        public String getRowName( int row );
+
+        /**
+         * @return
+         */
+        public int getColCount();
+
+        /**
+         * @param col
+         * @return
+         */
+        public String getColName( int col );
+
+        /**
+         * @param col
+         * @return
+         */
+        public Class<?> getColClass( int col );
+
+        /**
+         * @param row
+         * @param col
+         * @return
+         */
+        public Object getValue( int row, int col );
+
+        /**
+         * @param row
+         * @param col
+         * @param value
+         */
+        public void setValue( Object value, int row, int col );
+
+        /**
+         * @param row
+         * @param col
+         * @return
+         */
+        public boolean isCellEditable( int row, int col );
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     private static final class TabularTableModel extends AbstractTableModel
@@ -107,6 +322,8 @@ public class TabularView implements IView<JComponent>
         public TabularTableModel()
         {
             this.model = new EmptyTabularModel();
+
+            setModel( model );
         }
 
         /**
@@ -115,6 +332,8 @@ public class TabularView implements IView<JComponent>
         public void setModel( ITabularModel model )
         {
             this.model = model;
+
+            model.registerNotifier( new AbstractTableNotifier( this ) );
         }
 
         /**
@@ -183,6 +402,77 @@ public class TabularView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
+    private static final class AbstractTableNotifier implements ITabularNotifier
+    {
+        /**  */
+        private final AbstractTableModel model;
+
+        /**
+         * @param model
+         */
+        public AbstractTableNotifier( AbstractTableModel model )
+        {
+            this.model = model;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void fireCellUpdated( int row, int col )
+        {
+            model.fireTableCellUpdated( row, col );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void fireDataChanged()
+        {
+            model.fireTableDataChanged();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void fireRowsDeleted( int rowStart, int rowEnd )
+        {
+            model.fireTableRowsDeleted( rowStart, rowEnd );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void fireRowsInserted( int rowStart, int rowEnd )
+        {
+            model.fireTableRowsInserted( rowStart, rowEnd );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void fireRowsUpdated( int rowStart, int rowEnd )
+        {
+            model.fireTableRowsUpdated( rowStart, rowEnd );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void fireStructureChanged()
+        {
+            model.fireTableStructureChanged();
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private static final class TabularRowHeaderModel implements IRowHeaderModel
     {
         /**  */
@@ -198,6 +488,8 @@ public class TabularView implements IView<JComponent>
         {
             this.updaters = new RunnableList();
             this.model = new EmptyTabularModel();
+
+            setModel( model );
         }
 
         /**
@@ -247,63 +539,16 @@ public class TabularView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    public static interface ITabularModel
-    {
-        /**
-         * @return
-         */
-        public int getRowCount();
-
-        /**
-         * @param row
-         * @return
-         */
-        public String getRowName( int row );
-
-        /**
-         * @return
-         */
-        public int getColCount();
-
-        /**
-         * @param col
-         * @return
-         */
-        public String getColName( int col );
-
-        /**
-         * @param col
-         * @return
-         */
-        public Class<?> getColClass( int col );
-
-        /**
-         * @param row
-         * @param col
-         * @return
-         */
-        public Object getValue( int row, int col );
-
-        /**
-         * @param row
-         * @param col
-         * @param value
-         */
-        public void setValue( Object value, int row, int col );
-
-        /**
-         * @param row
-         * @param col
-         * @return
-         */
-        public boolean isCellEditable( int row, int col );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
     public static final class EmptyTabularModel implements ITabularModel
     {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void registerNotifier( ITabularNotifier notifier )
+        {
+        }
+
         /**
          * {@inheritDoc}
          */
