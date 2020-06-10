@@ -127,6 +127,21 @@ public class ChartView implements IView<JComponent>
      **************************************************************************/
     public ChartView( boolean allowOpen, boolean gradientToolbar )
     {
+        this( allowOpen, gradientToolbar, true );
+    }
+
+    /***************************************************************************
+     * Creates a new chart.
+     * @param allowOpen if {@code true}, an Open button is added to the toolbar
+     * and a drop target is added to the chart that allows the user to drag
+     * files to be read.
+     * @param gradientToolbar paints the background on the toolbar that is
+     * gradient (if {@code true}) or flat (if {@code false}).
+     * @param showConfigurationButton
+     **************************************************************************/
+    public ChartView( boolean allowOpen, boolean gradientToolbar,
+        boolean showConfigurationButton )
+    {
         this.options = PlotConstants.getOptions();
         this.chart = new Chart();
         this.mainPanel = new WidgetPanel();
@@ -135,7 +150,8 @@ public class ChartView implements IView<JComponent>
         this.propertiesView = new PropertiesView( chart );
         this.recentFiles = new RecentFilesViews();
 
-        this.toolbar = createToolbar( allowOpen, gradientToolbar );
+        this.toolbar = createToolbar( allowOpen, gradientToolbar,
+            showConfigurationButton );
         this.separator = new JSeparator();
         this.view = createView();
 
@@ -219,9 +235,11 @@ public class ChartView implements IView<JComponent>
      * {@code true}.
      * @param gradientToolbar creates a gradient toolbar if {@code true}; flat
      * if {@code false}.
+     * @param showConfigurationButton
      * @return the new toolbar.
      **************************************************************************/
-    private JToolBar createToolbar( boolean allowOpen, boolean gradientToolbar )
+    private JToolBar createToolbar( boolean allowOpen, boolean gradientToolbar,
+        boolean showConfigurationButton )
     {
         JToolBar toolbar;
 
@@ -246,9 +264,12 @@ public class ChartView implements IView<JComponent>
 
         toolbar.addSeparator();
 
-        SwingUtils.addActionToToolbar( toolbar, createPropertiesAction() );
+        if( showConfigurationButton )
+        {
+            SwingUtils.addActionToToolbar( toolbar, createPropertiesAction() );
 
-        toolbar.addSeparator();
+            toolbar.addSeparator();
+        }
 
         SwingUtils.addActionToToolbar( toolbar, createZoomInAction() );
 
