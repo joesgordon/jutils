@@ -40,17 +40,33 @@ public class FilePrintStream implements IPrintStream
      * Creates a new print string that writes to the provided file that will be
      * appended according to the provided parameter.
      * @param file the file to be written to.
-     * @param append appends the file if {@code true}; overwrites otherwise.s
+     * @param append appends the file if {@code true}; overwrites otherwise.
      * @throws IOException if the file exists but is a directory rather than a
      * regular file, does not exist but cannot be created, or cannot be opened
      * for any other reason.
      **************************************************************************/
     public FilePrintStream( File file, boolean append ) throws IOException
     {
+        this( file, append, BUFFER_SIZE );
+    }
+
+    /**
+     * Creates a new print string that writes to the provided file that will be
+     * appended according to the provided parameter.
+     * @param file the file to be written to.
+     * @param append appends the file if {@code true}; overwrites otherwise.
+     * @param bufferSize
+     * @throws IOException if the file exists but is a directory rather than a
+     * regular file, does not exist but cannot be created, or cannot be opened
+     * for any other reason.
+     */
+    public FilePrintStream( File file, boolean append, int bufferSize )
+        throws IOException
+    {
         this.fileStream = new FileOutputStream( file, append );
         this.outputWriter = new OutputStreamWriter( fileStream,
             IOUtils.get8BitEncoding() );
-        this.writer = new BufferedWriter( outputWriter, BUFFER_SIZE );
+        this.writer = new BufferedWriter( outputWriter, bufferSize );
     }
 
     /***************************************************************************
