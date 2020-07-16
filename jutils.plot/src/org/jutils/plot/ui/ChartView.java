@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.Action;
-import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -142,6 +141,22 @@ public class ChartView implements IView<JComponent>
     public ChartView( boolean allowOpen, boolean gradientToolbar,
         boolean showConfigurationButton )
     {
+        this( allowOpen, gradientToolbar, showConfigurationButton, true );
+    }
+
+    /***************************************************************************
+     * Creates a new chart.
+     * @param allowOpen if {@code true}, an Open button is added to the toolbar
+     * and a drop target is added to the chart that allows the user to drag
+     * files to be read.
+     * @param gradientToolbar paints the background on the toolbar that is
+     * gradient (if {@code true}) or flat (if {@code false}).
+     * @param showConfigurationButton
+     * @param allowSave
+     **************************************************************************/
+    public ChartView( boolean allowOpen, boolean gradientToolbar,
+        boolean showConfigurationButton, boolean allowSave )
+    {
         this.options = PlotConstants.getOptions();
         this.chart = new Chart();
         this.mainPanel = new WidgetPanel();
@@ -151,7 +166,7 @@ public class ChartView implements IView<JComponent>
         this.recentFiles = new RecentFilesViews();
 
         this.toolbar = createToolbar( allowOpen, gradientToolbar,
-            showConfigurationButton );
+            showConfigurationButton, allowSave );
         this.separator = new JSeparator();
         this.view = createView();
 
@@ -236,10 +251,11 @@ public class ChartView implements IView<JComponent>
      * @param gradientToolbar creates a gradient toolbar if {@code true}; flat
      * if {@code false}.
      * @param showConfigurationButton
+     * @param allowSave
      * @return the new toolbar.
      **************************************************************************/
     private JToolBar createToolbar( boolean allowOpen, boolean gradientToolbar,
-        boolean showConfigurationButton )
+        boolean showConfigurationButton, boolean allowSave )
     {
         JToolBar toolbar;
 
@@ -258,11 +274,17 @@ public class ChartView implements IView<JComponent>
             recentFiles.install( toolbar, createOpenListener() );
         }
 
-        SwingUtils.addActionToToolbar( toolbar, createSaveAction() );
+        if( allowSave )
+        {
+            SwingUtils.addActionToToolbar( toolbar, createSaveAction() );
 
-        SwingUtils.addActionToToolbar( toolbar, createSaveDataAction() );
+            SwingUtils.addActionToToolbar( toolbar, createSaveDataAction() );
+        }
 
-        toolbar.addSeparator();
+        if( toolbar.getComponentCount() > 0 )
+        {
+            toolbar.addSeparator();
+        }
 
         if( showConfigurationButton )
         {
@@ -286,7 +308,7 @@ public class ChartView implements IView<JComponent>
         // panel.setMaximumSize( panel.getPreferredSize() );
         // toolbar.add( panel );
 
-        toolbar.add( Box.createHorizontalGlue() );
+        // toolbar.add( Box.createHorizontalGlue() );
 
         return toolbar;
     }
@@ -340,7 +362,7 @@ public class ChartView implements IView<JComponent>
 
         name = "Save";
         icon = IconConstants.getIcon( IconConstants.SAVE_16 );
-        listener = new SaveListener( this );
+        listener = ( e ) -> saveImage();
         action = new ActionAdapter( listener, name, icon );
 
         return action;
@@ -637,9 +659,20 @@ public class ChartView implements IView<JComponent>
         return s;
     }
 
+    /***************************************************************************
+     * @param drawer
+     **************************************************************************/
     public void addDrawCallback( IPlotDrawer drawer )
     {
         chartWidget.addDrawCallback( drawer );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JToolBar getToolbar()
+    {
+        return toolbar;
     }
 
     /***************************************************************************
@@ -659,10 +692,81 @@ public class ChartView implements IView<JComponent>
         repaintChart();
     }
 
+    /**
+     * 
+     */
+    public void saveImage()
+    {
+        SaveView saveView = new SaveView();
+        SaveOptions options = new SaveOptions();
+        OkDialogView okView = new OkDialogView( getView(), saveView.getView(),
+            ModalityType.DOCUMENT_MODAL, OkDialogButtons.OK_CANCEL );
+        JDialog dialog = okView.getView();
+
+        options.file = getDefaultFile();
+        options.size.width = mainPanel.getView().getWidth();
+        options.size.height = mainPanel.getView().getHeight();
+
+        saveView.setData( options );
+
+        dialog.setTitle( "Save Chart" );
+
+        Window w = SwingUtils.getComponentsWindow( getView() );
+
+        if( okView.show( "Save Chart", w.getIconImages() ) )
+        {
+            options = saveView.getData();
+            File file = options.file;
+
+            String ext = IOUtils.getFileExtension( file );
+
+            if( ext.isEmpty() )
+            {
+                String name = file.getName();
+
+                ext = name.endsWith( "." ) ? "png" : ".png";
+                file = new File( file.getParentFile(), name + ext );
+            }
+
+            this.options.getOptions().lastImageFile = file;
+            this.options.write();
+
+            try
+            {
+                saveAsImage( file, options.size );
+            }
+            catch( IllegalArgumentException ex )
+            {
+                OptionUtils.showErrorMessage( getView(), ex.getMessage(),
+                    "Save Error" );
+            }
+        }
+    }
+
+    /**
+     * @return
+     */
+    private File getDefaultFile()
+    {
+        File f = options.getOptions().lastImageFile;
+
+        if( f == null )
+        {
+            f = options.getOptions().recentFiles.first();
+
+            if( f != null )
+            {
+                f = IOUtils.replaceExtension( f, "png" );
+            }
+        }
+
+        return f;
+    }
+
     /***************************************************************************
      * 
      **************************************************************************/
-    private void saveData()
+    public void saveData()
     {
         FileChooserListener listener;
 
@@ -977,96 +1081,6 @@ public class ChartView implements IView<JComponent>
     public void setRemovalEnabled( boolean enabled )
     {
         chart.options.removalEnabled = enabled;
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class SaveListener implements ActionListener
-    {
-        /**  */
-        private final ChartView view;
-
-        /**
-         * @param view
-         */
-        public SaveListener( ChartView view )
-        {
-            this.view = view;
-        }
-
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            SaveView saveView = new SaveView();
-            SaveOptions options = new SaveOptions();
-            OkDialogView okView = new OkDialogView( view.getView(),
-                saveView.getView(), ModalityType.DOCUMENT_MODAL,
-                OkDialogButtons.OK_CANCEL );
-            JDialog dialog = okView.getView();
-
-            options.file = getDefaultFile();
-            options.size.width = view.mainPanel.getView().getWidth();
-            options.size.height = view.mainPanel.getView().getHeight();
-
-            saveView.setData( options );
-
-            dialog.setTitle( "Save Chart" );
-
-            Window w = SwingUtils.getComponentsWindow( view.getView() );
-
-            if( okView.show( "Save Chart", w.getIconImages() ) )
-            {
-                options = saveView.getData();
-                File file = options.file;
-
-                String ext = IOUtils.getFileExtension( file );
-
-                if( ext.isEmpty() )
-                {
-                    String name = file.getName();
-
-                    ext = name.endsWith( "." ) ? "png" : ".png";
-                    file = new File( file.getParentFile(), name + ext );
-                }
-
-                view.options.getOptions().lastImageFile = file;
-                view.options.write();
-
-                try
-                {
-                    view.saveAsImage( file, options.size );
-                }
-                catch( IllegalArgumentException ex )
-                {
-                    OptionUtils.showErrorMessage( view.getView(),
-                        ex.getMessage(), "Save Error" );
-                }
-            }
-        }
-
-        /**
-         * @return
-         */
-        private File getDefaultFile()
-        {
-            File f = view.options.getOptions().lastImageFile;
-
-            if( f == null )
-            {
-                f = view.options.getOptions().recentFiles.first();
-
-                if( f != null )
-                {
-                    f = IOUtils.replaceExtension( f, "png" );
-                }
-            }
-
-            return f;
-        }
     }
 
     /***************************************************************************
