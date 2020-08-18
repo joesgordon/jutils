@@ -660,11 +660,21 @@ public class ChartView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param drawer
+     * Adds a method to draw on top of the plots.
+     * @param drawer the callback invoked after the plots are drawn.
      **************************************************************************/
-    public void addDrawCallback( IPlotDrawer drawer )
+    public void addOverDrawCallback( IPlotDrawer drawer )
     {
-        chartWidget.addDrawCallback( drawer );
+        chartWidget.addOverDrawCallback( drawer );
+    }
+
+    /***************************************************************************
+     * Adds a method to draw under the plots.
+     * @param drawer the callback invoked after the are drawn.
+     **************************************************************************/
+    public void addUnderDrawCallback( IPlotDrawer drawer )
+    {
+        chartWidget.addUnderDrawCallback( drawer );
     }
 
     /***************************************************************************

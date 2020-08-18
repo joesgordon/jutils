@@ -18,7 +18,6 @@ import org.jutils.plot.model.HorizontalAlignment;
 import org.jutils.plot.model.TextLabel;
 import org.jutils.plot.ui.IChartWidget;
 import org.jutils.plot.ui.Layer2d;
-import org.jutils.plot.ui.objects.PlotContext.IAxisCoords;
 
 /*******************************************************************************
  * 

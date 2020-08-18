@@ -14,9 +14,9 @@ import org.jutils.plot.model.Interval;
 import org.jutils.plot.ui.ChartView;
 import org.jutils.plot.ui.ZoomDirection;
 import org.jutils.plot.ui.objects.ChartWidget;
+import org.jutils.plot.ui.objects.IAxisCoords;
 import org.jutils.plot.ui.objects.PlotContext;
 import org.jutils.plot.ui.objects.PlotWidget;
-import org.jutils.plot.ui.objects.PlotContext.IAxisCoords;
 
 /*******************************************************************************
  * 
