@@ -252,6 +252,11 @@ public final class SwingUtils
      **************************************************************************/
     public static void addTrayMenu( TrayIcon icon, JPopupMenu popup )
     {
+        if( icon == null )
+        {
+            return;
+        }
+
         icon.addMouseListener( new TrayMouseListener( popup ) );
     }
 

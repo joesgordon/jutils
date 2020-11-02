@@ -6,7 +6,9 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.*;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 /*******************************************************************************
  * 
@@ -47,6 +49,15 @@ public class ResizingTableModelListener implements TableModelListener
      **************************************************************************/
     public static void resizeTable( JTable table )
     {
+        resizeTable( table, Integer.MAX_VALUE );
+    }
+
+    /***************************************************************************
+     * @param table
+     * @param rowMax
+     **************************************************************************/
+    public static void resizeTable( JTable table, int rowMax )
+    {
         int horzSpace = 6;
         String colName;
         TableModel model = table.getModel();
@@ -60,6 +71,8 @@ public class ResizingTableModelListener implements TableModelListener
         int rrow = table.getRowCount();
 
         rrow = rrow == 0 ? -1 : 0;
+
+        rrow = Math.min( rrow, rowMax );
 
         // ---------------------------------------------------------------------
         // Compute all widths.

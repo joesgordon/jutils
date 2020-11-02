@@ -9,6 +9,7 @@ import org.jutils.duak.DuakTool;
 import org.jutils.explorer.ExplorerTool;
 import org.jutils.filespy.FileSpyTool;
 import org.jutils.hexedit.HexeditTool;
+import org.jutils.insomnia.InsomniaTool;
 import org.jutils.mines.MinesTool;
 import org.jutils.multicon.MulticonTool;
 import org.jutils.plot.app.PlotTool;
@@ -45,6 +46,7 @@ public class AppsMain
         apps.add( new MinesTool() );
         apps.add( new ExplorerTool() );
         apps.add( new DuakTool() );
+        apps.add( new InsomniaTool() );
 
         return apps;
     }

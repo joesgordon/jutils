@@ -33,7 +33,7 @@ public class AppsFrameView implements IView<JFrame>
     public AppsFrameView( List<IToolView> tools )
     {
         this.frameView = new StandardFrameView();
-        this.view = new ToolsView( tools, "JUtils Apps" );
+        this.view = new ToolsView( tools, "JUtils" );
 
         createMenubar( frameView.getMenuBar() );
         frameView.setContent( view.getView() );

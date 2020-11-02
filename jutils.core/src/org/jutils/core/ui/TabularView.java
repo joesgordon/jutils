@@ -53,8 +53,6 @@ public class TabularView implements IView<JComponent>
      **************************************************************************/
     private JComponent createView()
     {
-        // TODO expose these properties individually
-
         table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         table.setSelectionMode( ListSelectionModel.SINGLE_INTERVAL_SELECTION );
         table.setCellSelectionEnabled( true );
@@ -128,6 +126,25 @@ public class TabularView implements IView<JComponent>
     public int [] getSelectedRows()
     {
         return table.getSelectedRows();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getSelectedIndex()
+    {
+        int colCount = tableModel.getColumnCount();
+        int row = table.getSelectedRow();
+        int col = table.getSelectedColumn();
+        return row * colCount + col;
+    }
+
+    /***************************************************************************
+     * @param index
+     **************************************************************************/
+    public void setSelectedIndex( int index )
+    {
+        table.getSelectionModel().setSelectionInterval( index, index );
     }
 
     /***************************************************************************

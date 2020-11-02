@@ -1,6 +1,10 @@
 package org.jutils.core.time;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.TimeZone;
 
@@ -235,5 +239,18 @@ public final class TimeUtils
         LocalDate date = time.toLocalDate().minus( days, ChronoUnit.DAYS );
 
         return LocalDateTime.of( date, LocalTime.MIDNIGHT );
+    }
+
+    /***************************************************************************
+     * @param start
+     * @param end
+     * @return
+     **************************************************************************/
+    public static long getMillisDuration( LocalDateTime start,
+        LocalDateTime end )
+    {
+        long duration = Duration.between( start, end ).toMillis();
+
+        return duration;
     }
 }

@@ -14,6 +14,7 @@
 		<fileset file="${juprops.releaseindv}/jutils.explorer.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.filespy.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.hexedit.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.insomnia.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.mines.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.multicon.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.plot.jar" />

@@ -25,6 +25,7 @@
         <calldir dir="jutils.explorer" target="release" />
         <calldir dir="jutils.filespy" target="release" />
         <calldir dir="jutils.hexedit" target="release" />
+        <calldir dir="jutils.insomnia" target="release" />
         <calldir dir="jutils.mines" target="release" />
         <calldir dir="jutils.multicon" target="release" />
         <calldir dir="jutils.summer" target="release" />
@@ -43,6 +44,7 @@
             <zipfileset src="${juprops.releaseindv}/jutils.explorer.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.filespy.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.hexedit.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.insomnia.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.plot.jar" />
@@ -67,6 +69,7 @@
             <zipfileset src="${juprops.releaseindv}/jutils.explorer.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.filespy.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.hexedit.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.insomnia.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.plot.jar" />

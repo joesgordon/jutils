@@ -5,8 +5,6 @@ import java.nio.charset.Charset;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jutils.core.io.IOUtils;
-import org.jutils.core.io.LogUtils;
 
 /*******************************************************************************
  * 
@@ -19,9 +17,26 @@ public class IOUtilsTests
     @Test
     public void test_byteCountNegativeValue()
     {
-        String value = IOUtils.byteCount( -10000 );
+        try
+        {
+            IOUtils.byteCount( -10000 );
+            Assert.fail( "Exception not thrown" );
+        }
+        catch( IllegalArgumentException ex )
+        {
+        }
+    }
 
-        LogUtils.printDebug( value );
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void test_byteCount1029()
+    {
+        String actual = IOUtils.byteCount( 1029 );
+        String expected = "1.0 KB";
+
+        Assert.assertEquals( expected, actual );
     }
 
     /***************************************************************************
@@ -76,5 +91,39 @@ public class IOUtilsTests
         byte [] actuals = str.getBytes( encoding );
 
         Assert.assertNotEquals( bytes[0], actuals[0] );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void test_getRelativePath()
+    {
+        File from = new File( "/blah/sub1/" );
+        File to = new File( "/blah/sub2/bar.txt" );
+
+        String expected = "..\\sub2\\bar.txt";
+        String actual = IOUtils.getRelativePath( from, to );
+
+        Assert.assertEquals( expected, actual );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void test_getRelativePath2()
+    {
+        File from = new File( "C:\\Windows" );
+        File to = new File( "D:\\foo\\bar.txt" );
+
+        try
+        {
+            IOUtils.getRelativePath( from, to );
+            Assert.fail( "Exception not thrown" );
+        }
+        catch( IllegalArgumentException ex )
+        {
+        }
     }
 }

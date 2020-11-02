@@ -17,6 +17,9 @@ import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,30 +58,36 @@ public final class IOUtils
 
     /***************************************************************************
      * Returns a human readable representation of bytes where a KB = 1024 bytes.
-     * Hat tip SO question <a
-     * href="http://stackoverflow.com/questions/3758606">3758606</a>
+     * Hat tip SO question <a href="">3758606</a>
      * @param count the number of bytes.
      * @return the human readable string.
+     * @throws IllegalArgumentException if count is negative.
      **************************************************************************/
-    public static String byteCount( long count )
+    public static String byteCount( long count ) throws IllegalArgumentException
     {
-        int unit = 1024;
-        int exp;
-        char pre;
-
         if( count < 0 )
         {
             throw new IllegalArgumentException(
                 "Cannot count bytes less than 0" );
         }
-        else if( count < unit )
+
+        if( count < 1024 )
         {
             return count + " B";
         }
 
-        exp = ( int )( Math.log( count ) / Math.log( unit ) );
-        pre = "KMGTPE".charAt( exp - 1 );
-        return String.format( "%.1f %ciB", count / Math.pow( unit, exp ), pre );
+        long value = count;
+        CharacterIterator ci = new StringCharacterIterator( "KMGTPE" );
+
+        for( int i = 40; i >= 0 && count > 0xfffccccccccccccL >> i; i -= 10 )
+        {
+            value >>= 10;
+            ci.next();
+        }
+
+        value *= Long.signum( count );
+
+        return String.format( "%.1f %cB", value / 1024.0, ci.current() );
     }
 
     /***************************************************************************
@@ -299,6 +308,25 @@ public final class IOUtils
         }
 
         return size;
+    }
+
+    /***************************************************************************
+     * @param fromDir
+     * @param to
+     * @return
+     * @throws IllegalArgumentException if other is not a Path that can be
+     * relativized against this path
+     **************************************************************************/
+    public static String getRelativePath( File fromDir, File to )
+        throws IllegalArgumentException
+    {
+        String fromStr = fromDir.getAbsolutePath();
+        String toStr = to.getAbsolutePath();
+
+        Path fromPath = Paths.get( fromStr ).normalize();
+        Path toPath = Paths.get( toStr ).normalize();
+
+        return fromPath.relativize( toPath ).toString();
     }
 
     /***************************************************************************

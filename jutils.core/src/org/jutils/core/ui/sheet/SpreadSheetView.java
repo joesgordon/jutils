@@ -1,17 +1,31 @@
 package org.jutils.core.ui.sheet;
 
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Point;
 
-import javax.swing.*;
+import javax.swing.AbstractListModel;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 import org.jutils.core.Utils;
 import org.jutils.core.data.UIProperty;
 import org.jutils.core.ui.RowHeaderRenderer;
 import org.jutils.core.ui.event.ResizingTableModelListener;
+import org.jutils.core.ui.event.TableMouseListener;
+import org.jutils.core.ui.event.TableMouseListener.MouseButton;
 import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
@@ -64,7 +78,11 @@ public class SpreadSheetView implements IDataView<ISpreadSheet>
         rowHeader.setBackground( UIProperty.PANEL_BACKGROUND.getColor() );
         rowHeader.setFixedCellWidth( 50 );
 
-        table.addMouseListener( new TableMouseListener( this ) );
+        TableMouseListener tml = new TableMouseListener();
+
+        tml.addHandler( ( b, r, c, p ) -> handleMouseRelease( b, p ) );
+
+        table.addMouseListener( tml );
         table.setColumnSelectionAllowed( false );
         table.setRowSelectionAllowed( false );
         table.setCellSelectionEnabled( true );
@@ -88,12 +106,26 @@ public class SpreadSheetView implements IDataView<ISpreadSheet>
     }
 
     /***************************************************************************
+     * @param button
+     * @param p
+     **************************************************************************/
+    private void handleMouseRelease( MouseButton button, Point p )
+    {
+        if( button == MouseButton.RIGHT )
+        {
+            popup.show( table, p.x, p.y );
+        }
+    }
+
+    /***************************************************************************
      * @param col
      * @param width
      **************************************************************************/
     public void setColWidth( int col, int width )
     {
-        table.getColumnModel().getColumn( col ).setPreferredWidth( width );
+        TableColumn column = table.getColumnModel().getColumn( col );
+
+        column.setPreferredWidth( width );
     }
 
     /***************************************************************************
@@ -261,60 +293,6 @@ public class SpreadSheetView implements IDataView<ISpreadSheet>
         public String getElementAt( int index )
         {
             return view.model.getData().getRowHeader( index );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class TableMouseListener extends MouseAdapter
-    {
-        private SpreadSheetView view;
-
-        public TableMouseListener( SpreadSheetView view )
-        {
-            this.view = view;
-        }
-
-        @Override
-        public void mousePressed( MouseEvent e )
-        {
-            if( SwingUtilities.isRightMouseButton( e ) )
-            {
-                selectCellAt( e.getPoint() );
-            }
-        }
-
-        @Override
-        public void mouseReleased( MouseEvent e )
-        {
-            if( SwingUtilities.isRightMouseButton( e ) )
-            {
-                selectCellAt( e.getPoint() );
-            }
-        }
-
-        private void selectCellAt( Point p )
-        {
-            int col = view.table.columnAtPoint( p );
-            int row = view.table.rowAtPoint( p );
-
-            if( row > -1 && col > -1 )
-            {
-                view.table.setRowSelectionInterval( row, row );
-                view.table.setColumnSelectionInterval( col, col );
-                view.model.fireTableCellUpdated( row, col );
-
-                if( view.popup != null )
-                {
-                    view.popup.show( view.table, ( int )p.getX(),
-                        ( int )p.getY() );
-                }
-            }
-            else
-            {
-                view.table.clearSelection();
-            }
         }
     }
 }

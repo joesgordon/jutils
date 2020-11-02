@@ -55,6 +55,11 @@ public class MulticastConnection implements IConnection
 
         NicInfo info = NetUtils.lookupInfo( inputs.nic );
 
+        if( info == null )
+        {
+            throw new IOException( "NIC not found: " + inputs.nic );
+        }
+
         // ---------------------------------------------------------------------
         // Set members and open the socket.
         // ---------------------------------------------------------------------
