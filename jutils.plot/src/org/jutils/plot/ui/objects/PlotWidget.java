@@ -17,7 +17,6 @@ import org.jutils.plot.ui.Layer2d;
 import org.jutils.plot.ui.lines.SimpleLine;
 import org.jutils.plot.ui.markers.CircleBorderMarker;
 import org.jutils.plot.ui.markers.CircleMarker;
-import org.jutils.plot.ui.objects.PlotContext.IAxisCoords;
 
 /*******************************************************************************
  * 
@@ -148,12 +147,15 @@ public class PlotWidget implements IChartWidget
         Stroke lineStroke = series.line.type == LineType.DASHED ? dashed
             : solid;
 
+        boolean lastHidden = true;
+
         for( int i = start; i < end; i++ )
         {
             dp = series.data.get( i );
 
             if( dp.isHidden() )
             {
+                lastHidden = true;
                 continue;
             }
 
@@ -162,7 +164,7 @@ public class PlotWidget implements IChartWidget
 
             if( p.x != last.x || p.y != last.y )
             {
-                if( series.line.visible && last.x != -100 )
+                if( series.line.visible && last.x != -100 && !lastHidden )
                 {
                     Stroke s = graphics.getStroke();
 
@@ -191,6 +193,8 @@ public class PlotWidget implements IChartWidget
 
                 // count++;
             }
+
+            lastHidden = false;
         }
 
         // LogUtils.printDebug( "Drew %d points for series with %d points",

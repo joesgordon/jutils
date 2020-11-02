@@ -57,6 +57,8 @@ public class Series
         Double min = null;
         Double max = null;
 
+        // TODO determine if increasing
+
         for( IDataPoint p : data )
         {
             if( !p.isHidden() )

@@ -9,7 +9,7 @@ import org.jutils.plot.model.Interval;
 import org.jutils.plot.model.Series;
 
 /*******************************************************************************
- * 
+ * Defines the graphics information of the plot.
  ******************************************************************************/
 public class PlotContext
 {
@@ -195,13 +195,13 @@ public class PlotContext
     /***************************************************************************
      * Returns the bounds for the provided intervals that includes each interval
      * or {@code null} if the list is empty.
-     * @param isPrimary
+     * @param series
      * @param isDomain
-     * @param intervals
+     * @param isPrimary
      * @return
      **************************************************************************/
-    private static Interval calculateAutoBounds( List<Series> series,
-        boolean isDomain, boolean isPrimary )
+    static Interval calculateAutoBounds( List<Series> series, boolean isDomain,
+        boolean isPrimary )
     {
         List<Interval> intervals = getIntervals( series, isDomain, isPrimary );
         Double min = null;
@@ -247,222 +247,5 @@ public class PlotContext
         double r = max - min;
 
         return new Interval( min - 0.03 * r, max + 0.03 * r );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static interface IAxisCoords
-    {
-        /**
-         * @param s
-         * @return
-         */
-        public double fromScreen( int s );
-
-        /**
-         * @param c
-         * @return
-         */
-        public int fromCoord( double c );
-
-        /**
-         * @return
-         */
-        public Interval getBounds();
-
-        /**
-         * @param series
-         */
-        public void calculateBounds( List<Series> series );
-
-        /**
-         * @param bounds
-         * @param length
-         */
-        public void latchCoords( Interval bounds, int length );
-
-        /**
-         * @return
-         */
-        public Axis getAxis();
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static abstract class AbrstractCoords implements IAxisCoords
-    {
-        /**  */
-        private final Axis axis;
-        /**  */
-        private final boolean isDomain;
-        /**  */
-        private final boolean isPrimary;
-        /**  */
-        protected DimensionStats stats;
-
-        /**
-         * @param axis
-         * @param isDomain
-         * @param isPrimary
-         */
-        public AbrstractCoords( Axis axis, boolean isDomain, boolean isPrimary )
-        {
-            this.axis = axis;
-            this.isDomain = isDomain;
-            this.isPrimary = isPrimary;
-            this.stats = new DimensionStats( new Interval( -5, 5 ), 500 );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public abstract double fromScreen( int s );
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public abstract int fromCoord( double c );
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public final Interval getBounds()
-        {
-            return stats.bounds;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public final void calculateBounds( List<Series> series )
-        {
-            axis.setAutoBounds(
-                calculateAutoBounds( series, isDomain, isPrimary ) );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public final void latchCoords( Interval bounds, int length )
-        {
-            this.stats = new DimensionStats( bounds, length );
-
-            // TODO Remove bread crumb
-            // if( bounds != null )
-            // {
-            // LogUtils.printDebug(
-            // "Latching " + bounds.toString() + " with len " + length );
-            // }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Axis getAxis()
-        {
-            return axis;
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    static class DomainDimensionCoords extends AbrstractCoords
-    {
-        /**
-         * @param axis
-         * @param isPrimary
-         */
-        public DomainDimensionCoords( Axis axis, boolean isPrimary )
-        {
-            super( axis, true, isPrimary );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public double fromScreen( int s )
-        {
-            return s / stats.scale + stats.bounds.min;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int fromCoord( double c )
-        {
-            return ( int )Math.round( ( c - stats.bounds.min ) * stats.scale );
-            // return ( int )( ( c - stats.span.min ) * stats.scale );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class RangeDimensionCoords extends AbrstractCoords
-    {
-        /**
-         * @param axis
-         * @param isPrimary
-         */
-        public RangeDimensionCoords( Axis axis, boolean isPrimary )
-        {
-            super( axis, false, isPrimary );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public double fromScreen( int s )
-        {
-            return stats.bounds.max - s / stats.scale;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int fromCoord( double c )
-        {
-            return ( int )Math.round(
-                stats.length - ( c - stats.bounds.min ) * stats.scale );
-            // return ( int )( stats.length - ( c - stats.span.min ) *
-            // stats.scale );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class DimensionStats
-    {
-        /**  */
-        public final Interval bounds;
-        /**  */
-        public final double scale;
-        /**  */
-        public final int length;
-
-        /**
-         * @param bounds
-         * @param length
-         */
-        public DimensionStats( Interval bounds, int length )
-        {
-            this.bounds = bounds;
-            this.length = length;
-            this.scale = bounds != null ? length / bounds.range : 0;
-        }
     }
 }

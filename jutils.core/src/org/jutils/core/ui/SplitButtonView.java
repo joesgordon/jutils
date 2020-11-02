@@ -243,6 +243,14 @@ public class SplitButtonView<T> implements IView<JComponent>
     }
 
     /***************************************************************************
+     * @param tooltip
+     **************************************************************************/
+    public void setButtonTooltip( String tooltip )
+    {
+        button.setToolTipText( tooltip );
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     public void hidePopup()
@@ -627,8 +635,17 @@ public class SplitButtonView<T> implements IView<JComponent>
         public Icon getIcon( T item );
     }
 
+    /***************************************************************************
+     * @param <T>
+     **************************************************************************/
     public static interface IListRightClickListener<T>
     {
+        /**
+         * @param item
+         * @param c
+         * @param x
+         * @param y
+         */
         public void rightClicked( T item, Component c, int x, int y );
     }
 

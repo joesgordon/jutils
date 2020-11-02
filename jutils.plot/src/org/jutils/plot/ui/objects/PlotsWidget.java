@@ -8,9 +8,10 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jutils.plot.model.Series;
 import org.jutils.plot.model.Chart.FillSet;
+import org.jutils.plot.model.Series;
 import org.jutils.plot.ui.IChartWidget;
+import org.jutils.plot.ui.IPlotDrawer;
 import org.jutils.plot.ui.Layer2d;
 import org.jutils.plot.ui.objects.PlotWidget.IPixelListener;
 
@@ -29,9 +30,11 @@ public class PlotsWidget implements IChartWidget
     public final SelectionWidget selection;
 
     /**  */
-    public final List<PlotWidget> plots;
+    private final List<IPlotDrawer> drawers;
     /**  */
     public final List<FillSet> fills;
+    /**  */
+    public final List<PlotWidget> plots;
 
     /**  */
     public final PlotContext context;
@@ -47,8 +50,9 @@ public class PlotsWidget implements IChartWidget
         this.seriesLayer = new Layer2d();
         this.highlightLayer = new Layer2d();
         this.selection = new SelectionWidget( context );
-        this.plots = new ArrayList<>();
+        this.drawers = new ArrayList<>();
         this.fills = new ArrayList<>();
+        this.plots = new ArrayList<>();
 
         highlightLayer.repaint = false;
     }
@@ -119,6 +123,11 @@ public class PlotsWidget implements IChartWidget
                 s.draw( g2d, null, null );
             }
 
+            for( IPlotDrawer drawer : drawers )
+            {
+                drawer.draw( context, fillLayer.getGraphics() );
+            }
+
             for( FillListener f : fillShapes )
             {
                 f.draw( fillLayer.getGraphics() );
@@ -175,6 +184,15 @@ public class PlotsWidget implements IChartWidget
         highlightLayer.repaint = true;
     }
 
+    /***************************************************************************
+     * Adds a method to draw on top of the chart.
+     * @param drawer the callback invoked after the chart is drawn.
+     **************************************************************************/
+    public void addDrawCallback( IPlotDrawer drawer )
+    {
+        drawers.add( drawer );
+    }
+
     /**
      * 
      */
@@ -190,6 +208,7 @@ public class PlotsWidget implements IChartWidget
         /**  */
         private int s2Idx;
 
+        /**  */
         private Color fillColor;
 
         /**

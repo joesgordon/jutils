@@ -340,10 +340,20 @@ public class ChartWidget implements IChartWidget
     }
 
     /***************************************************************************
-     * @param drawer
+     * Adds a method to draw on top of the chart.
+     * @param drawer the callback invoked after the chart is drawn.
      **************************************************************************/
-    public void addDrawCallback( IPlotDrawer drawer )
+    public void addOverDrawCallback( IPlotDrawer drawer )
     {
         drawers.add( drawer );
+    }
+
+    /***************************************************************************
+     * Adds a method to draw on top of the chart.
+     * @param drawer the callback invoked after the chart is drawn.
+     **************************************************************************/
+    public void addUnderDrawCallback( IPlotDrawer drawer )
+    {
+        plots.addDrawCallback( drawer );
     }
 }
