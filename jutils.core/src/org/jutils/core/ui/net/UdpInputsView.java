@@ -2,15 +2,25 @@ package org.jutils.core.ui.net;
 
 import javax.swing.JComponent;
 
+import org.jutils.core.io.parsers.MulticastGroupParser;
+import org.jutils.core.net.Ip4Address;
 import org.jutils.core.net.UdpInputs;
 import org.jutils.core.ui.StandardFormView;
-import org.jutils.core.ui.fields.*;
+import org.jutils.core.ui.fields.BooleanFormField;
+import org.jutils.core.ui.fields.IDataFormField;
+import org.jutils.core.ui.fields.IntegerFormField;
+import org.jutils.core.ui.fields.Ip4AddressField;
+import org.jutils.core.ui.fields.UsableFormField;
 import org.jutils.core.ui.model.IDataView;
+import org.jutils.core.ui.validation.AggregateValidityChangedManager;
+import org.jutils.core.ui.validation.IValidationField;
+import org.jutils.core.ui.validation.IValidityChangedListener;
+import org.jutils.core.ui.validation.Validity;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class UdpInputsView implements IDataView<UdpInputs>
+public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
 {
     /**  */
     private final StandardFormView form;
@@ -19,13 +29,27 @@ public class UdpInputsView implements IDataView<UdpInputs>
     /**  */
     private final IDataFormField<String> nicField;
     /**  */
+    private final BooleanFormField broadcastField;
+    /**  */
+    private final UsableFormField<Ip4Address> multicastField;
+    /**  */
     private final IntegerFormField timeoutField;
     /**  */
     private final BooleanFormField reuseField;
     /**  */
+    private final BooleanFormField loopbackField;
+    /**  */
+    private final IntegerFormField ttlField;
+    /**  */
     private final Ip4AddressField remoteAddressField;
     /**  */
     private final IntegerFormField remotePortField;
+
+    /**  */
+    private final boolean advanced;
+
+    /**  */
+    private final AggregateValidityChangedManager validityManager;
 
     /**  */
     private UdpInputs inputs;
@@ -43,37 +67,82 @@ public class UdpInputsView implements IDataView<UdpInputs>
      **************************************************************************/
     public UdpInputsView( boolean advanced )
     {
+        this.advanced = advanced;
+
         this.form = new StandardFormView();
 
         this.localPortField = new IntegerFormField( "Local Port", 0, 65535 );
         this.nicField = new NetworkInterfaceField( "NIC" );
 
+        this.broadcastField = new BooleanFormField( "Broadcast" );
+        this.multicastField = new UsableFormField<>(
+            new Ip4AddressField( "Multicast", new MulticastGroupParser() ) );
+
         this.timeoutField = new IntegerFormField( "Timeout", "ms", 0, null );
         this.reuseField = new BooleanFormField( "Reuse" );
+
+        this.loopbackField = new BooleanFormField( "Loopback" );
+        this.ttlField = new IntegerFormField( "TTL", 0, 255 );
 
         this.remoteAddressField = new Ip4AddressField( "Remote Address" );
         this.remotePortField = new IntegerFormField( "Remote Port", 0, 65535 );
 
+        this.validityManager = new AggregateValidityChangedManager();
+
         form.addField( localPortField );
         form.addField( nicField );
+
+        if( advanced )
+        {
+            form.addField( broadcastField );
+            form.addField( multicastField );
+
+            form.addField( timeoutField );
+            form.addField( reuseField );
+
+            form.addField( loopbackField );
+            form.addField( ttlField );
+        }
 
         form.addField( remoteAddressField );
         form.addField( remotePortField );
 
-        if( advanced )
-        {
-            form.addField( timeoutField );
-            form.addField( reuseField );
-        }
-
         setData( new UdpInputs() );
+
+        validityManager.addField( localPortField );
+        validityManager.addField( nicField );
+
+        validityManager.addField( broadcastField );
+        validityManager.addField( multicastField );
+
+        validityManager.addField( timeoutField );
+        validityManager.addField( reuseField );
+
+        validityManager.addField( loopbackField );
+        validityManager.addField( ttlField );
+
+        validityManager.addField( remoteAddressField );
+        validityManager.addField( remotePortField );
 
         localPortField.setUpdater( ( d ) -> inputs.localPort = d );
         nicField.setUpdater( ( d ) -> inputs.nic = d );
+
+        broadcastField.setUpdater( ( d ) -> inputs.broadcast = d );
+        multicastField.setUpdater( ( d ) -> inputs.multicast.set( d ) );
+
         timeoutField.setUpdater( ( d ) -> inputs.timeout = d );
         reuseField.setUpdater( ( d ) -> inputs.reuse = d );
-        remoteAddressField.setUpdater( ( d ) -> inputs.remoteAddress.set( d ) );
-        remotePortField.setUpdater( ( d ) -> inputs.remotePort = d );
+
+        loopbackField.setUpdater( ( d ) -> inputs.loopback = d );
+        ttlField.setUpdater( ( d ) -> inputs.ttl = d );
+
+        remoteAddressField.setUpdater( ( d ) -> {
+            inputs.remoteAddress.set( d );
+        } );
+
+        remotePortField.setUpdater( ( d ) -> {
+            inputs.remotePort = d;
+        } );
     }
 
     /***************************************************************************
@@ -105,8 +174,14 @@ public class UdpInputsView implements IDataView<UdpInputs>
         localPortField.setValue( inputs.localPort );
         nicField.setValue( inputs.nic );
 
+        broadcastField.setValue( inputs.broadcast );
+        multicastField.setValue( inputs.multicast );
+
         timeoutField.setValue( inputs.timeout );
         reuseField.setValue( inputs.reuse );
+
+        loopbackField.setValue( inputs.loopback );
+        ttlField.setValue( inputs.ttl );
 
         remoteAddressField.setValue( inputs.remoteAddress );
         remotePortField.setValue( inputs.remotePort );
@@ -120,10 +195,43 @@ public class UdpInputsView implements IDataView<UdpInputs>
         localPortField.setEditable( enabled );
         nicField.setEditable( enabled );
 
-        timeoutField.setEditable( enabled );
-        reuseField.setEditable( enabled );
+        broadcastField.setEditable( enabled && advanced );
+        multicastField.setEditable( enabled && advanced );
+
+        timeoutField.setEditable( enabled && advanced );
+        reuseField.setEditable( enabled && advanced );
+
+        loopbackField.setEditable( enabled && advanced );
+        ttlField.setEditable( enabled && advanced );
 
         // remoteAddressField.setEditable( enabled );
         // remotePortField.setEditable( enabled );
+    }
+
+    /***************************************************************************
+     * @{@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void addValidityChanged( IValidityChangedListener l )
+    {
+        validityManager.addValidityChanged( l );
+    }
+
+    /***************************************************************************
+     * @{@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void removeValidityChanged( IValidityChangedListener l )
+    {
+        validityManager.removeValidityChanged( l );
+    }
+
+    /***************************************************************************
+     * @{@inheritDoc}
+     **************************************************************************/
+    @Override
+    public Validity getValidity()
+    {
+        return validityManager.getValidity();
     }
 }

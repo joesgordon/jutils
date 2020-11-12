@@ -3,15 +3,14 @@ package org.jutils.multicon.ui;
 import java.io.IOException;
 import java.net.SocketException;
 
-import javax.swing.JComponent;
-
 import org.jutils.core.net.IConnection;
-import org.jutils.core.ui.model.IView;
+import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
  * Defines a view that can create connections.
+ * @param <T>
  ******************************************************************************/
-public interface IConnectionView extends IView<JComponent>
+public interface IConnectionView<T> extends IDataView<T>
 {
     /***************************************************************************
      * @return the string describing the connection this view represents.
@@ -26,7 +25,7 @@ public interface IConnectionView extends IView<JComponent>
     public IConnection createConnection() throws SocketException, IOException;
 
     /***************************************************************************
-     * @param enabled
+     * @param editable
      **************************************************************************/
     public void setEditable( boolean editable );
 }

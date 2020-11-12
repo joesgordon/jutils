@@ -13,14 +13,14 @@ import org.jutils.core.net.*;
 import org.jutils.core.ui.net.TcpInputsView;
 import org.jutils.multicon.MulticonMain;
 import org.jutils.multicon.MulticonOptions;
+import org.jutils.multicon.ui.BindingFrameView.IBindableView;
 import org.jutils.multicon.ui.ConnectionBindableView;
 import org.jutils.multicon.ui.MulticonFrame;
-import org.jutils.multicon.ui.BindingFrameView.IBindableView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TcpServerView implements IBindableView
+public class TcpServerView implements IBindableView<TcpInputs>
 {
     /**  */
     public static final String NAME = "TCP Server";
@@ -113,12 +113,30 @@ public class TcpServerView implements IBindableView
     }
 
     /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public TcpInputs getData()
+    {
+        return inputsView.getData();
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setData( TcpInputs data )
+    {
+        inputsView.setData( data );
+    }
+
+    /***************************************************************************
      * @param connection
      **************************************************************************/
     private void handleConnectionAccepted( TcpConnection connection )
     {
         TcpClientView clientView = new TcpClientView();
-        ConnectionBindableView connectionView = new ConnectionBindableView(
+        ConnectionBindableView<TcpInputs> connectionView = new ConnectionBindableView<>(
             new TcpClientView() );
 
         TcpInputs inputs = connection.getInputs();

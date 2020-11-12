@@ -9,6 +9,7 @@ import javax.swing.*;
 import org.jutils.core.*;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFrameView;
+import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.model.IView;
 import org.jutils.multicon.MulticonIcons;
 
@@ -23,7 +24,7 @@ public class BindingFrameView implements IView<JFrame>
     public static final String UNBIND_TEXT = "Unbind";
 
     /**  */
-    private final IBindableView bindableView;
+    private final IBindableView<?> bindableView;
     /**  */
     private final StandardFrameView frameView;
     /**  */
@@ -41,7 +42,7 @@ public class BindingFrameView implements IView<JFrame>
      * @param bindableView
      * @param parent
      **************************************************************************/
-    public BindingFrameView( IBindableView bindableView, Component parent )
+    public BindingFrameView( IBindableView<?> bindableView, Component parent )
     {
         this.bindableView = bindableView;
         this.frameView = new StandardFrameView();
@@ -66,12 +67,10 @@ public class BindingFrameView implements IView<JFrame>
     }
 
     /***************************************************************************
-     * @param parent
-     * @param bindableView2
-     * @param configView
+     * @param bindableView
      * @return
      **************************************************************************/
-    private JPanel createView( IBindableView bindableView )
+    private JPanel createView( IBindableView<?> bindableView )
     {
         JPanel panel = new JPanel( new BorderLayout() );
 
@@ -144,6 +143,25 @@ public class BindingFrameView implements IView<JFrame>
     }
 
     /***************************************************************************
+     * 
+     **************************************************************************/
+    public void bind()
+    {
+        if( bound )
+        {
+            toggleBound();
+        }
+
+        if( bound )
+        {
+            // TODO crash? bad things happened
+            return;
+        }
+
+        toggleBound();
+    }
+
+    /***************************************************************************
      * @return
      **************************************************************************/
     public boolean isBound()
@@ -154,13 +172,16 @@ public class BindingFrameView implements IView<JFrame>
     /***************************************************************************
      *
      **************************************************************************/
-    public static interface IBindableView extends IView<JComponent>
+    public static interface IBindableView<T> extends IDataView<T>
     {
         /**
          * @return
          */
         public String getName();
 
+        /**
+         * @return
+         */
         public boolean isBound();
 
         /**

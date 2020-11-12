@@ -15,7 +15,7 @@ import org.jutils.multicon.ui.IConnectionView;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TcpClientView implements IConnectionView
+public class TcpClientView implements IConnectionView<TcpInputs>
 {
     /**  */
     public static final String NAME = "TCP Client";
@@ -76,6 +76,24 @@ public class TcpClientView implements IConnectionView
     public void setEditable( boolean editable )
     {
         inputsView.setEnabled( editable );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public TcpInputs getData()
+    {
+        return inputsView.getData();
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setData( TcpInputs data )
+    {
+        inputsView.setData( data );
     }
 
     /***************************************************************************

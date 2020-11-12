@@ -5,9 +5,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
+
+import org.jutils.core.net.NetUtils.NicInfo;
 
 /*******************************************************************************
  * 
@@ -20,9 +24,9 @@ public class UdpConnection implements IConnection
     private final byte [] rxBuffer;
 
     /**  */
-    public InetAddress remoteAddress;
+    private InetAddress remoteAddress;
     /**  */
-    public int remotePort;
+    private int remotePort;
 
     /***************************************************************************
      * @param inputs
@@ -32,11 +36,10 @@ public class UdpConnection implements IConnection
     public UdpConnection( UdpInputs inputs ) throws IOException, SocketException
     {
         DatagramSocket socket;
-        InetAddress nicAddr = NetUtils.lookupNetAddress( inputs.nic );
 
-        if( nicAddr == null )
+        if( inputs.multicast.isUsed && inputs.multicast.data == null )
         {
-            throw new IOException( "Nic not found: " + inputs.nic );
+            throw new IOException( "Multicast group not specified" );
         }
 
         // LogUtils.printDebug( "NIC: " + inputs.nic );
@@ -45,15 +48,48 @@ public class UdpConnection implements IConnection
         // LogUtils.printDebug( "Remote Port: " + inputs.remotePort );
         // LogUtils.printDebug( "" );
 
-        if( inputs.reuse )
+        NicInfo info = NetUtils.lookupInfo( inputs.nic );
+
+        if( info == null )
         {
-            socket = new DatagramSocket( null );
-            socket.setReuseAddress( true );
-            socket.bind( new InetSocketAddress( nicAddr, inputs.localPort ) );
+            throw new IOException( "NIC not found: " + inputs.nic );
+        }
+
+        InetAddress nicAddr = info.address;
+
+        if( inputs.multicast.isUsed )
+        {
+            @SuppressWarnings( "resource")
+            MulticastSocket mcs = new MulticastSocket( inputs.localPort );
+
+            mcs.setLoopbackMode( !inputs.loopback );
+            // this.socket.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
+            // inputs.loopback );
+            mcs.setTimeToLive( inputs.ttl );
+            mcs.setSoTimeout( inputs.timeout );
+
+            try
+            {
+                InetAddress address = inputs.multicast.data.getInetAddress();
+                SocketAddress maddr = new InetSocketAddress( address,
+                    inputs.localPort );
+                mcs.joinGroup( maddr, info.nic );
+            }
+            catch( SocketException ex )
+            {
+                String msg = String.format( "Unable to join %s:%d",
+                    inputs.multicast.data, inputs.localPort );
+                throw new IOException( msg, ex );
+            }
+
+            socket = mcs;
         }
         else
         {
-            socket = new DatagramSocket( inputs.localPort, nicAddr );
+            socket = new DatagramSocket( null );
+            socket.setReuseAddress( inputs.reuse );
+            socket.setBroadcast( inputs.broadcast );
+            socket.bind( new InetSocketAddress( nicAddr, inputs.localPort ) );
         }
 
         socket.setSoTimeout( inputs.timeout );
@@ -141,5 +177,35 @@ public class UdpConnection implements IConnection
 
         return new NetMessage( false, socket.getLocalAddress().getHostAddress(),
             socket.getLocalPort(), toAddr.getHostAddress(), toPort, contents );
+    }
+
+    /***************************************************************************
+     * @param address
+     * @throws IllegalArgumentException
+     **************************************************************************/
+    public void setRemote( InetAddress address ) throws IllegalArgumentException
+    {
+        if( address == null )
+        {
+            throw new IllegalArgumentException(
+                "Remote address may not be null" );
+        }
+
+        this.remoteAddress = address;
+    }
+
+    /**
+     * @param port
+     * @throws IllegalArgumentException
+     */
+    public void setRemote( int port ) throws IllegalArgumentException
+    {
+        if( port < 1 || port > 65535 )
+        {
+            throw new IllegalArgumentException(
+                "Remote address may not be null" );
+        }
+
+        this.remotePort = port;
     }
 }

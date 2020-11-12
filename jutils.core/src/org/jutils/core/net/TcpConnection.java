@@ -1,7 +1,9 @@
 package org.jutils.core.net;
 
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -18,7 +20,7 @@ import org.jutils.core.io.IOUtils;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TcpConnection implements IConnection
+public class TcpConnection implements IConnection, Closeable
 {
     /**  */
     private final TcpInputs inputs;
@@ -45,7 +47,7 @@ public class TcpConnection implements IConnection
      **************************************************************************/
     public TcpConnection( TcpInputs inputs ) throws IOException
     {
-        this( inputs, createSocket( inputs ) );
+        this( inputs, null );
     }
 
     /***************************************************************************
@@ -59,21 +61,34 @@ public class TcpConnection implements IConnection
     }
 
     /***************************************************************************
+     * @param inputs
      * @param socket
-     * @param timeout
      * @throws IOException
      **************************************************************************/
     private TcpConnection( TcpInputs inputs, Socket socket ) throws IOException
     {
+        if( inputs == null && socket == null )
+        {
+            throw new IllegalArgumentException(
+                "Cannot create a TcpConnection with no socket or configuration" );
+        }
+
+        if( socket == null )
+        {
+            socket = createSocket( inputs );
+        }
+
         this.inputs = inputs;
         this.socket = socket;
+
+        InputStream inStream = socket.getInputStream();
 
         this.rxBuffer = new byte[65535];
         this.disconnetListeners = new ArrayList<>();
 
         this.remoteAddress = socket.getInetAddress();
         this.remotePort = socket.getPort();
-        this.input = new BufferedInputStream( socket.getInputStream(),
+        this.input = new BufferedInputStream( inStream,
             IOUtils.DEFAULT_BUF_SIZE );
         this.output = socket.getOutputStream();
 
@@ -81,7 +96,7 @@ public class TcpConnection implements IConnection
     }
 
     /***************************************************************************
-     * @param socket2
+     * @param socket
      * @return
      **************************************************************************/
     private static TcpInputs createInputs( Socket socket )
@@ -170,7 +185,9 @@ public class TcpConnection implements IConnection
     {
         try
         {
-            socket.getOutputStream().write( contents );
+            @SuppressWarnings( "resource")
+            OutputStream outStream = socket.getOutputStream();
+            outStream.write( contents );
         }
         catch( SocketTimeoutException ex )
         {

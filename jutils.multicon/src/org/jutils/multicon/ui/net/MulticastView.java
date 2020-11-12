@@ -15,7 +15,7 @@ import org.jutils.multicon.ui.IConnectionView;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class MulticastView implements IConnectionView
+public class MulticastView implements IConnectionView<MulticastInputs>
 {
     /**  */
     public static final String NAME = "Multicast Connection";
@@ -44,6 +44,24 @@ public class MulticastView implements IConnectionView
     public JComponent getView()
     {
         return inputsView.getView();
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public MulticastInputs getData()
+    {
+        return inputsView.getData();
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setData( MulticastInputs data )
+    {
+        inputsView.setData( data );
     }
 
     /***************************************************************************

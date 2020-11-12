@@ -17,10 +17,10 @@ import org.jutils.multicon.ui.BindingFrameView.IBindableView;
 /*******************************************************************************
  *
  ******************************************************************************/
-public class ConnectionBindableView implements IBindableView
+public class ConnectionBindableView<T> implements IBindableView<T>
 {
     /**  */
-    private final IConnectionView connectionView;
+    private final IConnectionView<T> connectionView;
 
     /**  */
     private final JPanel view;
@@ -35,7 +35,7 @@ public class ConnectionBindableView implements IBindableView
     /***************************************************************************
      * @param connectionView
      **************************************************************************/
-    public ConnectionBindableView( IConnectionView connectionView )
+    public ConnectionBindableView( IConnectionView<T> connectionView )
     {
         this.connectionView = connectionView;
 
@@ -89,6 +89,24 @@ public class ConnectionBindableView implements IBindableView
     public JPanel getView()
     {
         return view;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public T getData()
+    {
+        return connectionView.getData();
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setData( T data )
+    {
+        connectionView.setData( data );
     }
 
     /***************************************************************************
