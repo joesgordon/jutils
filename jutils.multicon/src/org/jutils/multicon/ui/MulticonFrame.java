@@ -10,6 +10,7 @@ import javax.swing.*;
 
 import org.jutils.core.*;
 import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.xs.XsUtils;
 import org.jutils.core.net.TcpInputs;
 import org.jutils.core.net.UdpInputs;
 import org.jutils.core.ui.StandardFrameView;
@@ -65,7 +66,7 @@ public class MulticonFrame implements IView<JFrame>
     private Container createContent()
     {
         JTabbedPane tabs = new JTabbedPane();
-        IUpdater<IBindableView<?>> u = ( v ) -> showView( v );
+        IUpdater<IBindableView<?>> u = null;
         BindableFavView<?> favView;
 
         UdpInputsView udpView = new UdpInputsView();
@@ -79,14 +80,29 @@ public class MulticonFrame implements IView<JFrame>
         tcpClientView.setData( new TcpInputs( options.tcpClientInputs ) );
         tcpServerView.setData( new TcpInputs( options.tcpServerInputs ) );
 
+        u = ( v ) -> {
+            options.udpInputs = new UdpInputs( udpView.getData() );
+            userio.write( options );
+            showView( v );
+        };
         favView = new BindableFavView<>( UdpView.NAME, udpView,
             () -> new ConnectionBindableView<>( new UdpView() ), u );
         tabs.addTab( favView.name, favView.getView() );
 
+        u = ( v ) -> {
+            options.tcpClientInputs = new TcpInputs( tcpClientView.getData() );
+            userio.write( options );
+            showView( v );
+        };
         favView = new BindableFavView<>( TcpClientView.NAME, tcpClientView,
             () -> new ConnectionBindableView<>( new TcpClientView() ), u );
         tabs.addTab( favView.name, favView.getView() );
 
+        u = ( v ) -> {
+            options.tcpServerInputs = new TcpInputs( tcpServerView.getData() );
+            userio.write( options );
+            showView( v );
+        };
         favView = new BindableFavView<>( TcpServerView.NAME, tcpServerView,
             () -> new TcpServerView(), u );
         tabs.addTab( favView.name, favView.getView() );
@@ -214,7 +230,9 @@ public class MulticonFrame implements IView<JFrame>
         {
             IBindableView<T> view = getter.get();
 
-            view.setData( inputsView.getData() );
+            T data = XsUtils.cloneObject( inputsView.getData() );
+
+            view.setData( data );
 
             updater.update( view );
         }

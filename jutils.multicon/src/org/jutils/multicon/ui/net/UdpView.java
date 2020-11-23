@@ -86,9 +86,6 @@ public class UdpView implements IConnectionView<UdpInputs>
         UdpInputs inputs = inputsView.getData();
 
         OptionsSerializer<MulticonOptions> userio = MulticonMain.getUserData();
-        MulticonOptions options = userio.getOptions();
-        options.udpInputs = new UdpInputs( inputs );
-        userio.write( options );
 
         UdpConnection connection = new UdpConnection( inputs );
 

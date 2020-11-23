@@ -63,7 +63,7 @@ public class UdpConnection implements IConnection
             MulticastSocket mcs = new MulticastSocket( inputs.localPort );
 
             mcs.setLoopbackMode( !inputs.loopback );
-            // this.socket.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
+            // mcs.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
             // inputs.loopback );
             mcs.setTimeToLive( inputs.ttl );
             mcs.setSoTimeout( inputs.timeout );

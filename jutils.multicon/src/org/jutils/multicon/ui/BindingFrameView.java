@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.swing.*;
 
 import org.jutils.core.*;
+import org.jutils.core.io.LogUtils;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.model.IDataView;
@@ -118,6 +119,8 @@ public class BindingFrameView implements IView<JFrame>
         }
         catch( IOException ex )
         {
+            LogUtils.printError( "Unable to toggle bound from " + bound + ": " +
+                ex.getMessage() );
             setButtonBound( bound );
             OptionUtils.showErrorMessage( getView(), ex.getMessage(),
                 "Unable to bind" );
