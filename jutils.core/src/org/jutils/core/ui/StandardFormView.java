@@ -1,10 +1,16 @@
 package org.jutils.core.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.jutils.core.ui.fields.IFormField;
 import org.jutils.core.ui.model.IView;
@@ -147,6 +153,8 @@ public class StandardFormView implements IView<JPanel>
         if( field.getName() != null )
         {
             label = new JLabel( field.getName() + ":" );
+
+            label.setMinimumSize( label.getPreferredSize() );
 
             constraints = new GridBagConstraints( 0, index * 2, 1, 1, 0.0, 0.0,
                 labelAnchor, GridBagConstraints.NONE,

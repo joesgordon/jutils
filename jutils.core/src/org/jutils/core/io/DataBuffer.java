@@ -2,6 +2,7 @@ package org.jutils.core.io;
 
 import java.nio.ByteBuffer;
 
+import org.jutils.core.Utils;
 import org.jutils.core.utils.ByteOrdering;
 
 /*******************************************************************************
@@ -166,5 +167,14 @@ public class DataBuffer
     {
         buffer.rewind();
         buffer.putDouble( v );
+    }
+
+    /***************************************************************************
+     * @param bytes
+     **************************************************************************/
+    public void write( byte [] bytes )
+    {
+        int length = Math.min( bytes.length, this.bytes.length );
+        Utils.byteArrayCopy( bytes, 0, this.bytes, 0, length );
     }
 }
