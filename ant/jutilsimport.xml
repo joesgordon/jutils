@@ -16,7 +16,7 @@
 	<property name="juprops.libs.jgoodies" location="${juprops.libs.dir}/jgoodies.jar" />
 	<property name="juprops.libs.xmlpull" location="${juprops.libs.dir}/xmlpull-1.1.3.1.jar" />
 	<property name="juprops.libs.xpp3" location="${juprops.libs.dir}/xpp3_min-1.1.4c.jar" />
-	<property name="juprops.libs.xstream" location="${juprops.libs.dir}/xstream-1.4.12.jar" />
+	<property name="juprops.libs.xstream" location="${juprops.libs.dir}/xstream-1.4.15.jar" />
 
 	<available property="available.libs.jgoodies" file="${juprops.libs.jgoodies}" type="file" />
 	<available property="available.libs.xmlpull" file="${juprops.libs.xmlpull}" type="file" />
@@ -27,7 +27,7 @@
 	<property name="juprops.jars.jgoodies" location="${juprops.jars.dir}/jgoodies.jar" />
 	<property name="juprops.jars.xmlpull" location="${juprops.jars.dir}/xmlpull-1.1.3.1.jar" />
 	<property name="juprops.jars.xpp3" location="${juprops.jars.dir}/xpp3_min-1.1.4c.jar" />
-	<property name="juprops.jars.xstream" location="${juprops.jars.dir}/xstream-1.4.12.jar" />
+	<property name="juprops.jars.xstream" location="${juprops.jars.dir}/xstream-1.4.15.jar" />
 
 	<available property="available.jars.jgoodies" file="${juprops.jars.jgoodies}" type="file" />
 	<available property="available.jars.xmlpull" file="${juprops.jars.xmlpull}" type="file" />

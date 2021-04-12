@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="createjar">
+    
+    <target name="javadoc">
+        <javadoc access="private" author="false" 
+            classpath="..\jutils.duak\bin;..\jutils.filespy\bin;..\jutils.multicon\bin;..\jutils.libs\libs\xstream-1.4.15.jar;..\jutils.core\bin;..\jutils.libs\libs\jgoodies.jar;..\jutils.libs\libs\xpp3_min-1.1.4c.jar;..\jutils.insomnia\bin;..\jutils.explorer\bin;..\jutils.summer\bin;..\jutils.libs\libs;..\jutils.libs\libs\xmlpull-1.1.3.1.jar;..\jutils.plot\bin;..\jutils.mines\bin;..\jutils.hexedit\bin" 
+            destdir="doc" nodeprecated="true" nodeprecatedlist="true" 
+            noindex="false" nonavbar="false" notree="false" 
+            packagenames="org.jutils.summer.ui,org.jutils.core.ui.model,org.jutils.core.io.cksum,org.jutils.core.ui.calendar,org.jutils.insomnia,org.jutils.plot.io,org.jutils.filespy,org.jutils.duak,org.jutils.core.ui.net,org.jutils.plot.app,org.jutils.summer.tasks,org.jutils.core.utils,org.jutils.core.io,org.jutils.mines.ui,org.jutils.apps,org.jutils.plot.data,org.jutils.filespy.ui,org.jutils.core.io.parsers,org.jutils.mines.data,org.jutils.core.licensing,org.jutils.duak.utils,org.jutils.core.ui.fields,org.jutils.core.ui.explorer,org.jutils.hexedit.ui,org.jutils.core,org.jutils.core.ui.sheet,org.jutils.duak.ui,org.jutils.plot,org.jutils.filespy.search,org.jutils.core.data,org.jutils.core.pattern,org.jutils.core.ui.explorer.data,org.jutils.mines,org.jutils.core.io.options,org.jutils.plot.ui.objects,org.jutils.multicon,org.jutils.core.task,org.jutils.core.io.bits,org.jutils.hexedit.task,org.jutils.filespy.data,org.jutils.core.ui.event,org.jutils.insomnia.ui,org.jutils.plot.model,org.jutils.summer.io,org.jutils.multicon.ui.net,org.jutils.summer,org.jutils.plot.ui,org.jutils.core.net,org.jutils.duak.data,org.jutils.core.ui,org.jutils.core.ui.event.updater,org.jutils.insomnia.data,org.jutils.hexedit.data,org.jutils.duak.task,org.jutils.plot.ui.lines,org.jutils.multicon.ui,org.jutils.core.time,org.jutils.core.ui.validation,org.jutils.summer.data,org.jutils.core.ui.hex,org.jutils.core.datadist,org.jutils.core.ui.app,org.jutils.core.concurrent,org.jutils.core.ui.validators,org.jutils.plot.ui.markers,org.jutils.apps.ui,org.jutils.hexedit,org.jutils.explorer,org.jutils.core.io.xs,org.jutils.plot.ui.event" 
+            source="1.8" 
+            sourcepath="..\jutils.insomnia\src;..\jutils.explorer\src;..\jutils.duak\src;..\jutils.filespy\src;src;..\jutils.multicon\src;..\jutils.summer\src;..\jutils.core\src;..\jutils.plot\src;..\jutils.mines\src;..\jutils.hexedit\src" 
+            splitindex="true" use="true" version="false"/>
+    </target>
+    
+    <target name="createjar" depends="javadoc">
+        <jar compress="true" destfile="javadoc.jar" basedir="doc" />
+    </target>
+    
+</project>

@@ -80,6 +80,20 @@
             <zipfileset src="${juprops.jars.xstream}" />
             <zipfileset src="${juprops.releaseindv}/jutils.apps.jar" />
         </jar>
+        
+        <jar destfile="${juprops.releasesing}/jutils-src.jar" filesetmanifest="merge">
+            <fileset dir="jutils.apps/src" />
+            <fileset dir="jutils.core/src" />
+            <fileset dir="jutils.duak/src" />
+            <fileset dir="jutils.explorer/src" />
+            <fileset dir="jutils.filespy/src" />
+            <fileset dir="jutils.hexedit/src" />
+            <fileset dir="jutils.insomnia/src" />
+            <fileset dir="jutils.mines/src" />
+            <fileset dir="jutils.multicon/src" />
+            <fileset dir="jutils.plot/src" />
+            <fileset dir="jutils.summer/src" />
+        </jar>
 
     </target>
 

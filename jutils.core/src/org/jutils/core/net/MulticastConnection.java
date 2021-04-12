@@ -17,7 +17,7 @@ import org.jutils.core.net.NetUtils.NicInfo;
 public class MulticastConnection implements IConnection
 {
     /**  */
-    private final InetAddress address;
+    private final InetAddress groupAddress;
     /**  */
     private final MulticastSocket socket;
     /**  */
@@ -64,10 +64,10 @@ public class MulticastConnection implements IConnection
         // Set members and open the socket.
         // ---------------------------------------------------------------------
 
-        this.address = inputs.group.getInetAddress();
+        this.groupAddress = inputs.group.getInetAddress();
         this.rxBuffer = new byte[65536];
         this.socket = new MulticastSocket( inputs.port );
-        this.rxPacket = new DatagramPacket( rxBuffer, rxBuffer.length, address,
+        this.rxPacket = new DatagramPacket( rxBuffer, rxBuffer.length, groupAddress,
             inputs.port );
         this.port = inputs.port;
 
@@ -81,7 +81,7 @@ public class MulticastConnection implements IConnection
 
         try
         {
-            SocketAddress maddr = new InetSocketAddress( address, port );
+            SocketAddress maddr = new InetSocketAddress( groupAddress, port );
             this.socket.joinGroup( maddr, info.nic );
         }
         catch( SocketException ex )
@@ -96,24 +96,11 @@ public class MulticastConnection implements IConnection
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public NetMessage sendMessage( byte [] buf ) throws IOException
+    public NetMessage sendMessage( byte [] contents ) throws IOException
     {
         // LogUtils.printDebug( "Sending message..." );
 
-        DatagramPacket pack = new DatagramPacket( buf, buf.length, address,
-            port );
-
-        socket.send( pack );
-
-        int localPort = socket.getLocalPort();
-
-        String remoteAddress = address.getHostAddress();
-        int remotePort = port;
-
-        NetMessage msg = new NetMessage( false, localAddress, localPort,
-            remoteAddress, remotePort, buf );
-
-        return msg;
+        return sendMessage( contents, groupAddress, port );
     }
 
     /***************************************************************************

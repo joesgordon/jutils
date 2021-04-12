@@ -48,7 +48,7 @@ public class ConnectionListener implements Closeable
     public void start( IConnection connection )
     {
         this.connection = connection;
-        this.rxThread = new TaskThread( ( h ) -> run( h ),
+        this.rxThread = new TaskThread( ( h ) -> executeReceive( h ),
             "Connection Receiver" );
 
         rxThread.start();
@@ -87,7 +87,7 @@ public class ConnectionListener implements Closeable
     /***************************************************************************
      * @param handler
      **************************************************************************/
-    public void run( ITaskHandler handler )
+    private void executeReceive( ITaskHandler handler )
     {
         while( handler.canContinue() )
         {
