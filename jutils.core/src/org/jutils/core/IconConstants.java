@@ -2,11 +2,20 @@ package org.jutils.core;
 
 import java.awt.Image;
 import java.awt.Window;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.Line;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Icon;
 
 import org.jutils.core.io.IconLoader;
@@ -245,19 +254,22 @@ public final class IconConstants
                     DataLine.Info info = new DataLine.Info( Clip.class,
                         format );
 
-                    try( Clip clip = ( Clip )AudioSystem.getLine( info ) )
+                    try( Line line = AudioSystem.getLine( info ) )
                     {
-                        clip.open( stream );
-                        clip.start();
-
-                        while( !clip.isRunning() )
+                        try( Clip clip = ( Clip )line )
                         {
-                            Thread.sleep( 10 );
-                        }
+                            clip.open( stream );
+                            clip.start();
 
-                        while( clip.isRunning() )
-                        {
-                            Thread.sleep( 10 );
+                            while( !clip.isRunning() )
+                            {
+                                Thread.sleep( 10 );
+                            }
+
+                            while( clip.isRunning() )
+                            {
+                                Thread.sleep( 10 );
+                            }
                         }
                     }
                     catch( LineUnavailableException ex )

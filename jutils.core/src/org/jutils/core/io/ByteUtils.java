@@ -13,7 +13,7 @@ public final class ByteUtils
     }
 
     /***************************************************************************
-     * Reads an integer from the beginning of data provided.
+     * Reads a Big Endian integer from the beginning of data provided.
      * @param data the buffer containing the integer to be read.
      * @return the integer read.
      **************************************************************************/
@@ -23,7 +23,8 @@ public final class ByteUtils
     }
 
     /***************************************************************************
-     * Reads an integer from the data provided starting at the provided index.
+     * Reads a Big Endian integer from the data provided starting at the
+     * provided index.
      * @param data the buffer containing the integer to be read.
      * @param index the location at which the integer will be read.
      * @return the integer read.
@@ -47,7 +48,7 @@ public final class ByteUtils
     }
 
     /***************************************************************************
-     * Reads a short from the beginning of data provided.
+     * Reads a Big Endian short from the beginning of data provided.
      * @param data the buffer containing the short to be read.
      * @return the short read.
      **************************************************************************/
@@ -57,7 +58,8 @@ public final class ByteUtils
     }
 
     /***************************************************************************
-     * Reads a short from the data provided starting at the provided index.
+     * Reads a Big Endian short from the data provided starting at the provided
+     * index.
      * @param data the buffer containing the short to be read.
      * @param index the location at which the short will be read.
      * @return the short read.

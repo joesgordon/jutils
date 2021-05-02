@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import org.jutils.core.ValidationException;
-import org.jutils.core.io.*;
+import org.jutils.core.io.ByteArrayStream;
+import org.jutils.core.io.DataStream;
+import org.jutils.core.io.IDataSerializer;
 import org.jutils.core.ui.event.updater.UpdaterList;
 
 /*******************************************************************************
@@ -85,19 +87,11 @@ public class MessageThread<T>
      **************************************************************************/
     private void handleMessage( NetMessage netMsg )
     {
-        T msg = null;
-
         try
         {
-            msg = read( netMsg.contents );
-
-            netMsg.message = msg;
+            netMsg.message = read( netMsg.contents );
         }
         catch( IOException ex )
-        {
-            handleError( ex.getMessage() );
-        }
-        catch( ValidationException ex )
         {
             handleError( ex.getMessage() );
         }
@@ -113,13 +107,24 @@ public class MessageThread<T>
      * @throws IOException
      * @throws ValidationException
      **************************************************************************/
-    private T read( byte [] contents ) throws IOException, ValidationException
+    private T read( byte [] contents ) throws IOException
     {
+        T msg = null;
+
         try( ByteArrayStream bas = new ByteArrayStream( contents );
              DataStream stream = new DataStream( bas ) )
         {
-            return msgSerializer.read( stream );
+            try
+            {
+                msg = msgSerializer.read( stream );
+            }
+            catch( ValidationException e )
+            {
+                msg = null;
+            }
         }
+
+        return msg;
     }
 
     /***************************************************************************
