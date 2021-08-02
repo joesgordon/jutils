@@ -4,8 +4,6 @@ import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jutils.core.io.BitBuffer;
-import org.jutils.core.io.BitPosition;
 import org.jutils.core.utils.BitArray;
 
 /*******************************************************************************

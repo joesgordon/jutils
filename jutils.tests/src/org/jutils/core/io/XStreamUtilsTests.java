@@ -8,7 +8,6 @@ import java.util.Objects;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jutils.core.ValidationException;
-import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.xs.XsUtils;
 import org.jutils.core.ui.ColorMapView;
 

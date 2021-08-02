@@ -2,10 +2,12 @@ package org.jutils.core.ui;
 
 import java.awt.BorderLayout;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import org.jutils.core.data.UIProperty;
-import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 

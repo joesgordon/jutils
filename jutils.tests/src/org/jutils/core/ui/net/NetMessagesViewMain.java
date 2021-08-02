@@ -3,7 +3,9 @@ package org.jutils.core.ui.net;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
@@ -15,7 +17,6 @@ import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
-import org.jutils.core.ui.net.NetMessagesView;
 import org.jutils.core.ui.net.NetMessagesView.IMessageFields;
 
 /*******************************************************************************

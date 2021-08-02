@@ -1,10 +1,16 @@
 package org.jutils.plot.ui.objects;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.ui.JGoodiesToolBar;
@@ -13,10 +19,10 @@ import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.plot.ChartUtils;
 import org.jutils.plot.data.QuadSide;
-import org.jutils.plot.model.*;
+import org.jutils.plot.model.ISeriesData;
+import org.jutils.plot.model.Legend;
+import org.jutils.plot.model.Series;
 import org.jutils.plot.ui.WidgetPanel;
-import org.jutils.plot.ui.objects.LegendWidget;
-import org.jutils.plot.ui.objects.PlotWidget;
 
 public class LegendWidgetApp
 {

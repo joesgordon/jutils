@@ -7,8 +7,6 @@ import java.net.URL;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jutils.core.IconConstants;
-import org.jutils.core.io.ByteArrayStream;
-import org.jutils.core.io.ByteCache;
 
 /*******************************************************************************
  * 

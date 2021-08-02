@@ -5,8 +5,6 @@ import java.awt.Dialog.ModalityType;
 import javax.swing.JDialog;
 
 import org.jutils.core.Utils;
-import org.jutils.core.task.ITaskView;
-import org.jutils.core.task.MultiTaskView;
 import org.jutils.core.ui.OkDialogView;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
 import org.jutils.core.ui.app.AppRunner;

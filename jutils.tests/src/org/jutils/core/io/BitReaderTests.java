@@ -2,7 +2,6 @@ package org.jutils.core.io;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jutils.core.io.BitReader;
 
 /*******************************************************************************
  * 

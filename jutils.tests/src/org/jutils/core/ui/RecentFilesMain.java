@@ -8,9 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 
-import org.jutils.core.ui.JGoodiesToolBar;
-import org.jutils.core.ui.RecentFilesViews;
-import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.model.IView;
 

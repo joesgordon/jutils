@@ -1,7 +1,6 @@
 package org.jutils.core.ui;
 
 import org.jutils.core.Utils;
-import org.jutils.core.ui.VerboseMessageView;
 
 public class VerboseMessageViewTestApp
 {

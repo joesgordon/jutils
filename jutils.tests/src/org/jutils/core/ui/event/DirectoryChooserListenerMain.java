@@ -2,7 +2,10 @@ package org.jutils.core.ui.event;
 
 import java.io.File;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
@@ -11,8 +14,6 @@ import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
-import org.jutils.core.ui.event.ActionAdapter;
-import org.jutils.core.ui.event.DirectoryChooserListener;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.FileChooserListener.ILastFile;
 

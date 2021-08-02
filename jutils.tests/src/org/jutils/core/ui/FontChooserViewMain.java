@@ -5,8 +5,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JDialog;
 
-import org.jutils.core.ui.FontChooserView;
-import org.jutils.core.ui.OkDialogView;
 import org.jutils.core.ui.app.AppRunner;
 
 /*******************************************************************************

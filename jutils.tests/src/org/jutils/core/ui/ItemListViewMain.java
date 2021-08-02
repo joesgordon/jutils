@@ -1,15 +1,17 @@
 package org.jutils.core.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
-import org.jutils.core.ui.ColorIcon;
-import org.jutils.core.ui.ItemListView;
-import org.jutils.core.ui.ListView;
-import org.jutils.core.ui.StandardFormView;
-import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.ListView.IItemListModel;
 import org.jutils.core.ui.ListView.ItemListCellRenderer;
 import org.jutils.core.ui.app.FrameRunner;

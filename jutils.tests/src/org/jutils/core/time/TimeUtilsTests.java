@@ -2,7 +2,6 @@ package org.jutils.core.time;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jutils.core.time.TimeUtils;
 
 public class TimeUtilsTests
 {

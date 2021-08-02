@@ -3,6 +3,7 @@ package org.jutils.insomnia;
 import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -11,6 +12,7 @@ import java.time.ZoneOffset;
 
 import org.jutils.core.concurrent.ITask;
 import org.jutils.core.concurrent.ITaskHandler;
+import org.jutils.core.io.LogUtils;
 import org.jutils.core.time.TimeUtils;
 import org.jutils.insomnia.data.ActiveState;
 import org.jutils.insomnia.data.InsomniaConfig;
@@ -192,16 +194,24 @@ public class InsomniaTask implements ITask
             try
             {
                 Robot r = new Robot();
-                Point p = MouseInfo.getPointerInfo().getLocation();
+                PointerInfo info = MouseInfo.getPointerInfo();
+                Point p = info == null ? new Point( 0, 0 ) : info.getLocation();
                 Point n = new Point( p.x - 1, p.y );
 
-                n.x = n.x < 0 ? 1 : n.x;
+                if( info != null )
+                {
+                    n.x = n.x < 0 ? 1 : n.x;
 
-                r.mouseMove( n.x, n.y );
+                    r.mouseMove( n.x, n.y );
 
-                Thread.sleep( 100 );
+                    Thread.sleep( 100 );
 
-                r.mouseMove( p.x, p.y );
+                    r.mouseMove( p.x, p.y );
+                }
+            }
+            catch( SecurityException ex )
+            {
+                LogUtils.printWarning( "Unable to create Robot." );
             }
             catch( AWTException ex )
             {

@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import org.jutils.core.net.NetMessage;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
-import org.jutils.core.ui.net.NetMessageView;
 
 /*******************************************************************************
  * 

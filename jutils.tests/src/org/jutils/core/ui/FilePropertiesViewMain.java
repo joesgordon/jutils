@@ -1,20 +1,24 @@
 package org.jutils.core.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-import org.jutils.core.ui.FilePropertiesView;
-import org.jutils.core.ui.StandardFormView;
-import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.FileChooserListener;
-import org.jutils.core.ui.event.FileDropTarget;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.FileChooserListener.ILastFile;
+import org.jutils.core.ui.event.FileDropTarget;
 import org.jutils.core.ui.fields.BooleanFormField;
 import org.jutils.core.ui.fields.IntegerFormField;
 

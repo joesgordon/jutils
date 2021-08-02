@@ -4,14 +4,20 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
-import org.jutils.core.*;
-import org.jutils.core.pattern.IMatcher;
-import org.jutils.core.pattern.StringPattern;
-import org.jutils.core.pattern.StringPatternField;
-import org.jutils.core.pattern.StringPatternView;
-import org.jutils.core.ui.*;
+import org.jutils.core.IconConstants;
+import org.jutils.core.SwingUtils;
+import org.jutils.core.ValidationException;
+import org.jutils.core.ui.JGoodiesToolBar;
+import org.jutils.core.ui.StandardFormView;
+import org.jutils.core.ui.StandardFrameView;
+import org.jutils.core.ui.TitleView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;

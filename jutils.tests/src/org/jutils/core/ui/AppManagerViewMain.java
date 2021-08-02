@@ -2,19 +2,22 @@ package org.jutils.core.ui;
 
 import java.io.File;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
-import org.jutils.core.ui.JGoodiesToolBar;
-import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.FileChooserListener;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.explorer.AppManagerView;
-import org.jutils.core.ui.explorer.data.*;
+import org.jutils.core.ui.explorer.data.AppManagerConfig;
+import org.jutils.core.ui.explorer.data.ApplicationConfig;
+import org.jutils.core.ui.explorer.data.ExtensionConfig;
 
 /*******************************************************************************
  * 

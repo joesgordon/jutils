@@ -3,9 +3,6 @@ package org.jutils.core.pattern;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jutils.core.ValidationException;
-import org.jutils.core.pattern.IMatcher;
-import org.jutils.core.pattern.StringPattern;
-import org.jutils.core.pattern.StringPatternType;
 
 /*******************************************************************************
  *

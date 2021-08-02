@@ -10,8 +10,6 @@ import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.fields.StringFormField;
-import org.jutils.core.ui.hex.HexBytesField;
-import org.jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
  * Test UI for {@link HexBytesField}.

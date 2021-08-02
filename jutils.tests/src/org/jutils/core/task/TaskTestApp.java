@@ -3,14 +3,14 @@ package org.jutils.core.task;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.io.LogUtils;
-import org.jutils.core.task.IStatusTask;
-import org.jutils.core.task.ITaskStatusHandler;
-import org.jutils.core.task.TaskView;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;

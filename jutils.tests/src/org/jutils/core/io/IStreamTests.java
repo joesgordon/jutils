@@ -1,19 +1,14 @@
 package org.jutils.core.io;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.jutils.core.ValidationException;
-import org.jutils.core.io.BufferedStream;
-import org.jutils.core.io.ByteArrayStream;
-import org.jutils.core.io.DataStream;
-import org.jutils.core.io.FileStream;
-import org.jutils.core.io.IDataSerializer;
-import org.jutils.core.io.IDataStream;
-import org.jutils.core.io.IStream;
 
 /***************************************************************************
  * 

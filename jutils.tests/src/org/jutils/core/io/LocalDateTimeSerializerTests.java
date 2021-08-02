@@ -6,10 +6,6 @@ import java.time.Month;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jutils.core.io.ByteArrayStream;
-import org.jutils.core.io.DataStream;
-import org.jutils.core.io.IDataStream;
-import org.jutils.core.io.LocalDateTimeSerializer;
 
 /**
  *

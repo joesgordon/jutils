@@ -1,18 +1,20 @@
 package org.jutils.core.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.jutils.core.ui.CheckTreeManager;
-import org.jutils.core.ui.ScrollableEditorPaneView;
-import org.jutils.core.ui.StandardFormView;
-import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.fields.ComboFormField;

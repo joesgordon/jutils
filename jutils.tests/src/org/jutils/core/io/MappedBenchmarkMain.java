@@ -1,13 +1,11 @@
 package org.jutils.core.io;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Random;
 
-import org.jutils.core.io.BufferedStream;
-import org.jutils.core.io.FileStream;
-import org.jutils.core.io.IStream;
-import org.jutils.core.io.LogUtils;
-import org.jutils.core.io.MappedStream;
 import org.jutils.core.utils.ByteOrdering;
 import org.jutils.core.utils.Stopwatch;
 

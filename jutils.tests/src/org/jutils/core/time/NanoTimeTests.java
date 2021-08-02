@@ -5,7 +5,6 @@ import java.time.Month;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jutils.core.time.NanoTime;
 import org.jutils.core.time.NanoTime.TimeUnit;
 
 public class NanoTimeTests

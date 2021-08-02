@@ -1,8 +1,18 @@
 package org.jutils.plot.ui.objects;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.ui.JGoodiesToolBar;
@@ -13,8 +23,6 @@ import org.jutils.plot.model.HorizontalAlignment;
 import org.jutils.plot.model.TextLabel;
 import org.jutils.plot.ui.IChartWidget;
 import org.jutils.plot.ui.WidgetPanel;
-import org.jutils.plot.ui.objects.TextDirection;
-import org.jutils.plot.ui.objects.TextWidget;
 
 public class TextWidgetApp
 {

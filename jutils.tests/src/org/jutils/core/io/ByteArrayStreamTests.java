@@ -1,8 +1,5 @@
 package org.jutils.core.io;
 
-import org.jutils.core.io.ByteArrayStream;
-import org.jutils.core.io.IStream;
-
 /*******************************************************************************
  * 
  ******************************************************************************/

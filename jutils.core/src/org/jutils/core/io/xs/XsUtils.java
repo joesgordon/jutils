@@ -191,6 +191,9 @@ public final class XsUtils
                 xstream.allowTypesByWildcard( wildcards );
             }
 
+            xstream.registerConverter(
+                new ArrayDequeConverter( xstream.getMapper() ) );
+
             return xstream;
         }
         catch( InitializationException ex )
@@ -419,7 +422,12 @@ public final class XsUtils
      **************************************************************************/
     public static XStream createXStream( Class<?>... clss )
     {
-        return createXStream(
-            buildDependencyList( clss ).toArray( new String[0] ) );
+        List<String> list = buildDependencyList( clss );
+        String [] array = list.toArray( new String[0] );
+
+        // LogUtils.printDebug( clss[0].descriptorString() + " Dependencies: " +
+        // Utils.collectionToString( list ) );
+
+        return createXStream( array );
     }
 }

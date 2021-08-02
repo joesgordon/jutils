@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jutils.core.NumberParsingUtils;
 import org.jutils.core.io.LogUtils;
-import org.jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
  * 

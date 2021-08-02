@@ -3,16 +3,16 @@ package org.jutils.core.ui;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.border.LineBorder;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
-import org.jutils.core.ui.JGoodiesToolBar;
-import org.jutils.core.ui.PositionIndicator;
-import org.jutils.core.ui.StandardFormView;
-import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.UnitPositionIndicator;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
