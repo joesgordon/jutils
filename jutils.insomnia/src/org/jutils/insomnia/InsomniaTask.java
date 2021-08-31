@@ -5,8 +5,6 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -150,39 +148,11 @@ public class InsomniaTask implements ITask
      **************************************************************************/
     private static class SystemStimulator
     {
-        /**  */
-        private final Toolkit tk;
-        /**  */
-        private final int keyCode;
-
         /**
          * 
          */
         public SystemStimulator()
         {
-            this.tk = Toolkit.getDefaultToolkit();
-            this.keyCode = KeyEvent.VK_SCROLL_LOCK;
-        }
-
-        /**
-         * @return
-         * @throws InterruptedException
-         */
-        public LocalDateTime stimulateKey() throws InterruptedException
-        {
-            boolean flag = tk.getLockingKeyState( keyCode );
-
-            // LogUtils.printDebug( "Toggling..." );
-
-            tk.setLockingKeyState( keyCode, !flag );
-
-            Thread.sleep( 100 );
-
-            // LogUtils.printDebug( "Toggling back..." );
-
-            tk.setLockingKeyState( keyCode, flag );
-
-            return LocalDateTime.now();
         }
 
         /**
