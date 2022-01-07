@@ -72,14 +72,6 @@ public class DataBuffer
     }
 
     /***************************************************************************
-     * @param index
-     **************************************************************************/
-    public void setPosition( int index )
-    {
-        buffer.position( index );
-    }
-
-    /***************************************************************************
      * @return
      **************************************************************************/
     public short readShort()
@@ -174,7 +166,17 @@ public class DataBuffer
      **************************************************************************/
     public void write( byte [] bytes )
     {
-        int length = Math.min( bytes.length, this.bytes.length );
-        Utils.byteArrayCopy( bytes, 0, this.bytes, 0, length );
+        writeAt( bytes, 0 );
+    }
+
+    /***************************************************************************
+     * @param bytes
+     * @param position
+     **************************************************************************/
+    public void writeAt( byte [] bytes, int position )
+    {
+        int avail = this.bytes.length - position;
+        int length = Math.min( bytes.length, avail );
+        Utils.byteArrayCopy( bytes, 0, this.bytes, position, length );
     }
 }

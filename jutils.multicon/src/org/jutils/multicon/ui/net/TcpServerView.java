@@ -7,7 +7,6 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 import org.jutils.core.concurrent.*;
-import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.net.*;
 import org.jutils.core.ui.net.TcpInputsView;
@@ -75,9 +74,7 @@ public class TcpServerView implements IBindableView<TcpInputs>
         {
             acceptThread.stop();
             acceptThread.interrupt();
-            LogUtils.printDebug( "Waiting for" );
             acceptThread.stopAndWait();
-            LogUtils.printDebug( ">Waited for" );
 
             this.acceptThread = null;
         }
@@ -145,7 +142,7 @@ public class TcpServerView implements IBindableView<TcpInputs>
 
         connectionView.setConnection( connection );
 
-        MulticonFrame.showBindingFrame( connectionView, getView() );
+        MulticonFrame.showBindingFrame( connectionView, getView(), false );
     }
 
     /***************************************************************************

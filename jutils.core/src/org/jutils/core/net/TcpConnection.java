@@ -108,7 +108,14 @@ public class TcpConnection implements IConnection, Closeable
         inputs.remoteAddress.set(
             ( ( InetSocketAddress )socket.getRemoteSocketAddress() ).getAddress() );
         inputs.remotePort = socket.getPort();
-        inputs.timeout = 1000;
+        try
+        {
+            inputs.timeout = socket.getSoTimeout();
+        }
+        catch( SocketException e )
+        {
+            inputs.timeout = -1;
+        }
 
         return inputs;
     }

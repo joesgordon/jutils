@@ -14,7 +14,7 @@ import org.jutils.multicon.ui.BindingFrameView.IBindableView;
 public class BindableClosingListener extends WindowAdapter
 {
     /**  */
-    private final IBindableView view;
+    private final IBindableView<?> view;
     /**  */
     private final Component parent;
 
@@ -22,7 +22,7 @@ public class BindableClosingListener extends WindowAdapter
      * @param view
      * @param parent
      **************************************************************************/
-    public BindableClosingListener( IBindableView view, Component parent )
+    public BindableClosingListener( IBindableView<?> view, Component parent )
     {
         this.view = view;
         this.parent = parent;

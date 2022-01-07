@@ -128,6 +128,18 @@ public class MulticonFrame implements IView<JFrame>
     public static BindingFrameView showBindingFrame( IBindableView<?> view,
         Component parent )
     {
+        return showBindingFrame( view, parent, true );
+    }
+
+    /***************************************************************************
+     * @param view
+     * @param parent
+     * @param bind
+     * @return
+     **************************************************************************/
+    public static BindingFrameView showBindingFrame( IBindableView<?> view,
+        Component parent, boolean bind )
+    {
         Window window = SwingUtils.getComponentsWindow( parent );
         BindingFrameView frame = new BindingFrameView( view, parent );
 
@@ -148,7 +160,10 @@ public class MulticonFrame implements IView<JFrame>
         frame.getView().setLocationRelativeTo( parent );
         frame.getView().setVisible( true );
 
-        frame.bind();
+        if( bind )
+        {
+            frame.bind();
+        }
 
         return frame;
     }
@@ -277,9 +292,11 @@ public class MulticonFrame implements IView<JFrame>
             ImageIcon bindIcon = MulticonIcons.getIcon(
                 MulticonIcons.MULTICON_016 );
 
-            SwingUtils.addActionToToolbar( toolbar,
-                new ActionAdapter( bindListener, "Bind", bindIcon ) ).setText(
-                    "Bind" );
+            ActionAdapter action = new ActionAdapter( bindListener, "Bind",
+                bindIcon );
+
+            JButton button = SwingUtils.addActionToToolbar( toolbar, action );
+            button.setText( "Bind" );
 
             toolbar.addSeparator();
 
