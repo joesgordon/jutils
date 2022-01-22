@@ -146,7 +146,10 @@ public class IntegerFormField implements IDataFormField<Integer>
     @Override
     public void setEditable( boolean editable )
     {
-        textField.setEditable( editable );
+        // LogUtils.printDebug( "IntegerFormField: " + getName() + " field is "
+        // +
+        // ( editable ? "" : "not " ) + "editable" );
+        field.setEditable( editable );
     }
 
     /***************************************************************************

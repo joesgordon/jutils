@@ -134,7 +134,7 @@ public class ShortFormField implements IDataFormField<Short>
     @Override
     public void setEditable( boolean editable )
     {
-        textField.setEditable( editable );
+        field.setEditable( editable );
     }
 
     /***************************************************************************

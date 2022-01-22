@@ -29,7 +29,6 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 import org.jutils.core.SwingUtils;
-import org.jutils.core.data.UIProperty;
 import org.jutils.core.ui.event.IRecentListener;
 import org.jutils.core.ui.model.CollectionListModel;
 import org.jutils.core.ui.model.IView;
@@ -400,8 +399,8 @@ public class SplitButtonView<T> implements IView<JComponent>
             SwingUtils.addKeyListener( list, "ENTER",
                 ( e ) -> fireSelected( list.getSelectedValue(), false ),
                 "List Enter Pressed", false );
-            list.setBackground(
-                UIProperty.TEXTFIELD_INACTIVEBACKGROUND.getColor() );
+            // list.setBackground(
+            // UIProperty.TEXTFIELD_INACTIVEBACKGROUND.getColor() );
             list.setVisibleRowCount( 10 );
 
             ListMouseListener<T> lml = new ListMouseListener<>( this );

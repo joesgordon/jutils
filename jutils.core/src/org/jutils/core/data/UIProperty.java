@@ -52,7 +52,9 @@ public enum UIProperty
     /**  */
     TEXTFIELD_BORDER( "TextField.border" ),
     /**  */
-    TEXTFIELD_INACTIVEBACKGROUND( "TextField.inactiveBackground" );
+    TEXTFIELD_INACTIVEBACKGROUND( "TextField.inactiveBackground" ),
+    /**  */
+    TEXTFIELD_BACKGROUND( "TextField.background" );
 
     /** The key to access a value of the {@link UIManager}. */
     public final String key;

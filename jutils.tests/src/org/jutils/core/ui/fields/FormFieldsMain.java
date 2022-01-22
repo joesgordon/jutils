@@ -33,7 +33,6 @@ import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
-import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.hex.HexUtils;
 import org.jutils.core.ui.model.IView;
@@ -43,33 +42,24 @@ import org.jutils.core.utils.Usable;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class FormFieldsTest
+public class FormFieldsMain
 {
     /***************************************************************************
      * @param args
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new FormFieldTestApp() );
+        FrameRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    private static final class FormFieldTestApp implements IFrameApp
+    public static JFrame createFrame()
     {
-        @Override
-        public JFrame createFrame()
-        {
-            UiTestFrameView frameView = new UiTestFrameView();
+        UiTestFrameView frameView = new UiTestFrameView();
 
-            return frameView.getView();
-        }
-
-        @Override
-        public void finalizeGui()
-        {
-        }
+        return frameView.getView();
     }
 
     /***************************************************************************

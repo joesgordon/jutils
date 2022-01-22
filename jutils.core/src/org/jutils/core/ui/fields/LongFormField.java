@@ -134,7 +134,7 @@ public class LongFormField implements IDataFormField<Long>
     @Override
     public void setEditable( boolean editable )
     {
-        textField.setEditable( editable );
+        field.setEditable( editable );
     }
 
     /***************************************************************************

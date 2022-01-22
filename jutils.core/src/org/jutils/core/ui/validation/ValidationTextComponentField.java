@@ -42,7 +42,7 @@ public class ValidationTextComponentField<T extends JTextComponent>
         this.listenerList = new ValidityListenerList();
 
         this.nonEditableBackground = UIProperty.TEXTFIELD_INACTIVEBACKGROUND.getColor();
-        this.validBackground = field.getBackground();
+        this.validBackground = UIProperty.TEXTFIELD_BACKGROUND.getColor();
         this.invalidBackground = Color.red;
 
         this.validator = null;

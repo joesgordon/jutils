@@ -4,10 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.jutils.core.ui.event.updater.IUpdater;
-import org.jutils.core.ui.validation.*;
+import org.jutils.core.ui.validation.IValidationField;
+import org.jutils.core.ui.validation.IValidityChangedListener;
+import org.jutils.core.ui.validation.Validity;
 import org.jutils.core.utils.Usable;
 
 /*******************************************************************************
@@ -188,6 +192,8 @@ public class UsableFormField<T>
         public void actionPerformed( ActionEvent e )
         {
             field.usable.isUsed = field.usedField.isSelected();
+            // LogUtils.printDebug( "UsableFormField: " + field.getName() +
+            // " field is " + ( field.usable.isUsed ? "" : "not " ) + "used" );
             field.field.setEditable( field.usable.isUsed );
             // field.field.setValue( field.field.getValue() );
 

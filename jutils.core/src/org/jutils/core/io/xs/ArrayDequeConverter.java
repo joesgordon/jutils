@@ -9,8 +9,14 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
+/**
+ * 
+ */
 public class ArrayDequeConverter extends AbstractCollectionConverter
 {
+    /**
+     * @param mapper
+     */
     public ArrayDequeConverter( Mapper mapper )
     {
         super( mapper );
@@ -43,10 +49,12 @@ public class ArrayDequeConverter extends AbstractCollectionConverter
     /**
      * @{@inheritDoc}
      */
+    @SuppressWarnings( "unchecked")
     @Override
     public Object unmarshal( HierarchicalStreamReader reader,
         UnmarshallingContext context )
     {
+        @SuppressWarnings( "rawtypes")
         ArrayDeque array = new ArrayDeque();
 
         while( reader.hasMoreChildren() )

@@ -4,9 +4,6 @@ import javax.swing.JToolBar;
 
 import org.jutils.core.SwingUtils;
 
-import com.jgoodies.looks.HeaderStyle;
-import com.jgoodies.looks.Options;
-
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -62,7 +59,5 @@ public class JGoodiesToolBar extends JToolBar
     private void init()
     {
         SwingUtils.setToolbarDefaults( this );
-
-        putClientProperty( Options.HEADER_STYLE_KEY, HeaderStyle.BOTH );
     }
 }

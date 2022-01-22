@@ -1,12 +1,13 @@
 package org.jutils.core.ui;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileSystemView;
 
 import org.jutils.core.ui.event.IRecentListener;
@@ -94,7 +95,8 @@ public class RecentFilesMenuView implements IDataView<List<File>>
                 item = new JMenuItem(
                     ( this.files.size() + 1 ) + " " + file.getName() );
                 item.setIcon( view.getSystemIcon( file ) );
-                item.addActionListener( new ItemSelected( this, file ) );
+                item.addActionListener(
+                    ( e ) -> handleFileSelected( file, e ) );
                 item.setToolTipText( file.getAbsolutePath() );
                 item.setMnemonic( item.getText().charAt( 0 ) );
                 menu.add( item );
@@ -106,6 +108,22 @@ public class RecentFilesMenuView implements IDataView<List<File>>
                 }
             }
         }
+    }
+
+    /***************************************************************************
+     * @param file
+     * @param e
+     **************************************************************************/
+    private void handleFileSelected( File file, ActionEvent e )
+    {
+        int modifiers = e.getModifiers();
+        boolean ctrlPressed = ( ActionEvent.CTRL_MASK &
+            modifiers ) == ActionEvent.CTRL_MASK;
+
+        // LogUtils.printDebug( "Ctrl pressed: " + ctrlPressed );
+
+        fireListeners( file, ctrlPressed );
+
     }
 
     /***************************************************************************
@@ -126,32 +144,5 @@ public class RecentFilesMenuView implements IDataView<List<File>>
     public void setIcon( Icon icon )
     {
         menu.setIcon( icon );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class ItemSelected implements ActionListener
-    {
-        private final RecentFilesMenuView view;
-        private final File file;
-
-        public ItemSelected( RecentFilesMenuView view, File file )
-        {
-            this.view = view;
-            this.file = file;
-        }
-
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            int modifiers = e.getModifiers();
-            boolean ctrlPressed = ( ActionEvent.CTRL_MASK &
-                modifiers ) == ActionEvent.CTRL_MASK;
-
-            // LogUtils.printDebug( "Ctrl pressed: " + ctrlPressed );
-
-            view.fireListeners( file, ctrlPressed );
-        }
     }
 }

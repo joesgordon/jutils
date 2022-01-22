@@ -1,8 +1,16 @@
 package org.jutils.core.ui;
 
-import java.awt.*;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JToolBar;
 
 import org.jutils.core.ui.model.IView;
 
@@ -73,7 +81,7 @@ public class StandardFrameView implements IView<JFrame>
      **************************************************************************/
     private JMenuBar createMenuBar()
     {
-        JMenuBar menubar = new JGoodiesMenuBar();
+        JMenuBar menubar = new JMenuBar();
 
         fileMenu.setMnemonic( 'F' );
 

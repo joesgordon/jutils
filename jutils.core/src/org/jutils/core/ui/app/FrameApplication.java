@@ -49,7 +49,7 @@ public class FrameApplication implements IApplication
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getLookAndFeelName()
@@ -58,7 +58,7 @@ public class FrameApplication implements IApplication
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void createAndShowUi()

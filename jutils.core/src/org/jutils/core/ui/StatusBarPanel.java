@@ -4,9 +4,6 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
@@ -23,8 +20,8 @@ import javax.swing.border.EmptyBorder;
 import org.jutils.core.IconConstants;
 import org.jutils.core.OptionUtils;
 import org.jutils.core.SwingUtils;
-import org.jutils.core.concurrent.GcThread;
 import org.jutils.core.io.parsers.IntegerParser;
+import org.jutils.core.ui.event.RightClickListener;
 
 /*******************************************************************************
  *
@@ -74,7 +71,8 @@ public class StatusBarPanel
         // make the spacing right.
         // ---------------------------------------------------------------------
         memoryLabel = new JLabel( "" );
-        memoryLabel.addMouseListener( new RightClickMenuListener() );
+        memoryLabel.addMouseListener(
+            new RightClickListener( ( e ) -> handleMemoryRightClick( e ) ) );
 
         statusLabel = new JLabel();
 
@@ -102,6 +100,7 @@ public class StatusBarPanel
 
         // statusProgress.setForeground( new Color( 50, 130, 180 ) );
         statusProgressBar.setBorder( new EmptyBorder( 4, 4, 4, 4 ) );
+        statusProgressBar.setOpaque( false );
         statusProgressBar.setString( "" );
         statusProgressBar.setStringPainted( true );
         statusProgressBar.setBorderPainted( false );
@@ -121,7 +120,7 @@ public class StatusBarPanel
                 new Insets( 0, 0, 0, 0 ), 0, 2 ) );
 
         flasher = new ComponentFlasher( memoryLabel );
-        swingTimer = new Timer( 10000, new RefreshListener() );
+        swingTimer = new Timer( 10000, ( e ) -> refreshStatus( false ) );
 
         swingTimer.setRepeats( true );
         swingTimer.start();
@@ -137,18 +136,21 @@ public class StatusBarPanel
         return view;
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private JToolBar createToolbar()
     {
         JToolBar toolbar = new JToolBar();
 
         toolbar.setMargin( new Insets( 0, 0, 0, 0 ) );
         JButton refreshButton = new JButton();
-        refreshButton.setMargin( new Insets( 0, 0, 0, 0 ) );
+        // refreshButton.setMargin( new Insets( 0, 0, 0, 0 ) );
         refreshButton.setText( "" );
         refreshButton.setIcon(
             IconConstants.getIcon( IconConstants.REFRESH_16 ) );
         refreshButton.setFocusable( false );
-        refreshButton.addActionListener( new RefreshButtonListener() );
+        refreshButton.addActionListener( ( e ) -> handleRefresh() );
 
         toolbar.add( refreshButton );
 
@@ -166,16 +168,9 @@ public class StatusBarPanel
         JMenuItem delayMenuItem = new JMenuItem( "Set Delay" );
         JMenuItem flashMenuItem = new JMenuItem( "Flash" );
 
-        flashMenuItem.addActionListener( new ActionListener()
-        {
-            @Override
-            public void actionPerformed( ActionEvent e )
-            {
-                flashProgress();
-            }
-        } );
+        flashMenuItem.addActionListener( ( e ) -> flashProgress() );
 
-        delayMenuItem.addActionListener( new PromptForDelayListener() );
+        delayMenuItem.addActionListener( ( e ) -> handleSetDelay() );
         popup.add( delayMenuItem );
         popup.add( flashMenuItem );
 
@@ -187,7 +182,7 @@ public class StatusBarPanel
      **************************************************************************/
     public void flashProgress()
     {
-        Thread t = new ProgressFlasher();
+        Thread t = new Thread( () -> runFlasher(), "ProgressFlasher" );
         t.start();
     }
 
@@ -213,7 +208,7 @@ public class StatusBarPanel
 
         if( runGC )
         {
-            Thread collector = new GarbageCollectionRunner();
+            Thread collector = new Thread( () -> runGc(), "GCThread" );
             collector.start();
         }
     }
@@ -254,148 +249,62 @@ public class StatusBarPanel
         statusLabel.setText( text );
     }
 
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private class ProgressFlasher extends Thread
+    private void handleRefresh()
     {
-        @Override
-        public void run()
+        refreshStatus( true );
+        flashProgress();
+        IconConstants.playNotify();
+    }
+
+    private void handleSetDelay()
+    {
+        Integer delay = OptionUtils.promptForValue( StatusBarPanel.this.view,
+            "delay", new IntegerParser(), "New Delay in seconds" );
+
+        if( delay != null )
         {
-            for( int i = 1; i < 101; i += 5 )
+            setDelay( delay.intValue() * 1000 );
+        }
+    }
+
+    private void handleMemoryRightClick( MouseEvent e )
+    {
+        // LogUtils.printDebug( "Right-click" );
+        popup.show( e.getComponent(), e.getX(),
+            e.getY() - popup.getPreferredSize().height );
+    }
+
+    private void runFlasher()
+    {
+        for( int i = 1; i < 101; i += 5 )
+        {
+            int val = i;
+            SwingUtilities.invokeLater(
+                () -> statusProgressBar.setValue( val ) );
+            try
             {
-                SwingUtilities.invokeLater( new StatusUpdater( i ) );
-                try
-                {
-                    Thread.sleep( 30 );
-                }
-                catch( InterruptedException e )
-                {
-                    break;
-                }
+                Thread.sleep( 30 );
             }
-
-            SwingUtilities.invokeLater( new StatusUpdater( 0 ) );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private class StatusUpdater implements Runnable
-    {
-        private int value;
-
-        public StatusUpdater( int val )
-        {
-            value = val;
-        }
-
-        @Override
-        public void run()
-        {
-            statusProgressBar.setValue( value );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private class GarbageCollectionRunner extends GcThread
-    {
-        @Override
-        public void run()
-        {
-            super.run();
-            refreshStatus( false );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private class RefreshListener implements ActionListener
-    {
-        // private final Robot robot;
-
-        public RefreshListener()
-        {
-            // try
-            // {
-            // this.robot = new Robot();
-            // }
-            // catch( AWTException ex )
-            // {
-            // throw new RuntimeException( ex );
-            // }
-        }
-
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            // robot.keyPress( KeyEvent.VK_PAUSE );
-            refreshStatus( false );
-            // robot.keyRelease( KeyEvent.VK_PAUSE );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private class RefreshButtonListener implements ActionListener
-    {
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            refreshStatus( true );
-            flashProgress();
-            IconConstants.playNotify();
-            // try
-            // {
-            // byte [] b = new byte[Integer.MAX_VALUE];
-            // }
-            // catch( OutOfMemoryError err )
-            // {
-            // }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private class PromptForDelayListener implements ActionListener
-    {
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            Integer delay = OptionUtils.promptForValue(
-                StatusBarPanel.this.view, "delay", new IntegerParser(),
-                "New Delay in seconds" );
-
-            if( delay != null )
+            catch( InterruptedException e )
             {
-                setDelay( delay.intValue() * 1000 );
+                break;
             }
         }
+
+        try
+        {
+            Thread.sleep( 100 );
+        }
+        catch( InterruptedException e )
+        {
+        }
+
+        SwingUtilities.invokeLater( () -> statusProgressBar.setValue( 0 ) );
     }
 
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private class RightClickMenuListener extends MouseAdapter
+    private void runGc()
     {
-        @Override
-        public void mouseClicked( MouseEvent e )
-        {
-            if( SwingUtilities.isRightMouseButton( e ) )
-            {
-                // LogUtils.printDebug( "Right-click" );
-                popup.show( e.getComponent(), e.getX(),
-                    e.getY() - popup.getPreferredSize().height );
-            }
-        }
+        Runtime.getRuntime().gc();
+        refreshStatus( false );
     }
 }

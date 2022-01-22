@@ -214,7 +214,10 @@ public class ParserFormField<T> implements IDataFormField<T>
     @Override
     public void setEditable( boolean editable )
     {
+        // LogUtils.printDebug( "ParserFormField: " + name + " field is " +
+        // ( editable ? "" : "not " ) + "editable" );
         textField.setEditable( editable );
+        view.setEditable( editable );
     }
 
     /***************************************************************************
