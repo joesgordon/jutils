@@ -67,8 +67,8 @@ public class MulticastConnection implements IConnection
         this.groupAddress = inputs.group.getInetAddress();
         this.rxBuffer = new byte[65536];
         this.socket = new MulticastSocket( inputs.port );
-        this.rxPacket = new DatagramPacket( rxBuffer, rxBuffer.length, groupAddress,
-            inputs.port );
+        this.rxPacket = new DatagramPacket( rxBuffer, rxBuffer.length,
+            groupAddress, inputs.port );
         this.port = inputs.port;
 
         this.socket.setLoopbackMode( !inputs.loopback );
@@ -177,6 +177,23 @@ public class MulticastConnection implements IConnection
         catch( SocketException e )
         {
             return null;
+        }
+    }
+
+    /***************************************************************************
+     * @param milliseconds
+     * @return
+     **************************************************************************/
+    public boolean setReceiveTimeout( int milliseconds )
+    {
+        try
+        {
+            socket.setSoTimeout( milliseconds );
+            return true;
+        }
+        catch( SocketException e )
+        {
+            return false;
         }
     }
 }

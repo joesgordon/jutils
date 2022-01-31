@@ -1,10 +1,20 @@
 package org.jutils.core.ui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JToggleButton;
 
 import org.jutils.core.IconConstants;
 
@@ -24,6 +34,9 @@ public class CollapsibleView
     /**  */
     private final JPanel componentPanel;
 
+    /**  */
+    private final JToggleButton collapseButton;
+
     /***************************************************************************
      * 
      **************************************************************************/
@@ -31,11 +44,13 @@ public class CollapsibleView
     {
         GridBagConstraints constraints;
 
-        componentPanel = new JPanel( new BorderLayout() );
-        panel = new JPanel( new GridBagLayout() );
-        titleField = new JLabel( "Title" );
-        separator = new JSeparator();
-        titlePanel = createTitlePanel();
+        this.componentPanel = new JPanel( new BorderLayout() );
+        this.panel = new JPanel( new GridBagLayout() );
+        this.titleField = new JLabel( "Title" );
+        this.separator = new JSeparator();
+        this.collapseButton = new JToggleButton(
+            IconConstants.getIcon( "collapse.png" ) );
+        this.titlePanel = createTitlePanel();
 
         // componentPanel.setBorder( BorderFactory.createLineBorder( Color.red )
         // );
@@ -65,14 +80,16 @@ public class CollapsibleView
         panel.setBorder( BorderFactory.createLineBorder( Color.gray ) );
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private GradientPanel createTitlePanel()
     {
         GridBagConstraints constraints;
         GradientPanel titlePanel;
-        JToggleButton collapseButton = new JToggleButton(
-            IconConstants.getIcon( "collapse.png" ) );
 
-        collapseButton.addActionListener( new CollapseButtonListener() );
+        collapseButton.addActionListener(
+            ( e ) -> setCollapsed( collapseButton.isSelected() ) );
         collapseButton.setSelectedIcon( IconConstants.getIcon( "expand.png" ) );
 
         collapseButton.setBorderPainted( false );
@@ -97,24 +114,38 @@ public class CollapsibleView
         return titlePanel;
     }
 
+    /***************************************************************************
+     * @param comp
+     **************************************************************************/
     public void setComponent( Component comp )
     {
         componentPanel.removeAll();
         componentPanel.add( comp, BorderLayout.CENTER );
     }
 
+    /***************************************************************************
+     * @param title
+     **************************************************************************/
     public void setTitle( String title )
     {
         titleField.setText( title );
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     public JComponent getView()
     {
         return panel;
     }
 
-    private void setCollapsed( boolean collapsed )
+    /***************************************************************************
+     * @param collapsed
+     **************************************************************************/
+    public void setCollapsed( boolean collapsed )
     {
+        collapseButton.setSelected( collapsed );
+
         if( collapsed )
         {
             componentPanel.setVisible( false );
@@ -128,17 +159,6 @@ public class CollapsibleView
             // setComponent( comp );
             separator.setVisible( true );
             componentPanel.revalidate();
-        }
-    }
-
-    private class CollapseButtonListener implements ActionListener
-    {
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            JToggleButton toggleButton = ( JToggleButton )e.getSource();
-
-            setCollapsed( toggleButton.isSelected() );
         }
     }
 }

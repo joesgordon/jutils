@@ -208,4 +208,21 @@ public class UdpConnection implements IConnection
 
         this.remotePort = port;
     }
+
+    /**
+     * @param milliseconds
+     * @return
+     */
+    public boolean setReceiveTimeout( int milliseconds )
+    {
+        try
+        {
+            socket.setSoTimeout( milliseconds );
+            return true;
+        }
+        catch( SocketException ex )
+        {
+            return false;
+        }
+    }
 }

@@ -180,6 +180,7 @@ public class TabularItemsView<T> implements IView<JComponent>
         public T getItem( int index );
 
         /**
+         * Returns the text to be shown in the row header.
          * @param item
          * @param index
          * @return

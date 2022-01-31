@@ -2,6 +2,7 @@ package org.jutils;
 
 import java.io.File;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.duak.DuakConstants;
@@ -26,6 +27,6 @@ public class AllOptionsTests
         DuakOptions options2 = userio.read();
         userio.write( copy );
 
-        // Assert.assertTrue( options.equals( options2 ) );
+        Assert.assertTrue( options.equals( options2 ) );
     }
 }

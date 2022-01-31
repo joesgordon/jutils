@@ -1,6 +1,9 @@
 package org.jutils.core.utils;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /*******************************************************************************
  * Defines a queue that contain zero to the provided maximum number of unique

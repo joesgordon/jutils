@@ -1,6 +1,7 @@
 package org.jutils.core.net;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 /*******************************************************************************
  * 
@@ -37,8 +38,8 @@ public class NetMessage
     public NetMessage( boolean received, String localAddress, int localPort,
         String remoteAddress, int remotePort, byte [] contents )
     {
-        this( received, LocalDateTime.now(), localAddress, localPort,
-            remoteAddress, remotePort, contents );
+        this( received, LocalDateTime.now( ZoneOffset.UTC ), localAddress,
+            localPort, remoteAddress, remotePort, contents );
     }
 
     /***************************************************************************

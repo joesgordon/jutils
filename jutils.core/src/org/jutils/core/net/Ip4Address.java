@@ -1,7 +1,13 @@
 package org.jutils.core.net;
 
-import java.net.*;
-import java.util.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import org.jutils.core.Utils;
 import org.jutils.core.io.LogUtils;
@@ -16,11 +22,11 @@ public class Ip4Address
     public final byte [] address;
 
     /***************************************************************************
-     * 
+     * Creates a new IP v4 address initialized to INADDR_ANY.
      **************************************************************************/
     public Ip4Address()
     {
-        this.address = new byte[4];
+        this.address = new byte[] { 0, 0, 0, 0 };
     }
 
     /***************************************************************************
@@ -69,6 +75,29 @@ public class Ip4Address
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    public byte [] get()
+    {
+        byte [] address = new byte[this.address.length];
+
+        Utils.byteArrayCopy( this.address, 0, address, 0, address.length );
+
+        return address;
+    }
+
+    /***************************************************************************
+     * @param address
+     **************************************************************************/
+    public void set( byte [] address )
+    {
+        this.address[0] = address[0];
+        this.address[1] = address[1];
+        this.address[2] = address[2];
+        this.address[3] = address[3];
+    }
+
+    /***************************************************************************
      * @param f1
      * @param f2
      * @param f3
@@ -88,6 +117,24 @@ public class Ip4Address
     public void set( Ip4Address address )
     {
         Utils.byteArrayCopy( address.address, 0, this.address, 0, 4 );
+    }
+
+    /***************************************************************************
+     * @param address
+     **************************************************************************/
+    public void set( InetAddress address )
+    {
+        byte [] octects = address.getAddress();
+
+        if( octects.length != this.address.length )
+        {
+            LogUtils.printError( "Invalid octet count: %d", octects.length );
+        }
+
+        for( int i = 0; i < this.address.length; i++ )
+        {
+            this.address[i] = octects[i];
+        }
     }
 
     /***************************************************************************
@@ -138,24 +185,6 @@ public class Ip4Address
     public int hashCode()
     {
         return Arrays.hashCode( address );
-    }
-
-    /***************************************************************************
-     * @param address
-     **************************************************************************/
-    public void set( InetAddress address )
-    {
-        byte [] octects = address.getAddress();
-
-        if( octects.length != this.address.length )
-        {
-            LogUtils.printError( "Invalid octet count: %d", octects.length );
-        }
-
-        for( int i = 0; i < this.address.length; i++ )
-        {
-            this.address[i] = octects[i];
-        }
     }
 
     /***************************************************************************

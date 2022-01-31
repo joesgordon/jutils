@@ -2,33 +2,52 @@ package org.jutils.core.io.cksum;
 
 import java.util.zip.CRC32;
 
+/**
+ *
+ */
 public class Crc32Checksum implements IChecksum
 {
+    /**  */
     private final CRC32 crc;
 
+    /**
+     * 
+     */
     public Crc32Checksum()
     {
         this.crc = new CRC32();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update( byte [] bytes )
     {
         crc.update( bytes );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update( byte [] bytes, int off, int len )
     {
         crc.update( bytes, off, len );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reset()
     {
         crc.reset();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public byte [] getChecksum()
     {

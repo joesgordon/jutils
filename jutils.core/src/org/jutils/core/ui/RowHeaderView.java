@@ -61,6 +61,14 @@ public class RowHeaderView
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    public IRowListModel getListModel()
+    {
+        return model;
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     private void updateView()
@@ -93,10 +101,20 @@ public class RowHeaderView
         public void addUpdatedListener( Runnable callback );
     }
 
+    public static interface IRowListModel
+    {
+        void fireRowsDeleted( int rowStart, int rowEnd );
+
+        void fireRowsInserted( int rowStart, int rowEnd );
+
+        void fireRowsUpdated( int rowStart, int rowEnd );
+    }
+
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class RowListModel extends AbstractListModel<String>
+    private static final class RowListModel extends AbstractListModel<String>
+        implements IRowListModel
     {
         /**  */
         private static final long serialVersionUID = 404977197801943790L;
@@ -142,6 +160,24 @@ public class RowHeaderView
         public String getElementAt( int index )
         {
             return headerModel.getHeader( index );
+        }
+
+        @Override
+        public void fireRowsDeleted( int rowStart, int rowEnd )
+        {
+            super.fireIntervalRemoved( this, rowStart, rowEnd );
+        }
+
+        @Override
+        public void fireRowsInserted( int rowStart, int rowEnd )
+        {
+            super.fireIntervalAdded( this, rowStart, rowEnd );
+        }
+
+        @Override
+        public void fireRowsUpdated( int rowStart, int rowEnd )
+        {
+            super.fireContentsChanged( this, rowStart, rowEnd );
         }
     }
 

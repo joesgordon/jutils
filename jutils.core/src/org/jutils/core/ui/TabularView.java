@@ -11,6 +11,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import org.jutils.core.ui.RowHeaderView.IRowHeaderModel;
+import org.jutils.core.ui.RowHeaderView.IRowListModel;
 import org.jutils.core.ui.event.ResizingTableModelListener;
 import org.jutils.core.ui.event.RunnableList;
 import org.jutils.core.ui.model.IView;
@@ -89,6 +90,11 @@ public class TabularView implements IView<JComponent>
     {
         tableModel.setModel( model );
         rowModel.setModel( model );
+
+        IRowListModel listModel = rowHeader.getListModel();
+
+        model.registerNotifier(
+            new AbstractTableNotifier( tableModel, listModel ) );
 
         tableModel.fireUpdates();
         rowModel.fireUpdates();
@@ -229,7 +235,7 @@ public class TabularView implements IView<JComponent>
     {
         /**
          * @param row
-         * @param column
+         * @param col
          */
         public void fireCellUpdated( int row, int col );
 
@@ -245,6 +251,8 @@ public class TabularView implements IView<JComponent>
         public void fireRowsDeleted( int rowStart, int rowEnd );
 
         /**
+         * Notifies all listeners that rows in the range [rowStart, rowEnd],
+         * inclusive, have been inserted.
          * @param rowStart
          * @param rowEnd
          */
@@ -349,8 +357,6 @@ public class TabularView implements IView<JComponent>
         public void setModel( ITabularModel model )
         {
             this.model = model;
-
-            model.registerNotifier( new AbstractTableNotifier( this ) );
         }
 
         /**
@@ -422,14 +428,19 @@ public class TabularView implements IView<JComponent>
     private static final class AbstractTableNotifier implements ITabularNotifier
     {
         /**  */
-        private final AbstractTableModel model;
+        private final AbstractTableModel tableModel;
+        /**  */
+        private final IRowListModel listModel;
 
         /**
-         * @param model
+         * @param tableModel
+         * @param listModel
          */
-        public AbstractTableNotifier( AbstractTableModel model )
+        public AbstractTableNotifier( AbstractTableModel tableModel,
+            IRowListModel listModel )
         {
-            this.model = model;
+            this.tableModel = tableModel;
+            this.listModel = listModel;
         }
 
         /**
@@ -438,7 +449,7 @@ public class TabularView implements IView<JComponent>
         @Override
         public void fireCellUpdated( int row, int col )
         {
-            model.fireTableCellUpdated( row, col );
+            tableModel.fireTableCellUpdated( row, col );
         }
 
         /**
@@ -447,7 +458,17 @@ public class TabularView implements IView<JComponent>
         @Override
         public void fireDataChanged()
         {
-            model.fireTableDataChanged();
+            int maxRow = tableModel.getRowCount() - 1;
+
+            tableModel.fireTableDataChanged();
+            if( maxRow > -1 )
+            {
+                listModel.fireRowsInserted( 0, maxRow );
+            }
+            else
+            {
+                listModel.fireRowsDeleted( 0, Integer.MAX_VALUE );
+            }
         }
 
         /**
@@ -456,7 +477,8 @@ public class TabularView implements IView<JComponent>
         @Override
         public void fireRowsDeleted( int rowStart, int rowEnd )
         {
-            model.fireTableRowsDeleted( rowStart, rowEnd );
+            tableModel.fireTableRowsDeleted( rowStart, rowEnd );
+            listModel.fireRowsDeleted( rowStart, rowEnd );
         }
 
         /**
@@ -465,7 +487,8 @@ public class TabularView implements IView<JComponent>
         @Override
         public void fireRowsInserted( int rowStart, int rowEnd )
         {
-            model.fireTableRowsInserted( rowStart, rowEnd );
+            tableModel.fireTableRowsInserted( rowStart, rowEnd );
+            listModel.fireRowsInserted( rowStart, rowEnd );
         }
 
         /**
@@ -474,7 +497,8 @@ public class TabularView implements IView<JComponent>
         @Override
         public void fireRowsUpdated( int rowStart, int rowEnd )
         {
-            model.fireTableRowsUpdated( rowStart, rowEnd );
+            tableModel.fireTableRowsUpdated( rowStart, rowEnd );
+            listModel.fireRowsUpdated( rowStart, rowEnd );
         }
 
         /**
@@ -483,7 +507,7 @@ public class TabularView implements IView<JComponent>
         @Override
         public void fireStructureChanged()
         {
-            model.fireTableStructureChanged();
+            tableModel.fireTableStructureChanged();
         }
     }
 

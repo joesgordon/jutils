@@ -1,6 +1,9 @@
 package org.jutils.core;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jutils.core.utils.Tuple2;
@@ -65,30 +68,6 @@ public final class ListUtils
     }
 
     /***************************************************************************
-     * Defines methods to access a key and a value of a given object type.
-     * @param <K> the key type.
-     * @param <V> the value type.
-     * @param <T> the type of the object that contains the key/value.
-     **************************************************************************/
-    public static interface IKeyValue<K, V, T>
-    {
-        /***********************************************************************
-         * Returns the key of the provided item.
-         * @param item the item containing a key.
-         * @return the key from the item.
-         **********************************************************************/
-        public K getKey( T item );
-
-        /***********************************************************************
-         * Returns the value of the provided item
-         * @param item the item containing a value.
-         * @param oldValue the
-         * @return the value from the item.
-         **********************************************************************/
-        public V getValue( T item, V oldValue );
-    }
-
-    /***************************************************************************
      * Finds the maximum found key in the provided map of key/count values.
      * @param <K> The type of the keys in the map.
      * @param <V> The type of the values in the map.
@@ -111,5 +90,29 @@ public final class ListUtils
 
         return max == null ? null
             : new Tuple2<K, V>( max.getKey(), max.getValue() );
+    }
+
+    /***************************************************************************
+     * Defines methods to access a key and a value of a given object type.
+     * @param <K> the key type.
+     * @param <V> the value type.
+     * @param <T> the type of the object that contains the key/value.
+     **************************************************************************/
+    public static interface IKeyValue<K, V, T>
+    {
+        /***********************************************************************
+         * Returns the key of the provided item.
+         * @param item the item containing a key.
+         * @return the key from the item.
+         **********************************************************************/
+        public K getKey( T item );
+
+        /***********************************************************************
+         * Returns the value of the provided item
+         * @param item the item containing a value.
+         * @param oldValue the
+         * @return the value from the item.
+         **********************************************************************/
+        public V getValue( T item, V oldValue );
     }
 }
