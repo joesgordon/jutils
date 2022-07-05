@@ -22,8 +22,6 @@ import javax.swing.plaf.UIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.MetalToolBarUI;
 
-import org.jutils.core.io.LogUtils;
-
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 
 /*******************************************************************************
@@ -62,8 +60,6 @@ public class JUtilsToolBarUI extends MetalToolBarUI
 
         // bar.setBorder( new LineBorder( Color.GREEN, 8 ) );
         bar.setRollover( true );
-
-        LogUtils.printDebug( "fjdsklfjdklsjlfk" );
     }
 
     /***************************************************************************

@@ -2,6 +2,7 @@ package org.jutils.core.net;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import org.jutils.core.Utils;
 import org.jutils.core.ValidationException;
+import org.jutils.core.io.LogUtils;
 
 /*******************************************************************************
  * Utility class for general network functions.
@@ -81,18 +83,19 @@ public final class NetUtils
         return nics;
     }
 
-    /**
+    /***************************************************************************
      * @param nicString
      * @return
-     */
+     **************************************************************************/
     public static NicInfo lookupInfo( String nicString )
     {
         NicInfo info = null;
         List<NicInfo> nics = buildNicList();
+        NicInfo any = getAnyInfo();
 
         if( nicString == null )
         {
-            info = getAnyInfo();
+            info = any;
         }
         else
         {
@@ -112,28 +115,94 @@ public final class NetUtils
 
             if( info == null )
             {
-                List<String> octects = Utils.split( nicString, '.' );
+                InetAddress addr = null;
 
-                if( octects.size() < 3 )
+                try
                 {
-                    return null;
-                }
+                    addr = InetAddress.getByName( nicString );
 
-                String firstThree = octects.get( 0 ) + "." + octects.get( 1 ) +
-                    "." + octects.get( 2 ) + ".";
-
-                for( NicInfo ni : nics )
-                {
-                    if( ni.addressString.startsWith( firstThree ) )
+                    if( addr.isAnyLocalAddress() )
                     {
-                        info = ni;
-                        break;
+                        return any;
                     }
+
+                    boolean found = false;
+
+                    for( NicInfo ni : nics )
+                    {
+                        if( ni.nic == null )
+                        {
+                            continue;
+                        }
+
+                        for( InterfaceAddress intf : ni.nic.getInterfaceAddresses() )
+                        {
+                            short maskLen = intf.getNetworkPrefixLength();
+
+                            if( isSubnet( addr, intf.getAddress(), maskLen ) )
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if( found )
+                        {
+                            info = ni;
+                            break;
+                        }
+                    }
+                }
+                catch( UnknownHostException ex )
+                {
                 }
             }
         }
 
         return info;
+    }
+
+    /***************************************************************************
+     * @param addr1
+     * @param addr2
+     * @param maskLen
+     * @return
+     **************************************************************************/
+    public static boolean isSubnet( InetAddress addr1, InetAddress addr2,
+        short maskLen )
+    {
+        byte [] bytes1 = addr1.getAddress();
+        byte [] bytes2 = addr2.getAddress();
+
+        if( bytes1.length != bytes2.length )
+        {
+            return false;
+        }
+
+        int maskBytes = ( maskLen + 7 ) / 8;
+
+        if( maskBytes > bytes1.length )
+        {
+            return false;
+        }
+
+        for( int i = 0; i < maskBytes; i++ )
+        {
+            byte b1 = bytes1[i];
+            byte b2 = bytes2[i];
+            int remainingLen = maskLen - ( 8 * i );
+            int mask = remainingLen > 7 ? 0xFF : ~( ( 1 << remainingLen ) - 1 );
+
+            b1 &= mask;
+            b2 &= mask;
+
+            if( b1 != b2 )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /***************************************************************************
@@ -313,6 +382,13 @@ public final class NetUtils
         }
     }
 
+    public static void main( String [] args )
+    {
+        NicInfo info = lookupInfo( "google.com" );
+
+        LogUtils.printDebug( "Info: %s", info );
+    }
+
     /***************************************************************************
      *
      **************************************************************************/
@@ -341,6 +417,12 @@ public final class NetUtils
             this.address = address;
             this.addressString = address.getHostAddress();
             this.isIpv4 = address instanceof Inet4Address;
+        }
+
+        @Override
+        public String toString()
+        {
+            return name + "|" + addressString;
         }
 
         /**

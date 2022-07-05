@@ -17,6 +17,8 @@ public class IntegerFormField implements IDataFormField<Integer>
     private final JTextField textField;
     /**  */
     private final ParserFormField<Integer> field;
+    /**  */
+    private final IntegerParser parser;
 
     /***************************************************************************
      * @param name
@@ -80,10 +82,11 @@ public class IntegerFormField implements IDataFormField<Integer>
         Integer min, Integer max )
     {
         IDescriptor<Integer> descriptor = ( d ) -> toString( d );
+        this.parser = new IntegerParser( min, max );
 
         this.textField = new JTextField( columns );
-        this.field = new ParserFormField<>( name, new IntegerParser( min, max ),
-            textField, descriptor, textField, units );
+        this.field = new ParserFormField<>( name, parser, textField, descriptor,
+            textField, units );
     }
 
     /***************************************************************************
@@ -177,6 +180,34 @@ public class IntegerFormField implements IDataFormField<Integer>
     public Validity getValidity()
     {
         return field.getValidity();
+    }
+
+    /***************************************************************************
+     * Sets the minimum value allowed to the provided values.
+     * @param min The minimum bound, inclusive; not checked if {@code null}.
+     **************************************************************************/
+    public void setMinimum( Integer min )
+    {
+        parser.setMinimum( min );
+    }
+
+    /***************************************************************************
+     * Sets the maximum value allowed to the provided values.
+     * @param min The maximum bound, inclusive; not checked if {@code null}.
+     **************************************************************************/
+    public void setMaximum( Integer max )
+    {
+        parser.setMaximum( max );
+    }
+
+    /***************************************************************************
+     * Sets the minimum and maximum values allowed to the provided values.
+     * @param min The minimum bound, inclusive; not checked if {@code null}.
+     * @param max The maximum bound, inclusive; not checked if {@code null}.
+     **************************************************************************/
+    public void setThresholds( Integer min, Integer max )
+    {
+        parser.setThresholds( min, max );
     }
 
     /***************************************************************************

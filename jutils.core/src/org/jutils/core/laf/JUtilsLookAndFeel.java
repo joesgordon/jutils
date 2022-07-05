@@ -18,12 +18,26 @@ public class JUtilsLookAndFeel extends MetalLookAndFeel
     /**  */
     private static final long serialVersionUID = 5597691713123621285L;
 
+    /**  */
+
+    public final LafColors colors;
+
     /***************************************************************************
      * 
      **************************************************************************/
     public JUtilsLookAndFeel()
     {
+        this( new LafColors() );
+    }
+
+    /***************************************************************************
+     * @param colors
+     **************************************************************************/
+    public JUtilsLookAndFeel( LafColors colors )
+    {
         super();
+
+        this.colors = colors;
     }
 
     /***************************************************************************
@@ -68,104 +82,96 @@ public class JUtilsLookAndFeel extends MetalLookAndFeel
      **************************************************************************/
     private void setColors( UIDefaults table )
     {
-        Color bg = new Color( 0x121212 );
-        Color ctrlBg = new Color( 0x303030 );
-        Color ctrlHighlight = new Color( 0x606060 );
-        Color fg = new Color( 0xF0F0F0 );
-        Color control = new Color( 0x204060 );
-        Color dark = new Color( 0x111A1F );
-        Color bright = new Color( 0x0579C8 );
-
-        table.put( "Button.background", bg );
+        table.put( "Button.background", colors.background );
         // table.put( "Button.border", new LineBorder( ctrlBg ) );
-        table.put( "Button.foreground", fg );
+        table.put( "Button.foreground", colors.foreground );
         // table.put( "Button.margin", new Insets( 50, 50, 50, 50 ) );
 
-        table.put( "CheckBox.background", bg );
-        table.put( "CheckBox.foreground", fg );
+        table.put( "CheckBox.background", colors.background );
+        table.put( "CheckBox.foreground", colors.foreground );
 
-        table.put( "Label.background", bg );
-        table.put( "Label.foreground", fg );
+        table.put( "Label.background", colors.background );
+        table.put( "Label.foreground", colors.foreground );
 
-        table.put( "List.background", ctrlBg );
-        table.put( "List.foreground", fg );
-        table.put( "List.selectionBackground", bright );
-        table.put( "List.selectionForeground", fg );
+        table.put( "List.background", colors.controlBackground );
+        table.put( "List.foreground", colors.foreground );
+        table.put( "List.selectionBackground", colors.bright );
+        table.put( "List.selectionForeground", colors.foreground );
 
-        table.put( "Menu.background", bg );
-        table.put( "Menu.foreground", fg );
-        table.put( "Menu.selectionBackground", bright );
-        table.put( "Menu.selectionForeground", fg );
+        table.put( "Menu.background", colors.background );
+        table.put( "Menu.foreground", colors.foreground );
+        table.put( "Menu.selectionBackground", colors.bright );
+        table.put( "Menu.selectionForeground", colors.foreground );
 
-        table.put( "MenuBar.background", bg );
-        table.put( "MenuBar.foreground", fg );
+        table.put( "MenuBar.background", colors.background );
+        table.put( "MenuBar.foreground", colors.foreground );
 
-        table.put( "MenuItem.acceleratorForeground", fg );
-        table.put( "MenuItem.background", bg );
-        table.put( "MenuItem.foreground", fg );
-        table.put( "MenuItem.selectionBackground", bright );
-        table.put( "MenuItem.selectionForeground", fg );
+        table.put( "MenuItem.acceleratorForeground", colors.foreground );
+        table.put( "MenuItem.background", colors.background );
+        table.put( "MenuItem.foreground", colors.foreground );
+        table.put( "MenuItem.selectionBackground", colors.bright );
+        table.put( "MenuItem.selectionForeground", colors.foreground );
 
-        table.put( "OptionPane.background", bg );
-        table.put( "OptionPane.foreground", fg );
-        table.put( "OptionPane.messageForeground", fg );
+        table.put( "OptionPane.background", colors.background );
+        table.put( "OptionPane.foreground", colors.foreground );
+        table.put( "OptionPane.messageForeground", colors.foreground );
 
-        table.put( "Panel.background", bg );
+        table.put( "Panel.background", colors.background );
 
-        table.put( "PopupMenu.background", bg );
+        table.put( "PopupMenu.background", colors.background );
 
-        table.put( "ProgressBar.foreground", bright );
-        table.put( "ProgressBar.background", ctrlBg );
-        table.put( "ProgressBar.selectionBackground", bright );
-        table.put( "ProgressBar.selectionBackground", fg );
+        table.put( "ProgressBar.foreground", colors.bright );
+        table.put( "ProgressBar.background", colors.controlBackground );
+        table.put( "ProgressBar.selectionBackground", colors.bright );
+        table.put( "ProgressBar.selectionBackground", colors.foreground );
 
-        table.put( "RadioButton.foreground", fg );
-        table.put( "RadioButton.background", bg );
+        table.put( "RadioButton.foreground", colors.foreground );
+        table.put( "RadioButton.background", colors.background );
 
-        table.put( "ScrollBar.track", ctrlBg );
-        table.put( "ScrollBar.thumb", control );
+        table.put( "ScrollBar.track", colors.controlBackground );
+        table.put( "ScrollBar.thumb", colors.control );
 
-        table.put( "ScrollPane.background", bg );
+        table.put( "ScrollPane.background", colors.background );
 
-        table.put( "Separator.highlight", bg );
-        table.put( "Separator.shadow", bg );
+        table.put( "Separator.highlight", colors.background );
+        table.put( "Separator.shadow", colors.background );
 
-        table.put( "Slider.foreground", control );
+        table.put( "Slider.foreground", colors.control );
 
-        table.put( "ScrollBar.thumbDarkShadow", fg );
-        table.put( "ScrollBar.thumbHighlight", ctrlBg );
-        table.put( "ScrollBar.thumbShadow", bg );
+        table.put( "ScrollBar.thumbDarkShadow", colors.foreground );
+        table.put( "ScrollBar.thumbHighlight", colors.controlBackground );
+        table.put( "ScrollBar.thumbShadow", colors.background );
 
-        table.put( "TabbedPane.background", bg );
-        table.put( "TabbedPane.foreground", fg );
+        table.put( "TabbedPane.background", colors.background );
+        table.put( "TabbedPane.foreground", colors.foreground );
         // table.put( "TabbedPane.light", Color.green );
-        table.put( "TabbedPane.selected", bright );
+        table.put( "TabbedPane.selected", colors.bright );
         // table.put( "TabbedPane.tabAreaBackground", Color.red );
         // table.put( "TabbedPane.selectHighlight", Color.blue );
-        table.put( "TabbedPane.shadow", dark );
+        table.put( "TabbedPane.shadow", colors.dark );
         // table.put( "TabbedPane.darkShadow", Color.pink );
 
-        table.put( "Table.background", ctrlBg );
-        table.put( "Table.gridColor", ctrlBg.brighter() );
-        table.put( "Table.foreground", fg );
+        table.put( "Table.background", colors.controlBackground );
+        table.put( "Table.gridColor", colors.controlBackground.brighter() );
+        table.put( "Table.foreground", colors.foreground );
         // table.put( "Table.gridColor", lightBg );
-        table.put( "Table.selectionBackground", bright );
-        table.put( "Table.selectionForeground", fg );
+        table.put( "Table.selectionBackground", colors.bright );
+        table.put( "Table.selectionForeground", colors.foreground );
 
-        table.put( "TableHeader.background", ctrlBg );
-        table.put( "TableHeader.foreground", fg );
+        table.put( "TableHeader.background", colors.controlBackground );
+        table.put( "TableHeader.foreground", colors.foreground );
 
-        table.put( "TextField.background", ctrlHighlight );
-        table.put( "TextField.foreground", fg );
-        table.put( "TextField.inactiveForeground", bg );
-        table.put( "TextField.selectionBackground", bright );
-        table.put( "TextField.selectionForeground", fg );
+        table.put( "TextField.background", colors.controlHighlight );
+        table.put( "TextField.foreground", colors.foreground );
+        table.put( "TextField.inactiveForeground", colors.background );
+        table.put( "TextField.selectionBackground", colors.bright );
+        table.put( "TextField.selectionForeground", colors.foreground );
 
-        table.put( "TitledBorder.titleColor", fg );
+        table.put( "TitledBorder.titleColor", colors.foreground );
 
-        table.put( "ToolBar.background", bg );
+        table.put( "ToolBar.background", colors.background );
 
-        table.put( "Viewport.background", ctrlBg );
+        table.put( "Viewport.background", colors.controlBackground );
 
         table.put( "window", Color.RED );
 
@@ -193,9 +199,9 @@ public class JUtilsLookAndFeel extends MetalLookAndFeel
         // button.getDisabledIcon();
     }
 
-    /**
+    /***************************************************************************
      * @param table
-     */
+     **************************************************************************/
     private void printTable( UIDefaults table )
     {
         ArrayList<Entry<Object, Object>> entries = new ArrayList<>(
@@ -259,5 +265,37 @@ public class JUtilsLookAndFeel extends MetalLookAndFeel
         }
 
         // Utils.printStackTrace();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static final class LafColors
+    {
+        /**  */
+        public Color background;
+        /**  */
+        public Color controlBackground;
+        /**  */
+        public Color controlHighlight;
+        /**  */
+        public Color foreground;
+        /**  */
+        public Color control;
+        /**  */
+        public Color dark;
+        /**  */
+        public Color bright;
+
+        public LafColors()
+        {
+            this.background = new Color( 0x121212 );
+            this.controlBackground = new Color( 0x303030 );
+            this.controlHighlight = new Color( 0x606060 );
+            this.foreground = new Color( 0xF0F0F0 );
+            this.control = new Color( 0x204060 );
+            this.dark = new Color( 0x111A1F );
+            this.bright = new Color( 0x0579C8 );
+        }
     }
 }

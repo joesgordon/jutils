@@ -9,9 +9,9 @@ import org.jutils.core.io.IParser;
 public class IntegerParser implements IParser<Integer>
 {
     /** The minimum bound, inclusive; not checked if {@code null}. */
-    private final Integer min;
+    private Integer min;
     /** The maximum bound, inclusive; not checked if {@code null}. */
-    private final Integer max;
+    private Integer max;
 
     /***************************************************************************
      * Creates a parser that ensures the text is an integer and performs no
@@ -30,12 +30,11 @@ public class IntegerParser implements IParser<Integer>
      **************************************************************************/
     public IntegerParser( Integer min, Integer max )
     {
-        this.min = min;
-        this.max = max;
+        setThresholds( min, max );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Integer parse( String text ) throws ValidationException
@@ -91,5 +90,34 @@ public class IntegerParser implements IParser<Integer>
             throw new ValidationException( "Input outside of range " +
                 Integer.MIN_VALUE + " to " + Integer.MAX_VALUE );
         }
+    }
+
+    /***************************************************************************
+     * Sets the minimum value allowed to the provided values.
+     * @param min The minimum bound, inclusive; not checked if {@code null}.
+     **************************************************************************/
+    public void setMinimum( Integer min )
+    {
+        this.min = min;
+    }
+
+    /***************************************************************************
+     * Sets the maximum value allowed to the provided values.
+     * @param min The maximum bound, inclusive; not checked if {@code null}.
+     **************************************************************************/
+    public void setMaximum( Integer max )
+    {
+        this.max = max;
+    }
+
+    /***************************************************************************
+     * Sets the minimum and maximum values allowed to the provided values.
+     * @param min The minimum bound, inclusive; not checked if {@code null}.
+     * @param max The maximum bound, inclusive; not checked if {@code null}.
+     **************************************************************************/
+    public void setThresholds( Integer min, Integer max )
+    {
+        this.min = min;
+        this.max = max;
     }
 }

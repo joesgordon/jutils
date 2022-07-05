@@ -2,8 +2,6 @@ package org.jutils.core.utils;
 
 import java.util.Iterator;
 
-import org.jutils.core.io.LogUtils;
-
 /*******************************************************************************
  * @param <T>
  ******************************************************************************/
@@ -79,8 +77,8 @@ public class ArrayQueue<T> implements Iterable<T>
             start = 0;
         }
 
-        LogUtils.printDebug( "Pushed: start (%d), end(%d), size (%d)", start,
-            end, size );
+        // LogUtils.printDebug( "Pushed: start (%d), end(%d), size (%d)", start,
+        // end, size );
     }
 
     /***************************************************************************
@@ -141,8 +139,7 @@ public class ArrayQueue<T> implements Iterable<T>
     @Override
     public Iterator<T> iterator()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayQueueIterator<>( this );
     }
 
     /***************************************************************************
@@ -179,6 +176,35 @@ public class ArrayQueue<T> implements Iterable<T>
         }
 
         return idx;
+    }
+
+    private static final class ArrayQueueIterator<T> implements Iterator<T>
+    {
+        private final ArrayQueue<T> queue;
+
+        private int index;
+
+        public ArrayQueueIterator( ArrayQueue<T> queue )
+        {
+            this.queue = queue;
+            this.index = 0;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return index < queue.size();
+        }
+
+        @Override
+        public T next()
+        {
+            T item = queue.get( index );
+
+            index++;
+
+            return item;
+        }
     }
 
     /***************************************************************************
