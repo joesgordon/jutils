@@ -145,16 +145,25 @@ public class NetMessagesTableConfig implements ITableItemsConfig<NetMessage>
         {
             int cnt = Math.min( item.contents.length, isHex ? 32 : 64 );
             byte [] buf = new byte[cnt];
+            boolean addDots = cnt != item.contents.length;
 
             Utils.byteArrayCopy( item.contents, 0, buf, 0, buf.length );
+            
+            String str;
 
             if( isHex )
             {
-                return HexUtils.toHexString( buf, " " );
+                str = HexUtils.toHexString( buf, " " );
             }
-
-            HexUtils.cleanAscii( buf, 0, cnt );
-            return new String( buf, 0, cnt, utf8 );
+            else
+            {
+                HexUtils.cleanAscii( buf, 0, cnt );
+                str = new String( buf, 0, cnt, utf8 );
+            }
+            
+            str = addDots ? str + " ..." : str;
+            
+            return str;
         }
 
         return null;
