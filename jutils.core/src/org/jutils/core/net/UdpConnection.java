@@ -6,9 +6,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.StandardSocketOptions;
 import java.util.Arrays;
 
 import org.jutils.core.net.NetUtils.NicInfo;
@@ -59,30 +61,7 @@ public class UdpConnection implements IConnection
 
         if( inputs.multicast.isUsed )
         {
-            @SuppressWarnings( "resource")
-            MulticastSocket mcs = new MulticastSocket( inputs.localPort );
-
-            mcs.setLoopbackMode( !inputs.loopback );
-            // mcs.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
-            // inputs.loopback );
-            mcs.setTimeToLive( inputs.ttl );
-            mcs.setSoTimeout( inputs.timeout );
-
-            try
-            {
-                InetAddress address = inputs.multicast.data.getInetAddress();
-                SocketAddress maddr = new InetSocketAddress( address,
-                    inputs.localPort );
-                mcs.joinGroup( maddr, info.nic );
-            }
-            catch( SocketException ex )
-            {
-                String msg = String.format( "Unable to join %s:%d",
-                    inputs.multicast.data, inputs.localPort );
-                throw new IOException( msg, ex );
-            }
-
-            socket = mcs;
+            socket = openMulticast(inputs, info.nic);
         }
         else
         {
@@ -102,6 +81,35 @@ public class UdpConnection implements IConnection
             this.remoteAddress = inputs.remoteAddress.getInetAddress();
         }
         this.remotePort = inputs.remotePort;
+    }
+    
+    @SuppressWarnings( "resource")
+    private static MulticastSocket openMulticast(UdpInputs inputs, 
+        NetworkInterface nic) throws IOException
+    {
+        MulticastSocket mcs = new MulticastSocket( inputs.localPort );
+
+        // mcs.setLoopbackMode( !inputs.loopback );
+        mcs.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
+            inputs.loopback );
+        mcs.setTimeToLive( inputs.ttl );
+        mcs.setSoTimeout( inputs.timeout );
+
+        try
+        {
+            InetAddress address = inputs.multicast.data.getInetAddress();
+            SocketAddress maddr = new InetSocketAddress( address,
+                inputs.localPort );
+            mcs.joinGroup( maddr, nic );
+        }
+        catch( SocketException ex )
+        {
+            String msg = String.format( "Unable to join %s:%d",
+                inputs.multicast.data, inputs.localPort );
+            throw new IOException( msg, ex );
+        }
+        
+        return mcs;
     }
 
     /***************************************************************************

@@ -1,13 +1,8 @@
 package org.jutils.core.ui.net;
 
-import java.util.List;
+import javax.swing.JComponent;
 
-import javax.swing.*;
-
-import org.jutils.core.IconConstants;
-import org.jutils.core.net.NetUtils;
 import org.jutils.core.net.NetUtils.NicInfo;
-import org.jutils.core.ui.event.RightClickListener;
 import org.jutils.core.ui.event.updater.IUpdater;
 import org.jutils.core.ui.fields.IDataFormField;
 import org.jutils.core.ui.fields.StringFormField;
@@ -22,7 +17,7 @@ public class NetworkInterfaceField implements IDataFormField<String>
     /**  */
     private final StringFormField nicField;
     /**  */
-    private final JPopupMenu nicMenu;
+    private final NetworkInterfacePopup nicMenu;
 
     /***************************************************************************
      * @param name
@@ -30,52 +25,20 @@ public class NetworkInterfaceField implements IDataFormField<String>
     public NetworkInterfaceField( String name )
     {
         this.nicField = new StringFormField( name );
-        this.nicMenu = new JPopupMenu();
+        this.nicMenu = new NetworkInterfacePopup();
 
-        buildNicMenu();
-
-        nicField.getView().getComponent( 0 ).addMouseListener(
-            new RightClickListener( ( e ) -> nicMenu.show( e.getComponent(),
-                e.getX(), e.getY() ) ) );
+        nicMenu.addToRightClick( nicField.getTextField() );
+        nicMenu.setUpdater( ( d ) -> handleNicChosen( d ) );
     }
 
-    /***************************************************************************
-     * @param e
-     **************************************************************************/
-    private void buildNicMenu()
+    private void handleNicChosen( NicInfo nic )
     {
-        List<NicInfo> nics = NetUtils.buildNicList();
-
-        nicMenu.removeAll();
-
-        for( NicInfo nic : nics )
+        nicField.setValue( nic.address.getHostAddress() );
+        IUpdater<String> updater = nicField.getUpdater();
+        if( updater != null )
         {
-            String title = nic.addressString + " : " + nic.name;
-            JMenuItem item = new JMenuItem( title );
-            item.addActionListener( ( e ) -> {
-                nicField.setValue( nic.address.getHostAddress() );
-                IUpdater<String> updater = nicField.getUpdater();
-                if( updater != null )
-                {
-                    updater.update( nicField.getValue() );
-                }
-            } );
-            nicMenu.add( item );
+            updater.update( nicField.getValue() );
         }
-
-        if( nics.isEmpty() )
-        {
-            JMenuItem item = new JMenuItem( "No NICs Detected" );
-            item.setEnabled( false );
-            nicMenu.add( item );
-        }
-
-        nicMenu.addSeparator();
-
-        JMenuItem item = new JMenuItem( "Refresh",
-            IconConstants.getIcon( IconConstants.REFRESH_16 ) );
-        item.addActionListener( ( ae ) -> buildNicMenu() );
-        nicMenu.add( item );
     }
 
     /***************************************************************************
