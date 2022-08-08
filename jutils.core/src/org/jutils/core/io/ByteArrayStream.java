@@ -166,11 +166,11 @@ public class ByteArrayStream implements IStream
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public byte read() throws EOFException
+    public byte read() throws IOException
     {
         if( position >= bufferSize )
         {
-            throw new EOFException( "Tried to read past end of stream" );
+            return -1;
         }
 
         return buffer[position++];
@@ -180,7 +180,7 @@ public class ByteArrayStream implements IStream
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int read( byte [] buf ) throws EOFException
+    public int read( byte [] buf ) throws IOException
     {
         return read( buf, 0, buf.length );
     }
@@ -189,11 +189,11 @@ public class ByteArrayStream implements IStream
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int read( byte [] buf, int off, int len ) throws EOFException
+    public int read( byte [] buf, int off, int len ) throws IOException
     {
-        if( position > bufferSize )
+        if( position >= bufferSize )
         {
-            throw new EOFException( "Tried to read past end of stream" );
+            return -1;
         }
 
         int bytesRead = len;

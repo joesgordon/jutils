@@ -21,7 +21,7 @@ public class StreamOutput extends OutputStream
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void write( int b ) throws IOException
@@ -30,7 +30,7 @@ public class StreamOutput extends OutputStream
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void write( byte b[], int off, int len ) throws IOException

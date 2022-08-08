@@ -1,5 +1,6 @@
 package org.jutils.core.io;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,20 +27,42 @@ public class StreamInput extends InputStream
     @Override
     public int read() throws IOException
     {
-        return stream.read() & 0xFF;
+        int b = -1;
+
+        try
+        {
+            b = stream.read() & 0xFF;
+        }
+        catch( EOFException ex )
+        {
+            b = -1;
+        }
+
+        return b;
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public int read( byte b[], int off, int len ) throws IOException
     {
-        return stream.read( b, off, len );
+        int count = 0;
+
+        try
+        {
+            count = stream.read( b, off, len );
+        }
+        catch( EOFException ex )
+        {
+            count = 0;
+        }
+
+        return count;
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public int available() throws IOException

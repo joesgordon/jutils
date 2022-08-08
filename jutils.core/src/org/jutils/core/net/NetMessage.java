@@ -3,6 +3,8 @@ package org.jutils.core.net;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import org.jutils.core.ui.hex.HexUtils;
+
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -89,5 +91,13 @@ public class NetMessage
         @SuppressWarnings( "unchecked")
         T msg = ( T )message;
         return msg;
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format( "%s, %s, %s, %d, %s, %s, %s, %s", received, time,
+            localAddress, localPort, remoteAddress, remotePort,
+            HexUtils.toHexString( contents, " " ), message );
     }
 }
