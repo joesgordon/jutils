@@ -13,6 +13,9 @@ import org.jutils.core.ui.event.RightClickListener;
 import org.jutils.core.ui.event.updater.IUpdater;
 import org.jutils.core.ui.model.IView;
 
+/*******************************************************************************
+ *
+ ******************************************************************************/
 public class NetworkInterfacePopup implements IView<JPopupMenu>
 {
     /**  */
@@ -20,20 +23,37 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
     /**  */
     private IUpdater<NicInfo> updater;
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     public NetworkInterfacePopup()
+    {
+        this( false );
+    }
+
+    /***************************************************************************
+     * @param ipv4Only
+     **************************************************************************/
+    public NetworkInterfacePopup( boolean ipv4Only )
     {
         this.nicMenu = new JPopupMenu();
         this.updater = null;
 
-        buildNicMenu();
+        buildNicMenu( ipv4Only );
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public JPopupMenu getView()
     {
         return nicMenu;
     }
 
+    /***************************************************************************
+     * @param component
+     **************************************************************************/
     public void addToRightClick( Component component )
     {
         RightClickListener ml = new RightClickListener(
@@ -41,15 +61,21 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
         component.addMouseListener( ml );
     }
 
+    /***************************************************************************
+     * @param component
+     * @param x
+     * @param y
+     **************************************************************************/
     public void show( Component component, int x, int y )
     {
         nicMenu.show( component, x, y );
     }
 
     /***************************************************************************
+     * @param ipv4Only
      * @param e
      **************************************************************************/
-    private void buildNicMenu()
+    private void buildNicMenu( boolean ipv4Only )
     {
         List<NicInfo> nics = NetUtils.buildNicList();
 
@@ -57,10 +83,13 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
 
         for( NicInfo nic : nics )
         {
-            String title = nic.addressString + " : " + nic.name;
-            JMenuItem item = new JMenuItem( title );
-            item.addActionListener( ( e ) -> fireUpdater( nic ) );
-            nicMenu.add( item );
+            if( !ipv4Only || nic.isIpv4 )
+            {
+                String title = nic.addressString + " : " + nic.name;
+                JMenuItem item = new JMenuItem( title );
+                item.addActionListener( ( e ) -> fireUpdater( nic ) );
+                nicMenu.add( item );
+            }
         }
 
         if( nics.isEmpty() )
@@ -74,10 +103,13 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
 
         JMenuItem item = new JMenuItem( "Refresh",
             IconConstants.getIcon( IconConstants.REFRESH_16 ) );
-        item.addActionListener( ( ae ) -> buildNicMenu() );
+        item.addActionListener( ( ae ) -> buildNicMenu( ipv4Only ) );
         nicMenu.add( item );
     }
 
+    /***************************************************************************
+     * @param nic
+     **************************************************************************/
     private void fireUpdater( NicInfo nic )
     {
         IUpdater<NicInfo> updater = this.updater;
@@ -88,6 +120,9 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
         }
     }
 
+    /***************************************************************************
+     * @param updater
+     **************************************************************************/
     public void setUpdater( IUpdater<NicInfo> updater )
     {
         this.updater = updater;
