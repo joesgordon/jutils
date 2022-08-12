@@ -21,9 +21,8 @@ public class JpegTests
         int numBytes = size.width * size.height;
         BufferedImage image = new BufferedImage( 240, 240,
             BufferedImage.TYPE_INT_RGB );
-        ByteArrayStream imgStream = new ByteArrayStream( numBytes );
 
-        try
+        try( ByteArrayStream imgStream = new ByteArrayStream( numBytes ) )
         {
             int bytesWritten = -1;
 

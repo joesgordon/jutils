@@ -176,7 +176,7 @@ public class ShortFormField implements IDataFormField<Short>
      * @param value
      * @return
      **************************************************************************/
-    private String toString( Short value )
+    private static String toString( Short value )
     {
         return value == null ? "" : Short.toString( value );
     }

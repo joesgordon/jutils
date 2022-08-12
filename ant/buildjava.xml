@@ -6,6 +6,7 @@
 	<fail unless="buildjava.main" message="Property 'buildjava.main' was not set by the importing build script ${ant.file}" />
 	<fail unless="buildjava.src" message="Property 'buildjava.src' was not set by the importing build script ${ant.file}" />
 	<fail unless="buildjava.build" message="Property 'buildjava.build' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjava.debug" message="Property 'buildjava.debug' was not set by the importing build script ${ant.file}" />
 	<fail unless="buildjava.javaversion" message="Property 'buildjava.javaversion' was not set by the importing build script ${ant.file}" />
 	<fail unless="buildjava.javac" message="Property 'buildjava.javac' was not set by the importing build script ${ant.file}" />
 
@@ -13,7 +14,9 @@
 		<path refid="buildjava.jars" />
 	</path>
 
+    <basename property="buildjava.jarfilename" file="${buildjava.reljar}" suffix=".jar"/>
 	<property name="buildjava.jar" location="${buildjava.releasebase}/${buildjava.reljar}" />
+	<property name="buildjava.debugjar" location="${buildjava.releasebase}/${buildjava.jarfilename}-debug.jar" />
 
 	<dirname property="buildjava.jardir" file="${buildjava.jar}" />
 	<property name="buildjava.basepath" location="${buildjava.releasebase}" relative="true" basedir="${buildjava.jardir}" />
@@ -24,10 +27,13 @@
 		<echo message="       buildjava.main = ${buildjava.main}" />
 		<echo message="        buildjava.src = ${buildjava.src}" />
 		<echo message="      buildjava.build = ${buildjava.build}" />
+		<echo message="      buildjava.debug = ${buildjava.debug}" />
 		<echo message="buildjava.javaversion = ${buildjava.javaversion}" />
 		<echo message="      buildjava.javac = ${buildjava.javac}" />
 		<echo message="       buildjava.jars = ${buildjava.jars}" />
 		<echo message="   buildjava.lib.jars = ${buildjava.lib.jars}" />
+		<echo message="buildjava.javaversion = ${buildjava.javaversion}" />
+		<echo message="      buildjava.javac = ${buildjava.javac}" />
 
 		<echo message="        buildjava.jar = ${buildjava.jar}" />
 		<echo message="     buildjava.jardir = ${buildjava.jardir}" />
@@ -37,6 +43,7 @@
 	<target name="clean" description="Delete Class Files and Jar File">
 		<delete dir="${buildjava.jar}" failonerror="true" />
 		<delete dir="${buildjava.build}" failonerror="true" />
+		<delete dir="${buildjava.debug}" failonerror="true" />
 	</target>
 
 	<target name="build" depends="clean" description="Build Class Files">
@@ -54,6 +61,22 @@
 
 		<!-- Copy Resource Files (e.g. Images) to Build Directory -->
 		<copy includeemptydirs="false" todir="${buildjava.build}" preservelastmodified="true" overwrite="true">
+			<fileset dir="${buildjava.src}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		
+		<!-- Make Build Directory -->
+		<mkdir dir="${buildjava.debug}" />
+		
+		<!-- Compile Java Source Code -->
+		<javac debug="true" debuglevel="lines,vars,source" destdir="${buildjava.debug}" includeantruntime="false" release="${buildjava.javaversion}" executable="${buildjava.javac}">
+			<classpath refid="buildjava.lib.jars" />
+			<src path="${buildjava.src}" />
+		</javac>
+
+		<!-- Copy Resource Files (e.g. Images) to Build Directory -->
+		<copy includeemptydirs="false" todir="${buildjava.debug}" preservelastmodified="true" overwrite="true">
 			<fileset dir="${buildjava.src}">
 				<exclude name="**/*.java" />
 			</fileset>
@@ -82,7 +105,17 @@
 			<manifest>
 				<!-- Information about the program itself -->
 				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Implementation-Vendor" value="SMDC" />
+				<attribute name="Implementation-Title" value="${ant.project.name}" />
+
+				<attribute name="Class-Path" value="${buildjava.libpaths}" />
+				<attribute name="Main-Class" value="${buildjava.main}" />
+			</manifest>
+		</jar>
+
+		<jar destfile="${buildjava.debugjar}" basedir="${buildjava.debug}">
+			<manifest>
+				<!-- Information about the program itself -->
+				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Implementation-Title" value="${ant.project.name}" />
 
 				<attribute name="Class-Path" value="${buildjava.libpaths}" />

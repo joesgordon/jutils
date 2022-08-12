@@ -12,6 +12,10 @@
             <ant dir="@{dir}" target="@{target}" useNativeBasedir="true" inheritAll="false" inheritRefs="false" />
         </sequential>
     </macrodef>
+	
+    <target name="info" description="Prints properties loaded" depends="jutilsimport.info">
+        <calldir dir="jutils.core" target="info" />
+    </target>
 
     <target name="libs" description="Builds a release jar that includes source and libs">
         <calldir dir="jutils.libs" target="build" />
@@ -79,6 +83,24 @@
             <zipfileset src="${juprops.jars.xpp3}" />
             <zipfileset src="${juprops.jars.xstream}" />
             <zipfileset src="${juprops.releaseindv}/jutils.apps.jar" />
+        </jar>
+
+        <jar destfile="${juprops.releasesing}/jutils-debug.jar" filesetmanifest="merge">
+            <zipfileset src="${juprops.releaseindv}/jutils.core-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.duak-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.explorer-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.filespy-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.hexedit-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.insomnia-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.mines-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.multicon-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.plot-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.summer-debug.jar" />
+            <zipfileset src="${juprops.jars.jgoodies}" />
+            <zipfileset src="${juprops.jars.xmlpull}" />
+            <zipfileset src="${juprops.jars.xpp3}" />
+            <zipfileset src="${juprops.jars.xstream}" />
+            <zipfileset src="${juprops.releaseindv}/jutils.apps-debug.jar" />
         </jar>
         
         <jar destfile="${juprops.releasesing}/jutils-src.jar" filesetmanifest="merge">

@@ -9,9 +9,10 @@ import java.io.IOException;
 public interface IConnection extends Closeable
 {
     /***************************************************************************
-     * @param buf
-     * @return
-     * @throws IOException
+     * Sends the message provided using this connection.
+     * @param buf the bytes to send
+     * @return the message sent or {@code null} on error.
+     * @throws IOException any exception generated.
      **************************************************************************/
     public NetMessage sendMessage( byte [] buf ) throws IOException;
 

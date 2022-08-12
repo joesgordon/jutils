@@ -167,7 +167,7 @@ public class HexIntFormField implements IDataFormField<Integer>
      * @param value
      * @return
      **************************************************************************/
-    private String toString( Integer value )
+    private static String toString( Integer value )
     {
         String text = "";
 
@@ -187,6 +187,9 @@ public class HexIntFormField implements IDataFormField<Integer>
         return text;
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     public JTextComponent getTextField()
     {
         return field.getTextField();

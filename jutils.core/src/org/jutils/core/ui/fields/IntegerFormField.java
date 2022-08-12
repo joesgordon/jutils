@@ -222,7 +222,7 @@ public class IntegerFormField implements IDataFormField<Integer>
      * @param value
      * @return
      **************************************************************************/
-    private String toString( Integer value )
+    private static String toString( Integer value )
     {
         return value == null ? "" : Integer.toString( value );
     }

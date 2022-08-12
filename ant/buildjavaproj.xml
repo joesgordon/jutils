@@ -12,6 +12,7 @@
 	<fail unless="buildjavaproj.main" message="Property 'buildjavaproj.main' was not set by the importing build script ${ant.file}" />
 	<fail unless="buildjavaproj.reldir" message="Property 'buildjavaproj.reldir' was not set by the importing build script ${ant.file}" />
 	<fail unless="buildjavaproj.bindir" message="Property 'buildjavaproj.bindir' was not set by the importing build script ${ant.file}" />
+	<fail unless="buildjavaproj.debugdir" message="Property 'buildjavaproj.debugdir' was not set by the importing build script ${ant.file}" />
 	<!-- buildjavaproj.infoprops is an optional property -->
 
 	<property name="buildjava.releasebase" location="${buildjavaproj.releasebase}" />
@@ -19,6 +20,7 @@
 	<property name="buildjava.main" value="${buildjavaproj.main}" />
 	<property name="buildjava.src" location="${buildjavaproj.projdir}/src" />
 	<property name="buildjava.build" location="${buildjavaproj.bindir}/${buildjavaproj.name}" />
+	<property name="buildjava.debug" location="${buildjavaproj.debugdir}/${buildjavaproj.name}" />
 	<property name="buildjava.javaversion" value="${props.javaversion}" />
 	<property name="buildjava.javac" location="${props.javac}" />
 
@@ -58,6 +60,8 @@
 	</target>
 
 	<target name="build" depends="checkpaths,buildjava.build" description="" />
+
+	<target name="builddebug" depends="checkpaths,buildjava.build" description="" />
 
 	<target name="jar" depends="update.eng.version,buildjava.jar" description="" />
 

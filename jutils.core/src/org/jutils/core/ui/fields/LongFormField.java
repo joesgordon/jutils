@@ -176,7 +176,7 @@ public class LongFormField implements IDataFormField<Long>
      * @param value
      * @return
      **************************************************************************/
-    private String toString( Long value )
+    private static String toString( Long value )
     {
         return value == null ? "" : Long.toString( value );
     }

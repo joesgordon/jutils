@@ -1,6 +1,9 @@
 package org.jutils.core.ui.hex;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
@@ -9,7 +12,12 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 import org.jutils.core.ui.event.ItemActionList;
 import org.jutils.core.ui.event.ItemActionListener;
@@ -73,6 +81,14 @@ public class ValueView implements IView<JPanel>
      **************************************************************************/
     public ValueView()
     {
+        this( true );
+    }
+
+    /***************************************************************************
+     * @param showRadioButtons
+     **************************************************************************/
+    public ValueView( boolean showRadioButtons )
+    {
         this.highlightGroup = new ButtonGroup();
 
         this.sint08Field = new JTextField( DEFAULT_COLS );
@@ -94,19 +110,23 @@ public class ValueView implements IView<JPanel>
         this.fields = new ArrayList<JTextField>();
         this.selectionListeners = new ItemActionList<Integer>();
 
-        this.view = createView();
+        this.view = createView( showRadioButtons );
 
         setDefaultText();
 
         this.dataOrder = ByteOrder.BIG_ENDIAN;
         this.bytes = null;
         this.offset = -1;
+
+        Dimension dim = view.getPreferredSize();
+        view.setMinimumSize( dim );
     }
 
     /***************************************************************************
+     * @param showRadioButtons
      * @return
      **************************************************************************/
-    private JPanel createView()
+    private JPanel createView( boolean showRadioButtons )
     {
         JPanel panel = new JPanel( new GridBagLayout() );
         JRadioButton rbutton;
@@ -120,61 +140,71 @@ public class ValueView implements IView<JPanel>
         bsize = new ButtonByteSize( rbutton, 1 );
         buttonSizes.add( bsize );
         rbutton.setSelected( true );
-        addField( panel, "Signed Byte:", row++, rbutton, sint08Field );
+        addField( panel, "int8:", row++, rbutton, sint08Field,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         rbutton = new JRadioButton();
         bsize = new ButtonByteSize( rbutton, 1 );
         buttonSizes.add( bsize );
-        addField( panel, "Unsigned Byte:", row++, rbutton, uint08Field );
+        addField( panel, "uint8:", row++, rbutton, uint08Field,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         rbutton = new JRadioButton();
         bsize = new ButtonByteSize( rbutton, 2 );
         buttonSizes.add( bsize );
-        addField( panel, "Signed Short:", row++, rbutton, sint16Field );
+        addField( panel, "int16:", row++, rbutton, sint16Field,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         rbutton = new JRadioButton();
         bsize = new ButtonByteSize( rbutton, 2 );
         buttonSizes.add( bsize );
-        addField( panel, "Unsigned Short:", row++, rbutton, uint16Field );
+        addField( panel, "uint16:", row++, rbutton, uint16Field,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         rbutton = new JRadioButton();
         bsize = new ButtonByteSize( rbutton, 4 );
         buttonSizes.add( bsize );
-        addField( panel, "Signed Int:", row++, rbutton, sint32Field );
+        addField( panel, "int32:", row++, rbutton, sint32Field,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         rbutton = new JRadioButton();
         bsize = new ButtonByteSize( rbutton, 4 );
         buttonSizes.add( bsize );
-        addField( panel, "Unsigned Int:", row++, rbutton, uint32Field );
+        addField( panel, "uint32:", row++, rbutton, uint32Field,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         rbutton = new JRadioButton();
         bsize = new ButtonByteSize( rbutton, 8 );
         buttonSizes.add( bsize );
-        addField( panel, "Signed Long:", row++, rbutton, sint64Field );
+        addField( panel, "int64:", row++, rbutton, sint64Field,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         rbutton = new JRadioButton();
         bsize = new ButtonByteSize( rbutton, 8 );
         buttonSizes.add( bsize );
-        addField( panel, "Unsigned Long:", row++, rbutton, uint64Field );
+        addField( panel, "uint64:", row++, rbutton, uint64Field,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         rbutton = new JRadioButton();
         bsize = new ButtonByteSize( rbutton, 4 );
         buttonSizes.add( bsize );
-        addField( panel, "Float:", row++, rbutton, floatField );
+        addField( panel, "float32:", row++, rbutton, floatField,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         rbutton = new JRadioButton();
         bsize = new ButtonByteSize( rbutton, 8 );
         buttonSizes.add( bsize );
-        addField( panel, "Double:", row++, rbutton, doubleField );
+        addField( panel, "float64:", row++, rbutton, doubleField,
+            showRadioButtons );
         highlightGroup.add( rbutton );
 
         return panel;
@@ -223,9 +253,10 @@ public class ValueView implements IView<JPanel>
      * @param row
      * @param rbutton
      * @param field
+     * @param showRadioButtons
      **************************************************************************/
     private void addField( JPanel panel, String fieldName, int row,
-        JRadioButton rbutton, JTextField field )
+        JRadioButton rbutton, JTextField field, boolean showRadioButtons )
     {
         JLabel label = new JLabel( fieldName );
         GridBagConstraints constraints;
@@ -247,10 +278,13 @@ public class ValueView implements IView<JPanel>
             new Insets( 4, 2, 4, 2 ), 0, 0 );
         panel.add( field, constraints );
 
-        constraints = new GridBagConstraints( 2, row, 1, 1, 0.0, 0.0,
-            GridBagConstraints.WEST, GridBagConstraints.NONE,
-            new Insets( 4, 4, 4, 2 ), 0, 0 );
-        panel.add( rbutton, constraints );
+        if( showRadioButtons )
+        {
+            constraints = new GridBagConstraints( 2, row, 1, 1, 0.0, 0.0,
+                GridBagConstraints.WEST, GridBagConstraints.NONE,
+                new Insets( 4, 4, 4, 2 ), 0, 0 );
+            panel.add( rbutton, constraints );
+        }
     }
 
     /***************************************************************************
@@ -349,7 +383,7 @@ public class ValueView implements IView<JPanel>
 
         if( i < 0 )
         {
-            i += 512;
+            i += 256;
         }
 
         return "" + i;

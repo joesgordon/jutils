@@ -130,6 +130,9 @@ public class NtpMessage
             rootDispersion, refID, reference, origin, receive, transmit );
     }
 
+    /***************************************************************************
+     * @param args
+     **************************************************************************/
     public static void main( String [] args )
     {
         NtpMessage request = new NtpMessage();
@@ -144,18 +147,14 @@ public class NtpMessage
         inputs.multicast.isUsed = false;
         inputs.nic = "10.10.10.225";
         // inputs.nic = "192.168.88.161";
-        inputs.remoteAddress.set( 10, 10, 10, 40 );
+        inputs.remoteAddress.setOctets( 10, 10, 10, 40 );
         // inputs.remoteAddress.set( 208, 100, 4, 52 );
         inputs.remotePort = 123;
         inputs.timeout = 5000;
         inputs.ttl = 1;
 
-        UdpConnection socket;
-
-        try
+        try( UdpConnection socket = new UdpConnection( inputs ) )
         {
-            socket = new UdpConnection( inputs );
-
             try( ByteArrayStream bs = new ByteArrayStream( 1024 );
                  DataStream s = new DataStream( bs, ByteOrdering.BIG_ENDIAN ) )
             {
@@ -214,22 +213,38 @@ public class NtpMessage
      **************************************************************************/
     public static enum NtpMode
     {
+        /**  */
         RESERVED( 0 ),
+        /**  */
         SYMMETRIC_ACTIVE( 1 ),
+        /**  */
         SYMMETRIC_PASSIVE( 2 ),
+        /**  */
         CLIENT( 3 ),
+        /**  */
         SERVER( 4 ),
+        /**  */
         BROADCAST( 5 ),
+        /**  */
         NTP_CTRL( 6 ),
+        /**  */
         PRIVATE( 7 );
 
+        /**  */
         public final int value;
 
+        /**
+         * @param value
+         */
         private NtpMode( int value )
         {
             this.value = value;
         }
 
+        /**
+         * @param value
+         * @return
+         */
         public static NtpMode fromValue( byte value )
         {
             for( NtpMode m : values() )
@@ -244,9 +259,9 @@ public class NtpMessage
         }
     }
 
-    /**
+    /***************************************************************************
      * 
-     */
+     **************************************************************************/
     public static enum LeapIndicator
     {
         /**  */
@@ -258,13 +273,21 @@ public class NtpMessage
         /** Clock not synchronized. */
         ALARM( 3 );
 
+        /**  */
         public final int value;
 
+        /**
+         * @param value
+         */
         private LeapIndicator( int value )
         {
             this.value = value;
         }
 
+        /**
+         * @param value
+         * @return
+         */
         public static LeapIndicator fromValue( byte value )
         {
             for( LeapIndicator li : values() )
@@ -279,9 +302,9 @@ public class NtpMessage
         }
     }
 
-    /**
+    /***************************************************************************
      * 
-     */
+     **************************************************************************/
     public static enum Stratum
     {
         /**  */
@@ -293,13 +316,21 @@ public class NtpMessage
         /** Clock not synchronized. */
         ALARM( 3 );
 
+        /**  */
         public final int value;
 
+        /**
+         * @param value
+         */
         private Stratum( int value )
         {
             this.value = value;
         }
 
+        /**
+         * @param value
+         * @return
+         */
         public static Stratum fromValue( byte value )
         {
             for( Stratum s : values() )
@@ -314,6 +345,9 @@ public class NtpMessage
         }
     }
 
+    /***************************************************************************
+     *
+     **************************************************************************/
     public static final class NtpTimestamp
     {
         /** Seconds since Jan 1, 1970 (or maybe 1900?) */
@@ -334,13 +368,22 @@ public class NtpMessage
         }
     }
 
+    /***************************************************************************
+     *
+     **************************************************************************/
     public static final class NtpMsgSerializer
         implements IDataSerializer<NtpMessage>
     {
+        /**  */
         private final BitsReader modeReader;
+        /**  */
         private final BitsReader versionReader;
+        /**  */
         private final BitsReader leapReader;
 
+        /**
+         * 
+         */
         public NtpMsgSerializer()
         {
             this.modeReader = new BitsReader( 0, 2 );
@@ -348,20 +391,33 @@ public class NtpMessage
             this.leapReader = new BitsReader( 6, 7 );
         }
 
-        private void readTimestamp( NtpTimestamp ts, IDataStream stream )
+        /**
+         * @param ts
+         * @param stream
+         * @throws IOException
+         */
+        private static void readTimestamp( NtpTimestamp ts, IDataStream stream )
             throws IOException
         {
             ts.seconds = stream.readInt();
             ts.fraction = stream.readInt();
         }
 
-        private void writeTimestamp( NtpTimestamp ts, IDataStream stream )
-            throws IOException
+        /**
+         * @param ts
+         * @param stream
+         * @throws IOException
+         */
+        private static void writeTimestamp( NtpTimestamp ts,
+            IDataStream stream ) throws IOException
         {
             stream.writeInt( ts.seconds );
             stream.writeInt( ts.fraction );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public NtpMessage read( IDataStream stream )
             throws IOException, ValidationException
@@ -393,6 +449,9 @@ public class NtpMessage
             return msg;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void write( NtpMessage msg, IDataStream stream )
             throws IOException

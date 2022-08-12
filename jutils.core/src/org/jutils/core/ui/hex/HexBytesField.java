@@ -73,7 +73,7 @@ public class HexBytesField implements IDataFormField<byte []>
      * @param items
      * @return
      **************************************************************************/
-    private List<HexBytesItem> createList( List<byte []> items )
+    private static List<HexBytesItem> createList( List<byte []> items )
     {
         List<HexBytesItem> hbi = new ArrayList<>();
 

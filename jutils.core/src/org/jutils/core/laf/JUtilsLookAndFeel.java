@@ -202,7 +202,7 @@ public class JUtilsLookAndFeel extends MetalLookAndFeel
     /***************************************************************************
      * @param table
      **************************************************************************/
-    private void printTable( UIDefaults table )
+    private static void printTable( UIDefaults table )
     {
         ArrayList<Entry<Object, Object>> entries = new ArrayList<>(
             table.entrySet() );

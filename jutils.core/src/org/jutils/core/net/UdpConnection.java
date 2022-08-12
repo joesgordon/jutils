@@ -61,7 +61,7 @@ public class UdpConnection implements IConnection
 
         if( inputs.multicast.isUsed )
         {
-            socket = openMulticast(inputs, info.nic);
+            socket = openMulticast( inputs, info.nic );
         }
         else
         {
@@ -82,11 +82,22 @@ public class UdpConnection implements IConnection
         }
         this.remotePort = inputs.remotePort;
     }
-    
+
+    /***************************************************************************
+     * @param inputs
+     * @param nic
+     * @return
+     * @throws IOException
+     **************************************************************************/
     @SuppressWarnings( "resource")
-    private static MulticastSocket openMulticast(UdpInputs inputs, 
-        NetworkInterface nic) throws IOException
+    private static MulticastSocket openMulticast( UdpInputs inputs,
+        NetworkInterface nic ) throws IOException
     {
+        // InetAddress nicAddr = nic.getInetAddresses().nextElement();
+        // InetSocketAddress sockAddr = new InetSocketAddress( nicAddr,
+        // inputs.localPort );
+        // MulticastSocket mcs = new MulticastSocket( sockAddr );
+
         MulticastSocket mcs = new MulticastSocket( inputs.localPort );
 
         // mcs.setLoopbackMode( !inputs.loopback );
@@ -108,7 +119,7 @@ public class UdpConnection implements IConnection
                 inputs.multicast.data, inputs.localPort );
             throw new IOException( msg, ex );
         }
-        
+
         return mcs;
     }
 

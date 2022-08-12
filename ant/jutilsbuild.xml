@@ -16,6 +16,7 @@
 	<property name="buildjavaproj.main" value="${jutilsbuild.main}" />
 	<property name="buildjavaproj.reldir" location="${jutilsbuild.projdir}/src" />
 	<property name="buildjavaproj.bindir" location="${juprops.bin}" />
+	<property name="buildjavaproj.debugdir" location="${juprops.debug}" />
 	
 	<condition property="buildjavaproj.infoprops" value="${jutilsbuild.infoprops}">
 		<isset property="jutilsbuild.infoprops" />

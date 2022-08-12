@@ -105,7 +105,7 @@ public class TcpConnection implements IConnection, Closeable
 
         inputs.localPort = socket.getLocalPort();
         inputs.nic = socket.getLocalAddress().getHostAddress();
-        inputs.remoteAddress.set(
+        inputs.remoteAddress.setInetAddress(
             ( ( InetSocketAddress )socket.getRemoteSocketAddress() ).getAddress() );
         inputs.remotePort = socket.getPort();
         try

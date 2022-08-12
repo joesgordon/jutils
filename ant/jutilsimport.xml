@@ -11,6 +11,7 @@
 	<property name="juprops.releasecomb" location="${juprops.build}/combined" />
 	<property name="juprops.releasesing" location="${juprops.build}/single" />
 	<property name="juprops.bin" location="${juprops.build}/bin" />
+	<property name="juprops.debug" location="${juprops.build}/debug" />
 
 	<property name="juprops.libs.dir" location="${juprops.jutilsdir}/jutils.libs/libs" />
     

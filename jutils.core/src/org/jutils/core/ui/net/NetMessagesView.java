@@ -575,7 +575,7 @@ public class NetMessagesView implements IView<JPanel>
         else
         {
             d.setDefaultCloseOperation( JDialog.HIDE_ON_CLOSE );
-            d.setSize( 675, 400 );
+            d.setSize( 910, 520 );
             d.setLocationRelativeTo( f );
         }
 
@@ -918,7 +918,7 @@ public class NetMessagesView implements IView<JPanel>
         /**  */
         private final JPanel view;
         /**  */
-        private final IDataView<NetMessage> msgView;
+        private final NetMessageView msgView;
 
         /**  */
         private final JButton prevButton;

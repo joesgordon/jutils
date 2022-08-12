@@ -165,7 +165,7 @@ public class HexAreaFormField implements IDataFormField<byte []>
      * @param value
      * @return
      **************************************************************************/
-    private String toString( byte [] value )
+    private static String toString( byte [] value )
     {
         return value == null ? "" : HexUtils.toHexString( value );
     }

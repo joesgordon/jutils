@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.time.format.DateTimeFormatter;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.jutils.core.net.NetMessage;
-import org.jutils.core.ui.hex.ByteBuffer;
-import org.jutils.core.ui.hex.HexPanel;
+import org.jutils.core.ui.hex.ByteArrayView;
 import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
@@ -25,7 +28,7 @@ public class NetMessageView implements IDataView<NetMessage>
     /** The field for message meta-data (e.g. Rx/Tx, time, remote IP/Port). */
     private final JTextField infoField;
     /** The bytes of the message. */
-    private final HexPanel bytesField;
+    private final ByteArrayView bytesField;
 
     /** The message being displayed. */
     private NetMessage msg;
@@ -39,16 +42,16 @@ public class NetMessageView implements IDataView<NetMessage>
     }
 
     /***************************************************************************
-     * @param msgWriter
+     * @param parsedView
      * @param addScrollPane
      **************************************************************************/
-    public NetMessageView( IDataView<NetMessage> msgWriter,
+    public NetMessageView( IDataView<NetMessage> parsedView,
         boolean addScrollPane )
     {
-        this.msgView = msgWriter;
+        this.msgView = parsedView;
 
         this.infoField = new JTextField( 5 );
-        this.bytesField = new HexPanel();
+        this.bytesField = new ByteArrayView();
         this.view = createView( addScrollPane );
 
         setData( new NetMessage( true, "127.0.0.1", 186, "127.0.0.1", 282,
@@ -159,7 +162,7 @@ public class NetMessageView implements IDataView<NetMessage>
             msgView.setData( msg );
         }
 
-        bytesField.setBuffer( new ByteBuffer( msg.contents ) );
+        bytesField.setData( msg.contents );
     }
 
     /***************************************************************************

@@ -84,7 +84,7 @@ public class TableMouseListener extends MouseAdapter
      * @param e
      * @param invokeHandlers
      **************************************************************************/
-    private void selectCellAt( MouseEvent e )
+    private static void selectCellAt( MouseEvent e )
     {
         JTable table = ( JTable )e.getSource();
         RowCol rc = fromPointToRowCol( table, e.getPoint() );
@@ -96,7 +96,7 @@ public class TableMouseListener extends MouseAdapter
      * @param table
      * @param rc
      **************************************************************************/
-    private void selectCellAt( JTable table, RowCol rc )
+    private static void selectCellAt( JTable table, RowCol rc )
     {
         if( rc.row > -1 && rc.col > -1 )
         {
