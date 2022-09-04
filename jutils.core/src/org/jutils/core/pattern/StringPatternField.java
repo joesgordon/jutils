@@ -1,16 +1,21 @@
 package org.jutils.core.pattern;
 
-import java.awt.*;
-import java.awt.event.MouseListener;
-import java.awt.event.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.IParser;
-import org.jutils.core.ui.event.RightClickListener;
 import org.jutils.core.ui.event.updater.IUpdater;
-import org.jutils.core.ui.fields.*;
+import org.jutils.core.ui.fields.BooleanFormField;
+import org.jutils.core.ui.fields.ComboFormField;
+import org.jutils.core.ui.fields.IDataFormField;
+import org.jutils.core.ui.fields.IDescriptor;
+import org.jutils.core.ui.fields.NamedItemDescriptor;
+import org.jutils.core.ui.fields.ParserFormField;
 import org.jutils.core.ui.validation.IValidityChangedListener;
 import org.jutils.core.ui.validation.Validity;
 
@@ -26,9 +31,7 @@ public class StringPatternField implements IDataFormField<StringPattern>
     /**  */
     private final ComboFormField<StringPatternType> typeField;
     /**  */
-    private final JCheckBoxMenuItem caseMenuItem;
-    /**  */
-    private final JPopupMenu contextMenu;
+    private final BooleanFormField caseField;
 
     /**  */
     private StringPattern pattern;
@@ -50,11 +53,12 @@ public class StringPatternField implements IDataFormField<StringPattern>
         this.patternField = new ParserFormField<>( name, parser, descriptor );
         this.typeField = new ComboFormField<>( "Type",
             StringPatternType.values(), new NamedItemDescriptor<>() );
+        this.caseField = new BooleanFormField( "Case" );
         this.view = createView();
-        this.caseMenuItem = new JCheckBoxMenuItem();
-        this.contextMenu = createContextMenu();
 
         setValue( this.pattern );
+
+        caseField.getView().setText( caseField.getName() );
 
         patternField.setUpdater( ( t ) -> {
             if( pattern != null )
@@ -72,36 +76,13 @@ public class StringPatternField implements IDataFormField<StringPattern>
             invokeUpdater();
         } );
 
-        MouseListener rcl = new RightClickListener(
-            ( e ) -> showContextMenu( e.getComponent(), e.getPoint() ) );
-        patternField.addMouseListener( rcl );
-
-        addMouseListener( patternField.getView(),
-            new FieldMouseListener( this ) );
-    }
-
-    /***************************************************************************
-     * @param container
-     * @param listener
-     **************************************************************************/
-    private static void addMouseListener( Container container,
-        MouseListener listener )
-    {
-        container.addMouseListener( listener );
-
-        for( int i = 0; i < container.getComponentCount(); i++ )
-        {
-            Component comp = container.getComponent( i );
-
-            if( comp instanceof Container )
+        caseField.setUpdater( ( d ) -> {
+            if( pattern != null )
             {
-                addMouseListener( ( Container )comp, listener );
+                pattern.isCaseSensitive = d;
             }
-            else
-            {
-                comp.addMouseListener( listener );
-            }
-        }
+            invokeUpdater();
+        } );
     }
 
     /***************************************************************************
@@ -133,33 +114,12 @@ public class StringPatternField implements IDataFormField<StringPattern>
             new Insets( 0, 0, 0, 0 ), 0, 0 );
         panel.add( typeField.getView(), constraints );
 
+        constraints = new GridBagConstraints( 2, 0, 1, 1, 0.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+            new Insets( 0, 6, 0, 0 ), 0, 0 );
+        panel.add( caseField.getView(), constraints );
+
         return panel;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private JPopupMenu createContextMenu()
-    {
-        JPopupMenu menu = new JPopupMenu();
-
-        caseMenuItem.setText( "Case Sensitive" );
-
-        caseMenuItem.addActionListener(
-            ( e ) -> pattern.isCaseSensitive = caseMenuItem.isSelected() );
-
-        menu.add( caseMenuItem );
-
-        return menu;
-    }
-
-    /***************************************************************************
-     * @param invoker
-     * @param p
-     **************************************************************************/
-    private void showContextMenu( Component invoker, Point p )
-    {
-        contextMenu.show( invoker, p.x, p.y );
     }
 
     /***************************************************************************
@@ -183,13 +143,13 @@ public class StringPatternField implements IDataFormField<StringPattern>
         {
             patternField.setValue( pattern.patternText );
             typeField.setValue( pattern.type );
-            caseMenuItem.setSelected( pattern.isCaseSensitive );
+            caseField.setValue( pattern.isCaseSensitive );
         }
         else
         {
             patternField.setValue( null );
             typeField.setValue( StringPatternType.CONTAINS );
-            caseMenuItem.setSelected( false );
+            caseField.setValue( false );
         }
     }
 
@@ -264,39 +224,6 @@ public class StringPatternField implements IDataFormField<StringPattern>
     public Validity getValidity()
     {
         return patternField.getValidity();
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static final class FieldMouseListener extends MouseAdapter
-    {
-        private final StringPatternField field;
-        private final JCheckBoxMenuItem csButton;
-        private final JPopupMenu popup;
-
-        public FieldMouseListener( StringPatternField field )
-        {
-            this.field = field;
-            this.csButton = new JCheckBoxMenuItem( "Case Sensitive" );
-            this.popup = new JPopupMenu();
-
-            popup.add( csButton );
-
-            ActionListener listener = (
-                e ) -> field.pattern.isCaseSensitive = csButton.isSelected();
-            csButton.addActionListener( listener );
-        }
-
-        @Override
-        public void mousePressed( MouseEvent e )
-        {
-            if( SwingUtilities.isRightMouseButton( e ) )
-            {
-                csButton.setSelected( field.pattern.isCaseSensitive );
-                popup.show( e.getComponent(), e.getX(), e.getY() );
-            }
-        }
     }
 
     /***************************************************************************
