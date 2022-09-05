@@ -12,7 +12,6 @@ import org.jutils.core.concurrent.IFinishedHandler;
 import org.jutils.core.concurrent.ITask;
 import org.jutils.core.concurrent.ITaskHandler;
 import org.jutils.core.concurrent.SafeExecutorService;
-import org.jutils.core.io.LogUtils;
 import org.jutils.core.pattern.IMatcher;
 import org.jutils.core.pattern.Match;
 import org.jutils.core.ui.MessageExceptionView;
@@ -104,7 +103,7 @@ public class SearchTask implements ITask
             }
         }
 
-        LogUtils.printDebug( "Found files. Awaiting contents search" );
+        // LogUtils.printDebug( "Found files. Awaiting contents search" );
 
         fileConsumer.signalInputFinished();
 
@@ -114,7 +113,7 @@ public class SearchTask implements ITask
 
         stopper.signalFinished();
 
-        LogUtils.printDebug( "Search task finished" );
+        // LogUtils.printDebug( "Search task finished" );
     }
 
     /***************************************************************************

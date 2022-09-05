@@ -213,7 +213,13 @@ public class FileFormField implements IDataFormField<File>
 
         if( parser.type == ExistenceType.DIRECTORY_ONLY )
         {
-            IFileSelected ifs = ( f ) -> setValue( f );
+            IFileSelected ifs = ( f ) -> {
+                setValue( f );
+                if( updater != null )
+                {
+                    updater.update( f );
+                }
+            };
             browseListener = new DirectoryChooserListener( panel,
                 "Choose Directory", ifs, () -> getDefaultFile() );
         }

@@ -10,6 +10,7 @@ import javax.swing.Box;
 import javax.swing.JPanel;
 
 import org.jutils.core.SwingUtils;
+import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.parsers.ExistenceType;
 import org.jutils.core.pattern.StringPattern;
 import org.jutils.core.pattern.StringPatternField;
@@ -69,7 +70,7 @@ public class SearchParamsView implements IDataView<SearchParams>
         this.contentsField = new UsableFormField<>(
             new StringPatternField( "Contents" ) );
         this.pathField = new FileFormField( "Search In",
-            ExistenceType.DIRECTORY_ONLY );
+            ExistenceType.DIRECTORY_ONLY, true, false );
         this.subfoldersField = new BooleanFormField( "Search Sub-directories" );
         this.moreThanField = new UsableFormField<>(
             new LongFormField( "More Than", null, 10 ) );
@@ -88,7 +89,10 @@ public class SearchParamsView implements IDataView<SearchParams>
 
         filenameField.setUpdater( ( s ) -> params.filename.set( s ) );
         contentsField.setUpdater( ( u ) -> params.contents.set( u ) );
-        pathField.setUpdater( ( f ) -> params.path = f );
+        pathField.setUpdater( ( f ) -> {
+            params.path = f;
+            LogUtils.printDebug( "updated path to %s", f );
+        } );
         subfoldersField.setUpdater( ( b ) -> params.searchSubfolders = b );
 
         moreThanField.setUpdater( ( u ) -> params.moreThan.set( u ) );
