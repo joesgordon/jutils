@@ -16,12 +16,11 @@ public class NetMessagesTableConfig implements ITableItemsConfig<NetMessage>
 {
     /**  */
     private static final String [] NAMES = new String[] { "Tx/Rx", "Time",
-        "Local Address", "Local Port", "Remote Address", "Remote Port",
-        "Length", "Contents" };
+        "Local", "Remote", "Length", "Contents" };
     /**  */
     private static final Class<?> [] CLASSES = new Class<?>[] { String.class,
-        LocalDateTime.class, String.class, Integer.class, String.class,
-        Integer.class, Integer.class, String.class };
+        LocalDateTime.class, String.class, String.class, Integer.class,
+        String.class };
 
     /**  */
     private final Charset utf8;
@@ -119,18 +118,12 @@ public class NetMessagesTableConfig implements ITableItemsConfig<NetMessage>
                     return item.time;
 
                 case 2:
-                    return item.localAddress;
+                    return item.local.toString();
 
                 case 3:
-                    return item.localPort;
+                    return item.remote.toString();
 
                 case 4:
-                    return item.remoteAddress;
-
-                case 5:
-                    return item.remotePort;
-
-                case 6:
                     return item.contents.length;
 
                 default:
@@ -148,7 +141,7 @@ public class NetMessagesTableConfig implements ITableItemsConfig<NetMessage>
             boolean addDots = cnt != item.contents.length;
 
             Utils.byteArrayCopy( item.contents, 0, buf, 0, buf.length );
-            
+
             String str;
 
             if( isHex )
@@ -160,9 +153,9 @@ public class NetMessagesTableConfig implements ITableItemsConfig<NetMessage>
                 HexUtils.cleanAscii( buf, 0, cnt );
                 str = new String( buf, 0, cnt, utf8 );
             }
-            
+
             str = addDots ? str + " ..." : str;
-            
+
             return str;
         }
 
@@ -186,6 +179,9 @@ public class NetMessagesTableConfig implements ITableItemsConfig<NetMessage>
         return false;
     }
 
+    /***************************************************************************
+     * @param isHex
+     **************************************************************************/
     public void setHexText( boolean isHex )
     {
         this.isHex = isHex;
@@ -196,18 +192,27 @@ public class NetMessagesTableConfig implements ITableItemsConfig<NetMessage>
      **************************************************************************/
     private static final class EmptyMessageFields implements IMessageFields
     {
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int getFieldCount()
         {
             return 0;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getFieldName( int index )
         {
             return null;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getFieldValue( NetMessage message, int index )
         {

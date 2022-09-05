@@ -11,6 +11,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import org.jutils.core.net.EndPoint;
 import org.jutils.core.net.NetMessage;
 import org.jutils.core.ui.hex.ByteArrayView;
 import org.jutils.core.ui.model.IDataView;
@@ -54,7 +55,7 @@ public class NetMessageView implements IDataView<NetMessage>
         this.bytesField = new ByteArrayView();
         this.view = createView( addScrollPane );
 
-        setData( new NetMessage( true, "127.0.0.1", 186, "127.0.0.1", 282,
+        setData( new NetMessage( true, new EndPoint( 186 ), new EndPoint( 282 ),
             new byte[0] ) );
     }
 
@@ -184,13 +185,9 @@ public class NetMessageView implements IDataView<NetMessage>
         str.append( "at " );
         str.append( msg.time.format( dtf ) );
         str.append( " on " );
-        str.append( msg.localAddress );
-        str.append( ":" );
-        str.append( msg.localPort );
+        str.append( msg.local.toString() );
         str.append( msg.received ? " from " : " to " );
-        str.append( msg.remoteAddress );
-        str.append( ":" );
-        str.append( msg.remotePort );
+        str.append( msg.remote.toString() );
 
         return str.toString();
     }

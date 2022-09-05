@@ -1,39 +1,55 @@
 package org.jutils.core.net;
 
-import java.io.Closeable;
-import java.io.IOException;
+import java.net.InetAddress;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public interface IConnection extends Closeable
+public class EndPoint
 {
-    /***************************************************************************
-     * Sends the message provided using this connection.
-     * @param buf the bytes to send
-     * @return the message sent or {@code null} on error.
-     * @throws IOException any exception generated.
-     **************************************************************************/
-    public NetMessage sendMessage( byte [] buf ) throws IOException;
+    /**  */
+    public final IpAddress address;
+    /**  */
+    public int port;
 
     /***************************************************************************
-     * @return
-     * @throws IOException
+     * 
      **************************************************************************/
-    public NetMessage receiveMessage() throws IOException;
+    public EndPoint()
+    {
+        this.address = new IpAddress();
+        this.port = 0;
+    }
 
     /***************************************************************************
-     * @param listener
+     * @param port
      **************************************************************************/
-    public void addDisconnectedListener( Runnable listener );
+    public EndPoint( int port )
+    {
+        this();
+
+        this.address.setOctets( 127, 0, 0, 1 );
+        this.port = port;
+    }
 
     /***************************************************************************
-     * @return
+     * @param address
+     * @param port
      **************************************************************************/
-    public String getNic();
+    public EndPoint( InetAddress address, int port )
+    {
+        this();
+
+        this.address.setInetAddress( address );
+        this.port = port;
+    }
 
     /***************************************************************************
-     * @return
+     * {@inheritDoc}
      **************************************************************************/
-    public EndPoint getRemote();
+    @Override
+    public String toString()
+    {
+        return String.format( "%s:%d", address, port );
+    }
 }

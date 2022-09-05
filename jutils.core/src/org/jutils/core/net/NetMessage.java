@@ -16,14 +16,10 @@ public class NetMessage
     public final boolean received;
     /** Time of transmission or reception. */
     public final LocalDateTime time;
-    /** The local NIC address on which the message was Tx/Rx. */
-    public final String localAddress;
-    /** The local port on which the message was Tx/Rx. */
-    public final int localPort;
-    /** The address of the remote system the message was Tx/Rx. */
-    public final String remoteAddress;
-    /** The port on the remote system the message was Tx/Rx. */
-    public final int remotePort;
+    /** The local NIC address/port on which the message was Tx/Rx. */
+    public final EndPoint local;
+    /** The address/port of the remote system the message was Tx/Rx. */
+    public final EndPoint remote;
     /** The raw message contents. */
     public final byte [] contents;
     /**  */
@@ -31,38 +27,31 @@ public class NetMessage
 
     /***************************************************************************
      * @param received
-     * @param localAddress
-     * @param localPort
-     * @param remoteAddress
-     * @param remotePort
+     * @param local
+     * @param remote
      * @param contents
      **************************************************************************/
-    public NetMessage( boolean received, String localAddress, int localPort,
-        String remoteAddress, int remotePort, byte [] contents )
+    public NetMessage( boolean received, EndPoint local, EndPoint remote,
+        byte [] contents )
     {
-        this( received, LocalDateTime.now( ZoneOffset.UTC ), localAddress,
-            localPort, remoteAddress, remotePort, contents );
+        this( received, LocalDateTime.now( ZoneOffset.UTC ), local, remote,
+            contents );
     }
 
     /***************************************************************************
      * @param received
      * @param time
-     * @param localAddress
-     * @param localPort
-     * @param remoteAddress
-     * @param remotePort
+     * @param local
+     * @param remote
      * @param contents
      **************************************************************************/
-    public NetMessage( boolean received, LocalDateTime time,
-        String localAddress, int localPort, String remoteAddress,
-        int remotePort, byte [] contents )
+    public NetMessage( boolean received, LocalDateTime time, EndPoint local,
+        EndPoint remote, byte [] contents )
     {
         this.received = received;
         this.time = time;
-        this.localAddress = localAddress;
-        this.localPort = localPort;
-        this.remoteAddress = remoteAddress;
-        this.remotePort = remotePort;
+        this.local = local;
+        this.remote = remote;
         this.contents = contents;
         this.message = null;
     }
@@ -74,10 +63,8 @@ public class NetMessage
     {
         this.received = msg.received;
         this.time = msg.time;
-        this.localAddress = msg.localAddress;
-        this.localPort = msg.localPort;
-        this.remoteAddress = msg.remoteAddress;
-        this.remotePort = msg.remotePort;
+        this.local = msg.local;
+        this.remote = msg.remote;
         this.contents = msg.contents;
         this.message = msg.message;
     }
@@ -93,11 +80,13 @@ public class NetMessage
         return msg;
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public String toString()
     {
-        return String.format( "%s, %s, %s, %d, %s, %s, %s, %s", received, time,
-            localAddress, localPort, remoteAddress, remotePort,
-            HexUtils.toHexString( contents, " " ), message );
+        return String.format( "%s, %s, %s, %d, %s, %s", received, time, local,
+            remote, HexUtils.toHexString( contents, " " ), message );
     }
 }

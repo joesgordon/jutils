@@ -10,7 +10,7 @@ import java.util.Objects;
 public class MulticastInputs
 {
     /** The multicast group used to send/receive. */
-    public final Ip4Address group;
+    public final IpAddress group;
     /** The port to send/receive. */
     public int port;
     /** The nic to be bound to. */
@@ -31,7 +31,7 @@ public class MulticastInputs
      **************************************************************************/
     public MulticastInputs()
     {
-        this.group = new Ip4Address( 238, 0, 0, 1 );
+        this.group = new IpAddress( 238, 0, 0, 1 );
         this.port = 2048;
         this.nic = null;
         this.ttl = 10;
@@ -44,7 +44,7 @@ public class MulticastInputs
      **************************************************************************/
     public MulticastInputs( MulticastInputs inputs )
     {
-        this.group = new Ip4Address( inputs.group );
+        this.group = new IpAddress( inputs.group );
         this.port = inputs.port;
         this.nic = inputs.nic;
         this.ttl = inputs.ttl;

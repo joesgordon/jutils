@@ -2,14 +2,15 @@ package org.jutils.core.ui.net;
 
 import javax.swing.JComponent;
 
+import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.parsers.MulticastGroupParser;
-import org.jutils.core.net.Ip4Address;
+import org.jutils.core.net.IpAddress;
 import org.jutils.core.net.UdpInputs;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.fields.BooleanFormField;
 import org.jutils.core.ui.fields.IDataFormField;
 import org.jutils.core.ui.fields.IntegerFormField;
-import org.jutils.core.ui.fields.Ip4AddressField;
+import org.jutils.core.ui.fields.IpAddressField;
 import org.jutils.core.ui.fields.UsableFormField;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.validation.AggregateValidityChangedManager;
@@ -31,7 +32,7 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
     /**  */
     private final BooleanFormField broadcastField;
     /**  */
-    private final UsableFormField<Ip4Address> multicastField;
+    private final UsableFormField<IpAddress> multicastField;
     /**  */
     private final IntegerFormField timeoutField;
     /**  */
@@ -41,7 +42,7 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
     /**  */
     private final IntegerFormField ttlField;
     /**  */
-    private final Ip4AddressField remoteAddressField;
+    private final IpAddressField remoteAddressField;
     /**  */
     private final IntegerFormField remotePortField;
 
@@ -76,7 +77,7 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
 
         this.broadcastField = new BooleanFormField( "Broadcast" );
         this.multicastField = new UsableFormField<>(
-            new Ip4AddressField( "Multicast", new MulticastGroupParser() ) );
+            new IpAddressField( "Multicast", new MulticastGroupParser() ) );
 
         this.timeoutField = new IntegerFormField( "Timeout", "ms", 0, null );
         this.reuseField = new BooleanFormField( "Reuse" );
@@ -84,7 +85,7 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
         this.loopbackField = new BooleanFormField( "Loopback" );
         this.ttlField = new IntegerFormField( "TTL", 0, 255 );
 
-        this.remoteAddressField = new Ip4AddressField( "Remote Address" );
+        this.remoteAddressField = new IpAddressField( "Remote Address" );
         this.remotePortField = new IntegerFormField( "Remote Port", 0, 65535 );
 
         this.validityManager = new AggregateValidityChangedManager();
@@ -138,6 +139,7 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
 
         remoteAddressField.setUpdater( ( d ) -> {
             inputs.remoteAddress.set( d );
+            LogUtils.printDebug( "Remote address is %s", inputs.remoteAddress );
         } );
 
         remotePortField.setUpdater( ( d ) -> {

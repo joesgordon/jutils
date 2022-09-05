@@ -6,16 +6,14 @@ import java.time.LocalDateTime;
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.IDataSerializer;
 import org.jutils.core.io.IDataStream;
-import org.jutils.core.io.LengthStringSerializer;
 import org.jutils.core.io.LocalDateTimeSerializer;
+import org.jutils.core.net.IpAddress.IpVersion;
 
 /*******************************************************************************
  *
  ******************************************************************************/
 public class NetMessageSerializer implements IDataSerializer<NetMessage>
 {
-    /**  */
-    private final LengthStringSerializer stringSerializer = new LengthStringSerializer();
     /**  */
     private final LocalDateTimeSerializer timeSerializer = new LocalDateTimeSerializer();
 
@@ -30,19 +28,54 @@ public class NetMessageSerializer implements IDataSerializer<NetMessage>
 
         LocalDateTime time = timeSerializer.read( stream );
 
-        String localAddress = stringSerializer.read( stream );
-        int localPort = stream.readInt();
-
-        String remoteAddress = stringSerializer.read( stream );
-        int remotePort = stream.readInt();
+        EndPoint local = readEndPoint( stream );
+        EndPoint remote = readEndPoint( stream );
 
         int contentsLen = stream.readInt();
         byte [] contents = new byte[contentsLen];
 
         stream.read( contents );
 
-        return new NetMessage( received, time, localAddress, localPort,
-            remoteAddress, remotePort, contents );
+        return new NetMessage( received, time, local, remote, contents );
+    }
+
+    /***************************************************************************
+     * @param stream
+     * @return
+     * @throws IOException
+     **************************************************************************/
+    private static EndPoint readEndPoint( IDataStream stream )
+        throws IOException
+    {
+        EndPoint ep = new EndPoint();
+        boolean isIpv4 = stream.readBoolean();
+        IpVersion ver = isIpv4 ? IpVersion.IPV4 : IpVersion.IPV6;
+        int len = ver.byteCount;
+        byte [] bytes = new byte[len];
+
+        stream.read( bytes );
+
+        ep.address.set( bytes );
+        ep.port = stream.readInt();
+
+        return ep;
+    }
+
+    /***************************************************************************
+     * @param ep
+     * @param stream
+     * @throws IOException
+     **************************************************************************/
+    private static void writeEndPoint( EndPoint ep, IDataStream stream )
+        throws IOException
+    {
+        IpVersion ver = ep.address.getVersion();
+        boolean isIpv4 = ver == IpVersion.IPV4;
+        int len = ver.byteCount;
+
+        stream.writeBoolean( isIpv4 );
+        stream.write( ep.address.address, 0, len );
+        stream.writeInt( ep.port );
     }
 
     /***************************************************************************
@@ -55,11 +88,8 @@ public class NetMessageSerializer implements IDataSerializer<NetMessage>
 
         timeSerializer.write( msg.time, stream );
 
-        stringSerializer.write( msg.localAddress, stream );
-        stream.writeInt( msg.localPort );
-
-        stringSerializer.write( msg.remoteAddress, stream );
-        stream.writeInt( msg.remotePort );
+        writeEndPoint( msg.local, stream );
+        writeEndPoint( msg.remote, stream );
 
         stream.writeInt( msg.contents.length );
         stream.write( msg.contents );

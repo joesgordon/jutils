@@ -4,8 +4,8 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 
 import org.jutils.core.io.IParser;
-import org.jutils.core.io.parsers.Ip4AddressParser;
-import org.jutils.core.net.Ip4Address;
+import org.jutils.core.io.parsers.IpAddressParser;
+import org.jutils.core.net.IpAddress;
 import org.jutils.core.ui.event.updater.IUpdater;
 import org.jutils.core.ui.model.ParserTextFormatter;
 import org.jutils.core.ui.validation.IValidityChangedListener;
@@ -14,24 +14,24 @@ import org.jutils.core.ui.validation.Validity;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class Ip4AddressField implements IDataFormField<Ip4Address>
+public class IpAddressField implements IDataFormField<IpAddress>
 {
     /**  */
-    private final ParserFormField<Ip4Address> field;
+    private final ParserFormField<IpAddress> field;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
-    public Ip4AddressField( String name )
+    public IpAddressField( String name )
     {
-        this( name, new Ip4AddressParser() );
+        this( name, new IpAddressParser() );
     }
 
     /***************************************************************************
      * @param name
      * @param parser
      **************************************************************************/
-    public Ip4AddressField( String name, IParser<Ip4Address> parser )
+    public IpAddressField( String name, IParser<IpAddress> parser )
     {
         JFormattedTextField textField = new JFormattedTextField(
             new ParserTextFormatter<>( parser ) );
@@ -61,7 +61,7 @@ public class Ip4AddressField implements IDataFormField<Ip4Address>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Ip4Address getValue()
+    public IpAddress getValue()
     {
         return field.getValue();
     }
@@ -70,7 +70,7 @@ public class Ip4AddressField implements IDataFormField<Ip4Address>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setValue( Ip4Address value )
+    public void setValue( IpAddress value )
     {
         field.setValue( value );
     }
@@ -79,7 +79,7 @@ public class Ip4AddressField implements IDataFormField<Ip4Address>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setUpdater( IUpdater<Ip4Address> updater )
+    public void setUpdater( IUpdater<IpAddress> updater )
     {
         field.setUpdater( updater );
     }
@@ -88,7 +88,7 @@ public class Ip4AddressField implements IDataFormField<Ip4Address>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IUpdater<Ip4Address> getUpdater()
+    public IUpdater<IpAddress> getUpdater()
     {
         return field.getUpdater();
     }

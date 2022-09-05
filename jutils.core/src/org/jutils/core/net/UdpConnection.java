@@ -144,8 +144,9 @@ public class UdpConnection implements IConnection
         byte [] contents = Arrays.copyOf( rxBuffer, packet.getLength() );
         InetAddress address = packet.getAddress();
         int port = packet.getPort();
-        return new NetMessage( true, socket.getLocalAddress().getHostAddress(),
-            socket.getLocalPort(), address.getHostAddress(), port, contents );
+
+        return new NetMessage( true, getLocal(), new EndPoint( address, port ),
+            contents );
     }
 
     /***************************************************************************
@@ -180,6 +181,33 @@ public class UdpConnection implements IConnection
     }
 
     /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public EndPoint getRemote()
+    {
+        EndPoint ep = new EndPoint();
+
+        ep.address.setInetAddress( remoteAddress );
+        ep.port = remotePort;
+
+        return ep;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public EndPoint getLocal()
+    {
+        EndPoint ep = new EndPoint();
+
+        ep.address.setInetAddress( socket.getLocalAddress() );
+        ep.port = socket.getLocalPort();
+
+        return ep;
+    }
+
+    /***************************************************************************
      * @param contents
      * @param toAddr
      * @param toPort
@@ -194,8 +222,8 @@ public class UdpConnection implements IConnection
 
         socket.send( packet );
 
-        return new NetMessage( false, socket.getLocalAddress().getHostAddress(),
-            socket.getLocalPort(), toAddr.getHostAddress(), toPort, contents );
+        return new NetMessage( false, getLocal(),
+            new EndPoint( toAddr, toPort ), contents );
     }
 
     /***************************************************************************

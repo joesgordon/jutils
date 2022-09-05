@@ -5,7 +5,10 @@ import javax.swing.JComponent;
 import org.jutils.core.io.parsers.MulticastGroupParser;
 import org.jutils.core.net.MulticastInputs;
 import org.jutils.core.ui.StandardFormView;
-import org.jutils.core.ui.fields.*;
+import org.jutils.core.ui.fields.BooleanFormField;
+import org.jutils.core.ui.fields.IDataFormField;
+import org.jutils.core.ui.fields.IntegerFormField;
+import org.jutils.core.ui.fields.IpAddressField;
 import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
@@ -16,7 +19,7 @@ public class MulticastInputsView implements IDataView<MulticastInputs>
     /**  */
     private final StandardFormView form;
     /**  */
-    private final Ip4AddressField addressField;
+    private final IpAddressField addressField;
     /**  */
     private final IntegerFormField portField;
     /**  */
@@ -45,7 +48,7 @@ public class MulticastInputsView implements IDataView<MulticastInputs>
     public MulticastInputsView( boolean advanced )
     {
         this.form = new StandardFormView();
-        this.addressField = new Ip4AddressField( "Multicast Group",
+        this.addressField = new IpAddressField( "Multicast Group",
             new MulticastGroupParser() );
         this.portField = new IntegerFormField( "Port", 0, 65535 );
         this.nicField = new NetworkInterfaceField( "NIC" );

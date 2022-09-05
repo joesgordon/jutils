@@ -10,7 +10,7 @@ public class TcpInputs
     /**  */
     public int localPort;
     /**  */
-    public Ip4Address remoteAddress;
+    public IpAddress remoteAddress;
     /**  */
     public int remotePort;
     /**
@@ -26,7 +26,7 @@ public class TcpInputs
     {
         this.nic = null;
         this.localPort = 0;
-        this.remoteAddress = new Ip4Address( 127, 0, 0, 1 );
+        this.remoteAddress = new IpAddress( 127, 0, 0, 1 );
         this.remotePort = 5000;
         this.timeout = 500;
     }
@@ -38,7 +38,7 @@ public class TcpInputs
     {
         this.nic = inputs.nic;
         this.localPort = inputs.localPort;
-        this.remoteAddress = new Ip4Address( inputs.remoteAddress );
+        this.remoteAddress = new IpAddress( inputs.remoteAddress );
         this.remotePort = inputs.remotePort;
         this.timeout = inputs.timeout;
     }
