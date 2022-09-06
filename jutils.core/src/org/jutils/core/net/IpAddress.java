@@ -8,22 +8,22 @@ import org.jutils.core.INamedItem;
 import org.jutils.core.Utils;
 
 /*******************************************************************************
- *
+ * Represents an IPv4 or IPv6 address.
  ******************************************************************************/
 public class IpAddress
 {
-    /**  */
+    /** The number of bytes in an IPv4 address. */
     public static final int IPV4_SIZE = 4;
-    /**  */
+    /** The number of bytes in an IPv6 address. */
     public static final int IPV6_SIZE = 16;
 
-    /**  */
+    /** IP address values (always IPv6 size). */
     public final byte [] address;
     /**  */
     private IpVersion version;
 
     /***************************************************************************
-     * 
+     * Creates an IPv4 address initialized to ANY (0.0.0.0).
      **************************************************************************/
     public IpAddress()
     {
@@ -31,41 +31,46 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @param version
+     * Creates an IP address of the specified version initialized to ANY
+     * (0.0.0.0 or ::0).
+     * @param version the version of IP address to create.
      **************************************************************************/
     public IpAddress( IpVersion version )
     {
         this.address = new byte[IPV6_SIZE];
-        this.version = IpVersion.IPV4;
+        this.version = version;
     }
 
     /***************************************************************************
-     * @param f1
-     * @param f2
-     * @param f3
-     * @param f4
+     * Creates an IPv4 address with the specified octets.
+     * @param o1 octet 1
+     * @param o2 octet 2
+     * @param o3 octet 3
+     * @param o4 octet 4
      **************************************************************************/
-    public IpAddress( int f1, int f2, int f3, int f4 )
+    public IpAddress( int o1, int o2, int o3, int o4 )
     {
         this( IpVersion.IPV4 );
 
-        setOctets( f1, f2, f3, f4 );
+        setOctets( o1, o2, o3, o4 );
     }
 
     /***************************************************************************
-     * @param address
+     * Creates a copy of the specified IP address.
+     * @param address IP to be copied.
      **************************************************************************/
     public IpAddress( IpAddress address )
     {
         this.address = new byte[IPV6_SIZE];
         this.version = address.version;
 
-        Utils.byteArrayCopy( this.address, 0, address.address, 0,
-            address.address.length );
+        Utils.byteArrayCopy( address.address, 0, this.address, 0, IPV6_SIZE );
     }
 
     /***************************************************************************
-     * @return
+     * Returns a copy of the address of length {@link #IPV4_SIZE} or
+     * {@link #IPV6_SIZE} depending on the IP version.
+     * @return a copy of the address.
      **************************************************************************/
     public byte [] get()
     {
@@ -77,9 +82,12 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @param address
-     * @throws ArrayIndexOutOfBoundsException
-     * @throws IllegalArgumentException
+     * Sets this address to the specified values using the length of values to
+     * determine the IP version.
+     * @param address the address of length {@link #IPV4_SIZE} or
+     * {@link #IPV6_SIZE}.
+     * @throws IllegalArgumentException if the provided address is not of length
+     * {@link #IPV4_SIZE} or {@link #IPV6_SIZE}.
      **************************************************************************/
     public void set( byte [] address ) throws IllegalArgumentException
     {
@@ -102,6 +110,7 @@ public class IpAddress
 
         try
         {
+            Arrays.fill( this.address, ( byte )0 );
             Utils.byteArrayCopy( address, 0, this.address, 0, address.length );
             version = v;
         }
@@ -112,54 +121,85 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @param address
+     * Sets this address to the provided address.
+     * @param address the IP to set this address to.
      **************************************************************************/
     public void set( IpAddress address )
     {
-        set( address.get() );
+        try
+        {
+            set( address.get() );
+        }
+        catch( IllegalArgumentException ex )
+        {
+            throw new IllegalStateException(
+                "Programming error as length has already been checked", ex );
+        }
     }
 
     /***************************************************************************
-     * @param address
-     * @throws ArrayIndexOutOfBoundsException
+     * Sets this address to the provided address.
+     * @param address the IP to set this address to.
      **************************************************************************/
     public void setInetAddress( InetAddress address )
-        throws ArrayIndexOutOfBoundsException
     {
         byte [] octets = address.getAddress();
 
-        set( octets );
+        try
+        {
+            set( octets );
+        }
+        catch( IllegalArgumentException ex )
+        {
+            throw new IllegalStateException(
+                "Programming error as length has already been checked", ex );
+        }
     }
 
     /***************************************************************************
-     * @return
-     * @throws UnknownHostException
+     * Creates an {@link InetAddress} using the byte values of this address.
+     * @return the {@link InetAddress} representing this IP.
      **************************************************************************/
-    public InetAddress getInetAddress() throws UnknownHostException
+    public InetAddress getInetAddress()
     {
-        return InetAddress.getByAddress( get() );
+        try
+        {
+            return InetAddress.getByAddress( get() );
+        }
+        catch( UnknownHostException ex )
+        {
+            throw new IllegalStateException(
+                "Programming error as length has already been checked", ex );
+        }
     }
 
     /***************************************************************************
-     * @param f1
-     * @param f2
-     * @param f3
-     * @param f4
+     * Sets this as an IPv4 address with the specified octets.
+     * @param o1 octet 1
+     * @param o2 octet 2
+     * @param o3 octet 3
+     * @param o4 octet 4
      **************************************************************************/
-    public void setOctets( int f1, int f2, int f3, int f4 )
+    public void setOctets( int o1, int o2, int o3, int o4 )
     {
         version = IpVersion.IPV4;
 
-        address[0] = ( byte )f1;
-        address[1] = ( byte )f2;
-        address[2] = ( byte )f3;
-        address[3] = ( byte )f4;
+        Arrays.fill( this.address, ( byte )0 );
+
+        address[0] = ( byte )o1;
+        address[1] = ( byte )o2;
+        address[2] = ( byte )o3;
+        address[3] = ( byte )o4;
     }
 
     /***************************************************************************
-     * @return
+     * Returns the integer representation of an IPv4 address in network byte
+     * order.
+     * @return the integer representation of an IPv4 address in network byte
+     * order.
+     * @throws IllegalStateException if this address is not an IPv4 address.
      **************************************************************************/
-    public int getValue()
+    public int getValue() throws IllegalStateException
     {
         if( version != IpVersion.IPV4 )
         {
@@ -174,11 +214,14 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @param address
+     * Sets this address to the provided IPv4 address.
+     * @param address an IPv4 address to set this address to.
      **************************************************************************/
     public void setValue( int address )
     {
         version = IpVersion.IPV4;
+
+        Arrays.fill( this.address, ( byte )0 );
 
         this.address[0] = ( byte )( address >>> 24 );
         this.address[1] = ( byte )( address >>> 16 );
@@ -187,7 +230,8 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @return
+     * Provides the IP version of this address.
+     * @return the IP version of this address.
      **************************************************************************/
     public IpVersion getVersion()
     {
@@ -206,9 +250,10 @@ public class IpAddress
         }
         else if( obj instanceof IpAddress )
         {
-            IpAddress address = ( IpAddress )obj;
+            IpAddress that = ( IpAddress )obj;
 
-            return Arrays.equals( this.address, address.address );
+            return this.version == that.version &&
+                Arrays.equals( this.address, that.address );
         }
 
         return false;
@@ -241,20 +286,20 @@ public class IpAddress
         return "";
     }
 
-    /**
+    /***************************************************************************
      * @return
-     */
+     **************************************************************************/
     private String toIpv4String()
     {
         return String.format( "%d.%d.%d.%d", address[0] & 0xFF,
             address[1] & 0xFF, address[2] & 0xFF, address[3] & 0xFF );
     }
 
-    /**
+    /***************************************************************************
      * https://www.geeksforgeeks.org/compression-of-ipv6-address/
      * https://techhub.hpe.com/eginfolib/networking/docs/switches/5950/5200-2220a_l3-ip-svcs_cg/content/472592411.htm
      * @return
-     */
+     **************************************************************************/
     private String toIpv6String()
     {
         // TODO Auto-generated method stub
