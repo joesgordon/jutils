@@ -47,6 +47,8 @@ public class FileFormField implements IDataFormField<File>
     /** The button used to display an open file dialog. */
     private final JButton button;
     /** The listener called when the user clicks the browse button. */
+    private final ActionListener browseListener;
+    /** The file listener called when the user clicks the browse button. */
     private final FileChooserListener fileListener;
     /** The icon shown in {@link #textField}. */
     private final FileIcon icon;
@@ -129,7 +131,8 @@ public class FileFormField implements IDataFormField<File>
         this.button = new JButton();
         this.icon = new FileIcon();
 
-        this.fileListener = createBrowseListener( existence, isSave );
+        this.fileListener = createFileListener( isSave );
+        this.browseListener = createBrowseListener( existence, isSave );
         this.view = createView( showButton, isSave );
 
         this.textField.setIcon( icon );
@@ -140,6 +143,13 @@ public class FileFormField implements IDataFormField<File>
 
         parserField.addValidityChanged( ( v ) -> handleValidityChanged( v ) );
         parserField.setUpdater( ( d ) -> handleDataChanged( d ) );
+    }
+
+    private void handleFileSelected( File file )
+    {
+        file = file.getAbsoluteFile();
+        setValue( file );
+        handleDataChanged( file );
     }
 
     /***************************************************************************
@@ -175,6 +185,15 @@ public class FileFormField implements IDataFormField<File>
         }
     }
 
+    private FileChooserListener createFileListener( boolean isSave )
+    {
+        IFileSelected ifs = ( f ) -> handleFileSelected( f );
+        FileChooserListener fcl = new FileChooserListener( getView(),
+            "Choose File", isSave, ifs, () -> getDefaultFile() );
+
+        return fcl;
+    }
+
     /***************************************************************************
      * Creates the listener for the browse button.
      * @param existence the type of existence to be checked.
@@ -182,18 +201,19 @@ public class FileFormField implements IDataFormField<File>
      * indicates open).
      * @return the listener for the browse button.
      **************************************************************************/
-    private FileChooserListener createBrowseListener( ExistenceType existence,
+    private ActionListener createBrowseListener( ExistenceType existence,
         boolean isSave )
     {
-        FileChooserListener fcl = null;
+        ActionListener fcl = null;
 
         if( existence != ExistenceType.DIRECTORY_ONLY )
         {
-            IFileSelected ifs = ( f ) -> {
-                setValue( f );
-                handleDataChanged( f );
-            };
-            fcl = new FileChooserListener( getView(), "Choose File", isSave,
+            fcl = this.fileListener;
+        }
+        else
+        {
+            IFileSelected ifs = ( f ) -> handleFileSelected( f );
+            fcl = new DirectoryChooserListener( getView(), "Choose Directory",
                 ifs, () -> getDefaultFile() );
         }
 
@@ -209,24 +229,7 @@ public class FileFormField implements IDataFormField<File>
     {
         JPanel panel = new JPanel( new GridBagLayout() );
         GridBagConstraints constraints;
-        ActionListener browseListener;
-
-        if( parser.type == ExistenceType.DIRECTORY_ONLY )
-        {
-            IFileSelected ifs = ( f ) -> {
-                setValue( f );
-                if( updater != null )
-                {
-                    updater.update( f );
-                }
-            };
-            browseListener = new DirectoryChooserListener( panel,
-                "Choose Directory", ifs, () -> getDefaultFile() );
-        }
-        else
-        {
-            browseListener = fileListener;
-        }
+        ActionListener browseListener = this.browseListener;
 
         parserField.getTextField().setDropTarget( new FileDropTarget(
             new TextFieldFilesListener( jtf, parser.type ) ) );
