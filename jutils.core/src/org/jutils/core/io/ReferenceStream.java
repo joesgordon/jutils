@@ -1,6 +1,8 @@
 package org.jutils.core.io;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -67,8 +69,7 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
     public ReferenceStream( IDataSerializer<T> serializer, File itemsFile,
         File referenceFile ) throws FileNotFoundException, IOException
     {
-        this( serializer, itemsFile, false, createStream( itemsFile ),
-            referenceFile, false, createStream( referenceFile ) );
+        this( serializer, itemsFile, false, null, referenceFile, false, null );
     }
 
     /***************************************************************************
@@ -109,8 +110,8 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
         boolean deleteItems, File referenceFile, boolean deleteReference )
         throws FileNotFoundException, IOException
     {
-        this( serializer, itemsFile, deleteItems, createStream( itemsFile ),
-            referenceFile, deleteReference, createStream( referenceFile ) );
+        this( serializer, itemsFile, deleteItems, null, referenceFile,
+            deleteReference, null );
     }
 
     /***************************************************************************
@@ -129,6 +130,16 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
         boolean deleteReference, IDataStream referenceStream )
         throws FileNotFoundException, IOException
     {
+        if( itemsStream == null )
+        {
+            itemsStream = createStream( itemsFile );
+        }
+
+        if( referenceStream == null )
+        {
+            referenceStream = createStream( referenceFile );
+        }
+
         this.serializer = serializer;
 
         this.itemsFile = deleteItems ? itemsFile : null;
@@ -165,8 +176,15 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
     @Override
     public void close() throws IOException
     {
-        refStream.close();
-        itemsStream.close();
+        if( refStream != null )
+        {
+            refStream.close();
+        }
+
+        if( itemsStream != null )
+        {
+            itemsStream.close();
+        }
 
         if( referenceFile != null )
         {

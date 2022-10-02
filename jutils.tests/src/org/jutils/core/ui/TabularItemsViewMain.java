@@ -162,8 +162,8 @@ public class TabularItemsViewMain
 
         public void setItems( List<Integer> items )
         {
-            int oldSize = this.items.size();
-            int newSize = items.size();
+            // int oldSize = this.items.size();
+            // int newSize = items.size();
 
             this.items.clear();
             this.items.addAll( items );

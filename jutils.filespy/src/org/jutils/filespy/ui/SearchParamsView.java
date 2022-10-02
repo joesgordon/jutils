@@ -10,7 +10,6 @@ import javax.swing.Box;
 import javax.swing.JPanel;
 
 import org.jutils.core.SwingUtils;
-import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.parsers.ExistenceType;
 import org.jutils.core.pattern.StringPattern;
 import org.jutils.core.pattern.StringPatternField;
@@ -89,10 +88,7 @@ public class SearchParamsView implements IDataView<SearchParams>
 
         filenameField.setUpdater( ( s ) -> params.filename.set( s ) );
         contentsField.setUpdater( ( u ) -> params.contents.set( u ) );
-        pathField.setUpdater( ( f ) -> {
-            params.path = f;
-            LogUtils.printDebug( "updated path to %s", f );
-        } );
+        pathField.setUpdater( ( f ) -> params.path = f );
         subfoldersField.setUpdater( ( b ) -> params.searchSubfolders = b );
 
         moreThanField.setUpdater( ( u ) -> params.moreThan.set( u ) );
