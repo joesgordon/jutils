@@ -142,7 +142,7 @@ public class NanoTime
      **************************************************************************/
     public void setMicros( long micros, boolean retain )
     {
-        setTime( TimeUnit.MICROSECONDS, micros, retain );
+        setTime( NanoTimeUnit.MICROSECONDS, micros, retain );
     }
 
     /***************************************************************************
@@ -166,7 +166,7 @@ public class NanoTime
      **************************************************************************/
     public void setMillis( long millis, boolean retain )
     {
-        setTime( TimeUnit.MILLISECONDS, millis, retain );
+        setTime( NanoTimeUnit.MILLISECONDS, millis, retain );
     }
 
     /***************************************************************************
@@ -176,7 +176,7 @@ public class NanoTime
      * @param unit the units of time being set.
      * @param time the number of units of time into the year.
      **************************************************************************/
-    public void setTime( TimeUnit unit, long time )
+    public void setTime( NanoTimeUnit unit, long time )
     {
         setTime( unit, time, false );
     }
@@ -190,7 +190,7 @@ public class NanoTime
      * @param retainFraction retains the current number of nanoseconds into the
      * unit of time if {@code true}; discards otherwise.
      **************************************************************************/
-    public void setTime( TimeUnit unit, long time, boolean retainFraction )
+    public void setTime( NanoTimeUnit unit, long time, boolean retainFraction )
     {
         long fraction = retainFraction ? nanoseconds % unit.nanosPerUnit : 0L;
 
@@ -227,7 +227,7 @@ public class NanoTime
      * Defines the units of time supported for setting the number of nanoseconds
      * into the year.
      **************************************************************************/
-    public static enum TimeUnit implements INamedItem
+    public static enum NanoTimeUnit implements INamedItem
     {
         /** Represents nanoseconds. */
         NANOSECONDS( "Nanoseconds", 1L ),
@@ -248,7 +248,7 @@ public class NanoTime
          * @param name the name of the unit.
          * @param nanosPerUnit the number of nanoseconds in the unit.
          */
-        private TimeUnit( String name, long nanosPerUnit )
+        private NanoTimeUnit( String name, long nanosPerUnit )
         {
             this.name = name;
             this.nanosPerUnit = nanosPerUnit;

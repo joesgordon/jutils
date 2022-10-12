@@ -1,6 +1,8 @@
 package org.jutils.core.io;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -67,8 +69,7 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
     public ReferenceStream( IDataSerializer<T> serializer, File itemsFile,
         File referenceFile ) throws FileNotFoundException, IOException
     {
-        this( serializer, itemsFile, false, createStream( itemsFile ),
-            referenceFile, false, createStream( referenceFile ) );
+        this( serializer, itemsFile, false, null, referenceFile, false, null );
     }
 
     /***************************************************************************
@@ -109,8 +110,8 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
         boolean deleteItems, File referenceFile, boolean deleteReference )
         throws FileNotFoundException, IOException
     {
-        this( serializer, itemsFile, deleteItems, createStream( itemsFile ),
-            referenceFile, deleteReference, createStream( referenceFile ) );
+        this( serializer, itemsFile, deleteItems, null, referenceFile,
+            deleteReference, null );
     }
 
     /***************************************************************************
@@ -129,13 +130,25 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
         boolean deleteReference, IDataStream referenceStream )
         throws FileNotFoundException, IOException
     {
+        IDataStream is = itemsStream;
+        if( is == null )
+        {
+            is = createStream( itemsFile );
+        }
+
+        IDataStream rs = referenceStream;
+        if( rs == null )
+        {
+            rs = createStream( referenceFile );
+        }
+
         this.serializer = serializer;
 
         this.itemsFile = deleteItems ? itemsFile : null;
-        this.itemsStream = itemsStream;
+        this.itemsStream = is;
 
         this.referenceFile = deleteReference ? referenceFile : null;
-        this.refStream = referenceStream;
+        this.refStream = rs;
 
         this.count = refStream.getLength() / 8;
 

@@ -6,16 +6,19 @@ import java.util.Arrays;
 
 import org.jutils.core.INamedItem;
 import org.jutils.core.Utils;
+import org.jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
  * Represents an IPv4 or IPv6 address.
  ******************************************************************************/
 public class IpAddress
 {
+    /** The number of hextets in an IPv6 address. */
+    public static final int HEXTET_COUNT = 8;
     /** The number of bytes in an IPv4 address. */
     public static final int IPV4_SIZE = 4;
     /** The number of bytes in an IPv6 address. */
-    public static final int IPV6_SIZE = 16;
+    public static final int IPV6_SIZE = 2 * HEXTET_COUNT;
 
     /** IP address values (always IPv6 size). */
     public final byte [] address;
@@ -61,10 +64,167 @@ public class IpAddress
      **************************************************************************/
     public IpAddress( IpAddress address )
     {
-        this.address = new byte[IPV6_SIZE];
-        this.version = address.version;
+        IpVersion vers = null;
+        byte [] addr = null;
 
-        Utils.byteArrayCopy( address.address, 0, this.address, 0, IPV6_SIZE );
+        if( address.address == null && address.version == null )
+        {
+            vers = IpVersion.IPV4;
+            addr = new byte[vers.byteCount];
+        }
+        else if( address.address == null )
+        {
+            vers = address.version;
+            addr = new byte[vers.byteCount];
+        }
+        else if( address.version == null )
+        {
+            addr = address.address;
+
+            switch( addr.length )
+            {
+                case IPV4_SIZE:
+                    vers = IpVersion.IPV4;
+                    break;
+
+                case IPV6_SIZE:
+                    vers = IpVersion.IPV6;
+                    break;
+
+                default:
+                    throw new IllegalArgumentException(
+                        "Cannot have an address of length " + addr.length +
+                            ": " + HexUtils.toHexString( addr ) );
+            }
+        }
+        else
+        {
+            addr = address.address;
+            vers = address.version;
+        }
+
+        this.address = new byte[vers.byteCount];
+        this.version = vers;
+
+        Utils.byteArrayCopy( addr, 0, this.address, 0, vers.byteCount );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void setAny()
+    {
+        Arrays.fill( address, ( byte )0 );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void setLoopback()
+    {
+        switch( version )
+        {
+            case IPV4:
+                setValue( 0x7F000001 );
+                break;
+
+            case IPV6:
+                setHextets( new int[] { 0, 0, 0, 0, 0, 0, 0, 1 } );
+                break;
+        }
+    }
+
+    /***************************************************************************
+     * Sets this address to the provided address.
+     * @param address the IP to set this address to.
+     **************************************************************************/
+    public void set( IpAddress address )
+    {
+        try
+        {
+            set( address.get() );
+        }
+        catch( IllegalArgumentException ex )
+        {
+            throw new IllegalStateException(
+                "Programming error as length has already been checked", ex );
+        }
+    }
+
+    /***************************************************************************
+     * Sets this as an IPv4 address with the specified octets.
+     * @param o1 octet 1
+     * @param o2 octet 2
+     * @param o3 octet 3
+     * @param o4 octet 4
+     **************************************************************************/
+    public void setOctets( int o1, int o2, int o3, int o4 )
+    {
+        version = IpVersion.IPV4;
+
+        Arrays.fill( this.address, ( byte )0 );
+
+        address[0] = ( byte )o1;
+        address[1] = ( byte )o2;
+        address[2] = ( byte )o3;
+        address[3] = ( byte )o4;
+    }
+
+    /***************************************************************************
+     * This IPv6 address as hextets.
+     * @return an array of {@link #HEXTET_COUNT} hextets.
+     * @throws IllegalStateException if this is not an IPv6 address.
+     **************************************************************************/
+    public int [] getHextets() throws IllegalStateException
+    {
+        if( version != IpVersion.IPV6 )
+        {
+            throw new IllegalStateException(
+                "Cannot represent IPv4 as hextets" );
+        }
+
+        int [] value = new int[HEXTET_COUNT];
+
+        for( int i = 0; i < value.length; i++ )
+        {
+            int ai = i * 2;
+
+            int a1 = Byte.toUnsignedInt( address[ai] );
+            int a2 = Byte.toUnsignedInt( address[ai + 1] );
+
+            value[i] = ( a1 << 8 ) | a2;
+        }
+
+        return value;
+    }
+
+    /***************************************************************************
+     * Sets this address to the provided hextets.
+     * @param value the hextets to be set. The high 2 bytes of each integer are
+     * unchecked and have no effect.
+     * @throws IllegalArgumentException if the provided value is not of length
+     * {@link #HEXTET_COUNT}.
+     **************************************************************************/
+    public void setHextets( int [] value ) throws IllegalArgumentException
+    {
+        if( value.length != HEXTET_COUNT )
+        {
+            throw new IllegalArgumentException(
+                "Cannot set an IPv6 address with " + value.length +
+                    " hextets" );
+        }
+
+        byte [] addr = new byte[IPV6_SIZE];
+
+        for( int i = 0; i < value.length; i++ )
+        {
+            int a = i * 2;
+
+            addr[a] = ( byte )( ( value[i] >> 8 ) & 0xFF );
+            addr[a + 1] = ( byte )( ( value[i] >> 0 ) & 0xFF );
+        }
+
+        set( addr );
     }
 
     /***************************************************************************
@@ -121,42 +281,6 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * Sets this address to the provided address.
-     * @param address the IP to set this address to.
-     **************************************************************************/
-    public void set( IpAddress address )
-    {
-        try
-        {
-            set( address.get() );
-        }
-        catch( IllegalArgumentException ex )
-        {
-            throw new IllegalStateException(
-                "Programming error as length has already been checked", ex );
-        }
-    }
-
-    /***************************************************************************
-     * Sets this address to the provided address.
-     * @param address the IP to set this address to.
-     **************************************************************************/
-    public void setInetAddress( InetAddress address )
-    {
-        byte [] octets = address.getAddress();
-
-        try
-        {
-            set( octets );
-        }
-        catch( IllegalArgumentException ex )
-        {
-            throw new IllegalStateException(
-                "Programming error as length has already been checked", ex );
-        }
-    }
-
-    /***************************************************************************
      * Creates an {@link InetAddress} using the byte values of this address.
      * @return the {@link InetAddress} representing this IP.
      **************************************************************************/
@@ -174,22 +298,25 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * Sets this as an IPv4 address with the specified octets.
-     * @param o1 octet 1
-     * @param o2 octet 2
-     * @param o3 octet 3
-     * @param o4 octet 4
+     * Sets this address to the provided address.
+     * @param address the IP to set this address to.
+     * @throws IllegalStateException if {@link InetAddress#getAddress()} returns
+     * an array that is not of length {@link #IPV4_SIZE} or {@link #IPV6_SIZE}.
      **************************************************************************/
-    public void setOctets( int o1, int o2, int o3, int o4 )
+    public void setInetAddress( InetAddress address )
+        throws IllegalStateException
     {
-        version = IpVersion.IPV4;
+        byte [] octets = address.getAddress();
 
-        Arrays.fill( this.address, ( byte )0 );
-
-        address[0] = ( byte )o1;
-        address[1] = ( byte )o2;
-        address[2] = ( byte )o3;
-        address[3] = ( byte )o4;
+        try
+        {
+            set( octets );
+        }
+        catch( IllegalArgumentException ex )
+        {
+            throw new IllegalStateException(
+                "Programming error as length has already been checked", ex );
+        }
     }
 
     /***************************************************************************
@@ -287,7 +414,7 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @return
+     * @return the string representing this IPv4 address.
      **************************************************************************/
     private String toIpv4String()
     {
@@ -298,19 +425,75 @@ public class IpAddress
     /***************************************************************************
      * https://www.geeksforgeeks.org/compression-of-ipv6-address/
      * https://techhub.hpe.com/eginfolib/networking/docs/switches/5950/5200-2220a_l3-ip-svcs_cg/content/472592411.htm
-     * @return
+     * @return the string representing this IPv6 address.
      **************************************************************************/
     private String toIpv6String()
     {
-        // TODO Auto-generated method stub
-        return String.format(
-            "%02X%02X:%02X%02X:%02X%02X:%02X%02X:%02X%02X:%02X%02X:%02X%02X:%02X%02X",
-            address[0] & 0xFF, address[1] & 0xFF, address[2] & 0xFF,
-            address[3] & 0xFF, address[4] & 0xFF, address[5] & 0xFF,
-            address[6] & 0xFF, address[7] & 0xFF, address[8] & 0xFF,
-            address[9] & 0xFF, address[10] & 0xFF, address[11] & 0xFF,
-            address[12] & 0xFF, address[13] & 0xFF, address[14] & 0xFF,
-            address[15] & 0xFF );
+        int [] hextets = getHextets();
+        StringBuilder str = new StringBuilder();
+
+        // winners
+        int zeroCnt = 0;
+        int zeroIdx = -1;
+
+        // current
+        int zc = 0;
+        int zi = -1;
+
+        for( int i = 0; i < hextets.length; i++ )
+        {
+            if( hextets[i] == 0 )
+            {
+                if( ( zi + zc ) != i )
+                {
+                    zi = i;
+                    zc = 1;
+                }
+                else
+                {
+                    zc++;
+                }
+            }
+            else
+            {
+                zc = 0;
+                zi = -1;
+            }
+
+            if( zc > zeroCnt )
+            {
+                zeroCnt = zc;
+                zeroIdx = zi;
+            }
+        }
+
+        int fi = zeroIdx + zeroCnt;
+
+        for( int i = 0; i < hextets.length; i++ )
+        {
+            if( i == zeroIdx )
+            {
+                if( i == 0 )
+                {
+                    str.append( "::" );
+                }
+                else
+                {
+                    str.append( ":" );
+                }
+            }
+            else if( i > zeroIdx && i < fi )
+            {
+            }
+            else
+            {
+                String delim = i == 7 ? "" : ":";
+
+                str.append( String.format( "%X%s", hextets[i], delim ) );
+            }
+        }
+
+        return str.toString();
     }
 
     /***************************************************************************
@@ -318,19 +501,19 @@ public class IpAddress
      **************************************************************************/
     public enum IpVersion implements INamedItem
     {
-        /**  */
+        /** IP version 4 */
         IPV4( IPV4_SIZE, "IPv4" ),
-        /**  */
+        /** IP version 6 */
         IPV6( IPV6_SIZE, "IPv6" );
 
-        /**  */
+        /** The number of bytes in this IP version. */
         public final int byteCount;
-        /**  */
+        /** The name of this IP version. */
         public final String name;
 
         /**
-         * @param byteCount
-         * @param name
+         * @param byteCount the number of bytes in this IP version.
+         * @param name the name of this IP version.
          */
         private IpVersion( int byteCount, String name )
         {

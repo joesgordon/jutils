@@ -60,7 +60,7 @@ public class UdpInputs
         this.loopback = inputs.loopback;
         this.ttl = inputs.ttl;
 
-        this.remoteAddress = inputs.remoteAddress;
+        this.remoteAddress = new IpAddress( inputs.remoteAddress );
         this.remotePort = inputs.remotePort;
     }
 }

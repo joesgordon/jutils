@@ -1,6 +1,7 @@
 package org.jutils.core.io;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.jutils.core.ValidationException;
@@ -9,7 +10,7 @@ import org.jutils.core.ValidationException;
  * Represents a method of storing items to an underlying stream.
  * @param <T> the type of item to be stored.
  ******************************************************************************/
-public interface IReferenceStream<T> extends Closeable
+public interface IReferenceStream<T> extends AutoCloseable
 {
     /***************************************************************************
      * Returns the number of items currently stored.

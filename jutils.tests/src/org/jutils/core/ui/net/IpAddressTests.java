@@ -157,4 +157,105 @@ public class IpAddressTests
 
         Assert.assertArrayEquals( expected, address.get() );
     }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void testIpv6AnyToString()
+    {
+        IpAddress address = new IpAddress( IpVersion.IPV6 );
+
+        address.setAny();
+
+        String expected = "::";
+        String actual = address.toString();
+
+        Assert.assertEquals( expected, actual );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void testIpv6LoopbackToString()
+    {
+        IpAddress address = new IpAddress( IpVersion.IPV6 );
+
+        address.setLoopback();
+
+        String expected = "::1";
+        String actual = address.toString();
+
+        Assert.assertEquals( expected, actual );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void testIpv6Mid0ToString()
+    {
+        IpAddress address = new IpAddress( IpVersion.IPV6 );
+
+        address.address[1] = 1;
+        address.address[15] = 1;
+
+        String expected = "1::1";
+        String actual = address.toString();
+
+        Assert.assertEquals( expected, actual );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void testIpv6End0ToString()
+    {
+        IpAddress address = new IpAddress( IpVersion.IPV6 );
+
+        address.address[1] = 1;
+
+        String expected = "1::";
+        String actual = address.toString();
+
+        Assert.assertEquals( expected, actual );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void testIpv6LongShort0sToString()
+    {
+        IpAddress address = new IpAddress( IpVersion.IPV6 );
+
+        address.address[1] = 1;
+        address.address[9] = 1;
+        address.address[15] = 1;
+
+        String expected = "1::1:0:0:1";
+        String actual = address.toString();
+
+        Assert.assertEquals( expected, actual );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void testIpv6ShortLong0sToString()
+    {
+        IpAddress address = new IpAddress( IpVersion.IPV6 );
+
+        address.address[1] = 1;
+        address.address[7] = 1;
+        address.address[15] = 1;
+
+        String expected = "1:0:0:1::1";
+        String actual = address.toString();
+
+        Assert.assertEquals( expected, actual );
+    }
 }

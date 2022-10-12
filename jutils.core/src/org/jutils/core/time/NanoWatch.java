@@ -30,7 +30,7 @@ public class NanoWatch
 
     /***************************************************************************
      * Hacks the current system time to start the watch.
-     * @return the current system time.
+     * @return the current system time in nanoseconds.
      **************************************************************************/
     public long start()
     {
@@ -43,7 +43,7 @@ public class NanoWatch
 
     /***************************************************************************
      * Hacks the current system time to stop the watch.
-     * @return the current system time.
+     * @return the current system time in nanoseconds.
      **************************************************************************/
     public long stop()
     {
@@ -119,7 +119,7 @@ public class NanoWatch
     }
 
     /***************************************************************************
-     * @return the elapsed time in milliseconds
+     * @return the elapsed time in nanoseconds
      **************************************************************************/
     public long getElapsed()
     {
