@@ -152,15 +152,15 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
 
         this.count = refStream.getLength() / 8;
 
-        long itemStreamLength = itemsStream.getLength();
+        long itemStreamLength = this.itemsStream.getLength();
 
         if( itemStreamLength > 0 && count == 0 )
         {
-            while( itemsStream.getAvailable() > 0 )
+            while( this.itemsStream.getAvailable() > 0 )
             {
                 try
                 {
-                    serializer.read( itemsStream );
+                    serializer.read( this.itemsStream );
                     count++;
                 }
                 catch( ValidationException ex )
