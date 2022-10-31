@@ -86,7 +86,7 @@ public class NetMessage
     @Override
     public String toString()
     {
-        return String.format( "%s, %s, %s, %d, %s, %s", received, time, local,
+        return String.format( "%s, %s, %s, %s, %s, %s", received, time, local,
             remote, HexUtils.toHexString( contents, " " ), message );
     }
 }

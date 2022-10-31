@@ -8,6 +8,9 @@ import javax.swing.border.Border;
 import javax.swing.plaf.SplitPaneUI;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
+/*******************************************************************************
+ *
+ ******************************************************************************/
 public class AltSplitPane extends JSplitPane
 {
     /**  */
@@ -76,7 +79,10 @@ public class AltSplitPane extends JSplitPane
         boolean oldVisibility = isBorderless();
 
         if( oldVisibility == borderLess )
+        {
             return;
+        }
+
         borderless = borderLess;
         firePropertyChange( PROPERTYNAME_DIVIDER_BORDER_VISIBLE, oldVisibility,
             borderLess );

@@ -6,17 +6,20 @@ import java.awt.Graphics2D;
 import javax.swing.JComponent;
 
 /*******************************************************************************
- * 
+ * Defines a component that will paint using an {@link IPaintable}.
  ******************************************************************************/
 public class PaintingComponent extends JComponent
 {
-    /**  */
+    /** Generated UID. */
     private static final long serialVersionUID = -4340666978067812946L;
-    /**  */
+    /** The callback invoked on {@link #paintComponent(Graphics)}. */
     private final IPaintable paintable;
 
     /***************************************************************************
-     * @param paintable
+     * Creates a new {@link JComponent} that will be drawn according to the
+     * provided callback.
+     * @param paintable the callback invoked on
+     * {@link #paintComponent(Graphics)}.
      **************************************************************************/
     public PaintingComponent( IPaintable paintable )
     {

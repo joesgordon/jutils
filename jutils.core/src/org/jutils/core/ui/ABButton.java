@@ -5,9 +5,9 @@ import javax.swing.JButton;
 
 import org.jutils.core.ui.model.IView;
 
-/***************************************************************************
+/*******************************************************************************
  * 
- **************************************************************************/
+ ******************************************************************************/
 public class ABButton implements IView<JButton>
 {
     /**  */
@@ -171,6 +171,18 @@ public class ABButton implements IView<JButton>
     }
 
     /***************************************************************************
+     * @param isAState
+     **************************************************************************/
+    public void setState( boolean isAState )
+    {
+        if( this.isAState != isAState )
+        {
+            this.isAState = isAState;
+            setButton();
+        }
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     public static interface IABCallback
@@ -180,14 +192,5 @@ public class ABButton implements IView<JButton>
          * {@code false} to retain its current side's values
          */
         public boolean run();
-    }
-
-    public void setState( boolean isAState )
-    {
-        if( this.isAState != isAState )
-        {
-            this.isAState = isAState;
-            setButton();
-        }
     }
 }
