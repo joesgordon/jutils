@@ -21,6 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,7 +40,9 @@ import org.jutils.core.SwingUtils;
 import org.jutils.core.Utils;
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.IOUtils;
+import org.jutils.core.io.LineReader;
 import org.jutils.core.io.options.OptionsSerializer;
+import org.jutils.core.io.parsers.DoubleParser;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.OkDialogView;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
@@ -59,7 +62,9 @@ import org.jutils.plot.IPalette;
 import org.jutils.plot.PresetPalette;
 import org.jutils.plot.app.PlotConstants;
 import org.jutils.plot.app.UserData;
+import org.jutils.plot.data.DefaultSeries;
 import org.jutils.plot.data.SaveOptions;
+import org.jutils.plot.data.XYPoint;
 import org.jutils.plot.io.DataFileReader;
 import org.jutils.plot.model.Chart;
 import org.jutils.plot.model.IDataPoint;
@@ -581,8 +586,16 @@ public class ChartView implements IView<JComponent>
             palette.reset();
         }
 
+        String ext = IOUtils.getFileExtension( file );
+
         try
         {
+            if( ext.toLowerCase().equals( "gbt" ) )
+            {
+                importAllColumns( file );
+                return;
+            }
+
             DataFileReader reader = new DataFileReader();
             ISeriesData<?> data = reader.read( file );
 
@@ -615,6 +628,88 @@ public class ChartView implements IView<JComponent>
         }
 
         fileLoadedListeners.fireListeners( this, file );
+    }
+
+    /***************************************************************************
+     * @param file
+     * @throws FileNotFoundException
+     * @throws IOException
+     **************************************************************************/
+    private void importAllColumns( File file )
+        throws FileNotFoundException, IOException
+    {
+        String path = file.getAbsolutePath();
+        // String name = IOUtils.removeFilenameExtension( file );
+        List<String> names = new ArrayList<>();
+        List<ArrayList<XYPoint>> allseries = new ArrayList<>();
+        DoubleParser dparser = new DoubleParser();
+
+        try( LineReader reader = new LineReader( file ) )
+        {
+            String line = null;
+
+            while( ( line = reader.readLine() ) != null )
+            {
+                List<String> fields = Utils.split( line, '\t' );
+
+                if( reader.getLastLineNumberRead() == 0 )
+                {
+                    names.addAll( fields );
+                    names.remove( 0 );
+
+                    for( int i = 0; i < names.size(); i++ )
+                    {
+                        allseries.add( new ArrayList<>() );
+                    }
+                }
+                else
+                {
+                    List<Double> values = new ArrayList<>( names.size() );
+
+                    for( int i = 0; i < fields.size(); i++ )
+                    {
+                        double d = 0;
+
+                        try
+                        {
+                            d = dparser.parse( fields.get( i ) );
+                            values.add( d );
+                        }
+                        catch( ValidationException ex )
+                        {
+                            break;
+                        }
+                    }
+
+                    if( values.size() == fields.size() )
+                    {
+                        double t = values.get( 0 );
+
+                        for( int i = 1; i < values.size(); i++ )
+                        {
+                            double y = values.get( i );
+                            XYPoint point = new XYPoint( t, y );
+                            ArrayList<XYPoint> points = allseries.get( i - 1 );
+
+                            points.add( point );
+
+                            // LogUtils.printDebug( "Adding point %f, %f",
+                            // point.x,
+                            // point.y );
+                        }
+                    }
+                }
+            }
+        }
+
+        for( int i = 0; i < allseries.size(); i++ )
+        {
+            String name = names.get( i );
+            ArrayList<XYPoint> points = allseries.get( i );
+            ISeriesData<?> series = new DefaultSeries( points );
+
+            addSeries( series, name, path, i > 0 );
+        }
     }
 
     /***************************************************************************
