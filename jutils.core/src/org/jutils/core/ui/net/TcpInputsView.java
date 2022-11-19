@@ -4,7 +4,9 @@ import javax.swing.JComponent;
 
 import org.jutils.core.net.TcpInputs;
 import org.jutils.core.ui.StandardFormView;
-import org.jutils.core.ui.fields.*;
+import org.jutils.core.ui.fields.IDataFormField;
+import org.jutils.core.ui.fields.IntegerFormField;
+import org.jutils.core.ui.fields.IpAddressField;
 import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
@@ -19,7 +21,7 @@ public class TcpInputsView implements IDataView<TcpInputs>
     /**  */
     private final IntegerFormField localPortField;
     /**  */
-    private final Ip4AddressField remoteAddressField;
+    private final IpAddressField remoteAddressField;
     /**  */
     private final IntegerFormField remotePortField;
     /**  */
@@ -46,7 +48,7 @@ public class TcpInputsView implements IDataView<TcpInputs>
         this.localPortField = new IntegerFormField( "Local Port", 0, 65535 );
         this.nicField = new NetworkInterfaceField( "NIC" );
 
-        this.remoteAddressField = new Ip4AddressField( "Remote Address" );
+        this.remoteAddressField = new IpAddressField( "Remote Address" );
         this.remotePortField = new IntegerFormField( "Remote Port", 0, 65535 );
 
         this.timeoutField = new IntegerFormField( "Timeout", "ms", 0, null );

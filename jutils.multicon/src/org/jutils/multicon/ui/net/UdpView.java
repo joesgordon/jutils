@@ -1,7 +1,8 @@
 package org.jutils.multicon.ui.net;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.SocketException;
 
 import javax.swing.JComponent;
 
@@ -112,14 +113,7 @@ public class UdpView implements IConnectionView<UdpInputs>
 
             InetAddress address;
 
-            try
-            {
-                address = inputs.remoteAddress.getInetAddress();
-            }
-            catch( UnknownHostException ex )
-            {
-                return;
-            }
+            address = inputs.remoteAddress.getInetAddress();
 
             connection.setRemote( inputs.remotePort );
             connection.setRemote( address );

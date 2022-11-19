@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 
 import javax.swing.JFrame;
 
+import org.jutils.core.net.EndPoint;
 import org.jutils.core.net.NetMessage;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
@@ -41,8 +42,8 @@ public class NetMessageViewMain
             byte [] contents = "So long and thanks f".getBytes(
                 Charset.forName( "UTF-8" ) );
 
-            NetMessage msg = new NetMessage( true, "127.0.0.1", 186,
-                "127.0.0.1", 282, contents );
+            NetMessage msg = new NetMessage( true, new EndPoint( 186 ),
+                new EndPoint( 282 ), contents );
 
             panel.setData( msg );
 

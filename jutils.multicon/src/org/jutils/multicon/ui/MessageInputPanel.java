@@ -177,7 +177,7 @@ public class MessageInputPanel implements IView<JComponent>
             catch( IOException ex )
             {
                 OptionUtils.showErrorMessage( getView(), ex.getMessage(),
-                    "Error sending message" );
+                    "Error sending message to " + connection.getRemote() );
             }
         }
     }

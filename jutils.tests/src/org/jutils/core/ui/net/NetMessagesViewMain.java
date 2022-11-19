@@ -11,6 +11,7 @@ import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.io.IStringWriter;
 import org.jutils.core.io.StringPrintStream;
+import org.jutils.core.net.EndPoint;
 import org.jutils.core.net.NetMessage;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFrameView;
@@ -98,8 +99,8 @@ public class NetMessagesViewMain
             byte [] bytes = new byte[len];
             rand.nextBytes( bytes );
 
-            NetMessage msg = new NetMessage( true, "127.0.0.1", 186,
-                "127.0.0.1", 282, bytes );
+            NetMessage msg = new NetMessage( true, new EndPoint( 186 ),
+                new EndPoint( 282 ), bytes );
             return msg;
         }
 

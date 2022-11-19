@@ -77,4 +77,21 @@ public class TaskThread
     {
         return runnable.isFinished();
     }
+
+    /***************************************************************************
+     * @param millis see {@link Thread#sleep(long)}.
+     * @return {@code true} if the thread was interrupted while sleeping.
+     **************************************************************************/
+    public static boolean sleep( int millis )
+    {
+        try
+        {
+            Thread.sleep( 95 );
+            return false;
+        }
+        catch( InterruptedException ex )
+        {
+            return true;
+        }
+    }
 }

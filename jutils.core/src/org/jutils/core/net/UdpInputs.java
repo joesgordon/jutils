@@ -14,7 +14,7 @@ public class UdpInputs
     /**  */
     public boolean broadcast;
     /**  */
-    public Usable<Ip4Address> multicast;
+    public Usable<IpAddress> multicast;
     /**  */
     public int timeout;
     /**  */
@@ -24,7 +24,7 @@ public class UdpInputs
     /**  */
     public int ttl;
     /**  */
-    public final Ip4Address remoteAddress;
+    public final IpAddress remoteAddress;
     /**  */
     public int remotePort;
 
@@ -36,13 +36,13 @@ public class UdpInputs
         this.localPort = 0;
         this.nic = null;
         this.broadcast = false;
-        this.multicast = new Usable<>( false, new Ip4Address( 224, 0, 0, 1 ) );
+        this.multicast = new Usable<>( false, new IpAddress( 224, 0, 0, 1 ) );
         this.timeout = 500;
         this.reuse = true;
         this.loopback = false;
         this.ttl = 2;
 
-        this.remoteAddress = new Ip4Address( 127, 0, 0, 1 );
+        this.remoteAddress = new IpAddress( 127, 0, 0, 1 );
         this.remotePort = 5000;
     }
 
@@ -60,7 +60,7 @@ public class UdpInputs
         this.loopback = inputs.loopback;
         this.ttl = inputs.ttl;
 
-        this.remoteAddress = inputs.remoteAddress;
+        this.remoteAddress = new IpAddress( inputs.remoteAddress );
         this.remotePort = inputs.remotePort;
     }
 }

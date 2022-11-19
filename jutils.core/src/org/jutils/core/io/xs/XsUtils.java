@@ -22,8 +22,6 @@ import org.jutils.core.ValidationException;
 import com.thoughtworks.xstream.InitializationException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
-import com.thoughtworks.xstream.security.AnyTypePermission;
-import com.thoughtworks.xstream.security.NoTypePermission;
 
 /*******************************************************************************
  * 
@@ -191,8 +189,8 @@ public final class XsUtils
             {
                 XStream.setupDefaultSecurity( xstream );
                 xstream.allowTypesByWildcard( wildcards );
-                xstream.addPermission( new AnyTypePermission() );
-                xstream.denyPermission( new NoTypePermission() );
+                // xstream.addPermission( new AnyTypePermission() );
+                // xstream.denyPermission( new NoTypePermission() );
             }
 
             xstream.registerConverter(

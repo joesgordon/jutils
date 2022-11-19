@@ -202,9 +202,16 @@ public class TcpConnection implements IConnection, Closeable
             return null;
         }
 
-        return new NetMessage( false, socket.getLocalAddress().getHostAddress(),
-            socket.getLocalPort(), remoteAddress.getHostAddress(), remotePort,
+        NetMessage msg = new NetMessage( false, getLocal(), getRemote(),
             contents );
+
+        msg.local.address.setInetAddress( socket.getLocalAddress() );
+        msg.local.port = socket.getLocalPort();
+
+        msg.remote.address.setInetAddress( remoteAddress );
+        msg.remote.port = remotePort;
+
+        return msg;
     }
 
     /***************************************************************************
@@ -229,9 +236,10 @@ public class TcpConnection implements IConnection, Closeable
 
         byte [] contents = Arrays.copyOf( rxBuffer, len );
 
-        return new NetMessage( true, socket.getLocalAddress().getHostAddress(),
-            socket.getLocalPort(), remoteAddress.getHostAddress(), remotePort,
+        NetMessage msg = new NetMessage( false, getLocal(), getRemote(),
             contents );
+
+        return msg;
     }
 
     /***************************************************************************
@@ -253,11 +261,42 @@ public class TcpConnection implements IConnection, Closeable
     }
 
     /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public EndPoint getRemote()
+    {
+        EndPoint ep = new EndPoint();
+
+        ep.address.setInetAddress( remoteAddress );
+        ep.port = remotePort;
+
+        return ep;
+    }
+
+    /***************************************************************************
      * @return
      **************************************************************************/
-    public Ip4Address getRemoteAddress()
+    public EndPoint getLocal()
     {
-        return new Ip4Address( remoteAddress );
+        EndPoint ep = new EndPoint();
+
+        ep.address.setInetAddress( socket.getLocalAddress() );
+        ep.port = socket.getLocalPort();
+
+        return ep;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public IpAddress getRemoteAddress()
+    {
+        IpAddress addr = new IpAddress();
+
+        addr.setInetAddress( remoteAddress );
+
+        return addr;
     }
 
     /***************************************************************************

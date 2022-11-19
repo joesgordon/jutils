@@ -470,7 +470,6 @@ public final class Utils
      * Creates a transparent buffered image for the current device.
      * @param width the width of the image to be created.
      * @param height the height of the image to be created.
-     * @return the newly created image.
      * @param transparency a transparency value from {@link Transparency}.
      * @return the newly created image.
      **************************************************************************/

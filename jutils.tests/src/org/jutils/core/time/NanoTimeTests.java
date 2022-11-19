@@ -5,7 +5,7 @@ import java.time.Month;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jutils.core.time.NanoTime.TimeUnit;
+import org.jutils.core.time.NanoTime.NanoTimeUnit;
 
 public class NanoTimeTests
 {
@@ -64,7 +64,7 @@ public class NanoTimeTests
         LocalDateTime dateTime = createSampleDateTime();
         NanoTime time = new NanoTime( dateTime );
 
-        time.setTime( TimeUnit.SECONDS, 21, true );
+        time.setTime( NanoTimeUnit.SECONDS, 21, true );
 
         long nanosExpected = 21 * 1000000000L + 123456789;
 

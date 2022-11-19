@@ -130,35 +130,37 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
         boolean deleteReference, IDataStream referenceStream )
         throws FileNotFoundException, IOException
     {
-        if( itemsStream == null )
+        IDataStream is = itemsStream;
+        if( is == null )
         {
-            itemsStream = createStream( itemsFile );
+            is = createStream( itemsFile );
         }
 
-        if( referenceStream == null )
+        IDataStream rs = referenceStream;
+        if( rs == null )
         {
-            referenceStream = createStream( referenceFile );
+            rs = createStream( referenceFile );
         }
 
         this.serializer = serializer;
 
         this.itemsFile = deleteItems ? itemsFile : null;
-        this.itemsStream = itemsStream;
+        this.itemsStream = is;
 
         this.referenceFile = deleteReference ? referenceFile : null;
-        this.refStream = referenceStream;
+        this.refStream = rs;
 
         this.count = refStream.getLength() / 8;
 
-        long itemStreamLength = itemsStream.getLength();
+        long itemStreamLength = this.itemsStream.getLength();
 
         if( itemStreamLength > 0 && count == 0 )
         {
-            while( itemsStream.getAvailable() > 0 )
+            while( this.itemsStream.getAvailable() > 0 )
             {
                 try
                 {
-                    serializer.read( itemsStream );
+                    serializer.read( this.itemsStream );
                     count++;
                 }
                 catch( ValidationException ex )
@@ -176,15 +178,8 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
     @Override
     public void close() throws IOException
     {
-        if( refStream != null )
-        {
-            refStream.close();
-        }
-
-        if( itemsStream != null )
-        {
-            itemsStream.close();
-        }
+        refStream.close();
+        itemsStream.close();
 
         if( referenceFile != null )
         {
