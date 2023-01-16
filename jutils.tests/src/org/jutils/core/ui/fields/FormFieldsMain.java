@@ -27,6 +27,8 @@ import javax.swing.event.ListSelectionListener;
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.io.parsers.ExistenceType;
+import org.jutils.core.net.EndPoint;
+import org.jutils.core.net.IpAddress;
 import org.jutils.core.ui.ColorIcon;
 import org.jutils.core.ui.ComponentView;
 import org.jutils.core.ui.JGoodiesToolBar;
@@ -67,14 +69,23 @@ public class FormFieldsMain
      **************************************************************************/
     private static class UiTestFrameView implements IView<JFrame>
     {
+        /**  */
         private final StandardFrameView frameView;
+        /**  */
         private final DefaultListModel<IFormField> itemsModel;
+        /**  */
         private final JList<IFormField> itemsList;
+        /**  */
         private final ComponentView cview;
+        /**  */
         private final Action editableAction;
 
+        /**  */
         private boolean editable;
 
+        /**
+         * 
+         */
         public UiTestFrameView()
         {
             this.frameView = new StandardFrameView();
@@ -99,6 +110,9 @@ public class FormFieldsMain
                 new ItemSelectedListener( this ) );
         }
 
+        /**
+         * @return
+         */
         private Container createContent()
         {
             JPanel panel = new JPanel( new BorderLayout() );
@@ -109,6 +123,9 @@ public class FormFieldsMain
             return panel;
         }
 
+        /**
+         * @return
+         */
         private Component createToolbar()
         {
             JToolBar toolbar = new JGoodiesToolBar();
@@ -118,6 +135,9 @@ public class FormFieldsMain
             return toolbar;
         }
 
+        /**
+         * @return
+         */
         private Action createEditableAction()
         {
             ActionListener listener = ( e ) -> toggleEditable();
@@ -125,6 +145,9 @@ public class FormFieldsMain
             return new ActionAdapter( listener, "Toggle Editable", icon );
         }
 
+        /**
+         * 
+         */
         private void toggleEditable()
         {
             IFormField field = itemsList.getSelectedValue();
@@ -141,6 +164,9 @@ public class FormFieldsMain
             }
         }
 
+        /**
+         * @return
+         */
         private JPanel createSelectionPanel()
         {
             JPanel panel = new JPanel( new GridBagLayout() );
@@ -167,6 +193,9 @@ public class FormFieldsMain
             return panel;
         }
 
+        /**
+         * @param itemsModel
+         */
         private static void createViews(
             DefaultListModel<IFormField> itemsModel )
         {
@@ -182,6 +211,11 @@ public class FormFieldsMain
                 new ComboFormField<>( "Combo Form Field",
                     Character.UnicodeScript.values() ),
                 Character.UnicodeScript.JAVANESE ) );
+
+            itemsModel.addElement( createFormFieldItem(
+                new EndPointField( "End Point Form Field" ),
+                new EndPoint( new IpAddress( 10, 10, 11, 12 ), 1234 ) ) );
+
             itemsModel.addElement( createFormFieldItem(
                 new FileFormField( "File Form Field (File/Save)",
                     ExistenceType.DO_NOT_CHECK ),
@@ -210,6 +244,11 @@ public class FormFieldsMain
                 0xBA5E1E55DEADBEEFL ) );
             itemsModel.addElement( createFormFieldItem(
                 new IntegerFormField( "Integer Form Field" ), 6 ) );
+
+            itemsModel.addElement( createFormFieldItem(
+                new IpAddressField( "IP Address Form Field" ),
+                new IpAddress( 10, 10, 11, 12 ) ) );
+
             itemsModel.addElement(
                 createFormFieldItem( new LongFormField( "Long Form Field" ),
                     60L * 186282L * 60L * 24L ) );
@@ -224,6 +263,12 @@ public class FormFieldsMain
                 new Usable<>( true, "Gibblidy Flibbets" ) ) );
         }
 
+        /**
+         * @param <D>
+         * @param field
+         * @param data
+         * @return
+         */
         private static <D> IFormField createFormFieldItem(
             IDataFormField<D> field, D data )
         {
@@ -232,6 +277,9 @@ public class FormFieldsMain
             return field;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public JFrame getView()
         {
@@ -239,11 +287,18 @@ public class FormFieldsMain
         }
     }
 
+    /***************************************************************************
+     *
+     **************************************************************************/
     private static final class ItemRenderer
         implements ListCellRenderer<IFormField>
     {
+        /**  */
         private final DefaultListCellRenderer renderer = new DefaultListCellRenderer();
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Component getListCellRendererComponent(
             JList<? extends IFormField> list, IFormField value, int index,
@@ -271,13 +326,20 @@ public class FormFieldsMain
     private static final class ItemSelectedListener
         implements ListSelectionListener
     {
+        /**  */
         private final UiTestFrameView view;
 
+        /**
+         * @param view
+         */
         public ItemSelectedListener( UiTestFrameView view )
         {
             this.view = view;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void valueChanged( ListSelectionEvent e )
         {

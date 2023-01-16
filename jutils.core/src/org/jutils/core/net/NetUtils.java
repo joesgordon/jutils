@@ -1,5 +1,7 @@
 package org.jutils.core.net;
 
+import java.awt.Component;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -11,6 +13,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.jutils.core.OptionUtils;
 import org.jutils.core.Utils;
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.LogUtils;
@@ -382,6 +385,38 @@ public final class NetUtils
         }
     }
 
+    /***************************************************************************
+     * @param ip
+     * @param timeout
+     * @param parent
+     **************************************************************************/
+    public static void ping( IpAddress ip, int timeout, Component parent )
+    {
+        InetAddress addr = ip.getInetAddress();
+
+        try
+        {
+            if( addr.isReachable( timeout ) )
+            {
+                OptionUtils.showInfoMessage( parent,
+                    ip.toString() + " is reachable", "Success" );
+            }
+            else
+            {
+                OptionUtils.showWarningMessage( parent,
+                    ip.toString() + " cannot be reached", "Failed" );
+            }
+        }
+        catch( IOException ex )
+        {
+            OptionUtils.showErrorMessage( parent, ex.getMessage(),
+                "Unable to Ping " + ip.toString() );
+        }
+    }
+
+    /***************************************************************************
+     * @param args
+     **************************************************************************/
     public static void main( String [] args )
     {
         NicInfo info = lookupInfo( "google.com" );

@@ -5,41 +5,46 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.jutils.core.io.LogUtils;
 import org.jutils.core.time.NanoWatch;
 
-/***************************************************************************
- *
- **************************************************************************/
+/*******************************************************************************
+ * Defines a task that runs at a given rate. This object may be reused/restarted
+ * after calling {@link #reset()}.
+ ******************************************************************************/
 public class ScheduledTask
 {
-    /**  */
+    /** The rate at which tasks are executed if none provided. */
+    public static final double DEFAULT_RATE = 10.0;
+
+    /** The task to be executed at the provided rate. */
     private final IPeriodic task;
-    /**  */
+    /** The rate at which the task is run. */
     private final double rate;
-    /**  */
+    /** The period between task executions in nanoseconds. */
     private final long period;
-    /**  */
+    /** Timer to determine run duration. */
     private final NanoWatch runTimer;
 
-    /**  */
+    /** Scheduler used to start/stop the task. */
     private ScheduledExecutorService scheduler;
-    /**  */
+    /** Future used to cancel the task. */
     private ScheduledFuture<?> future;
-    /**  */
+    /** Number of times the task has been executed. */
     private long count;
 
     /***************************************************************************
-     * @param task
+     * Creates a scheduled task at {@link #DEFAULT_RATE}.
+     * @param task the callback to be executed.
      **************************************************************************/
     public ScheduledTask( IPeriodic task )
     {
-        this( 10.0, task );
+        this( DEFAULT_RATE, task );
     }
 
     /***************************************************************************
-     * @param rate
-     * @param task
+     * Creates a scheduled task using the provided rate.
+     * @param rate rate at which the task is run.
+     * @param task the callback to be executed.
      **************************************************************************/
     public ScheduledTask( double rate, IPeriodic task )
     {
@@ -54,13 +59,14 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * @param name
-     * @return
+     * Starts executing the task.
+     * @return {@code false} if already started; {@code true} otherwise.
      **************************************************************************/
     public synchronized boolean start()
     {
         if( future == null )
         {
+            this.count = 0;
             this.scheduler = Executors.newScheduledThreadPool( 1 );
             this.future = scheduler.scheduleAtFixedRate( () -> execute(), 0,
                 period, TimeUnit.NANOSECONDS );
@@ -72,7 +78,7 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * 
+     * Signals the scheduler to stop executing the task.
      **************************************************************************/
     public void stop()
     {
@@ -80,6 +86,7 @@ public class ScheduledTask
 
         if( s != null )
         {
+            future.cancel( false );
             s.shutdown();
 
             runTimer.stop();
@@ -87,7 +94,7 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * 
+     * Waits for the scheduler to stop executing tasks.
      **************************************************************************/
     public void waitFor()
     {
@@ -107,7 +114,7 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * 
+     * Resets this task to be rerun.
      **************************************************************************/
     public void reset()
     {
@@ -119,7 +126,7 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * @return
+     * @return the number of times this task has been executed.
      **************************************************************************/
     public long getCount()
     {
@@ -127,7 +134,7 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * @return
+     * @return the number of nanoseconds this task has been running.
      **************************************************************************/
     public long getRuntime()
     {
@@ -135,7 +142,7 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * @return
+     * @return the rate at which the task is executed.
      **************************************************************************/
     public double getRate()
     {
@@ -143,7 +150,7 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * @return
+     * @return the period between task executions.
      **************************************************************************/
     public long getPeriod()
     {
@@ -151,7 +158,7 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * @param handler
+     * Executes the provided {@link #task}.
      **************************************************************************/
     private void execute()
     {
@@ -170,45 +177,7 @@ public class ScheduledTask
     }
 
     /***************************************************************************
-     * @param args
-     **************************************************************************/
-    public static void main( String [] args )
-    {
-        ScheduledTask t = new ScheduledTask( 500.0,
-            ( c, d ) -> doSomething( 10000 ) );
-
-        t.start();
-
-        try
-        {
-            Thread.sleep( 5000 );
-        }
-        catch( InterruptedException e )
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        t.stop();
-        t.waitFor();
-
-        LogUtils.printDebug( "Processing took %d ns, executed %d times",
-            t.getRuntime(), t.getCount() );
-    }
-
-    /***************************************************************************
-     * @param count
-     **************************************************************************/
-    private static void doSomething( int count )
-    {
-        for( int i = 0; i < count; i++ )
-        {
-            System.nanoTime();
-        }
-    }
-
-    /***************************************************************************
-     *
+     * Defines the callback to be executed.
      **************************************************************************/
     public static interface IPeriodic
     {

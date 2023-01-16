@@ -33,6 +33,19 @@ public class EndPoint
     }
 
     /***************************************************************************
+     * Creates an end point at the provided address and port.
+     * @param address the IP4 address of the end point.
+     * @param port the port of the end point.
+     **************************************************************************/
+    public EndPoint( IpAddress address, int port )
+    {
+        this();
+
+        this.address.set( address );
+        this.port = port;
+    }
+
+    /***************************************************************************
      * @param address
      * @param port
      **************************************************************************/
@@ -42,6 +55,49 @@ public class EndPoint
 
         this.address.setInetAddress( address );
         this.port = port;
+    }
+
+    /***************************************************************************
+     * Sets this end point to the same values as the provided end point.
+     * @param that the values to copy to this end point.
+     **************************************************************************/
+    public void set( EndPoint that )
+    {
+        this.address.set( that.address );
+        this.port = that.port;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public boolean equals( Object obj )
+    {
+        if( obj == null )
+        {
+            return false;
+        }
+        else if( obj == this )
+        {
+            return true;
+        }
+        else if( obj instanceof EndPoint )
+        {
+            EndPoint that = ( EndPoint )obj;
+            return this.address.equals( that.address ) &&
+                this.port == that.port;
+        }
+
+        return false;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int hashCode()
+    {
+        return 31 * address.hashCode() + port;
     }
 
     /***************************************************************************

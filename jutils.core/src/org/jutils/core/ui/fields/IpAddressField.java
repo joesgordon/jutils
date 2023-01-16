@@ -1,22 +1,23 @@
 package org.jutils.core.ui.fields;
 
 import java.awt.Point;
-import java.io.IOException;
-import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPopupMenu;
 
-import org.jutils.core.OptionUtils;
 import org.jutils.core.io.IParser;
 import org.jutils.core.io.parsers.IpAddressParser;
 import org.jutils.core.net.IpAddress;
+import org.jutils.core.net.NetUtils;
 import org.jutils.core.ui.event.RightClickListener;
 import org.jutils.core.ui.event.updater.IUpdater;
 import org.jutils.core.ui.model.ParserTextFormatter;
 import org.jutils.core.ui.validation.IValidityChangedListener;
 import org.jutils.core.ui.validation.Validity;
+import org.jutils.core.utils.IGetter;
 
 /*******************************************************************************
  * 
@@ -25,6 +26,8 @@ public class IpAddressField implements IDataFormField<IpAddress>
 {
     /**  */
     private final ParserFormField<IpAddress> field;
+    /**  */
+    private final IGetter<List<IpAddress>> presetBuilder;
 
     /***************************************************************************
      * @param name
@@ -40,10 +43,24 @@ public class IpAddressField implements IDataFormField<IpAddress>
      **************************************************************************/
     public IpAddressField( String name, IParser<IpAddress> parser )
     {
+        this( name, parser, null );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param parser
+     * @param presetBuilder
+     **************************************************************************/
+    public IpAddressField( String name, IParser<IpAddress> parser,
+        IGetter<List<IpAddress>> presetBuilder )
+    {
         JFormattedTextField textField = new JFormattedTextField(
             new ParserTextFormatter<>( parser ) );
 
+        IGetter<List<IpAddress>> presets = buildStdGetter( presetBuilder );
+
         this.field = new ParserFormField<>( name, parser, textField );
+        this.presetBuilder = presets;
 
         setValue( new IpAddress() );
 
@@ -52,21 +69,62 @@ public class IpAddressField implements IDataFormField<IpAddress>
     }
 
     /***************************************************************************
+     * @param presetBuilder
+     * @return
+     **************************************************************************/
+    static IGetter<List<IpAddress>> buildStdGetter(
+        IGetter<List<IpAddress>> presetBuilder )
+    {
+        IGetter<List<IpAddress>> presets = presetBuilder;
+        presets = presets == null ? () -> buildStdPresets() : () -> {
+            List<IpAddress> all = buildStdPresets();
+            all.add( null );
+            all.addAll( presetBuilder.get() );
+            return all;
+        };
+
+        return presets;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    static List<IpAddress> buildStdPresets()
+    {
+        List<IpAddress> presets = new ArrayList<>();
+
+        presets.add( new IpAddress( 127, 0, 0, 1 ) );
+        presets.add( new IpAddress(
+            new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } ) );
+        presets.add( new IpAddress( 0, 0, 0, 0 ) );
+        presets.add( new IpAddress(
+            new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ) );
+
+        return presets;
+    }
+
+    /***************************************************************************
      * @param point
      **************************************************************************/
     private void showMenu( Point point )
     {
         JPopupMenu menu = new JPopupMenu();
+        List<IpAddress> ips = presetBuilder.get();
 
-        menu.add( "127.0.0.1" ).addActionListener(
-            ( e ) -> handlePreset( new byte[] { 0, 0, 0, 0 } ) );
-        menu.add( "::1" ).addActionListener( ( e ) -> handlePreset(
-            new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } ) );
+        for( int i = 0; i < ips.size(); i++ )
+        {
+            IpAddress ip = ips.get( i );
 
-        menu.add( "0.0.0.0" ).addActionListener(
-            ( e ) -> handlePreset( new byte[] { 0, 0, 0, 0 } ) );
-        menu.add( "::0" ).addActionListener( ( e ) -> handlePreset(
-            new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ) );
+            if( ip != null )
+            {
+                menu.add( ip.toString() ).addActionListener(
+                    ( e ) -> setValue( ip ) );
+            }
+            else if( i != ( ips.size() - 1 ) )
+            {
+                menu.addSeparator();
+            }
+        }
 
         menu.addSeparator();
 
@@ -76,45 +134,13 @@ public class IpAddressField implements IDataFormField<IpAddress>
     }
 
     /***************************************************************************
-     * @param value
-     **************************************************************************/
-    private void handlePreset( byte [] value )
-    {
-        IpAddress address = new IpAddress();
-
-        address.set( value );
-
-        setValue( address );
-    }
-
-    /***************************************************************************
      * 
      **************************************************************************/
     private void handlePing()
     {
         if( field.getValidity().isValid )
         {
-            IpAddress ip = getValue();
-            InetAddress addr = ip.getInetAddress();
-
-            try
-            {
-                if( addr.isReachable( 2000 ) )
-                {
-                    OptionUtils.showInfoMessage( getView(),
-                        ip.toString() + " is reachable", "Success" );
-                }
-                else
-                {
-                    OptionUtils.showWarningMessage( getView(),
-                        ip.toString() + " cannot be reached", "Failed" );
-                }
-            }
-            catch( IOException ex )
-            {
-                OptionUtils.showErrorMessage( getView(), ex.getMessage(),
-                    "Unable to Ping " + ip.toString() );
-            }
+            NetUtils.ping( getValue(), 2000, getView() );
         }
     }
 
