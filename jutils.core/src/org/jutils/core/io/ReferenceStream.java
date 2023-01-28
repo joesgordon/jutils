@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jutils.core.ValidationException;
@@ -357,5 +358,56 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
         file.deleteOnExit();
 
         return file;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public Iterator<T> getIterator()
+    {
+        return new ItemIterator<>( this );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     **************************************************************************/
+    private static final class ItemIterator<T> implements Iterator<T>
+    {
+        /**  */
+        private ReferenceStream<T> stream;
+
+        /**  */
+        private long index = 0;
+
+        /**
+         * @param stream
+         */
+        public ItemIterator( ReferenceStream<T> stream )
+        {
+            this.stream = stream;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean hasNext()
+        {
+            return index < stream.getCount();
+        }
+
+        @Override
+        public T next()
+        {
+            try
+            {
+                return stream.read( index++ );
+            }
+            catch( IOException | ValidationException ex )
+            {
+                throw new IllegalStateException( ex );
+            }
+        }
     }
 }

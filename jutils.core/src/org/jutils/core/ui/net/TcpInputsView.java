@@ -6,7 +6,6 @@ import org.jutils.core.net.TcpInputs;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.fields.IDataFormField;
 import org.jutils.core.ui.fields.IntegerFormField;
-import org.jutils.core.ui.fields.IpAddressField;
 import org.jutils.core.ui.model.IDataView;
 
 /*******************************************************************************

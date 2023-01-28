@@ -1,4 +1,4 @@
-package org.jutils.core.ui.fields;
+package org.jutils.core.ui.net;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPopupMenu;
+import javax.swing.text.JTextComponent;
 
 import org.jutils.core.io.IParser;
 import org.jutils.core.io.parsers.IpAddressParser;
@@ -14,6 +15,8 @@ import org.jutils.core.net.IpAddress;
 import org.jutils.core.net.NetUtils;
 import org.jutils.core.ui.event.RightClickListener;
 import org.jutils.core.ui.event.updater.IUpdater;
+import org.jutils.core.ui.fields.IDataFormField;
+import org.jutils.core.ui.fields.ParserFormField;
 import org.jutils.core.ui.model.ParserTextFormatter;
 import org.jutils.core.ui.validation.IValidityChangedListener;
 import org.jutils.core.ui.validation.Validity;
@@ -106,7 +109,7 @@ public class IpAddressField implements IDataFormField<IpAddress>
     /***************************************************************************
      * @param point
      **************************************************************************/
-    private void showMenu( Point point )
+    protected void showMenu( Point point )
     {
         JPopupMenu menu = new JPopupMenu();
         List<IpAddress> ips = presetBuilder.get();
@@ -142,6 +145,14 @@ public class IpAddressField implements IDataFormField<IpAddress>
         {
             NetUtils.ping( getValue(), 2000, getView() );
         }
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JTextComponent getTextField()
+    {
+        return field.getTextField();
     }
 
     /***************************************************************************

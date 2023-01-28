@@ -24,7 +24,8 @@ public class LineReader implements AutoCloseable
      **************************************************************************/
     public LineReader( File file ) throws FileNotFoundException
     {
-        this( new FileStream( file, true ) );
+        this.stream = new FileStream( file, true );
+        this.lineNumber = -1;
     }
 
     /***************************************************************************

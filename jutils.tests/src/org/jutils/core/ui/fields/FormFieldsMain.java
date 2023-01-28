@@ -38,6 +38,8 @@ import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.hex.HexUtils;
 import org.jutils.core.ui.model.IView;
+import org.jutils.core.ui.net.EndPointField;
+import org.jutils.core.ui.net.IpAddressField;
 import org.jutils.core.utils.BitArray;
 import org.jutils.core.utils.Usable;
 

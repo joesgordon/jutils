@@ -1,11 +1,16 @@
 package org.jutils.plot.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
-import org.jutils.core.Utils;
+import org.jutils.core.SwingUtils;
 import org.jutils.core.data.UIProperty;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.model.LabelTableCellRenderer;
@@ -89,7 +94,7 @@ public class SeriesDataView implements IDataView<ISeriesData<?>>
     public void setSelected( int pointIdx )
     {
         table.getSelectionModel().setSelectionInterval( pointIdx, pointIdx );
-        Utils.scrollToVisible( table, pointIdx, 0 );
+        SwingUtils.scrollToVisible( table, pointIdx, 0 );
     }
 
     /***************************************************************************
@@ -106,33 +111,50 @@ public class SeriesDataView implements IDataView<ISeriesData<?>>
      **************************************************************************/
     private static class SeriesTableModel extends AbstractTableModel
     {
+        /**  */
         private static final long serialVersionUID = 1L;
 
+        /**  */
         private ISeriesData<?> series;
 
+        /**
+         * 
+         */
         public SeriesTableModel()
         {
             series = null;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int getRowCount()
         {
             return series.getCount();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int getColumnCount()
         {
             return 3;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Class<?> getColumnClass( int columnIndex )
         {
             return Double.class;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getColumnName( int col )
         {
@@ -153,6 +175,9 @@ public class SeriesDataView implements IDataView<ISeriesData<?>>
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Object getValueAt( int row, int col )
         {
@@ -173,6 +198,9 @@ public class SeriesDataView implements IDataView<ISeriesData<?>>
             }
         }
 
+        /**
+         * @param series
+         */
         public void setSeries( ISeriesData<?> series )
         {
             this.series = series;
@@ -184,20 +212,31 @@ public class SeriesDataView implements IDataView<ISeriesData<?>>
      **************************************************************************/
     private static class DataCellRenderer implements ITableCellLabelDecorator
     {
+        /**  */
         private final Color defaultBackground;
 
+        /**  */
         private ISeriesData<?> series;
 
+        /**
+         * 
+         */
         public DataCellRenderer()
         {
             this.defaultBackground = UIProperty.LABEL_BACKGROUND.getColor();
         }
 
+        /**
+         * @param series
+         */
         public void setSeries( ISeriesData<?> series )
         {
             this.series = series;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void decorate( JLabel label, JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int col )

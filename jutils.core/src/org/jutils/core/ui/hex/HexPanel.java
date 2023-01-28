@@ -1,12 +1,23 @@
 package org.jutils.core.ui.hex;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.AbstractListModel;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellEditor;
 
-import org.jutils.core.Utils;
+import org.jutils.core.SwingUtils;
 import org.jutils.core.data.UIProperty;
 import org.jutils.core.ui.RowHeaderRenderer;
 import org.jutils.core.ui.hex.HexTable.IRangeSelectedListener;
@@ -152,7 +163,7 @@ public class HexPanel implements IView<JComponent>
         table.changeSelection( row0, col0, false, false );
         table.changeSelection( row1, col1, false, true );
 
-        Utils.scrollToVisible( table, row1, col1 );
+        SwingUtils.scrollToVisible( table, row1, col1 );
     }
 
     /***************************************************************************

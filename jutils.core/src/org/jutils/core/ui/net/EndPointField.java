@@ -1,4 +1,4 @@
-package org.jutils.core.ui.fields;
+package org.jutils.core.ui.net;
 
 import java.awt.Point;
 import java.util.List;
@@ -14,6 +14,8 @@ import org.jutils.core.net.IpAddress;
 import org.jutils.core.net.NetUtils;
 import org.jutils.core.ui.event.RightClickListener;
 import org.jutils.core.ui.event.updater.IUpdater;
+import org.jutils.core.ui.fields.IDataFormField;
+import org.jutils.core.ui.fields.ParserFormField;
 import org.jutils.core.ui.model.ParserTextFormatter;
 import org.jutils.core.ui.validation.IValidityChangedListener;
 import org.jutils.core.ui.validation.Validity;

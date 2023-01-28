@@ -10,7 +10,6 @@ import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.fields.BooleanFormField;
 import org.jutils.core.ui.fields.IDataFormField;
 import org.jutils.core.ui.fields.IntegerFormField;
-import org.jutils.core.ui.fields.IpAddressField;
 import org.jutils.core.ui.fields.UsableFormField;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.validation.AggregateValidityChangedManager;
