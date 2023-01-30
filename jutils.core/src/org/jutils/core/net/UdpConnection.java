@@ -1,17 +1,8 @@
 package org.jutils.core.net;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
-import java.net.NetworkInterface;
-import java.net.SocketAddress;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.StandardSocketOptions;
-import java.util.Arrays;
 
 import org.jutils.core.net.NetUtils.NicInfo;
 
@@ -21,9 +12,7 @@ import org.jutils.core.net.NetUtils.NicInfo;
 public class UdpConnection implements IConnection
 {
     /**  */
-    private final DatagramSocket socket;
-    /**  */
-    private final byte [] rxBuffer;
+    private final UdpSocket socket;
 
     /**  */
     private InetAddress remoteAddress;
@@ -37,7 +26,7 @@ public class UdpConnection implements IConnection
      **************************************************************************/
     public UdpConnection( UdpInputs inputs ) throws IOException, SocketException
     {
-        DatagramSocket socket;
+        this.socket = new UdpSocket();
 
         if( inputs.multicast.isUsed && inputs.multicast.data == null )
         {
@@ -58,69 +47,38 @@ public class UdpConnection implements IConnection
         }
 
         InetAddress nicAddr = info.address;
+        IpAddress localIp = new IpAddress();
+
+        localIp.setInetAddress( nicAddr );
+
+        EndPoint localPoint = new EndPoint( localIp, inputs.localPort );
 
         if( inputs.multicast.isUsed )
         {
-            socket = openMulticast( inputs, info.nic );
+            IpAddress group = inputs.multicast.data;
+
+            socket.open();
+            socket.setReuseAddress( true );
+            socket.setTimeToLive( inputs.ttl );
+            socket.bind( localPoint );
+            socket.setLoopback( inputs.loopback );
+            socket.joinGroup( group, localIp );
         }
         else
         {
-            socket = new DatagramSocket( null );
+            socket.open();
             socket.setReuseAddress( inputs.reuse );
             socket.setBroadcast( inputs.broadcast );
-            socket.bind( new InetSocketAddress( nicAddr, inputs.localPort ) );
+            socket.bind( localPoint );
         }
 
-        socket.setSoTimeout( inputs.timeout );
-
-        this.socket = socket;
-        this.rxBuffer = new byte[65536];
+        socket.setReceiveTimeout( inputs.timeout );
 
         if( inputs.remoteAddress != null )
         {
             this.remoteAddress = inputs.remoteAddress.getInetAddress();
         }
         this.remotePort = inputs.remotePort;
-    }
-
-    /***************************************************************************
-     * @param inputs
-     * @param nic
-     * @return
-     * @throws IOException
-     **************************************************************************/
-    @SuppressWarnings( "resource")
-    private static MulticastSocket openMulticast( UdpInputs inputs,
-        NetworkInterface nic ) throws IOException
-    {
-        // InetAddress nicAddr = nic.getInetAddresses().nextElement();
-        // InetSocketAddress sockAddr = new InetSocketAddress( nicAddr,
-        // inputs.localPort );
-        // MulticastSocket mcs = new MulticastSocket( sockAddr );
-
-        MulticastSocket mcs = new MulticastSocket( inputs.localPort );
-
-        // mcs.setLoopbackMode( !inputs.loopback );
-        mcs.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
-            inputs.loopback );
-        mcs.setTimeToLive( inputs.ttl );
-        mcs.setSoTimeout( inputs.timeout );
-
-        try
-        {
-            InetAddress address = inputs.multicast.data.getInetAddress();
-            SocketAddress maddr = new InetSocketAddress( address,
-                inputs.localPort );
-            mcs.joinGroup( maddr, nic );
-        }
-        catch( SocketException ex )
-        {
-            String msg = String.format( "Unable to join %s:%d",
-                inputs.multicast.data, inputs.localPort );
-            throw new IOException( msg, ex );
-        }
-
-        return mcs;
     }
 
     /***************************************************************************
@@ -136,17 +94,9 @@ public class UdpConnection implements IConnection
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public NetMessage receiveMessage()
-        throws IOException, SocketTimeoutException
+    public NetMessage receiveMessage() throws IOException
     {
-        DatagramPacket packet = new DatagramPacket( rxBuffer, rxBuffer.length );
-        socket.receive( packet );
-        byte [] contents = Arrays.copyOf( rxBuffer, packet.getLength() );
-        InetAddress address = packet.getAddress();
-        int port = packet.getPort();
-
-        return new NetMessage( true, getLocal(), new EndPoint( address, port ),
-            contents );
+        return socket.receive();
     }
 
     /***************************************************************************
@@ -177,7 +127,7 @@ public class UdpConnection implements IConnection
     @Override
     public String getNic()
     {
-        return socket.getLocalAddress().getHostAddress();
+        return socket.getLocal().address.toString();
     }
 
     /***************************************************************************
@@ -199,12 +149,7 @@ public class UdpConnection implements IConnection
      **************************************************************************/
     public EndPoint getLocal()
     {
-        EndPoint ep = new EndPoint();
-
-        ep.address.setInetAddress( socket.getLocalAddress() );
-        ep.port = socket.getLocalPort();
-
-        return ep;
+        return socket.getLocal();
     }
 
     /***************************************************************************
@@ -217,13 +162,7 @@ public class UdpConnection implements IConnection
     public NetMessage sendMessage( byte [] contents, InetAddress toAddr,
         int toPort ) throws IOException
     {
-        DatagramPacket packet = new DatagramPacket( contents, contents.length,
-            toAddr, toPort );
-
-        socket.send( packet );
-
-        return new NetMessage( false, getLocal(),
-            new EndPoint( toAddr, toPort ), contents );
+        return socket.send( contents, toAddr, toPort );
     }
 
     /***************************************************************************
@@ -241,10 +180,10 @@ public class UdpConnection implements IConnection
         this.remoteAddress = address;
     }
 
-    /**
+    /***************************************************************************
      * @param port
      * @throws IllegalArgumentException
-     */
+     **************************************************************************/
     public void setRemote( int port ) throws IllegalArgumentException
     {
         if( port < 1 || port > 65535 )
@@ -256,20 +195,12 @@ public class UdpConnection implements IConnection
         this.remotePort = port;
     }
 
-    /**
+    /***************************************************************************
      * @param milliseconds
      * @return
-     */
+     **************************************************************************/
     public boolean setReceiveTimeout( int milliseconds )
     {
-        try
-        {
-            socket.setSoTimeout( milliseconds );
-            return true;
-        }
-        catch( SocketException ex )
-        {
-            return false;
-        }
+        return socket.setReceiveTimeout( milliseconds );
     }
 }

@@ -1,6 +1,8 @@
 package org.jutils.core.net;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 /*******************************************************************************
  * 
@@ -91,6 +93,14 @@ public class EndPoint
     {
         this.address.setAny();
         this.port = port;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public SocketAddress getInetSocketAddress()
+    {
+        return new InetSocketAddress( address.getInetAddress(), port );
     }
 
     /***************************************************************************

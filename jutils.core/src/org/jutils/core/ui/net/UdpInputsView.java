@@ -2,7 +2,6 @@ package org.jutils.core.ui.net;
 
 import javax.swing.JComponent;
 
-import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.parsers.MulticastGroupParser;
 import org.jutils.core.net.IpAddress;
 import org.jutils.core.net.UdpInputs;
@@ -136,14 +135,8 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
         loopbackField.setUpdater( ( d ) -> inputs.loopback = d );
         ttlField.setUpdater( ( d ) -> inputs.ttl = d );
 
-        remoteAddressField.setUpdater( ( d ) -> {
-            inputs.remoteAddress.set( d );
-            LogUtils.printDebug( "Remote address is %s", inputs.remoteAddress );
-        } );
-
-        remotePortField.setUpdater( ( d ) -> {
-            inputs.remotePort = d;
-        } );
+        remoteAddressField.setUpdater( ( d ) -> inputs.remoteAddress.set( d ) );
+        remotePortField.setUpdater( ( d ) -> inputs.remotePort = d );
     }
 
     /***************************************************************************
