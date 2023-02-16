@@ -1,0 +1,53 @@
+package org.jutils.core.pcap;
+
+import java.io.EOFException;
+import java.io.IOException;
+
+import org.jutils.core.io.IDataStream;
+
+/*******************************************************************************
+ * 
+ ******************************************************************************/
+public class UnknownBlock extends IBlock
+{
+    /**  */
+    public byte [] body;
+
+    /***************************************************************************
+     * @param id
+     * @param length
+     **************************************************************************/
+    public UnknownBlock( int id, int length )
+    {
+        super( id );
+
+        this.length = length;
+
+        this.body = new byte[0];
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static final class UnknownBlockSerializer
+        implements IBlockBodySerializer
+    {
+        /**
+         * {@inheritDoc}
+         * @throws IOException
+         * @throws EOFException
+         */
+        @Override
+        public IBlock read( IDataStream stream, int id, int length )
+            throws IOException
+        {
+            UnknownBlock block = new UnknownBlock( id, length );
+
+            block.body = new byte[length - 12];
+
+            stream.readFully( block.body );
+
+            return block;
+        }
+    }
+}
