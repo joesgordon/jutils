@@ -2,28 +2,62 @@ package org.jutils.core.pcap;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.jutils.core.ValidationException;
 import org.jutils.core.io.DataStream;
 import org.jutils.core.io.FileStream;
 import org.jutils.core.io.IDataSerializer;
 import org.jutils.core.io.IDataStream;
 import org.jutils.core.io.LogUtils;
+import org.jutils.core.pcap.EnhancedPacket.EnhancedPacketSerializer;
+import org.jutils.core.pcap.IBlock.IBlockBodySerializer;
+import org.jutils.core.pcap.UnknownBlock.UnknownBlockSerializer;
 
 /*******************************************************************************
- * 
+ * Defines the methods of reading and writing PCAP Next Generation Blocks.
  ******************************************************************************/
 public class BlockSerializer implements IDataSerializer<IBlock>
 {
+    /**  */
+    private final Map<BlockType, IBlockBodySerializer> bodySerializers;
+    /**  */
+    private final UnknownBlockSerializer unknownSerializer;
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public BlockSerializer()
+    {
+        this.bodySerializers = new HashMap<>();
+        this.unknownSerializer = new UnknownBlockSerializer();
+
+        bodySerializers.put( BlockType.ENHANCED_PACKET,
+            new EnhancedPacketSerializer() );
+    }
+
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IBlock read( IDataStream stream )
-        throws IOException, ValidationException
+    public IBlock read( IDataStream stream ) throws IOException
     {
-        // TODO Auto-generated method stub
-        return null;
+        int id = stream.readInt();
+        int length = stream.readInt();
+        BlockType bt = BlockType.fromId( id );
+
+        IBlockBodySerializer serializer = bodySerializers.get( bt );
+
+        if( serializer == null )
+        {
+            serializer = unknownSerializer;
+        }
+
+        IBlock block = serializer.read( stream, id, length );
+
+        block.length2 = stream.readInt();
+
+        return block;
     }
 
     /***************************************************************************
@@ -56,7 +90,7 @@ public class BlockSerializer implements IDataSerializer<IBlock>
                     LogUtils.printDebug( "Read %X", block.id );
                 }
             }
-            catch( IOException | ValidationException ex )
+            catch( IOException ex )
             {
                 // TODO Auto-generated catch block
                 ex.printStackTrace();

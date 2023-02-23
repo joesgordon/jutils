@@ -30,7 +30,7 @@ import javax.swing.border.EmptyBorder;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.Utils;
 import org.jutils.core.ui.event.ResizingTableModelListener;
-import org.jutils.core.ui.model.ITableItemsConfig;
+import org.jutils.core.ui.model.ITableConfig;
 import org.jutils.core.ui.model.IView;
 import org.jutils.core.ui.model.ItemsTableModel;
 import org.jutils.core.ui.model.LabelTableCellRenderer;
@@ -281,7 +281,7 @@ public class ToolsView implements IView<JPanel>
     /***************************************************************************
      * Defines the contents of the tools table.
      **************************************************************************/
-    private static class ToolsTableModel implements ITableItemsConfig<IToolView>
+    private static class ToolsTableModel implements ITableConfig<IToolView>
     {
         /** The names of the columns of the tools table. */
         public final static String [] COL_NAMES = { "Name", "Description" };

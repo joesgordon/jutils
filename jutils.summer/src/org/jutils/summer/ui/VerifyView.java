@@ -38,14 +38,14 @@ import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.TitleView;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.FileChooserListener;
+import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.FileDropTarget;
+import org.jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import org.jutils.core.ui.event.ItemActionEvent;
 import org.jutils.core.ui.event.ItemActionListener;
-import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
-import org.jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import org.jutils.core.ui.fields.FileFormField;
 import org.jutils.core.ui.model.IDataView;
-import org.jutils.core.ui.model.ITableItemsConfig;
+import org.jutils.core.ui.model.ITableConfig;
 import org.jutils.core.ui.model.ItemsTableModel;
 import org.jutils.core.ui.model.LabelTableCellRenderer;
 import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
@@ -417,8 +417,7 @@ public class VerifyView implements IDataView<ChecksumResult>, IValidationField
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class ChecksumsTableModel
-        implements ITableItemsConfig<SumFile>
+    private static class ChecksumsTableModel implements ITableConfig<SumFile>
     {
         private static final Class<?> [] CLASSES = { String.class,
             String.class };

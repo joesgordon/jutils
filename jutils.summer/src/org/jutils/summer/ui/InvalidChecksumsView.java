@@ -3,9 +3,13 @@ package org.jutils.summer.ui;
 import java.awt.BorderLayout;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
-import org.jutils.core.ui.model.*;
+import org.jutils.core.ui.model.IDataView;
+import org.jutils.core.ui.model.ITableConfig;
+import org.jutils.core.ui.model.ItemsTableModel;
 import org.jutils.summer.data.InvalidChecksum;
 
 /*******************************************************************************
@@ -77,7 +81,7 @@ public class InvalidChecksumsView implements IDataView<List<InvalidChecksum>>
      *
      **************************************************************************/
     private static class InvalidChecksumModel
-        implements ITableItemsConfig<InvalidChecksum>
+        implements ITableConfig<InvalidChecksum>
     {
         private static final Class<?> [] CLASSES = { String.class, String.class,
             String.class };

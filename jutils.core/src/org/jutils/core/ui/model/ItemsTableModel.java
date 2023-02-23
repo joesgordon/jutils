@@ -18,7 +18,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     /**  */
     private final List<Class<?>> columnClasses;
     /**  */
-    private final ITableItemsConfig<T> tableConfig;
+    private final ITableConfig<T> tableConfig;
 
     /**  */
     private List<T> items;
@@ -26,7 +26,7 @@ public class ItemsTableModel<T> extends AbstractTableModel
     /***************************************************************************
      * @param tableConfig
      **************************************************************************/
-    public ItemsTableModel( ITableItemsConfig<T> tableConfig )
+    public ItemsTableModel( ITableConfig<T> tableConfig )
     {
         super();
 

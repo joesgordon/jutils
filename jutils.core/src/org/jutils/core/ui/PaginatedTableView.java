@@ -1,19 +1,14 @@
 package org.jutils.core.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Point;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.Action;
@@ -27,44 +22,40 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.ValidationException;
-import org.jutils.core.io.FileStream;
 import org.jutils.core.io.IDataSerializer;
-import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.IReferenceStream;
-import org.jutils.core.io.IStream;
 import org.jutils.core.io.IStringWriter;
 import org.jutils.core.io.ReferenceStream;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
 import org.jutils.core.ui.RowHeaderView.PaginatedNumberRowHeaderModel;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.BottomScroller;
-import org.jutils.core.ui.event.FileChooserListener;
-import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
+import org.jutils.core.ui.event.DoubleClickListener;
 import org.jutils.core.ui.event.ResizingTableModelListener;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.model.ITableConfig;
+import org.jutils.core.ui.model.IView;
 import org.jutils.core.ui.model.ItemsTableModel;
 import org.jutils.core.ui.model.LabelTableCellRenderer;
 import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
 import org.jutils.core.ui.net.StringWriterView;
 
 /*******************************************************************************
- * Defines UI that displays a paginated table of items.
+ * Defines UI that displays a paginated table of objects of a particular type.
  * @param <T> the type of item to be displayed.
  ******************************************************************************/
-public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
+public class PaginatedTableView<T> implements IView<JPanel>
 {
-    /**  */
+    /** This class's main view. */
     private final JPanel view;
-    /**  */
-    private final ITableConfig<T> tableConfig;
+    /** The toolbar for this view. */
+    private final JToolBar toolbar;
     /**  */
     private final ItemsTableModel<T> tableModel;
     /**  */
@@ -84,69 +75,64 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     private final JButton navLastButton;
     /**  */
     private final JLabel pageLabel;
-    /**  */
-    private final JButton openButton;
 
     /**  */
     private OkDialogView dialog;
     /**  */
-    private final NavView<T> itemView;
+    private final IDataView<T> itemView;
 
     /**  */
-    private IReferenceStream<T> stream;
+    public final IReferenceStream<T> itemsStream;
 
     /**  */
     private int itemsPerPage;
-    /**  */
+    /** The index of the item at the top of this page. */
     private long pageStartIndex;
 
     /***************************************************************************
-     * @param serializer the serializer that reads/writes items.
-     * @param tableConfig defines the columns to be shown.
+     * @param tableCfg the configuration of the table to be displayed.
+     * @param serializer the way each item in the table is serialized.
      **************************************************************************/
-    public RefStreamView( IDataSerializer<T> serializer,
-        ITableConfig<T> tableConfig )
+    public PaginatedTableView( ITableConfig<T> tableCfg,
+        IDataSerializer<T> serializer )
     {
-        this( serializer, tableConfig, null, false );
+        this( tableCfg, serializer, ( IDataView<T> )null );
     }
 
     /***************************************************************************
-     * @param serializer the serializer that reads/writes items.
-     * @param tableConfig defines the columns to be shown.
-     * @param itemWriter writes a description of an item.
+     * @param tableCfg the configuration of the table to be displayed.
+     * @param serializer the way each item in the table is serialized.
+     * @param itemWriter the method of creating a string that represents an
+     * item.
      **************************************************************************/
-    public RefStreamView( IDataSerializer<T> serializer,
-        ITableConfig<T> tableConfig, IStringWriter<T> itemWriter )
+    public PaginatedTableView( ITableConfig<T> tableCfg,
+        IDataSerializer<T> serializer, IStringWriter<T> itemWriter )
     {
-        this( serializer, tableConfig, createItemWriterView( itemWriter ),
-            true );
+        this( tableCfg, serializer, createItemWriterView( itemWriter ) );
     }
 
     /***************************************************************************
-     * @param serializer the serializer that reads/writes items.
-     * @param tableConfig defines the columns to be shown.
-     * @param itemView displays the contents of an item.
-     * @param addScrollPane optionally adds the item view to a scroll pane.
+     * @param tableCfg the configuration of the table to be displayed.
+     * @param serializer the way each item in the table is serialized.
+     * @param itemView a view that will display an item.
      **************************************************************************/
-    public RefStreamView( IDataSerializer<T> serializer,
-        ITableConfig<T> tableConfig, IDataView<T> itemView,
-        boolean addScrollPane )
+    public PaginatedTableView( ITableConfig<T> tableCfg,
+        IDataSerializer<T> serializer, IDataView<T> itemView )
     {
         ReferenceStream<T> refStream = null;
 
         try
         {
-            refStream = new ReferenceStream<T>( serializer );
+            refStream = new ReferenceStream<>( serializer );
         }
         catch( IOException ex )
         {
             throw new RuntimeException( "Unable to create temp files", ex );
         }
 
-        this.stream = refStream;
+        this.itemsStream = refStream;
 
-        this.tableConfig = tableConfig;
-        this.tableModel = new ItemsTableModel<>( tableConfig );
+        this.tableModel = new ItemsTableModel<>( tableCfg );
         this.table = new JTable( tableModel );
         this.tablePane = new JScrollPane( table );
         this.headerModel = new PaginatedNumberRowHeaderModel();
@@ -154,58 +140,28 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
         this.navPreviousButton = new JButton();
         this.navNextButton = new JButton();
         this.navLastButton = new JButton();
-        this.pageLabel = new JLabel( "Page 0 of 0" );
-        this.openButton = new JButton();
-        this.itemView = new NavView<>( this, itemView, addScrollPane );
+        this.pageLabel = new JLabel( "Page 0 of 0 (0)" );
+        this.dialog = null;
+        this.itemView = itemView;
+        this.toolbar = createToolbar();
         this.view = createView();
 
         this.itemsPerPage = 500;
         this.pageStartIndex = 0L;
-
-        setOpenVisible( false );
     }
 
     /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public IReferenceStream<T> getData()
-    {
-        return stream;
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setData( IReferenceStream<T> stream )
-    {
-        this.stream = stream;
-
-        pageStartIndex = 0L;
-        navigatePage( 0L, true );
-        ResizingTableModelListener.resizeTable( table );
-    }
-
-    /***************************************************************************
-     * @return the main view for this control.
+     * Creates this class's main view.
+     * @return this class's main view.
      **************************************************************************/
     private JPanel createView()
     {
         JPanel panel = new JPanel( new BorderLayout() );
 
-        table.setDefaultRenderer( LocalDateTime.class,
-            new LabelTableCellRenderer( new LocalDateTimeDecorator() ) );
         table.getTableHeader().setReorderingAllowed( false );
         table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
-        table.addMouseListener( new ItemMouseListener<>( this ) );
-
-        TableColumnModel colModel = table.getColumnModel();
-        int lastColIdx = tableConfig.getColumnNames().length - 1;
-        TableColumn column = colModel.getColumn( lastColIdx );
-        LabelTableCellRenderer renderer = new LabelTableCellRenderer(
-            new FontLabelTableCellRenderer( SwingUtils.getFixedFont( 12 ) ) );
-        column.setCellRenderer( renderer );
+        table.addMouseListener(
+            new DoubleClickListener( ( p ) -> handleDoubleClick( p ) ) );
 
         JScrollBar vScrollBar = tablePane.getVerticalScrollBar();
 
@@ -222,9 +178,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
         tablePane.setHorizontalScrollBarPolicy(
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );
 
-        // panel.setBorder( new TitledBorder( "Sent/Received Items" ) );
-
-        panel.add( createToolbar(), BorderLayout.NORTH );
+        panel.add( toolbar, BorderLayout.NORTH );
         panel.add( tablePane, BorderLayout.CENTER );
 
         panel.setMinimumSize( new Dimension( 625, 200 ) );
@@ -234,7 +188,18 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @return the toolbar displayed above the table of items
+     * @param p the table relative point that was double-clicked.
+     **************************************************************************/
+    private void handleDoubleClick( Point p )
+    {
+        long index = table.rowAtPoint( p ) + pageStartIndex;
+
+        showItem( index );
+    }
+
+    /***************************************************************************
+     * Creates the toolbar for this view.
+     * @return the toolbar for this view.
      **************************************************************************/
     private JToolBar createToolbar()
     {
@@ -264,25 +229,17 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
 
         toolbar.addSeparator();
 
-        SwingUtils.addActionToToolbar( toolbar, createSaveAction() );
-
-        SwingUtils.addActionToToolbar( toolbar, createOpenAction(),
-            openButton );
+        SwingUtils.addActionToToolbar( toolbar, createClearAction() );
 
         toolbar.addSeparator();
-
-        SwingUtils.addActionToToolbar( toolbar, createClearAction() );
 
         return toolbar;
     }
 
     /***************************************************************************
-     * Creates an action to move forward or backward, by either 1 or to the
-     * beginning/end.
-     * @param absolute moves to the beginning/end if {@code true} or by 1 page
-     * if {@code false}.
-     * @param forward moves forward if {@code true}; backward if {@code false}.
-     * @return the new action.
+     * @param absolute if this action navigates to an end of the pages.
+     * @param forward if this action navigates forward.
+     * @return the action that navigates.
      **************************************************************************/
     private Action createNavAction( boolean absolute, boolean forward )
     {
@@ -318,34 +275,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * Creates an action that saves all the items to a file.
-     * @return
-     **************************************************************************/
-    private Action createSaveAction()
-    {
-        IFileSelected ifs = ( f ) -> saveFile( f );
-        FileChooserListener listener = new FileChooserListener( getView(),
-            "Choose File", true, ifs );
-        Icon icon = IconConstants.getIcon( IconConstants.SAVE_16 );
-
-        return new ActionAdapter( listener, "Save", icon );
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private Action createOpenAction()
-    {
-        IFileSelected ifs = ( f ) -> openFile( f );
-        FileChooserListener listener = new FileChooserListener( getView(),
-            "Choose File", false, ifs );
-        Icon icon = IconConstants.getIcon( IconConstants.OPEN_FOLDER_16 );
-
-        return new ActionAdapter( listener, "Open", icon );
-    }
-
-    /***************************************************************************
-     * @return
+     * @return an action that clears all items.
      **************************************************************************/
     private Action createClearAction()
     {
@@ -356,8 +286,8 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @param absolute
-     * @param forward
+     * @param absolute if the navigation is to an end of the pages.
+     * @param forward if the navigation is forward (+1).
      **************************************************************************/
     private void navigatePage( boolean absolute, boolean forward )
     {
@@ -377,18 +307,18 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
         }
         else
         {
-            index = stream.getCount() - 1;
+            index = itemsStream.getCount() - 1;
             index = index - index % itemsPerPage;
         }
 
-        if( index > -1 && index < stream.getCount() )
+        if( index > -1 && index < itemsStream.getCount() )
         {
             navigatePage( index );
         }
     }
 
     /***************************************************************************
-     * @param page
+     * @param startIndex the item index the page will start.
      **************************************************************************/
     private void navigatePage( long startIndex )
     {
@@ -396,8 +326,9 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @param startIndex
-     * @param ignoreIndexCheck
+     * @param startIndex the item index the page will start.
+     * @param ignoreIndexCheck if {@code true} reloads even if the index doesn't
+     * change.
      **************************************************************************/
     private void navigatePage( long startIndex, boolean ignoreIndexCheck )
     {
@@ -407,13 +338,13 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
         }
 
         int count = ( int )Math.min( itemsPerPage,
-            stream.getCount() - startIndex );
+            itemsStream.getCount() - startIndex );
 
         // LogUtils.printDebug( "Setting start index to %d from %d of %d for
         // %d",
-        // startIndex, pageStartIndex, stream.getCount(), count );
+        // startIndex, pageStartIndex, itemsStream.getCount(), count );
 
-        if( startIndex < 0 || startIndex >= stream.getCount() )
+        if( startIndex < 0 || startIndex >= itemsStream.getCount() )
         {
             return;
         }
@@ -422,9 +353,9 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
         try
         {
             List<T> items = null;
-            synchronized( stream )
+            synchronized( itemsStream )
             {
-                items = stream.read( pageStartIndex, count );
+                items = itemsStream.read( pageStartIndex, count );
             }
             tableModel.setItems( items );
             updateRowHeader( count );
@@ -443,7 +374,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @param count
+     * @param count the number of rows in the row header.
      **************************************************************************/
     private void updateRowHeader( int count )
     {
@@ -468,12 +399,12 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
             itemsPerPage );
         int pageNum = pageCount == 0 ? 0 : ( pageIndex + 1 );
 
-        pageLabel.setText( String.format( "Page %d of %d (%d items)", pageNum,
-            pageCount, stream.getCount() ) );
+        pageLabel.setText( String.format( "Page %d of %d (%d)", pageNum,
+            pageCount, itemsStream.getCount() ) );
     }
 
     /***************************************************************************
-     * @return
+     * @return {@code true} if there is a previous page.
      **************************************************************************/
     private boolean hasPrevious()
     {
@@ -481,21 +412,21 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @return
+     * @return {@code true} if there is a next page.
      **************************************************************************/
     private boolean hasNext()
     {
-        long lastItem = stream.getCount() - 1;
+        long lastItem = itemsStream.getCount() - 1;
         long maxStartIndex = lastItem - lastItem % itemsPerPage;
         return pageStartIndex < maxStartIndex;
     }
 
     /***************************************************************************
-     * @return
+     * @return the number of pages needed to navigate the items.
      **************************************************************************/
     private int getPageCount()
     {
-        long count = stream.getCount();
+        long count = itemsStream.getCount();
 
         int max = ( int )( ( count + itemsPerPage - 1 ) / itemsPerPage );
 
@@ -503,11 +434,11 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @param itemIndex
+     * @param itemIndex the index of the item to be shown.
      **************************************************************************/
-    private void showItem( long itemIndex )
+    public void showItem( long itemIndex )
     {
-        if( itemIndex < 0 || itemIndex >= stream.getCount() )
+        if( itemIndex < 0 || itemIndex >= itemsStream.getCount() )
         {
             return;
         }
@@ -540,7 +471,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
         else
         {
             d.setDefaultCloseOperation( JDialog.HIDE_ON_CLOSE );
-            d.setSize( 675, 400 );
+            d.setSize( 910, 520 );
             d.setLocationRelativeTo( f );
         }
 
@@ -551,77 +482,13 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @param index
-     * @return
+     * @param index the index of an item.
+     * @return {@code true} if the provided index is in the current page.
      **************************************************************************/
     private boolean isPaged( long index )
     {
         return index > pageStartIndex &&
             index < ( pageStartIndex + itemsPerPage );
-    }
-
-    /***************************************************************************
-     * @param file
-     **************************************************************************/
-    private void saveFile( File file )
-    {
-        byte [] buf = new byte[IOUtils.DEFAULT_BUF_SIZE];
-
-        synchronized( stream )
-        {
-            try( FileStream stream = new FileStream( file ) )
-            {
-                @SuppressWarnings( "resource")
-                IStream input = this.stream.getItemsStream();
-
-                input.seek( 0L );
-
-                long length = input.getLength();
-                long written = 0;
-
-                while( written < length )
-                {
-                    int count = input.read( buf );
-
-                    stream.write( buf, 0, count );
-
-                    written += count;
-                }
-            }
-            catch( FileNotFoundException ex )
-            {
-                // TODO Auto-generated catch block
-                ex.printStackTrace();
-            }
-            catch( IOException ex )
-            {
-                // TODO Auto-generated catch block
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    /***************************************************************************
-     * @param file
-     **************************************************************************/
-    public void openFile( File file )
-    {
-        clearItems();
-
-        try
-        {
-            synchronized( stream )
-            {
-                stream.setItemsFile( file );
-            }
-
-            setData( stream );
-        }
-        catch( IOException ex )
-        {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
-        }
     }
 
     /***************************************************************************
@@ -634,19 +501,19 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @param item
+     * @param item the item to be added.
      **************************************************************************/
     public void addItem( T item )
     {
-        long count = stream.getCount();
+        long count = itemsStream.getCount();
         long lastStartIndex = Math.max( count - 1, 0 );
         lastStartIndex = lastStartIndex - lastStartIndex % itemsPerPage;
 
         try
         {
-            synchronized( stream )
+            synchronized( itemsStream )
             {
-                stream.write( item );
+                itemsStream.write( item );
             }
             count++;
         }
@@ -658,9 +525,9 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
         long nextPageStartIndex = pageStartIndex + itemsPerPage;
 
         // LogUtils.printDebug(
-        // "Adding item; last start = %d, next start = %d, current start =
+        // "Adding message; last start = %d, next start = %d, current start =
         // %d, count = %d",
-        // lastStartIndex, nextIndex, pageStartIndex, stream.getCount() );
+        // lastStartIndex, nextIndex, pageStartIndex, itemsStream.getCount() );
 
         if( lastStartIndex == pageStartIndex )
         {
@@ -683,7 +550,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @return
+     * @return {@code true} if the scrollbar is already at the bottom.
      **************************************************************************/
     private boolean isAtBottom()
     {
@@ -696,6 +563,31 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
+     * @param file
+     **************************************************************************/
+    public void openFile( File file )
+    {
+        clearItems();
+
+        try
+        {
+            synchronized( itemsStream )
+            {
+                itemsStream.setItemsFile( file );
+            }
+        }
+        catch( IOException ex )
+        {
+            // TODO Auto-generated catch block
+            ex.printStackTrace();
+        }
+
+        pageStartIndex = 0L;
+        navigatePage( 0L, true );
+        ResizingTableModelListener.resizeTable( table );
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     public void clearItems()
@@ -704,9 +596,9 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
 
         try
         {
-            synchronized( stream )
+            synchronized( itemsStream )
             {
-                stream.removeAll();
+                itemsStream.removeAll();
             }
         }
         catch( IOException ex )
@@ -725,19 +617,53 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * @param visible
+     * @param a the action to be added.
+     * @return the button created from adding the provided action.
      **************************************************************************/
-    public void setOpenVisible( boolean visible )
+    public JButton addToToolbar( Action a )
     {
-        openButton.setVisible( visible );
+        return SwingUtils.addActionToToolbar( toolbar, a );
     }
 
     /***************************************************************************
-     * @param itemWriter
-     * @return
+     * Adds a separator to the toolbar.
      **************************************************************************/
-    private static <T> StringWriterView<T> createItemWriterView(
-        IStringWriter<T> itemWriter )
+    public void addToToolbar()
+    {
+        toolbar.addSeparator();
+    }
+
+    /***************************************************************************
+     * @return a new iterator that visits every item.
+     **************************************************************************/
+    public Iterator<T> getItemIterator()
+    {
+        return itemsStream.getIterator();
+    }
+
+    /***************************************************************************
+     * @return the index of the selected item.
+     **************************************************************************/
+    public long getSelectedIndex()
+    {
+        return pageStartIndex + table.getSelectedRow();
+    }
+
+    /***************************************************************************
+     * @return the total number of items.
+     **************************************************************************/
+    public long getItemCount()
+    {
+        return itemsStream.getCount();
+    }
+
+    /***************************************************************************
+     * @param <F> the type of item to be represented as a string.
+     * @param itemWriter the method of representing an item as a string.
+     * @return the view that will display a string representation of an item.
+     **************************************************************************/
+    private static <F> StringWriterView<F> createItemWriterView(
+        IStringWriter<F> itemWriter )
     {
         return itemWriter == null ? null : new StringWriterView<>( itemWriter );
     }
@@ -745,248 +671,33 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class ItemMouseListener<T> extends MouseAdapter
+    public void updateTable()
     {
-        /**  */
-        private final RefStreamView<T> view;
+        tableModel.fireTableDataChanged();
 
-        /**
-         * @param view
-         */
-        public ItemMouseListener( RefStreamView<T> view )
-        {
-            this.view = view;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void mouseClicked( MouseEvent e )
-        {
-            if( SwingUtilities.isLeftMouseButton( e ) &&
-                e.getClickCount() == 2 )
-            {
-                long index = view.table.rowAtPoint( e.getPoint() ) +
-                    view.pageStartIndex;
-
-                view.showItem( index );
-            }
-        }
+        ResizingTableModelListener.resizeTable( table );
     }
 
     /***************************************************************************
-     * 
+     * @param clazz
+     * @param renderer
      **************************************************************************/
-    private static class LocalDateTimeDecorator
-        implements ITableCellLabelDecorator
+    public void setDefaultRenderer( Class<?> clazz,
+        ITableCellLabelDecorator renderer )
     {
-        /**  */
-        private final DateTimeFormatter dtf;
-
-        /**
-         * 
-         */
-        public LocalDateTimeDecorator()
-        {
-            this.dtf = DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss.SSS" );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void decorate( JLabel label, JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int col )
-        {
-            String text = "";
-
-            if( value != null )
-            {
-                LocalDateTime ldt = ( LocalDateTime )value;
-                text = ldt.format( dtf );
-            }
-
-            label.setText( text );
-        }
+        table.setDefaultRenderer( clazz,
+            new LabelTableCellRenderer( renderer ) );
     }
 
     /***************************************************************************
-     * @param <T>
+     * @param column
+     * @param renderer
      **************************************************************************/
-    private static final class NavView<T> implements IDataView<T>
+    public void setCellRenderer( int column, ITableCellLabelDecorator renderer )
     {
-        /**  */
-        private final RefStreamView<T> itemsView;
-
-        /**  */
-        private final JPanel view;
-        /**  */
-        private final IDataView<T> itemView;
-
-        /**  */
-        private final JButton prevButton;
-        /**  */
-        private final JButton nextButton;
-
-        /**
-         * @param itemsView
-         * @param itemView
-         * @param addScrollPane
-         */
-        public NavView( RefStreamView<T> itemsView, IDataView<T> itemView,
-            boolean addScrollPane )
-        {
-            this.itemsView = itemsView;
-            this.itemView = itemView;
-            this.prevButton = new JButton();
-            this.nextButton = new JButton();
-
-            this.view = createView( addScrollPane );
-
-            setButtonsEnabled();
-        }
-
-        /**
-         * @param addScrollPane
-         * @return
-         */
-        private JPanel createView( boolean addScrollPane )
-        {
-            JPanel panel = new JPanel( new BorderLayout() );
-            Component centerComp = itemView.getView();
-
-            if( addScrollPane )
-            {
-                JScrollPane pane = new JScrollPane( centerComp );
-
-                pane.getVerticalScrollBar().setUnitIncrement( 10 );
-
-                centerComp = pane;
-            }
-
-            panel.add( createToolbar(), BorderLayout.NORTH );
-            panel.add( centerComp, BorderLayout.CENTER );
-
-            return panel;
-        }
-
-        /**
-         * @return
-         */
-        private JToolBar createToolbar()
-        {
-            JToolBar toolbar = new JToolBar();
-
-            SwingUtils.setToolbarDefaults( toolbar );
-
-            SwingUtils.addActionToToolbar( toolbar, createNavAction( false ),
-                prevButton );
-
-            SwingUtils.addActionToToolbar( toolbar, createNavAction( true ),
-                nextButton );
-
-            return toolbar;
-        }
-
-        /**
-         * @param forward
-         * @return
-         */
-        private Action createNavAction( boolean forward )
-        {
-            ActionListener listener = ( e ) -> navigate( forward );
-            Icon icon = IconConstants.getIcon(
-                forward ? IconConstants.NAV_NEXT_16
-                    : IconConstants.NAV_PREVIOUS_16 );
-            String name = forward ? "Next" : "Previous";
-
-            return new ActionAdapter( listener, name, icon );
-        }
-
-        /**
-         * @param forward
-         */
-        private void navigate( boolean forward )
-        {
-            int inc = forward ? 1 : -1;
-            long index = itemsView.table.getSelectedRow() +
-                itemsView.pageStartIndex;
-            long nextIndex = index + inc;
-
-            itemsView.showItem( nextIndex );
-
-            setButtonsEnabled();
-        }
-
-        /**
-         * 
-         */
-        private void setButtonsEnabled()
-        {
-            long index = itemsView.table.getSelectedRow() +
-                itemsView.pageStartIndex;
-            long maxRow = itemsView.stream.getCount() - 1;
-
-            prevButton.setEnabled( index > 0 );
-            nextButton.setEnabled( index > -1 && index < maxRow );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public JPanel getView()
-        {
-            return view;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public T getData()
-        {
-            return itemView.getData();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setData( T data )
-        {
-            itemView.setData( data );
-
-            setButtonsEnabled();
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static final class FontLabelTableCellRenderer
-        implements ITableCellLabelDecorator
-    {
-        /**  */
-        private final Font font;
-
-        /**
-         * @param font
-         */
-        public FontLabelTableCellRenderer( Font font )
-        {
-            this.font = font;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void decorate( JLabel label, JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int col )
-        {
-            label.setFont( font );
-        }
+        TableColumnModel colModel = table.getColumnModel();
+        TableColumn c = colModel.getColumn( column );
+        LabelTableCellRenderer r = new LabelTableCellRenderer( renderer );
+        c.setCellRenderer( r );
     }
 }

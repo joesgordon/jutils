@@ -3,13 +3,10 @@ package org.jutils.core.pcap;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.DataStream;
 import org.jutils.core.io.FileStream;
-import org.jutils.core.io.IDataSerializer;
 import org.jutils.core.io.IDataStream;
 import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.LogUtils;
@@ -18,8 +15,6 @@ import org.jutils.core.net.EndPoint;
 import org.jutils.core.net.IpAddress;
 import org.jutils.core.net.NetMessage;
 import org.jutils.core.net.NetMessageSerializer;
-import org.jutils.core.pcap.EnhancedPacket.EnhancedPacketSerializer;
-import org.jutils.core.pcap.UnknownBlock.UnknownBlockSerializer;
 import org.jutils.core.ui.hex.HexUtils;
 import org.jutils.core.utils.ByteOrdering;
 
@@ -98,7 +93,7 @@ public abstract class IBlock
         IpAddress localIp, IpAddress remoteIp )
         throws FileNotFoundException, IOException
     {
-        BaseBlockSerializer blockSerializer = new BaseBlockSerializer();
+        BlockSerializer blockSerializer = new BlockSerializer();
         NetMessageSerializer netMsgSerializer = new NetMessageSerializer();
 
         try( FileStream inFs = new FileStream( pcapFile );
@@ -204,58 +199,5 @@ public abstract class IBlock
          */
         public IBlock read( IDataStream stream, int id, int length )
             throws IOException;
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static class BaseBlockSerializer implements IDataSerializer<IBlock>
-    {
-        /**  */
-        private final Map<BlockType, IBlockBodySerializer> bodySerializers;
-        /**  */
-        private final UnknownBlockSerializer unknownSerializer;
-
-        /**
-         * 
-         */
-        public BaseBlockSerializer()
-        {
-            this.bodySerializers = new HashMap<>();
-            this.unknownSerializer = new UnknownBlockSerializer();
-
-            bodySerializers.put( BlockType.ENHANCED_PACKET,
-                new EnhancedPacketSerializer() );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public IBlock read( IDataStream stream ) throws IOException
-        {
-            int id = stream.readInt();
-            int length = stream.readInt();
-            BlockType bt = BlockType.fromId( id );
-
-            IBlockBodySerializer serializer = bodySerializers.get( bt );
-
-            if( serializer == null )
-            {
-                serializer = unknownSerializer;
-            }
-
-            IBlock block = serializer.read( stream, id, length );
-
-            block.length2 = stream.readInt();
-
-            return block;
-        }
-
-        @Override
-        public void write( IBlock data, IDataStream stream ) throws IOException
-        {
-            // TODO Auto-generated method stub
-        }
     }
 }

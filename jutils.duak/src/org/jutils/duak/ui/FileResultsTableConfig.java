@@ -1,13 +1,13 @@
 package org.jutils.duak.ui;
 
-import org.jutils.core.ui.model.ITableItemsConfig;
+import org.jutils.core.ui.model.ITableConfig;
 import org.jutils.duak.data.FileInfo;
 import org.jutils.duak.utils.FileSize;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class FileResultsTableConfig implements ITableItemsConfig<FileInfo>
+public class FileResultsTableConfig implements ITableConfig<FileInfo>
 {
     /**  */
     private static Class<?> [] COLUMN_CLASSES = new Class<?>[] { FileInfo.class,
