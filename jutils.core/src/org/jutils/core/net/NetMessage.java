@@ -86,7 +86,10 @@ public class NetMessage
     @Override
     public String toString()
     {
-        return String.format( "%s, %s, %s, %s, %s, %s", received, time, local,
-            remote, HexUtils.toHexString( contents, " " ), message );
+        String direction = received ? "Rx" : "Tx";
+        String bytes = HexUtils.toHexString( contents, " " );
+
+        return String.format( "%s, %s, %s, %s, %s, %s", direction, time, local,
+            remote, bytes, message );
     }
 }

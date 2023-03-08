@@ -1,6 +1,5 @@
 package org.jutils.core.io;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,7 +8,7 @@ import java.io.IOException;
  * Defines an object to read lines from a file and keep up with the number of
  * the line read.
  ******************************************************************************/
-public class LineReader implements Closeable
+public class LineReader implements AutoCloseable
 {
     /** The underlying reader. */
     private final FileStream stream;
@@ -26,6 +25,16 @@ public class LineReader implements Closeable
     public LineReader( File file ) throws FileNotFoundException
     {
         this.stream = new FileStream( file, true );
+        this.lineNumber = -1;
+    }
+
+    /***************************************************************************
+     * Creates a new reader of the provided file.
+     * @param stream
+     **************************************************************************/
+    public LineReader( FileStream stream )
+    {
+        this.stream = stream;
         this.lineNumber = -1;
     }
 

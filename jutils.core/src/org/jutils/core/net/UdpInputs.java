@@ -54,7 +54,7 @@ public class UdpInputs
         this.localPort = inputs.localPort;
         this.nic = inputs.nic;
         this.broadcast = inputs.broadcast;
-        this.multicast = new Usable<>( multicast );
+        this.multicast = new Usable<>( inputs.multicast );
         this.timeout = inputs.timeout;
         this.reuse = inputs.reuse;
         this.loopback = inputs.loopback;

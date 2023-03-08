@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.datatransfer.Clipboard;
@@ -27,8 +26,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-
-import javax.swing.JTable;
 
 import org.jutils.core.data.SystemProperty;
 
@@ -434,25 +431,6 @@ public final class Utils
         }
 
         return buffer.toString();
-
-    }
-
-    /***************************************************************************
-     * Scrolls to the row and column provided.
-     * @param table the table to be scrolled.
-     * @param row the row to be scrolled to.
-     * @param col the column to be scrolled to.
-     **************************************************************************/
-    public static void scrollToVisible( JTable table, int row, int col )
-    {
-        Rectangle rect = table.getCellRect( row, col, true );
-
-        rect = new Rectangle( rect );
-
-        // LogUtils.printDebug( "Scrolling to: " + row + ", " + col + ":" +
-        // rect.toString() );
-
-        table.scrollRectToVisible( rect );
     }
 
     /***************************************************************************

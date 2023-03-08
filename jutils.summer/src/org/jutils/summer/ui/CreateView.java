@@ -46,17 +46,17 @@ import org.jutils.core.ui.TitleView;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.DirectoryChooserListener;
 import org.jutils.core.ui.event.FileChooserListener;
-import org.jutils.core.ui.event.FileDropTarget;
-import org.jutils.core.ui.event.ItemActionEvent;
-import org.jutils.core.ui.event.ItemActionListener;
 import org.jutils.core.ui.event.FileChooserListener.IFilesSelected;
 import org.jutils.core.ui.event.FileChooserListener.ILastFiles;
+import org.jutils.core.ui.event.FileDropTarget;
 import org.jutils.core.ui.event.FileDropTarget.DropActionType;
 import org.jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import org.jutils.core.ui.event.ItemActionEvent;
+import org.jutils.core.ui.event.ItemActionListener;
 import org.jutils.core.ui.fields.ComboFormField;
 import org.jutils.core.ui.fields.NamedItemDescriptor;
 import org.jutils.core.ui.model.IDataView;
-import org.jutils.core.ui.model.ITableItemsConfig;
+import org.jutils.core.ui.model.ITableConfig;
 import org.jutils.core.ui.model.ItemsTableModel;
 import org.jutils.core.ui.model.LabelTableCellRenderer;
 import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
@@ -584,7 +584,7 @@ public class CreateView implements IDataView<ChecksumResult>, IValidationField
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class PathModel implements ITableItemsConfig<SumFile>
+    private static class PathModel implements ITableConfig<SumFile>
     {
         /**  */
         private static final Class<?> [] CLASSES = { String.class,

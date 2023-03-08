@@ -31,6 +31,9 @@ public class NetworkInterfaceField implements IDataFormField<String>
         nicMenu.setUpdater( ( d ) -> handleNicChosen( d ) );
     }
 
+    /***************************************************************************
+     * @param nic
+     **************************************************************************/
     private void handleNicChosen( NicInfo nic )
     {
         nicField.setValue( nic.address.getHostAddress() );

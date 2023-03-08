@@ -49,7 +49,7 @@ import org.jutils.core.ui.event.FileChooserListener;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.ResizingTableModelListener;
 import org.jutils.core.ui.model.IDataView;
-import org.jutils.core.ui.model.ITableItemsConfig;
+import org.jutils.core.ui.model.ITableConfig;
 import org.jutils.core.ui.model.ItemsTableModel;
 import org.jutils.core.ui.model.LabelTableCellRenderer;
 import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
@@ -64,7 +64,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     /**  */
     private final JPanel view;
     /**  */
-    private final ITableItemsConfig<T> tableConfig;
+    private final ITableConfig<T> tableConfig;
     /**  */
     private final ItemsTableModel<T> tableModel;
     /**  */
@@ -105,7 +105,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
      * @param tableConfig defines the columns to be shown.
      **************************************************************************/
     public RefStreamView( IDataSerializer<T> serializer,
-        ITableItemsConfig<T> tableConfig )
+        ITableConfig<T> tableConfig )
     {
         this( serializer, tableConfig, null, false );
     }
@@ -116,7 +116,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
      * @param itemWriter writes a description of an item.
      **************************************************************************/
     public RefStreamView( IDataSerializer<T> serializer,
-        ITableItemsConfig<T> tableConfig, IStringWriter<T> itemWriter )
+        ITableConfig<T> tableConfig, IStringWriter<T> itemWriter )
     {
         this( serializer, tableConfig, createItemWriterView( itemWriter ),
             true );
@@ -129,7 +129,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
      * @param addScrollPane optionally adds the item view to a scroll pane.
      **************************************************************************/
     public RefStreamView( IDataSerializer<T> serializer,
-        ITableItemsConfig<T> tableConfig, IDataView<T> itemView,
+        ITableConfig<T> tableConfig, IDataView<T> itemView,
         boolean addScrollPane )
     {
         ReferenceStream<T> refStream = null;

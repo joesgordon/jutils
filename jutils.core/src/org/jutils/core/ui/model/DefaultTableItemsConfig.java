@@ -6,7 +6,7 @@ import java.util.List;
 /*******************************************************************************
  * @param <T> The type of items stored in the rows of the table.
  ******************************************************************************/
-public class DefaultTableItemsConfig<T> implements ITableItemsConfig<T>
+public class DefaultTableItemsConfig<T> implements ITableConfig<T>
 {
     /**  */
     private final List<ColCfg<T, ?>> cfgs;

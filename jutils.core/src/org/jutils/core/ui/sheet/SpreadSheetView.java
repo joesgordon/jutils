@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import org.jutils.core.Utils;
+import org.jutils.core.SwingUtils;
 import org.jutils.core.data.UIProperty;
 import org.jutils.core.ui.RowHeaderRenderer;
 import org.jutils.core.ui.event.ResizingTableModelListener;
@@ -192,7 +192,7 @@ public class SpreadSheetView implements IDataView<ISpreadSheet>
         table.setRowSelectionInterval( row0, row1 );
         table.setColumnSelectionInterval( col0, col1 );
 
-        Utils.scrollToVisible( table, row0, col0 );
+        SwingUtils.scrollToVisible( table, row0, col0 );
     }
 
     /***************************************************************************

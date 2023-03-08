@@ -59,6 +59,20 @@ public class IpAddress
     }
 
     /***************************************************************************
+     * Creates an IPv4 address with the specified value.
+     * @param value the address of length {@link #IPV4_SIZE} or
+     * {@link #IPV6_SIZE}.
+     * @throws IllegalArgumentException if the provided address is not of length
+     * {@link #IPV4_SIZE} or {@link #IPV6_SIZE}.
+     **************************************************************************/
+    public IpAddress( byte [] value ) throws IllegalArgumentException
+    {
+        this( IpVersion.IPV4 );
+
+        this.set( value );
+    }
+
+    /***************************************************************************
      * Creates a copy of the specified IP address.
      * @param address IP to be copied.
      **************************************************************************/

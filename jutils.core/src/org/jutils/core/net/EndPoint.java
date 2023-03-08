@@ -1,6 +1,8 @@
 package org.jutils.core.net;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 /*******************************************************************************
  * 
@@ -33,6 +35,19 @@ public class EndPoint
     }
 
     /***************************************************************************
+     * Creates an end point at the provided address and port.
+     * @param address the IP4 address of the end point.
+     * @param port the port of the end point.
+     **************************************************************************/
+    public EndPoint( IpAddress address, int port )
+    {
+        this();
+
+        this.address.set( address );
+        this.port = port;
+    }
+
+    /***************************************************************************
      * @param address
      * @param port
      **************************************************************************/
@@ -42,6 +57,83 @@ public class EndPoint
 
         this.address.setInetAddress( address );
         this.port = port;
+    }
+
+    /***************************************************************************
+     * Sets this end point to the same values as the provided end point.
+     * @param that the values to copy to this end point.
+     **************************************************************************/
+    public void set( EndPoint that )
+    {
+        this.set( that.address, that.port );
+    }
+
+    /***************************************************************************
+     * @param address
+     * @param port
+     **************************************************************************/
+    public void set( IpAddress address, int port )
+    {
+        this.address.set( address );
+        this.port = port;
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void setAny()
+    {
+        setAny( 0 );
+    }
+
+    /***************************************************************************
+     * @param port
+     **************************************************************************/
+    public void setAny( int port )
+    {
+        this.address.setAny();
+        this.port = port;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public SocketAddress getInetSocketAddress()
+    {
+        return new InetSocketAddress( address.getInetAddress(), port );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public boolean equals( Object obj )
+    {
+        if( obj == null )
+        {
+            return false;
+        }
+        else if( obj == this )
+        {
+            return true;
+        }
+        else if( obj instanceof EndPoint )
+        {
+            EndPoint that = ( EndPoint )obj;
+            return this.address.equals( that.address ) &&
+                this.port == that.port;
+        }
+
+        return false;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int hashCode()
+    {
+        return 31 * address.hashCode() + port;
     }
 
     /***************************************************************************

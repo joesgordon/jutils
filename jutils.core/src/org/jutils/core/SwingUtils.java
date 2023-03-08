@@ -46,9 +46,14 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -715,6 +720,117 @@ public final class SwingUtils
         action.putValue( Action.ACCELERATOR_KEY, stroke );
         inMap.put( stroke, mapKey );
         acMap.put( mapKey, action );
+    }
+
+    /***************************************************************************
+     * @param table
+     * @param columnIndex
+     * @param width
+     **************************************************************************/
+    public static void fixWidth( final JTable table, final int columnIndex,
+        final int width )
+    {
+        TableColumn column = table.getColumnModel().getColumn( columnIndex );
+        column.setMinWidth( width );
+        column.setMaxWidth( width );
+        column.setPreferredWidth( width );
+    }
+
+    /***************************************************************************
+     * Scrolls to the row and column provided.
+     * @param table the table to be scrolled.
+     * @param row the row to be scrolled to.
+     * @param col the column to be scrolled to.
+     **************************************************************************/
+    public static void scrollToVisible( JTable table, int row, int col )
+    {
+        Rectangle rect = table.getCellRect( row, col, true );
+
+        rect = new Rectangle( rect );
+
+        // LogUtils.printDebug( "Scrolling to: " + row + ", " + col + ":" +
+        // rect.toString() );
+
+        table.scrollRectToVisible( rect );
+    }
+
+    /***************************************************************************
+     * @param table
+     * @param rowMax
+     **************************************************************************/
+    public static void resizeTable( JTable table, int rowMax )
+    {
+        int horzSpace = 6;
+        String colName;
+        TableModel model = table.getModel();
+        int colCount = model.getColumnCount();
+        int rowCount = model.getRowCount();
+        int widths[] = new int[model.getColumnCount()];
+        Component cellRenderer;
+        TableCellRenderer tableCellRenderer;
+        int defaultWidth;
+
+        int rrow = table.getRowCount();
+
+        rrow = rrow == 0 ? -1 : 0;
+
+        rrow = Math.min( rrow, rowMax );
+
+        // ---------------------------------------------------------------------
+        // Compute all widths.
+        // ---------------------------------------------------------------------
+        for( int col = 0; col < colCount; col++ )
+        {
+            colName = model.getColumnName( col );
+            defaultWidth = 20;
+
+            // -----------------------------------------------------------------
+            // Compute header width.
+            // -----------------------------------------------------------------
+            tableCellRenderer = table.getColumnModel().getColumn(
+                col ).getHeaderRenderer();
+            if( tableCellRenderer == null )
+            {
+                tableCellRenderer = table.getTableHeader().getDefaultRenderer();
+            }
+            cellRenderer = tableCellRenderer.getTableCellRendererComponent(
+                table, colName, false, false, -1, col );
+
+            widths[col] = ( int )cellRenderer.getPreferredSize().getWidth() +
+                horzSpace;
+            widths[col] = Math.max( widths[col], defaultWidth );
+
+            tableCellRenderer = table.getCellRenderer( rrow, col );
+
+            // -----------------------------------------------------------------
+            // check if cell values fit in their cells
+            // -----------------------------------------------------------------
+            for( int row = 0; row < rowCount; row++ )
+            {
+                Object obj = model.getValueAt( row, col );
+                int width = 0;
+                if( obj != null )
+                {
+                    tableCellRenderer = table.getCellRenderer( row, col );
+                    cellRenderer = tableCellRenderer.getTableCellRendererComponent(
+                        table, obj, false, false, row, col );
+                    width = ( int )cellRenderer.getPreferredSize().getWidth() +
+                        horzSpace;
+                }
+                widths[col] = Math.max( widths[col], width );
+            }
+        }
+
+        TableColumnModel colModel = table.getColumnModel();
+
+        // ---------------------------------------------------------------------
+        // Set the column widths.
+        // ---------------------------------------------------------------------
+        for( int i = 0; i < colCount; i++ )
+        {
+            colModel.getColumn( i ).setPreferredWidth( widths[i] );
+            // colModel.getColumn( i ).setMinWidth( widths[i] );
+        }
     }
 
     /***************************************************************************

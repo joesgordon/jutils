@@ -145,6 +145,9 @@ public class FileFormField implements IDataFormField<File>
         parserField.setUpdater( ( d ) -> handleDataChanged( d ) );
     }
 
+    /***************************************************************************
+     * @param file
+     **************************************************************************/
     private void handleFileSelected( File file )
     {
         file = file.getAbsoluteFile();
@@ -174,17 +177,24 @@ public class FileFormField implements IDataFormField<File>
      **************************************************************************/
     private void handleValidityChanged( Validity v )
     {
-        if( !v.isValid )
-        {
-            icon.setErrorIcon();
-        }
-        else if( !getValue().exists() &&
-            parser.type == ExistenceType.DO_NOT_CHECK )
+        File f = getValue();
+        boolean existanceCheck = ( f == null || !f.exists() ) &&
+            parser.type == ExistenceType.DO_NOT_CHECK;
+
+        if( v.isValid && existanceCheck )
         {
             icon.setCheckIcon();
         }
+        else
+        {
+            icon.setErrorIcon();
+        }
     }
 
+    /***************************************************************************
+     * @param isSave
+     * @return
+     **************************************************************************/
     private FileChooserListener createFileListener( boolean isSave )
     {
         IFileSelected ifs = ( f ) -> handleFileSelected( f );
@@ -223,6 +233,7 @@ public class FileFormField implements IDataFormField<File>
     /***************************************************************************
      * Creates the main panel for this view.
      * @param showButton denotes whether the browse button should be shown.
+     * @param isSave
      * @return the newly created panel.
      **************************************************************************/
     private JPanel createView( boolean showButton, boolean isSave )

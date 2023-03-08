@@ -236,7 +236,7 @@ public class TcpConnection implements IConnection, Closeable
 
         byte [] contents = Arrays.copyOf( rxBuffer, len );
 
-        NetMessage msg = new NetMessage( false, getLocal(), getRemote(),
+        NetMessage msg = new NetMessage( true, getLocal(), getRemote(),
             contents );
 
         return msg;
@@ -322,5 +322,14 @@ public class TcpConnection implements IConnection, Closeable
     public TcpInputs getInputs()
     {
         return new TcpInputs( inputs );
+    }
+
+    /***************************************************************************
+     * @param on
+     * @throws SocketException
+     **************************************************************************/
+    public void setTcpNoDelay( boolean on ) throws SocketException
+    {
+        socket.setTcpNoDelay( on );
     }
 }

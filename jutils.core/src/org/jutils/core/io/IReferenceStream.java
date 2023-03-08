@@ -2,6 +2,7 @@ package org.jutils.core.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jutils.core.ValidationException;
@@ -65,4 +66,9 @@ public interface IReferenceStream<T> extends AutoCloseable
      * @throws IOException any I/O error that occurs.
      **************************************************************************/
     public void removeAll() throws IOException;
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public Iterator<T> getIterator();
 }

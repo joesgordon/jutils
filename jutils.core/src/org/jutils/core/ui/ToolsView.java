@@ -1,18 +1,39 @@
 package org.jutils.core.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.function.Consumer;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
 import org.jutils.core.SwingUtils;
 import org.jutils.core.Utils;
 import org.jutils.core.ui.event.ResizingTableModelListener;
-import org.jutils.core.ui.model.*;
+import org.jutils.core.ui.model.ITableConfig;
+import org.jutils.core.ui.model.IView;
+import org.jutils.core.ui.model.ItemsTableModel;
+import org.jutils.core.ui.model.LabelTableCellRenderer;
 import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
 
 /*******************************************************************************
@@ -115,13 +136,23 @@ public class ToolsView implements IView<JPanel>
      **************************************************************************/
     private void addToMenu( JMenu menu )
     {
+        addToMenu( menu, tableModel.getItems(), t -> showTool( t ) );
+    }
+
+    /***************************************************************************
+     * @param menu
+     * @param tools
+     **************************************************************************/
+    public static void addToMenu( JMenu menu, List<IToolView> tools,
+        Consumer<IToolView> toolChosen )
+    {
         JMenuItem item;
 
-        for( IToolView tool : tableModel.getItems() )
+        for( IToolView tool : tools )
         {
             item = new JMenuItem( tool.getName(), tool.getIcon24() );
             item.setFont( item.getFont().deriveFont( 16.0f ) );
-            item.addActionListener( ( e ) -> showTool( tool ) );
+            item.addActionListener( ( e ) -> toolChosen.accept( tool ) );
             menu.add( item );
         }
     }
@@ -163,49 +194,53 @@ public class ToolsView implements IView<JPanel>
      * Displays the tool provided.
      * @param tool the tool to be displayed.
      **************************************************************************/
+
     public void showTool( IToolView tool )
+    {
+        showTool( tool, view, appName );
+    }
+
+    public static void showTool( IToolView tool, JComponent view,
+        String appName )
     {
         view.setCursor( Cursor.getPredefinedCursor( Cursor.WAIT_CURSOR ) );
         Container comp = tool.getView();
 
-        if( comp != null )
+        JFrame frame;
+
+        if( comp instanceof JFrame )
         {
-            JFrame frame;
-
-            if( comp instanceof JFrame )
-            {
-                frame = ( JFrame )comp;
-            }
-            else
-            {
-                frame = new JFrame( tool.getName() );
-                JPanel panel = new JPanel( new BorderLayout() );
-                JScrollPane pane = new JScrollPane( comp );
-
-                pane.getVerticalScrollBar().setUnitIncrement( 10 );
-
-                pane.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
-
-                panel.add( pane, BorderLayout.CENTER );
-
-                frame.setIconImages( tool.getImages() );
-                frame.setContentPane( panel );
-
-                frame.pack();
-            }
-
-            String title = frame.getTitle();
-
-            if( !appName.isEmpty() )
-            {
-                title = appName + " - " + tool.getName();
-            }
-
-            frame.setTitle( title );
-            frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-            frame.setLocationRelativeTo( view );
-            frame.setVisible( true );
+            frame = ( JFrame )comp;
         }
+        else
+        {
+            frame = new JFrame( tool.getName() );
+            JPanel panel = new JPanel( new BorderLayout() );
+            JScrollPane pane = new JScrollPane( comp );
+
+            pane.getVerticalScrollBar().setUnitIncrement( 10 );
+
+            pane.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
+
+            panel.add( pane, BorderLayout.CENTER );
+
+            frame.setIconImages( tool.getImages() );
+            frame.setContentPane( panel );
+
+            frame.pack();
+        }
+
+        String title = frame.getTitle();
+
+        if( !appName.isEmpty() )
+        {
+            title = appName + " - " + tool.getName();
+        }
+
+        frame.setTitle( title );
+        frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+        frame.setLocationRelativeTo( view );
+        frame.setVisible( true );
 
         view.setCursor( Cursor.getDefaultCursor() );
     }
@@ -246,7 +281,7 @@ public class ToolsView implements IView<JPanel>
     /***************************************************************************
      * Defines the contents of the tools table.
      **************************************************************************/
-    private static class ToolsTableModel implements ITableItemsConfig<IToolView>
+    private static class ToolsTableModel implements ITableConfig<IToolView>
     {
         /** The names of the columns of the tools table. */
         public final static String [] COL_NAMES = { "Name", "Description" };

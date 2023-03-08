@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 import org.jutils.core.Utils;
 import org.jutils.core.net.NetMessage;
 import org.jutils.core.ui.hex.HexUtils;
-import org.jutils.core.ui.model.ITableItemsConfig;
+import org.jutils.core.ui.model.ITableConfig;
 import org.jutils.core.ui.net.NetMessagesView.IMessageFields;
 
 /***************************************************************************
  * 
  **************************************************************************/
-public class NetMessagesTableConfig implements ITableItemsConfig<NetMessage>
+public class NetMessagesTableConfig implements ITableConfig<NetMessage>
 {
     /**  */
     private static final String [] NAMES = new String[] { "Tx/Rx", "Time",

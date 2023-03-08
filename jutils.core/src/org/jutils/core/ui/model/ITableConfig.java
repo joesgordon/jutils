@@ -16,6 +16,7 @@ public interface ITableConfig<T>
     public Class<?> [] getColumnClasses();
 
     /***************************************************************************
+     * @param <D>
      * @param item
      * @param col
      * @return
@@ -23,13 +24,15 @@ public interface ITableConfig<T>
     public Object getItemData( T item, int col );
 
     /***************************************************************************
+     * @param <F>
      * @param item
      * @param col
      * @param data
      **************************************************************************/
-    public void setItemData( T item, int col, Object data );
+    public <F> void setItemData( T item, int col, F data );
 
     /***************************************************************************
+     * @param item
      * @param col
      * @return
      **************************************************************************/

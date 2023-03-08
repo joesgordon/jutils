@@ -1,19 +1,18 @@
 package org.jutils.core.ui.net;
 
+import java.awt.event.ActionListener;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.JFrame;
-import javax.swing.JToolBar;
 
 import org.jutils.core.IconConstants;
-import org.jutils.core.SwingUtils;
 import org.jutils.core.io.IStringWriter;
 import org.jutils.core.io.StringPrintStream;
 import org.jutils.core.net.EndPoint;
 import org.jutils.core.net.NetMessage;
-import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
@@ -38,8 +37,12 @@ public class NetMessagesViewMain
      **************************************************************************/
     private static final class HexMessageApp implements IFrameApp
     {
+        /**  */
         private final Random rand = new Random( 42 );
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public JFrame createFrame()
         {
@@ -49,7 +52,6 @@ public class NetMessagesViewMain
             NetMessagesView view = new NetMessagesView( new MessageFields(),
                 new MsgWriter() );
 
-            frameView.setToolbar( createToolbar( view ) );
             frameView.setContent( view.getView() );
 
             frameView.setTitle( "Net Messages View Test" );
@@ -60,34 +62,16 @@ public class NetMessagesViewMain
 
             frame.setIconImages( IconConstants.getPageMagImages() );
 
-            // view.clearMessages();
             view.setOpenVisible( true );
 
-            // view.addMessage( buildMessage() );
-            // view.addMessage( buildMessage() );
-            // view.addMessage( buildMessage() );
-            // view.addMessage( buildMessage() );
-            // view.addMessage( buildMessage() );
-            // view.addMessage( buildMessage() );
+            ActionListener listener = ( e ) -> view.addMessage(
+                buildMessage() );
+            Icon icon = IconConstants.getIcon( IconConstants.EDIT_ADD_16 );
+            Action action = new ActionAdapter( listener, "Add Message", icon );
+
+            view.addToToolbar( action );
 
             return frame;
-        }
-
-        /**
-         * @param view
-         * @return
-         */
-        private JToolBar createToolbar( NetMessagesView view )
-        {
-            JToolBar toolbar = new JGoodiesToolBar();
-
-            Action action = new ActionAdapter(
-                ( e ) -> view.addMessage( buildMessage() ), "Add Message",
-                IconConstants.getIcon( IconConstants.EDIT_ADD_16 ) );
-
-            SwingUtils.addActionToToolbar( toolbar, action );
-
-            return toolbar;
         }
 
         /**
