@@ -4,12 +4,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+/*******************************************************************************
+ * 
+ ******************************************************************************/
 public class EventSignal
 {
+    /**  */
     private final AtomicBoolean signalled;
+    /**  */
     private final ReentrantLock lock;
+    /**  */
     private final Condition signal;
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     public EventSignal()
     {
         this.signalled = new AtomicBoolean( false );
@@ -17,47 +26,44 @@ public class EventSignal
         this.signal = lock.newCondition();
     }
 
+    /***************************************************************************
+     * Waits until interrupted or signaled.
+     * @return {@code true} if this event has been signaled; {@code false} if it
+     * has timed out or interrupted.
+     **************************************************************************/
     public boolean await()
     {
-        boolean uninterruped = true;
-        boolean isSignalled = this.signalled.getAndSet( false );
-
-        if( !isSignalled )
-        {
-            lock.lock();
-            try
-            {
-                try
-                {
-                    signal.await();
-                }
-                catch( InterruptedException e )
-                {
-                    uninterruped = false;
-                }
-            }
-            finally
-            {
-                lock.unlock();
-            }
-        }
-
-        return uninterruped;
+        return await( -1 );
     }
 
+    /***************************************************************************
+     * Polls, waits, or waits forever for a signal or interrupt.
+     * @param nanos nanoseconds to wait; 0 to poll; negative to wait forever.
+     * @return {@code true} if this event has been signaled; {@code false} if it
+     * has timed out or interrupted.
+     **************************************************************************/
     public boolean await( long nanos )
     {
-        boolean uninterruped = true;
         boolean isSignalled = this.signalled.getAndSet( false );
 
-        if( !isSignalled )
+        if( !isSignalled && nanos != 0 )
         {
+            boolean uninterruped = true;
+
             lock.lock();
+
             try
             {
                 try
                 {
-                    signal.awaitNanos( nanos );
+                    if( nanos > 0 )
+                    {
+                        signal.awaitNanos( nanos );
+                    }
+                    else
+                    {
+                        signal.await();
+                    }
                 }
                 catch( InterruptedException e )
                 {
@@ -68,11 +74,38 @@ public class EventSignal
             {
                 lock.unlock();
             }
+
+            isSignalled = this.signalled.getAndSet( false ) && uninterruped;
         }
 
-        return uninterruped;
+        return isSignalled;
     }
 
+    /***************************************************************************
+     * Polls, waits, or waits forever for a signal or interrupt.
+     * @param micros microseconds to wait; 0 to poll; negative to wait forever.
+     * @return {@code true} if this event has been signaled; {@code false} if it
+     * has timed out or interrupted.
+     **************************************************************************/
+    public boolean uawait( long micros )
+    {
+        return await( micros * 1000L );
+    }
+
+    /***************************************************************************
+     * Polls, waits, or waits forever for a signal or interrupt.
+     * @param millis milliseconds to wait; 0 to poll; negative to wait forever.
+     * @return {@code true} if this event has been signaled; {@code false} if it
+     * has timed out or interrupted.
+     **************************************************************************/
+    public boolean mawait( long millis )
+    {
+        return uawait( millis * 1000L );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
     public void signal()
     {
         signalled.set( true );
