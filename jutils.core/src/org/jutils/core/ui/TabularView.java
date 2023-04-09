@@ -231,6 +231,9 @@ public class TabularView implements IView<JComponent>
         return pane;
     }
 
+    /***************************************************************************
+     *
+     **************************************************************************/
     public static interface ITabularNotifier
     {
         /**

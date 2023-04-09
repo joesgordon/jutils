@@ -50,6 +50,9 @@ public class TabularItemsViewMain
         /**  */
         private IntegerItemsModel model;
 
+        /**
+         * 
+         */
         public TivTestView()
         {
             this.itemsView = new TabularItemsView<>();
@@ -57,6 +60,9 @@ public class TabularItemsViewMain
             this.view = createView();
         }
 
+        /**
+         * @return
+         */
         private JPanel createView()
         {
             JPanel panel = new JPanel( new BorderLayout() );
@@ -69,6 +75,9 @@ public class TabularItemsViewMain
             return panel;
         }
 
+        /**
+         * @return
+         */
         private JToolBar createToolbar()
         {
             JToolBar toolbar = new JToolBar();
@@ -84,6 +93,9 @@ public class TabularItemsViewMain
             return toolbar;
         }
 
+        /**
+         * @return
+         */
         private Action createAddAction()
         {
             ActionListener listener = ( e ) -> handleAddItem();
@@ -91,6 +103,9 @@ public class TabularItemsViewMain
             return new ActionAdapter( listener, "Add Item", icon );
         }
 
+        /**
+         * @return
+         */
         private Action createReplaceAction()
         {
             ActionListener listener = ( e ) -> handleReplaceItems();

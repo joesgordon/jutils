@@ -52,6 +52,8 @@ public class NetMessagesViewMain
             NetMessagesView view = new NetMessagesView( new MessageFields(),
                 new MsgWriter() );
 
+            view.setMsgsPerPage( 5 );
+
             frameView.setContent( view.getView() );
 
             frameView.setTitle( "Net Messages View Test" );

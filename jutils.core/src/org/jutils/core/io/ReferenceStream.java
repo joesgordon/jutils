@@ -364,7 +364,7 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Iterator<T> getIterator()
+    public Iterator<T> iterator()
     {
         return new ItemIterator<>( this );
     }

@@ -3,9 +3,10 @@ package org.jutils.core.utils;
 import java.util.Iterator;
 
 /*******************************************************************************
+ * Defines an array of items of limited capacity that
  * @param <T>
  ******************************************************************************/
-public class ArrayQueue<T> implements Iterable<T>
+public class CircularQueue<T> implements Iterable<T>
 {
     /**  */
     protected Object [] items;
@@ -19,7 +20,7 @@ public class ArrayQueue<T> implements Iterable<T>
     /***************************************************************************
      * 
      **************************************************************************/
-    public ArrayQueue()
+    public CircularQueue()
     {
         this( 1000 );
     }
@@ -27,9 +28,18 @@ public class ArrayQueue<T> implements Iterable<T>
     /***************************************************************************
      * @param maxSize
      **************************************************************************/
-    public ArrayQueue( int maxSize )
+    public CircularQueue( int maxSize )
     {
         this.items = new Object[maxSize];
+
+        removeAll();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void removeAll()
+    {
         this.start = 0;
         this.end = 0;
         this.size = 0;
@@ -40,7 +50,15 @@ public class ArrayQueue<T> implements Iterable<T>
      **************************************************************************/
     public boolean isFull()
     {
-        return items.length == size;
+        return capacity() == size();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int capacity()
+    {
+        return items.length;
     }
 
     /***************************************************************************
@@ -139,7 +157,7 @@ public class ArrayQueue<T> implements Iterable<T>
     @Override
     public Iterator<T> iterator()
     {
-        return new ArrayQueueIterator<>( this );
+        return new CircularQueueIterator<>( this );
     }
 
     /***************************************************************************
@@ -178,24 +196,38 @@ public class ArrayQueue<T> implements Iterable<T>
         return idx;
     }
 
-    private static final class ArrayQueueIterator<T> implements Iterator<T>
+    /**
+     * @param <T>
+     */
+    private static final class CircularQueueIterator<T> implements Iterator<T>
     {
-        private final ArrayQueue<T> queue;
+        /**  */
+        private final CircularQueue<T> queue;
 
+        /**  */
         private int index;
 
-        public ArrayQueueIterator( ArrayQueue<T> queue )
+        /**
+         * @param queue
+         */
+        public CircularQueueIterator( CircularQueue<T> queue )
         {
             this.queue = queue;
             this.index = 0;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean hasNext()
         {
             return index < queue.size();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public T next()
         {
@@ -204,25 +236,6 @@ public class ArrayQueue<T> implements Iterable<T>
             index++;
 
             return item;
-        }
-    }
-
-    /***************************************************************************
-     * @param args
-     **************************************************************************/
-    public static void main( String [] args )
-    {
-        int count = 10;
-        ArrayQueue<Integer> queue = new ArrayQueue<>( count );
-
-        for( int i = 0; i < ( 2 * count ); i++ )
-        {
-            queue.push( 1 );
-
-            for( int j = 0; j < queue.size(); j++ )
-            {
-                queue.get( j );
-            }
         }
     }
 }

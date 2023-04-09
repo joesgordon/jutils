@@ -11,7 +11,7 @@ import org.jutils.core.ValidationException;
  * Represents a method of storing items to an underlying stream.
  * @param <T> the type of item to be stored.
  ******************************************************************************/
-public interface IReferenceStream<T> extends AutoCloseable
+public interface IReferenceStream<T> extends AutoCloseable, Iterable<T>
 {
     /***************************************************************************
      * Returns the number of items currently stored.
@@ -68,7 +68,7 @@ public interface IReferenceStream<T> extends AutoCloseable
     public void removeAll() throws IOException;
 
     /***************************************************************************
-     * @return
+     * {@inheritDoc}
      **************************************************************************/
-    public Iterator<T> getIterator();
+    public Iterator<T> iterator();
 }

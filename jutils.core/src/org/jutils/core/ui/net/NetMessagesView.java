@@ -18,11 +18,14 @@ import javax.swing.JTable;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
-import org.jutils.core.ValidationException;
+import org.jutils.core.io.CircularItemsStream;
 import org.jutils.core.io.FileStream;
+import org.jutils.core.io.IItemStream;
 import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.IStream;
 import org.jutils.core.io.IStringWriter;
+import org.jutils.core.io.ReferenceItemStream;
+import org.jutils.core.io.ReferenceStream;
 import org.jutils.core.net.NetMessage;
 import org.jutils.core.net.NetMessageSerializer;
 import org.jutils.core.ui.PaginatedTableView;
@@ -30,6 +33,7 @@ import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.FileChooserListener;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.model.IDataView;
+import org.jutils.core.ui.model.ITableConfig;
 import org.jutils.core.ui.model.IView;
 import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
 
@@ -38,25 +42,33 @@ import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
  ******************************************************************************/
 public class NetMessagesView implements IView<JPanel>
 {
-    /**  */
+    /** The paginated table of {@link NetMessage}s. */
     private final PaginatedTableView<NetMessage> table;
-    /**  */
+    /** The {@link ITableConfig} for {@link NetMessage}s. */
     private final NetMessagesTableConfig tableCfg;
 
-    /**  */
+    /** The button for loading a file of NetMessages. */
     private final JButton openButton;
-    /**  */
+    /**
+     * The button that toggles between hexadecimal and text for the message
+     * contents column.
+     */
     private final JButton hexTextButton;
 
-    /**  */
+    /** {@code true} if the contents column is displaying hex. */
     private boolean isHex;
+
+    /**  */
+    private ReferenceItemStream<NetMessage> refStream;
+    /**  */
+    private CircularItemsStream<NetMessage> cirStream;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public NetMessagesView()
     {
-        this( null, null, false );
+        this( null, null );
     }
 
     /***************************************************************************
@@ -66,7 +78,8 @@ public class NetMessagesView implements IView<JPanel>
     public NetMessagesView( IMessageFields fields,
         IStringWriter<NetMessage> msgWriter )
     {
-        this( fields, createMsgWriterView( msgWriter ), true );
+        this( fields, PaginatedTableView.createItemWriterView( msgWriter ),
+            false );
     }
 
     /***************************************************************************
@@ -77,10 +90,50 @@ public class NetMessagesView implements IView<JPanel>
     public NetMessagesView( IMessageFields fields,
         IDataView<NetMessage> msgView, boolean addScrollPane )
     {
+        this( fields, msgView, addScrollPane, false );
+    }
+
+    /***************************************************************************
+     * @param fields
+     * @param msgView
+     * @param addScrollPane
+     * @param isStaticSize
+     **************************************************************************/
+    private NetMessagesView( IMessageFields fields,
+        IDataView<NetMessage> msgView, boolean addScrollPane,
+        boolean isStaticSize )
+    {
+        NetMessageSerializer nmSerializer = new NetMessageSerializer();
+        NetMessageView nmView = new NetMessageView( msgView, addScrollPane );
+
+        IItemStream<NetMessage> stream = null;
+
+        if( isStaticSize )
+        {
+            this.cirStream = new CircularItemsStream<>( 512 );
+            stream = cirStream;
+        }
+        else
+        {
+            ReferenceStream<NetMessage> rs;
+            try
+            {
+                @SuppressWarnings( "resource")
+                ReferenceStream<NetMessage> refs = new ReferenceStream<>(
+                    nmSerializer );
+                rs = refs;
+            }
+            catch( IOException ex )
+            {
+                throw new RuntimeException( ex );
+            }
+
+            this.refStream = new ReferenceItemStream<>( rs );
+            stream = refStream;
+        }
+
         this.tableCfg = new NetMessagesTableConfig( fields );
-        this.table = new PaginatedTableView<>( tableCfg,
-            new NetMessageSerializer(),
-            new NetMessageView( msgView, addScrollPane ) );
+        this.table = new PaginatedTableView<>( tableCfg, stream, nmView );
 
         table.setDefaultRenderer( LocalDateTime.class,
             new LocalDateTimeDecorator() );
@@ -88,8 +141,8 @@ public class NetMessagesView implements IView<JPanel>
         table.setCellRenderer( tableCfg.getColumnNames().length - 1,
             new FontLabelTableCellRenderer( SwingUtils.getFixedFont( 12 ) ) );
 
-        table.addToToolbar( createSaveAction() );
-        table.addToToolbar( createSaveAsAction() );
+        table.addToToolbar( createSaveNetMsgsAction() );
+        table.addToToolbar( createSaveMsgsAction() );
         this.openButton = table.addToToolbar( createOpenAction() );
 
         table.addToToolbar();
@@ -105,9 +158,9 @@ public class NetMessagesView implements IView<JPanel>
     /***************************************************************************
      * @return
      **************************************************************************/
-    private Action createSaveAction()
+    private Action createSaveNetMsgsAction()
     {
-        IFileSelected ifs = ( f ) -> saveFile( f );
+        IFileSelected ifs = ( f ) -> saveNetMsgsFile( f );
         FileChooserListener listener = new FileChooserListener( getView(),
             "Choose Net Messages File", true, ifs );
         Icon icon = IconConstants.getIcon( IconConstants.SAVE_16 );
@@ -120,9 +173,9 @@ public class NetMessagesView implements IView<JPanel>
     /***************************************************************************
      * @return
      **************************************************************************/
-    private Action createSaveAsAction()
+    private Action createSaveMsgsAction()
     {
-        IFileSelected ifs = ( f ) -> saveBinFile( f );
+        IFileSelected ifs = ( f ) -> saveMsgsFile( f );
         FileChooserListener listener = new FileChooserListener( getView(),
             "Choose Messages File", true, ifs );
         Icon icon = IconConstants.getIcon( IconConstants.SAVE_AS_16 );
@@ -137,7 +190,7 @@ public class NetMessagesView implements IView<JPanel>
      **************************************************************************/
     private Action createOpenAction()
     {
-        IFileSelected ifs = ( f ) -> openFile( f );
+        IFileSelected ifs = ( f ) -> openNetMsgsFile( f );
         FileChooserListener listener = new FileChooserListener( getView(),
             "Choose File", false, ifs );
         Icon icon = IconConstants.getIcon( IconConstants.OPEN_FOLDER_16 );
@@ -189,7 +242,7 @@ public class NetMessagesView implements IView<JPanel>
     /***************************************************************************
      * @param file
      **************************************************************************/
-    private void saveFile( File file )
+    private void saveNetMsgsFile( File file )
     {
         byte [] buf = new byte[IOUtils.DEFAULT_BUF_SIZE];
 
@@ -198,7 +251,7 @@ public class NetMessagesView implements IView<JPanel>
             try( FileStream stream = new FileStream( file ) )
             {
                 @SuppressWarnings( "resource")
-                IStream input = table.itemsStream.getItemsStream();
+                IStream input = refStream.stream.getItemsStream();
 
                 input.seek( 0L );
 
@@ -230,16 +283,14 @@ public class NetMessagesView implements IView<JPanel>
     /***************************************************************************
      * @param file
      **************************************************************************/
-    public void saveBinFile( File file )
+    public void saveMsgsFile( File file )
     {
-        synchronized( table.itemsStream )
+        synchronized( table.itemsLock )
         {
             try( FileStream stream = new FileStream( file ) )
             {
-                for( long i = 0L; i < table.itemsStream.getCount(); i++ )
+                for( NetMessage msg : table.itemsStream )
                 {
-                    NetMessage msg = table.itemsStream.read( i );
-
                     stream.write( msg.contents );
                 }
             }
@@ -253,21 +304,27 @@ public class NetMessagesView implements IView<JPanel>
                 // TODO Auto-generated catch block
                 ex.printStackTrace();
             }
-            catch( ValidationException e )
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
-
     }
 
     /***************************************************************************
      * @param file
      **************************************************************************/
-    public void openFile( File file )
+    public void openNetMsgsFile( File file )
     {
-        table.openFile( file );
+        ReferenceStream<NetMessage> rs;
+        try
+        {
+            ReferenceStream<NetMessage> refs = new ReferenceStream<>(
+                new NetMessageSerializer(), file );
+            rs = refs;
+        }
+        catch( IOException ex )
+        {
+            throw new RuntimeException( ex );
+        }
+        refStream = new ReferenceItemStream<>( rs );
+        table.setItems( refStream );
     }
 
     /***************************************************************************
@@ -317,7 +374,7 @@ public class NetMessagesView implements IView<JPanel>
      **************************************************************************/
     public Iterator<NetMessage> getMsgIterator()
     {
-        return table.itemsStream.getIterator();
+        return table.itemsStream.iterator();
     }
 
     /***************************************************************************
@@ -337,21 +394,19 @@ public class NetMessagesView implements IView<JPanel>
     }
 
     /***************************************************************************
-     * @param msgWriter
-     * @return
-     **************************************************************************/
-    private static StringWriterView<NetMessage> createMsgWriterView(
-        IStringWriter<NetMessage> msgWriter )
-    {
-        return msgWriter == null ? null : new StringWriterView<>( msgWriter );
-    }
-
-    /***************************************************************************
      * @param index
      **************************************************************************/
     public void showMessage( long index )
     {
         table.showItem( index );
+    }
+
+    /***************************************************************************
+     * @param msgsPerPage
+     **************************************************************************/
+    public void setMsgsPerPage( int msgsPerPage )
+    {
+        table.setItemsPerPage( msgsPerPage );
     }
 
     /***************************************************************************

@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,11 +25,8 @@ import javax.swing.table.TableColumnModel;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
-import org.jutils.core.ValidationException;
-import org.jutils.core.io.IDataSerializer;
-import org.jutils.core.io.IReferenceStream;
+import org.jutils.core.io.IItemStream;
 import org.jutils.core.io.IStringWriter;
-import org.jutils.core.io.ReferenceStream;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
 import org.jutils.core.ui.RowHeaderView.PaginatedNumberRowHeaderModel;
 import org.jutils.core.ui.event.ActionAdapter;
@@ -82,7 +77,9 @@ public class PaginatedTableView<T> implements IView<JPanel>
     private final IDataView<T> itemView;
 
     /**  */
-    public final IReferenceStream<T> itemsStream;
+    public final Object itemsLock;
+    /**  */
+    public IItemStream<T> itemsStream;
 
     /**  */
     private int itemsPerPage;
@@ -91,47 +88,34 @@ public class PaginatedTableView<T> implements IView<JPanel>
 
     /***************************************************************************
      * @param tableCfg the configuration of the table to be displayed.
-     * @param serializer the way each item in the table is serialized.
+     * @param itemsStream
      **************************************************************************/
     public PaginatedTableView( ITableConfig<T> tableCfg,
-        IDataSerializer<T> serializer )
+        IItemStream<T> itemsStream )
     {
-        this( tableCfg, serializer, ( IDataView<T> )null );
+        this( tableCfg, itemsStream, ( IDataView<T> )null );
     }
 
     /***************************************************************************
      * @param tableCfg the configuration of the table to be displayed.
-     * @param serializer the way each item in the table is serialized.
+     * @param itemsStream
      * @param itemWriter the method of creating a string that represents an
      * item.
      **************************************************************************/
     public PaginatedTableView( ITableConfig<T> tableCfg,
-        IDataSerializer<T> serializer, IStringWriter<T> itemWriter )
+        IItemStream<T> itemsStream, IStringWriter<T> itemWriter )
     {
-        this( tableCfg, serializer, createItemWriterView( itemWriter ) );
+        this( tableCfg, itemsStream, createItemWriterView( itemWriter ) );
     }
 
     /***************************************************************************
      * @param tableCfg the configuration of the table to be displayed.
-     * @param serializer the way each item in the table is serialized.
+     * @param itemsStream
      * @param itemView a view that will display an item.
      **************************************************************************/
     public PaginatedTableView( ITableConfig<T> tableCfg,
-        IDataSerializer<T> serializer, IDataView<T> itemView )
+        IItemStream<T> itemsStream, IDataView<T> itemView )
     {
-        ReferenceStream<T> refStream = null;
-
-        try
-        {
-            refStream = new ReferenceStream<>( serializer );
-        }
-        catch( IOException ex )
-        {
-            throw new RuntimeException( "Unable to create temp files", ex );
-        }
-
-        this.itemsStream = refStream;
-
         this.tableModel = new ItemsTableModel<>( tableCfg );
         this.table = new JTable( tableModel );
         this.tablePane = new JScrollPane( table );
@@ -143,6 +127,8 @@ public class PaginatedTableView<T> implements IView<JPanel>
         this.pageLabel = new JLabel( "Page 0 of 0 (0)" );
         this.dialog = null;
         this.itemView = itemView;
+        this.itemsLock = new Object();
+        this.itemsStream = itemsStream;
         this.toolbar = createToolbar();
         this.view = createView();
 
@@ -350,25 +336,15 @@ public class PaginatedTableView<T> implements IView<JPanel>
         }
 
         this.pageStartIndex = startIndex;
-        try
+
+        List<T> items = null;
+        synchronized( itemsLock )
         {
-            List<T> items = null;
-            synchronized( itemsStream )
-            {
-                items = itemsStream.read( pageStartIndex, count );
-            }
-            tableModel.setItems( items );
-            updateRowHeader( count );
-            ResizingTableModelListener.resizeTable( table );
+            items = itemsStream.get( pageStartIndex, count );
         }
-        catch( IOException ex )
-        {
-            ex.printStackTrace();
-        }
-        catch( ValidationException ex )
-        {
-            ex.printStackTrace();
-        }
+        tableModel.setItems( items );
+        updateRowHeader( count );
+        ResizingTableModelListener.resizeTable( table );
 
         setNavButtonsEnabled();
     }
@@ -404,6 +380,18 @@ public class PaginatedTableView<T> implements IView<JPanel>
     }
 
     /***************************************************************************
+     * @return the number of pages needed to navigate the items.
+     **************************************************************************/
+    private int getPageCount()
+    {
+        long count = itemsStream.getCount();
+
+        int max = ( int )( ( count + itemsPerPage - 1 ) / itemsPerPage );
+
+        return max;
+    }
+
+    /***************************************************************************
      * @return {@code true} if there is a previous page.
      **************************************************************************/
     private boolean hasPrevious()
@@ -422,15 +410,37 @@ public class PaginatedTableView<T> implements IView<JPanel>
     }
 
     /***************************************************************************
-     * @return the number of pages needed to navigate the items.
+     * @param index the index of an item.
+     * @return {@code true} if the provided index is in the current page.
      **************************************************************************/
-    private int getPageCount()
+    private boolean isPaged( long index )
     {
-        long count = itemsStream.getCount();
+        return index > pageStartIndex &&
+            index < ( pageStartIndex + itemsPerPage );
+    }
 
-        int max = ( int )( ( count + itemsPerPage - 1 ) / itemsPerPage );
+    /***************************************************************************
+     * @return {@code true} if the scrollbar is already at the bottom.
+     **************************************************************************/
+    private boolean isAtBottom()
+    {
+        JScrollBar bar = tablePane.getVerticalScrollBar();
+        int value = bar.getValue();
+        int extent = bar.getModel().getExtent();
+        int max = bar.getMaximum() - extent;
 
-        return max;
+        return value >= max;
+    }
+
+    /***************************************************************************
+     * @param <F> the type of item to be represented as a string.
+     * @param itemWriter the method of representing an item as a string.
+     * @return the view that will display a string representation of an item.
+     **************************************************************************/
+    public static <F> StringWriterView<F> createItemWriterView(
+        IStringWriter<F> itemWriter )
+    {
+        return itemWriter == null ? null : new StringWriterView<>( itemWriter );
     }
 
     /***************************************************************************
@@ -482,16 +492,6 @@ public class PaginatedTableView<T> implements IView<JPanel>
     }
 
     /***************************************************************************
-     * @param index the index of an item.
-     * @return {@code true} if the provided index is in the current page.
-     **************************************************************************/
-    private boolean isPaged( long index )
-    {
-        return index > pageStartIndex &&
-            index < ( pageStartIndex + itemsPerPage );
-    }
-
-    /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
@@ -509,18 +509,11 @@ public class PaginatedTableView<T> implements IView<JPanel>
         long lastStartIndex = Math.max( count - 1, 0 );
         lastStartIndex = lastStartIndex - lastStartIndex % itemsPerPage;
 
-        try
+        synchronized( itemsLock )
         {
-            synchronized( itemsStream )
-            {
-                itemsStream.write( item );
-            }
-            count++;
+            itemsStream.add( item );
         }
-        catch( IOException ex )
-        {
-            ex.printStackTrace();
-        }
+        count++;
 
         long nextPageStartIndex = pageStartIndex + itemsPerPage;
 
@@ -550,36 +543,15 @@ public class PaginatedTableView<T> implements IView<JPanel>
     }
 
     /***************************************************************************
-     * @return {@code true} if the scrollbar is already at the bottom.
+     * @param items
      **************************************************************************/
-    private boolean isAtBottom()
-    {
-        JScrollBar bar = tablePane.getVerticalScrollBar();
-        int value = bar.getValue();
-        int extent = bar.getModel().getExtent();
-        int max = bar.getMaximum() - extent;
-
-        return value >= max;
-    }
-
-    /***************************************************************************
-     * @param file
-     **************************************************************************/
-    public void openFile( File file )
+    public void setItems( IItemStream<T> items )
     {
         clearItems();
 
-        try
+        synchronized( itemsLock )
         {
-            synchronized( itemsStream )
-            {
-                itemsStream.setItemsFile( file );
-            }
-        }
-        catch( IOException ex )
-        {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            this.itemsStream = items;
         }
 
         pageStartIndex = 0L;
@@ -594,16 +566,9 @@ public class PaginatedTableView<T> implements IView<JPanel>
     {
         tableModel.clearItems();
 
-        try
+        synchronized( itemsLock )
         {
-            synchronized( itemsStream )
-            {
-                itemsStream.removeAll();
-            }
-        }
-        catch( IOException ex )
-        {
-            ex.printStackTrace();
+            itemsStream.removeAll();
         }
 
         pageStartIndex = 0L;
@@ -638,7 +603,7 @@ public class PaginatedTableView<T> implements IView<JPanel>
      **************************************************************************/
     public Iterator<T> getItemIterator()
     {
-        return itemsStream.getIterator();
+        return itemsStream.iterator();
     }
 
     /***************************************************************************
@@ -658,17 +623,6 @@ public class PaginatedTableView<T> implements IView<JPanel>
     }
 
     /***************************************************************************
-     * @param <F> the type of item to be represented as a string.
-     * @param itemWriter the method of representing an item as a string.
-     * @return the view that will display a string representation of an item.
-     **************************************************************************/
-    private static <F> StringWriterView<F> createItemWriterView(
-        IStringWriter<F> itemWriter )
-    {
-        return itemWriter == null ? null : new StringWriterView<>( itemWriter );
-    }
-
-    /***************************************************************************
      * 
      **************************************************************************/
     public void updateTable()
@@ -676,6 +630,16 @@ public class PaginatedTableView<T> implements IView<JPanel>
         tableModel.fireTableDataChanged();
 
         ResizingTableModelListener.resizeTable( table );
+    }
+
+    /***************************************************************************
+     * @param itemsPerPage
+     **************************************************************************/
+    public void setItemsPerPage( int itemsPerPage )
+    {
+        this.itemsPerPage = itemsPerPage;
+
+        updateTable();
     }
 
     /***************************************************************************

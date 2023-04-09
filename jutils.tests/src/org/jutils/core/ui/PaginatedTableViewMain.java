@@ -11,7 +11,10 @@ import org.jutils.core.IconConstants;
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.IDataSerializer;
 import org.jutils.core.io.IDataStream;
+import org.jutils.core.io.IItemStream;
 import org.jutils.core.io.IStringWriter;
+import org.jutils.core.io.ReferenceItemStream;
+import org.jutils.core.io.ReferenceStream;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
@@ -35,15 +38,33 @@ public class PaginatedTableViewMain
      **************************************************************************/
     private static final class PaginatedTableViewApp implements IFrameApp
     {
+        /**  */
         private final Random rand = new Random( 42 );
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public JFrame createFrame()
         {
             StandardFrameView frameView = new StandardFrameView();
             IStringWriter<Integer> intWriter = ( i ) -> "The # is " + i;
+            ReferenceStream<Integer> refStream;
+            try
+            {
+                ReferenceStream<Integer> rs = new ReferenceStream<>(
+                    new IntegerSerializer() );
+                refStream = rs;
+            }
+            catch( IOException ex )
+            {
+                throw new RuntimeException( ex );
+            }
+
+            IItemStream<Integer> stream = new ReferenceItemStream<>(
+                refStream );
             PaginatedTableView<Integer> view = new PaginatedTableView<>(
-                new IntTableConfig(), new IntegerSerializer(), intWriter );
+                new IntTableConfig(), stream, intWriter );
 
             frameView.setContent( view.getView() );
 
