@@ -1,14 +1,18 @@
 package org.jutils.core.io;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
 import org.junit.Test;
 
+/*******************************************************************************
+ * 
+ ******************************************************************************/
 public class JpegTests
 {
     /***************************************************************************
@@ -22,64 +26,43 @@ public class JpegTests
         BufferedImage image = new BufferedImage( 240, 240,
             BufferedImage.TYPE_INT_RGB );
 
-        try( ByteArrayStream imgStream = new ByteArrayStream( numBytes ) )
+        byte [] imgBytes = null;
+
+        try( ByteArrayStream imgStream = new ByteArrayStream( numBytes );
+             StreamOutput output = new StreamOutput( imgStream ) )
         {
-            int bytesWritten = -1;
+            imgStream.seek( 0L );
 
-            FileStream fs = new FileStream( new File( "blah.jpg" ) );
-
-            IStream outStream;
-
-            outStream = fs;
-            outStream = imgStream;
-
-            outStream.seek( 0L );
-
-            try( StreamOutput output = new StreamOutput( outStream ) )
+            if( !ImageIO.write( image, "JPEG", output ) )
             {
-                if( !ImageIO.write( image, "JPEG", output ) )
-                {
-                    LogUtils.printError( "NOPE!!!!" );
-                }
-
-                bytesWritten = ( int )outStream.getPosition();
+                fail( "Unable to write image" );
             }
 
-            fs.close();
+            imgBytes = imgStream.toByteArray();
+        }
+        catch( IOException ex )
+        {
+            fail( ex.getMessage() );
+        }
 
-            fs = new FileStream( new File( "blah.jpg" ) );
+        // LogUtils.printDebug( "Bytes written: %d", imgBytes.length );
 
-            imgStream.seek( 0L );
-            LogUtils.printDebug( "Bytes written: %d", bytesWritten );
+        try( ByteArrayStream imgStream = new ByteArrayStream( imgBytes,
+            imgBytes.length, 0, false );
+             StreamInput input = new StreamInput( imgStream ) )
+        {
+            // LogUtils.printDebug( "Reading Image: %d", input.available() );
+            BufferedImage bi = ImageIO.read( input );
+            // LogUtils.printDebug( "Read Image" );
 
-            try( ByteArrayStream bas = new ByteArrayStream(
-                imgStream.getBuffer(), bytesWritten, 0, false ) )
+            if( bi == null )
             {
-                IStream inStream;
-
-                inStream = fs;
-                inStream = bas;
-
-                inStream.seek( 0L );
-
-                try( StreamInput input = new StreamInput( inStream ) )
-                {
-                    LogUtils.printDebug( "Reading Image: %d",
-                        input.available() );
-                    BufferedImage bi = ImageIO.read( input );
-                    LogUtils.printDebug( "Read Image" );
-
-                    if( bi == null )
-                    {
-                        LogUtils.printWarning( "Image was read as null" );
-                    }
-                }
+                fail( "Image was read as null" );
             }
         }
         catch( IOException ex )
         {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            fail( ex.getMessage() );
         }
     }
 }
