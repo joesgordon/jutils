@@ -16,7 +16,7 @@ public class IBitFlagTests
     {
         TestBitFlag flag = TestBitFlag.BIT00;
 
-        Assert.assertTrue( flag.getFlag( 0x01 ) );
+        Assert.assertTrue( flag.info.getFlag( 0x01 ) );
     }
 
     /***************************************************************************
@@ -27,7 +27,7 @@ public class IBitFlagTests
     {
         TestBitFlag flag = TestBitFlag.BIT00;
 
-        Assert.assertFalse( flag.getFlag( 0xFFFFFFFFFFFFFFFEL ) );
+        Assert.assertFalse( flag.info.getFlag( 0xFFFFFFFFFFFFFFFEL ) );
     }
 
     /**
@@ -51,20 +51,14 @@ public class IBitFlagTests
         BIT24( 24 );
 
         /**  */
-        public final int bit;
-        /**  */
-        public final long mask;
-        /**  */
-        public final String name;
+        public final BitFlagInfo info;
 
         /**
          * @param bit
          */
         private TestBitFlag( int bit )
         {
-            this.bit = bit;
-            this.mask = IBitFlag.createMask( bit );
-            this.name = "Bit " + bit;
+            this.info = new BitFlagInfo( bit, "Bit " + bit );
         }
 
         /**
@@ -73,7 +67,7 @@ public class IBitFlagTests
         @Override
         public int getBit()
         {
-            return bit;
+            return info.bit;
         }
 
         /**
@@ -82,7 +76,7 @@ public class IBitFlagTests
         @Override
         public long getMask()
         {
-            return mask;
+            return info.mask;
         }
 
         /**
@@ -91,7 +85,7 @@ public class IBitFlagTests
         @Override
         public String getName()
         {
-            return name;
+            return info.name;
         }
     }
 }
