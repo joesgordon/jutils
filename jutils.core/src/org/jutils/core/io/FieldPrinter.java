@@ -155,7 +155,7 @@ public class FieldPrinter
      **************************************************************************/
     public void printField( String name, long value, int digits )
     {
-        String fmt = "0x%" + digits + "X";
+        String fmt = "0x%0" + digits + "X";
         long mask = 0;
 
         if( digits == 16 )
