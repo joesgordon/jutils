@@ -1,10 +1,10 @@
 package org.jutils.core.net;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.SocketException;
 import java.util.Arrays;
 
-import org.jutils.core.ValidationException;
 import org.jutils.core.io.BitsReader;
 import org.jutils.core.io.ByteArrayStream;
 import org.jutils.core.io.DataStream;
@@ -131,10 +131,16 @@ public class NtpMessage
     }
 
     /***************************************************************************
-     * @param args
+     * @param ntpServer
+     * @param local
+     * @return
+     * @throws IOException
+     * @throws SocketException
      **************************************************************************/
-    public static void main( String [] args )
+    public static NtpMessage sendTo( IpAddress ntpServer, IpAddress local )
+        throws SocketException, IOException
     {
+        NtpMessage response = new NtpMessage();
         NtpMessage request = new NtpMessage();
 
         LogUtils.printInfo( "Request: %s", request );
@@ -145,10 +151,8 @@ public class NtpMessage
         inputs.localPort = 0;
         inputs.loopback = false;
         inputs.multicast.isUsed = false;
-        inputs.nic = "10.10.10.225";
-        // inputs.nic = "192.168.88.161";
-        inputs.remoteAddress.setOctets( 10, 10, 10, 40 );
-        // inputs.remoteAddress.set( 208, 100, 4, 52 );
+        inputs.nic = ntpServer.toString();
+        inputs.remoteAddress.set( local );
         inputs.remotePort = 123;
         inputs.timeout = 5000;
         inputs.ttl = 1;
@@ -180,7 +184,7 @@ public class NtpMessage
                     bs.write( netMsg.contents );
 
                     s.seek( 0L );
-                    NtpMessage response = nms.read( s );
+                    nms.read( response, s );
 
                     LogUtils.printInfo( "Response: %s", response );
                 }
@@ -191,21 +195,8 @@ public class NtpMessage
                 }
             }
         }
-        catch( ValidationException e )
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch( SocketException e )
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch( IOException e )
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
+        return response;
     }
 
     /***************************************************************************
@@ -419,11 +410,24 @@ public class NtpMessage
          * {@inheritDoc}
          */
         @Override
-        public NtpMessage read( IDataStream stream )
-            throws IOException, ValidationException
+        public NtpMessage read( IDataStream stream ) throws IOException
         {
             NtpMessage msg = new NtpMessage();
 
+            read( msg, stream );
+
+            return msg;
+        }
+
+        /**
+         * @param msg
+         * @param stream
+         * @throws EOFException
+         * @throws IOException
+         */
+        private void read( NtpMessage msg, IDataStream stream )
+            throws EOFException, IOException
+        {
             // This member is a bit field with the following:
             // bits 0:2 - Mode
             // bits 3:5 - VN (Version Number)
@@ -445,8 +449,6 @@ public class NtpMessage
             readTimestamp( msg.origin, stream );
             readTimestamp( msg.receive, stream );
             readTimestamp( msg.transmit, stream );
-
-            return msg;
         }
 
         /**
