@@ -42,7 +42,7 @@ public class VaxDoubleTests
      * 
      **************************************************************************/
     @Test
-    public void test_vaxGBinFracEqualsScale()
+    public void test_vaxDoubleBinFracEqualsScale()
     {
         for( Pair<Long, Double> example : EXAMPLES )
         {
