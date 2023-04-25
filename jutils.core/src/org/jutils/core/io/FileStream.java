@@ -115,9 +115,10 @@ public class FileStream implements IStream
 
             if( count < 0 )
             {
-                throw new EOFException(
-                    "End of file reached; attempted to read past by " +
-                        ( len - bytesRead ) + " bytes" );
+                String err = String.format(
+                    "End of file reached @ %d of %d; attempted to read past by %d bytes",
+                    getPosition(), getLength(), len - bytesRead );
+                throw new EOFException( err );
             }
 
             bytesRead += count;

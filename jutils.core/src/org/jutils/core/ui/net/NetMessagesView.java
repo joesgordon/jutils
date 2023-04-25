@@ -32,6 +32,9 @@ import org.jutils.core.ui.PaginatedTableView;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.event.FileChooserListener;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
+import org.jutils.core.ui.event.FileDropTarget;
+import org.jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import org.jutils.core.ui.event.ItemActionListener;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.model.ITableConfig;
 import org.jutils.core.ui.model.IView;
@@ -144,6 +147,10 @@ public class NetMessagesView implements IView<JPanel>
         table.addToToolbar( createSaveNetMsgsAction() );
         table.addToToolbar( createSaveMsgsAction() );
         this.openButton = table.addToToolbar( createOpenAction() );
+
+        ItemActionListener<IFileDropEvent> ifde = ( e ) -> openNetMsgsFile(
+            e.getItem().getFiles().get( 0 ) );
+        openButton.setDropTarget( new FileDropTarget( ifde ) );
 
         table.addToToolbar();
 
@@ -323,6 +330,7 @@ public class NetMessagesView implements IView<JPanel>
         {
             throw new RuntimeException( ex );
         }
+
         refStream = new ReferenceItemStream<>( rs );
         table.setItems( refStream );
     }

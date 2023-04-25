@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import org.jutils.core.IconConstants;
 import org.jutils.core.io.parsers.ExistenceType;
 import org.jutils.core.io.parsers.FileParser;
+import org.jutils.core.io.parsers.FileType;
 import org.jutils.core.ui.FileContextMenu;
 import org.jutils.core.ui.FileIcon;
 import org.jutils.core.ui.IconTextField;
@@ -60,26 +61,36 @@ public class FileFormField implements IDataFormField<File>
 
     /***************************************************************************
      * Creates a file form field with the provided name and an
-     * {@link ExistenceType} of {@link ExistenceType#FILE_ONLY} that is required
-     * which shows "Save" text and a browse button.
+     * {@link ExistenceType} of {@link FileType#FILE} that is required which
+     * shows "Save" text and a browse button.
      * @param name the name of this field.
      **************************************************************************/
     public FileFormField( String name )
     {
-        this( name, ExistenceType.FILE_ONLY, true, false );
+        this( name, FileType.FILE );
     }
 
     /***************************************************************************
      * Creates a file form field with the provided name and
      * {@link ExistenceType} that ensures the file exists if the existence type
-     * is {@link ExistenceType#FILE_ONLY} and shows "Save" text and a browse
-     * button.
+     * is {@link FileType#FILE} and shows "Save" icon on a browse button.
      * @param name the name of this field.
-     * @param existence type of existence to be checked: file/dir/either/none.
+     * @param fileType type of file to be checked: file/dir/either.
      **************************************************************************/
-    public FileFormField( String name, ExistenceType existence )
+    public FileFormField( String name, FileType fileType )
     {
-        this( name, existence, true, existence != ExistenceType.FILE_ONLY );
+        this( name, fileType, ExistenceType.PARENT_EXISTS );
+    }
+
+    /***************************************************************************
+     * @param name the name of this field.
+     * @param fileType type of file to be checked: file/dir/either.
+     * @param existence the existence type to be checked.
+     **************************************************************************/
+    public FileFormField( String name, FileType fileType,
+        ExistenceType existence )
+    {
+        this( name, fileType, existence, true );
     }
 
     /***************************************************************************
@@ -87,43 +98,30 @@ public class FileFormField implements IDataFormField<File>
      * {@link ExistenceType} that ensures the file exists if {@code required}
      * and shows "Save" text and a browse button.
      * @param name the name of this field.
-     * @param existence type of existence to be checked: file/dir/either/none.
-     * @param required if the path can be empty or is required.
+     * @param fileType type of file to be checked: file/dir/either.
+     * @param existence the existence type to be checked.
+     * @param isBlankAllowed whether a blank field returns null or is invalid.
      **************************************************************************/
-    public FileFormField( String name, ExistenceType existence,
-        boolean required )
+    public FileFormField( String name, FileType fileType,
+        ExistenceType existence, boolean isBlankAllowed )
     {
-        this( name, existence, required, true );
+        this( name, fileType, existence, isBlankAllowed, true );
     }
 
     /***************************************************************************
-     * Creates a file form field with the provided name and
-     * {@link ExistenceType} that ensures the file exists if {@code required}
-     * and shows "Save" text if {@code isSave} and shows a browse button.
      * @param name the name of this field.
-     * @param existence type of existence to be checked.
-     * @param required if the path can be empty or is required.
-     * @param isSave if the path is to be be save to (alt. read from).
-     **************************************************************************/
-    public FileFormField( String name, ExistenceType existence,
-        boolean required, boolean isSave )
-    {
-        this( name, existence, required, isSave, true );
-    }
-
-    /***************************************************************************
-     * Creates a File view according to the parameters provided:
-     * @param name the name of this field.
-     * @param existence type of existence to be checked: file/dir/either/none.
-     * @param required if the path can be empty or is required.
-     * @param isSave if the path is to be be save to (alt. read from).
+     * @param fileType the type of file to be check for.
+     * @param existence the existence type to be checked.
+     * @param isBlankAllowed whether a blank field returns null or is invalid.
      * @param showButton denotes whether the browse button should be shown.
      **************************************************************************/
-    public FileFormField( String name, ExistenceType existence,
-        boolean required, boolean isSave, boolean showButton )
+    public FileFormField( String name, FileType fileType,
+        ExistenceType existence, boolean isBlankAllowed, boolean showButton )
     {
+        boolean isSave = existence == ExistenceType.PARENT_EXISTS;
+
         this.jtf = new JTextField( 20 );
-        this.parser = new FileParser( existence, required );
+        this.parser = new FileParser( fileType, existence, isBlankAllowed );
 
         this.parserField = new ParserFormField<>( name, parser, jtf,
             ( f ) -> f == null ? "" : f.getAbsolutePath() );
@@ -132,7 +130,7 @@ public class FileFormField implements IDataFormField<File>
         this.icon = new FileIcon();
 
         this.fileListener = createFileListener( isSave );
-        this.browseListener = createBrowseListener( existence, isSave );
+        this.browseListener = createBrowseListener( fileType, isSave );
         this.view = createView( showButton, isSave );
 
         this.textField.setIcon( icon );
@@ -142,7 +140,7 @@ public class FileFormField implements IDataFormField<File>
         jtf.setText( "" );
 
         parserField.addValidityChanged( ( v ) -> handleValidityChanged( v ) );
-        parserField.setUpdater( ( d ) -> handleDataChanged( d ) );
+        parserField.setUpdater( ( d ) -> handleFileUpdated( d ) );
     }
 
     /***************************************************************************
@@ -152,18 +150,25 @@ public class FileFormField implements IDataFormField<File>
     {
         file = file.getAbsoluteFile();
         setValue( file );
-        handleDataChanged( file );
+        handleFileUpdated( file );
     }
 
     /***************************************************************************
      * Invoked when the edited value is valid.
      * @param file the new file object.
      **************************************************************************/
-    private void handleDataChanged( File file )
+    private void handleFileUpdated( File file )
     {
-        // LogUtils.printDebug( "File changed to " + file.getAbsolutePath()
-        // );
-        icon.setFile( file );
+        // LogUtils.printDebug( "File updated to " + file.getAbsolutePath() );
+        //
+        // if( file.exists() )
+        // {
+        // icon.setFile( file );
+        // }
+        // else
+        // {
+        // icon.setCheckIcon();
+        // }
 
         if( updater != null )
         {
@@ -178,17 +183,29 @@ public class FileFormField implements IDataFormField<File>
     private void handleValidityChanged( Validity v )
     {
         File f = getValue();
-        boolean existanceCheck = ( f == null || !f.exists() ) &&
-            parser.type == ExistenceType.DO_NOT_CHECK;
 
-        if( v.isValid && existanceCheck )
+        // LogUtils.printDebug( "File validity to " + v + " for " +
+        // parserField.getTextField().getText() );
+
+        if( v.isValid )
         {
-            icon.setCheckIcon();
+            if( f == null || !f.exists() )
+            {
+                icon.setCheckIcon();
+            }
+            else
+            {
+                icon.setFile( f );
+            }
         }
         else
         {
             icon.setErrorIcon();
         }
+
+        textField.getView().invalidate();
+        textField.getView().validate();
+        textField.getView().repaint();
     }
 
     /***************************************************************************
@@ -206,17 +223,17 @@ public class FileFormField implements IDataFormField<File>
 
     /***************************************************************************
      * Creates the listener for the browse button.
-     * @param existence the type of existence to be checked.
+     * @param fileType the type of existence to be checked.
      * @param isSave indicates if the file is being saved ({@code false}
      * indicates open).
      * @return the listener for the browse button.
      **************************************************************************/
-    private ActionListener createBrowseListener( ExistenceType existence,
+    private ActionListener createBrowseListener( FileType fileType,
         boolean isSave )
     {
         ActionListener fcl = null;
 
-        if( existence != ExistenceType.DIRECTORY_ONLY )
+        if( fileType != FileType.DIRECTORY )
         {
             fcl = this.fileListener;
         }
@@ -243,7 +260,7 @@ public class FileFormField implements IDataFormField<File>
         ActionListener browseListener = this.browseListener;
 
         parserField.getTextField().setDropTarget( new FileDropTarget(
-            new TextFieldFilesListener( jtf, parser.type ) ) );
+            new TextFieldFilesListener( jtf, parser.fileType ) ) );
 
         constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,

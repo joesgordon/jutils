@@ -1,4 +1,4 @@
-package org.jutils.core.io.vax;
+package org.jutils.core.caps;
 
 import org.jutils.core.io.BitsReader;
 import org.jutils.core.io.IStdSerializer;
@@ -6,24 +6,24 @@ import org.jutils.core.io.IStdSerializer;
 /*******************************************************************************
  *
  ******************************************************************************/
-public class VaxSingleIntegerSerializer
+public class CapsSingleIntegerSerializer
     implements IStdSerializer<Double, Integer>
 {
     /**  */
     private final BitsReader signReader;
     /**  */
-    private final BitsReader expReader;
-    /**  */
     private final BitsReader manReader;
+    /**  */
+    private final BitsReader expReader;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public VaxSingleIntegerSerializer()
+    public CapsSingleIntegerSerializer()
     {
         this.signReader = new BitsReader( 31, 31 );
-        this.expReader = new BitsReader( 23, 30 );
-        this.manReader = new BitsReader( 0, 22 );
+        this.manReader = new BitsReader( 8, 30 );
+        this.expReader = new BitsReader( 0, 7 );
     }
 
     /***************************************************************************
@@ -33,10 +33,10 @@ public class VaxSingleIntegerSerializer
     public Double read( Integer value )
     {
         boolean sign = signReader.read( value ) == 1L;
-        int exponent = expReader.read( value );
         int mantissa = manReader.read( value );
+        int exponent = expReader.read( value );
 
-        return VaxSingle.calcVaxValue( sign, exponent, mantissa );
+        return CapsSingle.calcValue( sign, exponent, mantissa );
     }
 
     /***************************************************************************

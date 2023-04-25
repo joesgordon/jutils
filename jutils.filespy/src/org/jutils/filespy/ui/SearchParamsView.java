@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import org.jutils.core.SwingUtils;
 import org.jutils.core.io.parsers.ExistenceType;
+import org.jutils.core.io.parsers.FileType;
 import org.jutils.core.pattern.StringPattern;
 import org.jutils.core.pattern.StringPatternField;
 import org.jutils.core.ui.StandardFormView;
@@ -68,8 +69,8 @@ public class SearchParamsView implements IDataView<SearchParams>
         this.filenameField = new StringPatternField( "Filename" );
         this.contentsField = new UsableFormField<>(
             new StringPatternField( "Contents" ) );
-        this.pathField = new FileFormField( "Search In",
-            ExistenceType.DIRECTORY_ONLY, true, false );
+        this.pathField = new FileFormField( "Search In", FileType.DIRECTORY,
+            ExistenceType.EXISTS );
         this.subfoldersField = new BooleanFormField( "Search Sub-directories" );
         this.moreThanField = new UsableFormField<>(
             new LongFormField( "More Than", null, 10 ) );

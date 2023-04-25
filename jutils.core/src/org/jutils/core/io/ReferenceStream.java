@@ -151,24 +151,32 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
         this.referenceFile = deleteReference ? referenceFile : null;
         this.refStream = rs;
 
-        this.count = refStream.getLength() / 8;
+        this.count = 0;
 
-        long itemStreamLength = this.itemsStream.getLength();
+        is.seek( 0L );
 
-        if( itemStreamLength > 0 && count == 0 )
+        long itemStreamLength = is.getLength();
+
+        if( itemStreamLength > 0 )
         {
-            while( this.itemsStream.getAvailable() > 0 )
+            while( is.getAvailable() > 0 )
             {
+                long position = is.getPosition();
+                rs.writeLong( position );
+
                 try
                 {
-                    serializer.read( this.itemsStream );
-                    count++;
+                    T item = serializer.read( is );
+
+                    LogUtils.printDebug( item.toString() );
                 }
                 catch( ValidationException ex )
                 {
                     count = 0;
                     throw new IOException( ex );
                 }
+
+                count++;
             }
         }
     }
@@ -340,7 +348,9 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
         // To illustrate, start NetMessagesViewMain. Go back. Add.
         // return new DataStream( new BufferedStream( new FileStream( file ) )
         // );
-        return new DataStream( new FileStream( file ) );
+
+        boolean readOnly = !file.exists() || !file.canWrite();
+        return new DataStream( new FileStream( file, readOnly ) );
     }
 
     /***************************************************************************

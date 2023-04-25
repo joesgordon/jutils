@@ -1,4 +1,4 @@
-package org.jutils.core.io.vax;
+package org.jutils.core.vax;
 
 /*******************************************************************************
  *

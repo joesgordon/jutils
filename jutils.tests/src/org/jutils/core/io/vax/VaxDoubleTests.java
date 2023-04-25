@@ -5,6 +5,9 @@ import org.junit.Test;
 import org.jutils.core.data.Pair;
 import org.jutils.core.data.PairList;
 import org.jutils.core.ui.hex.HexUtils;
+import org.jutils.core.vax.VaxDouble;
+import org.jutils.core.vax.VaxDoubleBytesSerializer;
+import org.jutils.core.vax.VaxDoubleLongSerializer;
 
 /*******************************************************************************
  *

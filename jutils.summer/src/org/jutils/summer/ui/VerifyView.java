@@ -33,6 +33,7 @@ import org.jutils.core.Utils;
 import org.jutils.core.ValidationException;
 import org.jutils.core.data.UIProperty;
 import org.jutils.core.io.parsers.ExistenceType;
+import org.jutils.core.io.parsers.FileType;
 import org.jutils.core.task.MultiTaskView;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.TitleView;
@@ -85,7 +86,7 @@ public class VerifyView implements IDataView<ChecksumResult>, IValidationField
     public VerifyView()
     {
         this.commonDirField = new FileFormField( "Common Directory",
-            ExistenceType.DIRECTORY_ONLY );
+            FileType.DIRECTORY, ExistenceType.EXISTS );
         this.tableModel = new ItemsTableModel<>( new ChecksumsTableModel() );
         this.table = new JTable( tableModel );
 

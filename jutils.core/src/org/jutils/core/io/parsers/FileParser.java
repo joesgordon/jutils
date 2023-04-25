@@ -11,39 +11,57 @@ import org.jutils.core.io.IParser;
  ******************************************************************************/
 public class FileParser implements IParser<File>
 {
-    /** The existence to be checked. */
-    public final ExistenceType type;
     /** Required path strings must be non-empty. */
-    public final boolean required;
+    public final FileType fileType;
+    /** The existence to be checked. */
+    public final ExistenceType existence;
+    /** Whether a blank field returns null or is invalid. */
+    public final boolean isBlankAllowed;
 
     /***************************************************************************
      * Creates a new parser that ensures path strings are
-     * {@link ExistenceType#FILE_ONLY} (paths must be non-empty).
+     * {@link FileType#FILE}s, exist, and may not be empty.
      **************************************************************************/
     public FileParser()
     {
-        this( ExistenceType.FILE_ONLY );
+        this( FileType.FILE );
     }
 
     /***************************************************************************
-     * Creates a new parser that checks path strings with the provided existence
-     * type (paths must be non-empty).
-     * @param type the existence type to be checked.
+     * Creates a new parser that ensures path strings are of the provided file
+     * type, exist, and may not be empty.
+     * @param fileType the type of file to be check for.
      **************************************************************************/
-    public FileParser( ExistenceType type )
+    public FileParser( FileType fileType )
     {
-        this( type, true );
+        this( fileType, ExistenceType.EXISTS );
     }
 
     /***************************************************************************
-     * Creates a new parser that checks path strings with the provided values.
-     * @param type the existence type to be checked.
-     * @param required an empty string is invalid if {@code true}.
+     * Creates a new parser that checks path strings with the provided file
+     * type, provided existence type, and may not be empty.
+     * @param fileType
+     * @param existence the existence type to be checked.
      **************************************************************************/
-    public FileParser( ExistenceType type, boolean required )
+    public FileParser( FileType fileType, ExistenceType existence )
     {
-        this.type = type;
-        this.required = required;
+        this( fileType, existence, false );
+    }
+
+    /***************************************************************************
+     * Creates a new parser that checks path strings with the provided file
+     * type, provided existence type, and may be empty according to the provided
+     * boolean.
+     * @param fileType the type of file to be check for.
+     * @param existence the existence type to be checked.
+     * @param isBlankAllowed whether a blank field returns null or is invalid.
+     **************************************************************************/
+    public FileParser( FileType fileType, ExistenceType existence,
+        boolean isBlankAllowed )
+    {
+        this.fileType = fileType;
+        this.existence = existence;
+        this.isBlankAllowed = isBlankAllowed;
     }
 
     /***************************************************************************
@@ -54,7 +72,7 @@ public class FileParser implements IParser<File>
     {
         if( text.isEmpty() )
         {
-            if( required )
+            if( !isBlankAllowed )
             {
                 throw new ValidationException( "Empty path string" );
             }
@@ -64,7 +82,7 @@ public class FileParser implements IParser<File>
 
         File f = new File( text );
 
-        IOUtils.validateFile( f, type );
+        IOUtils.validateFile( f, fileType, existence );
 
         return f.getAbsoluteFile();
     }

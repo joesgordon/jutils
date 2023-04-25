@@ -1,4 +1,4 @@
-package org.jutils.core.io.vax;
+package org.jutils.core.caps;
 
 import org.jutils.core.io.BitsReader;
 import org.jutils.core.io.IStdSerializer;
@@ -6,23 +6,23 @@ import org.jutils.core.io.IStdSerializer;
 /*******************************************************************************
  *
  ******************************************************************************/
-public class VaxDoubleLongSerializer implements IStdSerializer<Double, Long>
+public class CapsDoubleLongSerializer implements IStdSerializer<Double, Long>
 {
     /**  */
     private final BitsReader signReader;
     /**  */
-    private final BitsReader expReader;
-    /**  */
     private final BitsReader manReader;
+    /**  */
+    private final BitsReader expReader;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public VaxDoubleLongSerializer()
+    public CapsDoubleLongSerializer()
     {
-        this.signReader = new BitsReader( 63, 63 );
-        this.expReader = new BitsReader( 55, 62 );
-        this.manReader = new BitsReader( 0, 54 );
+        this.signReader = new BitsReader( 47, 47 );
+        this.manReader = new BitsReader( 8, 46 );
+        this.expReader = new BitsReader( 0, 7 );
     }
 
     /***************************************************************************
@@ -35,7 +35,7 @@ public class VaxDoubleLongSerializer implements IStdSerializer<Double, Long>
         long exponent = expReader.read( value );
         long mantissa = manReader.read( value );
 
-        return VaxDouble.calcVaxValue( sign, exponent, mantissa );
+        return CapsDouble.calcValue( sign, exponent, mantissa );
     }
 
     /***************************************************************************

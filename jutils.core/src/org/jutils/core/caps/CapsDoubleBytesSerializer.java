@@ -1,11 +1,12 @@
-package org.jutils.core.io.vax;
+package org.jutils.core.caps;
 
 import org.jutils.core.io.IStdSerializer;
 
 /*******************************************************************************
  *
  ******************************************************************************/
-public class VaxDoubleBytesSerializer implements IStdSerializer<Double, byte []>
+public class CapsDoubleBytesSerializer
+    implements IStdSerializer<Double, byte []>
 {
     /***************************************************************************
      * {@inheritDoc}
@@ -19,27 +20,22 @@ public class VaxDoubleBytesSerializer implements IStdSerializer<Double, byte []>
         long b3 = resource[3] & 0xFF;
         long b4 = resource[4] & 0xFF;
         long b5 = resource[5] & 0xFF;
-        long b6 = resource[6] & 0xFF;
-        long b7 = resource[7] & 0xFF;
 
         boolean sign;
         long exponent;
         long mantissa;
 
-        sign = ( b0 & VaxDouble.B0_SIGN_MASK ) == VaxDouble.B0_SIGN_MASK;
+        sign = ( b0 & CapsDouble.B0_SIGN_MASK ) == CapsDouble.B0_SIGN_MASK;
 
-        exponent = ( b0 & VaxDouble.B0_EXP_MASK ) << 1;
-        exponent |= ( b1 & VaxDouble.B1_EXP_MASK ) >> 7;
+        mantissa = ( b0 & CapsDouble.B0_MAN_MASK ) << 32;
+        mantissa |= b1 << 24;
+        mantissa |= b2 << 16;
+        mantissa |= b3 << 8;
+        mantissa |= b4 << 0;
 
-        mantissa = ( b1 & VaxDouble.B1_MAN_MASK ) << 48;
-        mantissa |= b2 << 40;
-        mantissa |= b3 << 32;
-        mantissa |= b4 << 24;
-        mantissa |= b5 << 16;
-        mantissa |= b6 << 8;
-        mantissa |= b7 << 0;
+        exponent = b5 & CapsDouble.EXPONENT_MASK;
 
-        return VaxDouble.calcVaxValue( sign, exponent, mantissa );
+        return CapsDouble.calcValue( sign, exponent, mantissa );
     }
 
     /***************************************************************************

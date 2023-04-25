@@ -2,6 +2,7 @@ package org.jutils.core.io.vax;
 
 import org.jutils.core.io.LogUtils;
 import org.jutils.core.time.NanoWatch;
+import org.jutils.core.vax.VaxDouble;
 
 /*******************************************************************************
  * 

@@ -37,6 +37,12 @@ public class Validity
         return isValid + " - " + reason;
     }
 
+    /***************************************************************************
+     * @param <C>
+     * @param validChoice
+     * @param invalidChoice
+     * @return
+     **************************************************************************/
     public <C> C choose( C validChoice, C invalidChoice )
     {
         return isValid ? validChoice : invalidChoice;

@@ -151,8 +151,8 @@ public class NtpMessage
         inputs.localPort = 0;
         inputs.loopback = false;
         inputs.multicast.isUsed = false;
-        inputs.nic = ntpServer.toString();
-        inputs.remoteAddress.set( local );
+        inputs.nic = local.toString();
+        inputs.remoteAddress.set( ntpServer );
         inputs.remotePort = 123;
         inputs.timeout = 5000;
         inputs.ttl = 1;

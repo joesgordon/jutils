@@ -6,6 +6,7 @@ import java.io.File;
 import javax.swing.JPanel;
 
 import org.jutils.core.io.parsers.ExistenceType;
+import org.jutils.core.io.parsers.FileType;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.explorer.data.ApplicationConfig;
 import org.jutils.core.ui.fields.FileFormField;
@@ -38,8 +39,8 @@ public class ApplicationView implements IDataView<ApplicationConfig>
     public ApplicationView()
     {
         this.nameField = new StringFormField( "Name" );
-        this.pathField = new FileFormField( "Path", ExistenceType.FILE_ONLY,
-            true );
+        this.pathField = new FileFormField( "Path", FileType.FILE,
+            ExistenceType.EXISTS, true );
         this.argsField = new StringFormField( "Arguments", 0, null );
 
         this.view = createView();

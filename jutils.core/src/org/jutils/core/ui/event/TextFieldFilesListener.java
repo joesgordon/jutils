@@ -8,6 +8,7 @@ import javax.swing.JTextField;
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.parsers.ExistenceType;
+import org.jutils.core.io.parsers.FileType;
 import org.jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 
 /*******************************************************************************
@@ -21,7 +22,7 @@ public class TextFieldFilesListener
     /** The text field to populate with a path when a file is dropped. */
     private final JTextField field;
     /** The existence to be verified prior to field population. */
-    private final ExistenceType existence;
+    private final FileType existence;
 
     /***************************************************************************
      * Creates a new listener that populates the provided field when either a
@@ -30,7 +31,7 @@ public class TextFieldFilesListener
      **************************************************************************/
     public TextFieldFilesListener( JTextField field )
     {
-        this( field, ExistenceType.FILE_OR_DIRECTORY );
+        this( field, FileType.FILE );
     }
 
     /***************************************************************************
@@ -39,7 +40,7 @@ public class TextFieldFilesListener
      * @param field the text field to populate.
      * @param existence the existence to be checked.
      **************************************************************************/
-    public TextFieldFilesListener( JTextField field, ExistenceType existence )
+    public TextFieldFilesListener( JTextField field, FileType existence )
     {
         this.existence = existence;
         this.field = field;
@@ -60,9 +61,9 @@ public class TextFieldFilesListener
 
             try
             {
-                IOUtils.validateFile( file, existence );
+                IOUtils.validateFile( file, existence, ExistenceType.EXISTS );
             }
-            catch( ValidationException e )
+            catch( ValidationException ex )
             {
                 continue;
             }

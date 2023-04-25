@@ -27,6 +27,7 @@ import javax.swing.event.ListSelectionListener;
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.io.parsers.ExistenceType;
+import org.jutils.core.io.parsers.FileType;
 import org.jutils.core.net.EndPoint;
 import org.jutils.core.net.IpAddress;
 import org.jutils.core.ui.ColorIcon;
@@ -99,7 +100,7 @@ public class FormFieldsMain
             this.editable = true;
 
             frameView.setContent( createContent() );
-            frameView.setTitle( "Integer Form Field Test" );
+            frameView.setTitle( "Form Fields Test" );
             frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
             frameView.setSize( 600, 500 );
             frameView.getView().setIconImages(
@@ -177,7 +178,7 @@ public class FormFieldsMain
             JScrollPane pane = new JScrollPane( itemsList );
 
             Dimension size = pane.getPreferredSize();
-            size.width = 200;
+            size.width = 400;
 
             pane.setMinimumSize( size );
             pane.setPreferredSize( size );
@@ -218,22 +219,49 @@ public class FormFieldsMain
                 new EndPointField( "End Point Form Field" ),
                 new EndPoint( new IpAddress( 10, 10, 11, 12 ), 1234 ) ) );
 
-            itemsModel.addElement( createFormFieldItem(
-                new FileFormField( "File Form Field (File/Save)",
-                    ExistenceType.DO_NOT_CHECK ),
-                new File( "/" ) ) );
-            itemsModel.addElement( createFormFieldItem(
-                new FileFormField( "File Form Field (not set)",
-                    ExistenceType.DO_NOT_CHECK ),
-                null ) );
-            itemsModel.addElement( createFormFieldItem(
-                new FileFormField( "File Form Field (not set, false)",
-                    ExistenceType.DO_NOT_CHECK, false ),
-                null ) );
-            itemsModel.addElement( createFormFieldItem(
-                new FileFormField( "File Form Field (Dir/Save)",
-                    ExistenceType.DIRECTORY_ONLY ),
-                new File( "/" ) ) );
+            // -----------------------------------------------------------------
+            // File Form Fields.
+            // -----------------------------------------------------------------
+
+            for( FileType ft : FileType.values() )
+            {
+                File f = null;
+
+                switch( ft )
+                {
+                    case DIRECTORY:
+                        f = new File( "/" );
+                        break;
+
+                    case FILE:
+                        f = new File( "/Windows/notepad.exe" );
+                        break;
+
+                    case PATH:
+                        f = new File( "/" );
+                        break;
+                }
+
+                for( ExistenceType et : ExistenceType.values() )
+                {
+                    for( boolean ba : new boolean[] { true, false } )
+                    {
+                        String name = String.format(
+                            "File Form Field (%s,%s,%s)", ft.name, et.name,
+                            ba ? "true" : "false" );
+                        FileFormField field = new FileFormField( name, ft, et,
+                            ba );
+
+                        itemsModel.addElement(
+                            createFormFieldItem( field, f ) );
+                    }
+                }
+            }
+
+            // -----------------------------------------------------------------
+            // Hex Form Fields.
+            // -----------------------------------------------------------------
+
             itemsModel.addElement( createFormFieldItem(
                 new HexByteFormField( "Hex Byte Form Field" ), ( byte )0x81 ) );
             itemsModel.addElement( createFormFieldItem(

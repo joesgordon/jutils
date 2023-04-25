@@ -23,6 +23,8 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.jutils.core.OptionUtils;
 import org.jutils.core.OptionUtils.YncAnswer;
@@ -30,6 +32,7 @@ import org.jutils.core.Utils;
 import org.jutils.core.ValidationException;
 import org.jutils.core.data.SystemProperty;
 import org.jutils.core.io.parsers.ExistenceType;
+import org.jutils.core.io.parsers.FileType;
 
 /*******************************************************************************
  * Utility class for general I/O functions.
@@ -58,7 +61,8 @@ public final class IOUtils
 
     /***************************************************************************
      * Returns a human readable representation of bytes where a KB = 1024 bytes.
-     * Hat tip SO question <a href="">3758606</a>
+     * Hat tip <a href="https://stackoverflow.com/questions/3758606">SO
+     * question</a>.
      * @param count the number of bytes.
      * @return the human readable string.
      * @throws IllegalArgumentException if count is negative.
@@ -311,16 +315,20 @@ public final class IOUtils
     }
 
     /***************************************************************************
-     * @param fromDir
-     * @param to
-     * @return
+     * Builds a relative path from one file to another.
+     * @param from the path from which a relative path will be built.
+     * @param to the path to which a relative path will be built.
+     * @return the relative path string.
      * @throws IllegalArgumentException if other is not a Path that can be
      * relativized against this path
+     * @see Path#relativize(Path)
      **************************************************************************/
-    public static String getRelativePath( File fromDir, File to )
+    public static String getRelativePath( File from, File to )
         throws IllegalArgumentException
     {
-        String fromStr = fromDir.getAbsolutePath();
+        from = from.isFile() ? from.getParentFile() : from;
+
+        String fromStr = from.getAbsolutePath();
         String toStr = to.getAbsolutePath();
 
         Path fromPath = Paths.get( fromStr ).normalize();
@@ -460,50 +468,6 @@ public final class IOUtils
         }
 
         return lines;
-    }
-
-    /***************************************************************************
-     * Returns a list of all files (in which {@code isDirectory() == false})
-     * found in the provided directory.
-     * @param dir the directory to be searched.
-     * @return the list of all files found in the provided directory guaranteed
-     * to be non-null. Will be empty on error.
-     **************************************************************************/
-    public static List<File> getAllFiles( File dir )
-    {
-        List<File> files = new ArrayList<File>();
-
-        getAllFiles( dir, files );
-
-        return files;
-    }
-
-    /***************************************************************************
-     * Recursively adds all paths within the provided directory that are not
-     * themselves a directory.
-     * @param dir the directory to be searched.
-     * @param files the list of files to be added to.
-     **************************************************************************/
-    private static void getAllFiles( File dir, List<File> files )
-    {
-        File [] fs = dir.listFiles();
-
-        if( fs == null )
-        {
-            return;
-        }
-
-        for( File f : fs )
-        {
-            if( f.isDirectory() )
-            {
-                getAllFiles( f, files );
-            }
-            else
-            {
-                files.add( f );
-            }
-        }
     }
 
     /***************************************************************************
@@ -711,28 +675,39 @@ public final class IOUtils
     }
 
     /***************************************************************************
-     * Validates the provided file against the provided existence.
+     * Validates the provided file path against the provided file type and
+     * existence.
      * @param file the file to be validated.
+     * @param fileType the type of file to be check for.
      * @param existence the existence to be checked.
      * @throws ValidationException if the existence check is invalid.
      **************************************************************************/
-    public static void validateFile( File file, ExistenceType existence )
-        throws ValidationException
+    public static void validateFile( File file, FileType fileType,
+        ExistenceType existence ) throws ValidationException
     {
-        if( existence == ExistenceType.DO_NOT_CHECK )
-        {
-            File parent = file.getAbsoluteFile().getParentFile();
-
-            if( parent != null && !parent.exists() )
-            {
-                throw new ValidationException( "Parent Path does not exist" );
-            }
-
-            return;
-        }
-
         // LogUtils.printDebug( "Testing path " + text );
 
+        switch( existence )
+        {
+            case EXISTS:
+                validateExists( file, fileType );
+                break;
+
+            case PARENT_EXISTS:
+                validateParentExists( file, fileType );
+                break;
+        }
+    }
+
+    /***************************************************************************
+     * Validates the provided file path exists as the provided file type.
+     * @param file the file to be validated.
+     * @param fileType the type of file to be check for.
+     * @throws ValidationException if the existence check is invalid.
+     **************************************************************************/
+    private static void validateExists( File file, FileType fileType )
+        throws ValidationException
+    {
         if( !file.exists() )
         {
             throw new ValidationException( "Path does not exist" );
@@ -741,22 +716,41 @@ public final class IOUtils
         boolean isFile = file.isFile();
         boolean isDir = file.isDirectory();
 
-        if( existence != ExistenceType.DO_NOT_CHECK )
+        if( fileType == FileType.DIRECTORY && !isDir )
         {
-            if( existence == ExistenceType.DIRECTORY_ONLY && !isDir )
-            {
-                throw new ValidationException( "Path is not a directory" );
-            }
-            else if( existence == ExistenceType.FILE_ONLY && !isFile )
-            {
-                throw new ValidationException( "Path is not a file" );
-            }
-            else if( existence == ExistenceType.FILE_OR_DIRECTORY && !isFile &&
-                !isDir )
-            {
-                throw new ValidationException(
-                    "Path is not a file or directory" );
-            }
+            throw new ValidationException( "Path is not a directory" );
+        }
+        else if( fileType == FileType.FILE && !isFile )
+        {
+            throw new ValidationException( "Path is not a file" );
+        }
+        else if( fileType == FileType.PATH && !isFile && !isDir )
+        {
+            throw new ValidationException( "Path is not a file or directory" );
+        }
+    }
+
+    /***************************************************************************
+     * Validates the provided file path either exists as the provided file type
+     * or the parent exists as a directory.
+     * @param file the file to be validated.
+     * @param fileType the type of file to be check for.
+     * @throws ValidationException if the existence check is invalid.
+     **************************************************************************/
+    private static void validateParentExists( File file, FileType fileType )
+        throws ValidationException
+    {
+        if( file.exists() )
+        {
+            validateExists( file, fileType );
+            return;
+        }
+
+        File parent = file.getAbsoluteFile().getParentFile();
+
+        if( parent != null && !parent.isDirectory() )
+        {
+            throw new ValidationException( "Parent directory does not exist" );
         }
     }
 
@@ -863,8 +857,37 @@ public final class IOUtils
     }
 
     /***************************************************************************
-     * Returns all files in the provided directory that have the provided
-     * extension.
+     * Returns a list of all files (in which {@code isDirectory() == false})
+     * found in the provided directory and sub-directories.
+     * @param dir the directory to be searched.
+     * @return the list of all files found in the provided directory guaranteed
+     * to be non-null. Will be empty on error.
+     **************************************************************************/
+    public static List<File> getAllFiles( File dir )
+    {
+        List<File> files = new ArrayList<File>();
+
+        getAllFiles( dir, files );
+
+        return files;
+    }
+
+    /***************************************************************************
+     * Recursively adds all paths within the provided directory and
+     * sub-directories that are not themselves a directory.
+     * @param dir the directory to be searched.
+     * @param files the list of files to be added to.
+     **************************************************************************/
+    private static void getAllFiles( File dir, List<File> files )
+    {
+        Consumer<File> cb = ( f ) -> files.add( f );
+        Predicate<File> tr = ( f ) -> !f.isDirectory();
+        visit( dir, cb, tr, true );
+    }
+
+    /***************************************************************************
+     * Returns all files in the provided directory and sub-directories that have
+     * the provided extension.
      * @param dir the directory to be searched.
      * @param ext the case insensitive extension to be matched sans dot.
      * @return the files found.
@@ -873,19 +896,47 @@ public final class IOUtils
     {
         List<File> files = new ArrayList<>();
 
-        try
-        {
-            Files.walk( dir.toPath() ).filter( Files::isRegularFile ).filter(
-                ( p ) -> p.toString().endsWith( "." + ext ) ).forEach(
-                    ( f ) -> files.add( f.toFile() ) );
-        }
-        catch( IOException e )
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        String lower = ext.toLowerCase();
+
+        Consumer<File> cb = ( f ) -> files.add( f );
+        Predicate<File> tr = ( f ) -> !f.isDirectory() &&
+            getFileExtension( f ).toLowerCase().equals( lower );
+        visit( dir, cb, tr, true );
 
         return files;
+    }
+
+    /***************************************************************************
+     * Calls the provided consumer for each directory and file found within the
+     * provided directory that passes the provided tester. The provided consumer
+     * will NOT be called for the provided directory itself.
+     * @param dir the directory to traverse.
+     * @param callback the consumer called for each file found.
+     * @param tester the function that tests a path.
+     * @param recursive traverses directories found if {@code true}.
+     **************************************************************************/
+    public static void visit( File dir, Consumer<File> callback,
+        Predicate<File> tester, boolean recursive )
+    {
+        File [] fs = dir.listFiles();
+
+        if( fs == null )
+        {
+            return;
+        }
+
+        for( File f : fs )
+        {
+            if( tester.test( f ) )
+            {
+                callback.accept( f );
+            }
+
+            if( recursive && f.isDirectory() )
+            {
+                visit( f, callback, tester, true );
+            }
+        }
     }
 
     /***************************************************************************
