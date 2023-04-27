@@ -11,6 +11,6 @@ public class Packet extends IBlock
      **************************************************************************/
     public Packet()
     {
-        super( BlockType.PACKET.id );
+        super( BlockType.PACKET );
     }
 }

@@ -10,6 +10,6 @@ public class DecryptionSecrets extends IBlock
      **************************************************************************/
     public DecryptionSecrets()
     {
-        super( BlockType.DECRYPTION_SECRETS.id );
+        super( BlockType.DECRYPTION_SECRETS );
     }
 }

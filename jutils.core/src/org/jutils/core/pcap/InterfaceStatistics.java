@@ -10,6 +10,6 @@ public class InterfaceStatistics extends IBlock
      **************************************************************************/
     public InterfaceStatistics()
     {
-        super( BlockType.INTERFACE_STATS.id );
+        super( BlockType.INTERFACE_STATS );
     }
 }

@@ -1,12 +1,12 @@
 package org.jutils.core.pcap;
 
-import org.jutils.core.INamedItem;
+import org.jutils.core.INamedValue;
 
 /*******************************************************************************
  * <a href="https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers">Wikipedia
  * List</a>
  ******************************************************************************/
-public enum EtherType implements INamedItem
+public enum EtherType implements INamedValue
 {
     /**  */
     IPV4( 0x0800, "IPv4" ),
@@ -16,17 +16,17 @@ public enum EtherType implements INamedItem
     UNKNOWN( 0xFF, "Unknown" );
 
     /**  */
-    public final int id;
+    public final int value;
     /**  */
     public final String name;
 
     /***************************************************************************
-     * @param id
+     * @param value
      * @param name
      **************************************************************************/
-    private EtherType( int id, String name )
+    private EtherType( int value, String name )
     {
-        this.id = id;
+        this.value = value;
         this.name = name;
     }
 
@@ -39,21 +39,18 @@ public enum EtherType implements INamedItem
         return name;
     }
 
+    @Override
+    public int getValue()
+    {
+        return value;
+    }
+
     /***************************************************************************
      * @param id
      * @return
      **************************************************************************/
     public static EtherType fromId( int id )
     {
-        for( EtherType v : values() )
-        {
-            if( v.id == id )
-            {
-                return v;
-            }
-        }
-
-        return UNKNOWN;
+        return INamedValue.fromValue( id, values(), UNKNOWN );
     }
-
 }

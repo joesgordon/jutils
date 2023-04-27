@@ -10,6 +10,6 @@ public class CustomLocked extends IBlock
      **************************************************************************/
     public CustomLocked()
     {
-        super( BlockType.CUSTOM_LOCKED.id );
+        super( BlockType.CUSTOM_LOCKED );
     }
 }

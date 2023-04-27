@@ -21,7 +21,7 @@ public class SectionHeader extends IBlock
      **************************************************************************/
     public SectionHeader()
     {
-        super( BlockType.SECTION_HEADER.id );
+        super( BlockType.SECTION_HEADER );
 
         this.byteOrderCode = 0;
         this.majorVersion = 0;

@@ -17,7 +17,7 @@ public class UnknownBlock extends IBlock
      * @param id
      * @param length
      **************************************************************************/
-    public UnknownBlock( int id, int length )
+    public UnknownBlock( BlockType id, int length )
     {
         super( id );
 
@@ -41,7 +41,8 @@ public class UnknownBlock extends IBlock
         public IBlock read( IDataStream stream, int id, int length )
             throws IOException
         {
-            UnknownBlock block = new UnknownBlock( id, length );
+            BlockType bt = BlockType.fromValue( id );
+            UnknownBlock block = new UnknownBlock( bt, length );
 
             block.body = new byte[length - 12];
 

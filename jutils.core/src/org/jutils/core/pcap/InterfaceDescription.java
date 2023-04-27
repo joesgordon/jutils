@@ -11,7 +11,7 @@ public class InterfaceDescription extends IBlock
      **************************************************************************/
     protected InterfaceDescription()
     {
-        super( BlockType.INTERFACE_DESC.id );
+        super( BlockType.INTERFACE_DESC );
         // TODO Auto-generated constructor stub
     }
 }

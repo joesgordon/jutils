@@ -43,7 +43,7 @@ public class EnhancedPacket extends IBlock
      **************************************************************************/
     public EnhancedPacket()
     {
-        super( BlockType.ENHANCED_PACKET.id );
+        super( BlockType.ENHANCED_PACKET );
 
         this.ethernet = null;
         this.ipv4 = null;

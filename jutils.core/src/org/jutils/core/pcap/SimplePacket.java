@@ -10,6 +10,6 @@ public class SimplePacket extends IBlock
      **************************************************************************/
     public SimplePacket()
     {
-        super( BlockType.SIMPLE_PACKET.id );
+        super( BlockType.SIMPLE_PACKET );
     }
 }

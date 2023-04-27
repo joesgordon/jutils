@@ -10,6 +10,6 @@ public class NameResolution extends IBlock
      **************************************************************************/
     public NameResolution()
     {
-        super( BlockType.NAME_RESOLUTION.id );
+        super( BlockType.NAME_RESOLUTION );
     }
 }

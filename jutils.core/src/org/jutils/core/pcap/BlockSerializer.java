@@ -44,7 +44,7 @@ public class BlockSerializer implements IDataSerializer<IBlock>
     {
         int id = stream.readInt();
         int length = stream.readInt();
-        BlockType bt = BlockType.fromId( id );
+        BlockType bt = BlockType.fromValue( id );
 
         IBlockBodySerializer serializer = bodySerializers.get( bt );
 

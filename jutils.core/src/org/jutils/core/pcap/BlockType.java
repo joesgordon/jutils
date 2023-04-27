@@ -1,11 +1,11 @@
 package org.jutils.core.pcap;
 
-import org.jutils.core.INamedItem;
+import org.jutils.core.INamedValue;
 
 /*******************************************************************************
  * Defines the types of blocks in a PCAP Next Generation file.
  ******************************************************************************/
-public enum BlockType implements INamedItem
+public enum BlockType implements INamedValue
 {
     /** Defines a {@link InterfaceDescription} block. */
     INTERFACE_DESC( 0x00000001, "Interface Description" ),
@@ -65,18 +65,18 @@ public enum BlockType implements INamedItem
     SECTION_HEADER( 0x0A0D0D0A, "Section Header" );
 
     /** The serializable integer that represents this type. */
-    public final int id;
+    public final int value;
     /** The user-friendly name of this type. */
     public final String name;
 
     /***************************************************************************
      * Creates a new block type correlating the provided ID and name.
-     * @param id See {@link #id}.
+     * @param value See {@link #value}.
      * @param name See {@link #name}.
      **************************************************************************/
-    private BlockType( int id, String name )
+    private BlockType( int value, String name )
     {
-        this.id = id;
+        this.value = value;
         this.name = name;
     }
 
@@ -90,19 +90,20 @@ public enum BlockType implements INamedItem
     }
 
     /***************************************************************************
-     * @param id
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getValue()
+    {
+        return value;
+    }
+
+    /***************************************************************************
+     * @param value
      * @return
      **************************************************************************/
-    public static BlockType fromId( int id )
+    public static BlockType fromValue( int value )
     {
-        for( BlockType v : values() )
-        {
-            if( v.id == id )
-            {
-                return v;
-            }
-        }
-
-        return null;
+        return INamedValue.fromValue( value, BlockType.values(), null );
     }
 }

@@ -33,9 +33,9 @@ public abstract class IBlock
     /***************************************************************************
      * @param id
      **************************************************************************/
-    protected IBlock( int id )
+    protected IBlock( BlockType id )
     {
-        this.id = id;
+        this.id = id.value;
     }
 
     /***************************************************************************
@@ -115,7 +115,7 @@ public abstract class IBlock
                 // }
 
                 IBlock block = blockSerializer.read( inDs );
-                BlockType bt = BlockType.fromId( block.id );
+                BlockType bt = BlockType.fromValue( block.id );
                 String str = "";
 
                 if( bt == BlockType.ENHANCED_PACKET )

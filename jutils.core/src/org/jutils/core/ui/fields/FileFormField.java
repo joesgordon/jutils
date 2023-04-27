@@ -90,7 +90,7 @@ public class FileFormField implements IDataFormField<File>
     public FileFormField( String name, FileType fileType,
         ExistenceType existence )
     {
-        this( name, fileType, existence, true );
+        this( name, fileType, existence, false );
     }
 
     /***************************************************************************

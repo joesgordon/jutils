@@ -1,12 +1,12 @@
 package org.jutils.core.pcap;
 
-import org.jutils.core.INamedItem;
+import org.jutils.core.INamedValue;
 
 /*******************************************************************************
  * <a href="https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers">Wikipedia
  * List</a>
  ******************************************************************************/
-public enum Protocol implements INamedItem
+public enum Protocol implements INamedValue
 {
     /**  */
     TCP( 0x06, "TCP" ),
@@ -16,7 +16,7 @@ public enum Protocol implements INamedItem
     UNKNOWN( 0xFF, "Unknown" );
 
     /**  */
-    public final int id;
+    public final int value;
     /**  */
     public final String name;
 
@@ -24,9 +24,9 @@ public enum Protocol implements INamedItem
      * @param id
      * @param name
      **************************************************************************/
-    private Protocol( int id, String name )
+    private Protocol( int value, String name )
     {
-        this.id = id;
+        this.value = value;
         this.name = name;
     }
 
@@ -39,21 +39,18 @@ public enum Protocol implements INamedItem
         return name;
     }
 
+    @Override
+    public int getValue()
+    {
+        return value;
+    }
+
     /***************************************************************************
      * @param id
      * @return
      **************************************************************************/
     public static Protocol fromId( int id )
     {
-        for( Protocol v : values() )
-        {
-            if( v.id == id )
-            {
-                return v;
-            }
-        }
-
-        return UNKNOWN;
+        return INamedValue.fromValue( id, values(), UNKNOWN );
     }
-
 }
