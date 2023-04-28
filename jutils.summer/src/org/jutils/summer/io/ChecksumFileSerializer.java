@@ -1,9 +1,15 @@
 package org.jutils.summer.io;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.jutils.core.ArrayPrinter;
 import org.jutils.core.Utils;
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.IOUtils;
@@ -41,7 +47,7 @@ public class ChecksumFileSerializer implements IReader<ChecksumResult, File>
         {
             throw new ValidationException(
                 "Incompatible extention, \"" + ext + "\". Must be one of " +
-                    Utils.arrayToString( ChecksumType.values() ),
+                    ArrayPrinter.toString( ChecksumType.values() ),
                 ex );
         }
 

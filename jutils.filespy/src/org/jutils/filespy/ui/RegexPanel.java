@@ -205,7 +205,7 @@ public class RegexPanel implements IView<JPanel>
         Pattern pattern = null;
         Matcher matcher = null;
         CharSequence seq = null;
-        StringBuffer resultStr = new StringBuffer();
+        StringBuilder resultStr = new StringBuilder();
 
         flags |= caseFlag ? Pattern.CASE_INSENSITIVE : flags;
         flags |= multilineFlag ? Pattern.MULTILINE : flags;

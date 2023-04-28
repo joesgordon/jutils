@@ -23,7 +23,6 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -258,118 +257,16 @@ public final class Utils
         return fields;
     }
 
-    /***************************************************************************
-     * Writes the decimal value for each integer in the array and places a comma
-     * and a space between each.
-     * @param a the array to convert to a string.
-     * @return the comma separated array of items.
-     **************************************************************************/
-    public static String arrayToString( int [] a )
-    {
-        StringBuffer buf = new StringBuffer();
-
-        for( int i = 0; i < a.length; i++ )
-        {
-            if( i > 0 )
-            {
-                buf.append( ", " );
-            }
-
-            buf.append( a[i] );
-        }
-
-        return buf.toString();
-    }
+    // TODO comment
 
     /***************************************************************************
-     * Calls {@link Object#toString()} for each object in the array and places a
-     * comma and a space between each.
-     * @param items Object[] the array to convert to a string.
-     * @return the comma separated list of items.
+     * @param width
+     * @param precision
+     * @return
      **************************************************************************/
-    public static String arrayToString( Object [] items )
+    public static String buildDoubleFormat( int width, int precision )
     {
-        return arrayToString( items, ", " );
-    }
-
-    /***************************************************************************
-     * Calls {@link Object#toString()} for each object in the array and places
-     * the provided delimiter between each.
-     * @param items the objects to convert to a string.
-     * @param delimiter the characters to place between the items.
-     * @return the string of items.
-     **************************************************************************/
-    public static String arrayToString( Object [] items, String delimiter )
-    {
-        StringBuffer buf = new StringBuffer();
-        for( int i = 0; i < items.length; i++ )
-        {
-            if( i > 0 )
-            {
-                buf.append( delimiter );
-            }
-            buf.append( items[i] );
-        }
-
-        return buf.toString();
-    }
-
-    /***************************************************************************
-     * Calls {@link Object#toString()} for each item and places a comma between
-     * each.
-     * @param items the objects to convert to a string.
-     * @return the comma separated string of items.
-     **************************************************************************/
-    public static String argsToString( Object... items )
-    {
-        return arrayToString( items );
-    }
-
-    /***************************************************************************
-     * Calls {@link Object#toString()} for each object in the array and places
-     * the provided delimiter between each.
-     * @param items the items to be concatenated.
-     * @return the comma separated string of items.
-     **************************************************************************/
-    public static String itemsToString( Object... items )
-    {
-        return arrayToString( items );
-    }
-
-    /***************************************************************************
-     * Calls {@link Object#toString()} for each object in the array and places
-     * the provided delimiter between each.
-     * @param delimiter the characters to place between the items.
-     * @param items the items to be concatenated.
-     * @return the string of items.
-     **************************************************************************/
-    public static String itemsToString( String delimiter, Object... items )
-    {
-        return arrayToString( items, delimiter );
-    }
-
-    /***************************************************************************
-     * Calls {@link Object#toString()} for each object in the collection and
-     * places a comma between each.
-     * @param items the collection to convert to a string.
-     * @return the comma separated list of items.
-     **************************************************************************/
-    public static String collectionToString( Collection<?> items )
-    {
-        return arrayToString( items.toArray() );
-    }
-
-    /***************************************************************************
-     * Calls {@link Object#toString()} for each object in the collection and
-     * places the provided delimiter between each.
-     * @param items the items to be concatenated.
-     * @param delimiter the characters to place between the items.
-     * @return the string of items.
-     **************************************************************************/
-    public static String collectionToString( Collection<?> items,
-        String delimiter )
-    {
-        return arrayToString( items.toArray(), delimiter );
+        return "% " + width + "." + precision + "f";
     }
 
     /***************************************************************************
@@ -391,7 +288,7 @@ public final class Utils
      **************************************************************************/
     public static String escapeAllChars( String str, char [] chars )
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         int offset = str.length();
 
         for( int idx = str.length() - 1; idx > -1; idx-- )

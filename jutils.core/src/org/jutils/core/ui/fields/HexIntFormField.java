@@ -173,15 +173,7 @@ public class HexIntFormField implements IDataFormField<Integer>
 
         if( value != null )
         {
-            int i = value;
-
-            byte b3 = ( byte )( ( i >> 24 ) & 0xFF );
-            byte b2 = ( byte )( ( i >> 16 ) & 0xFF );
-            byte b1 = ( byte )( ( i >> 8 ) & 0xFF );
-            byte b0 = ( byte )( ( i >> 0 ) & 0xFF );
-
-            text = HexUtils.toHexString( b3 ) + HexUtils.toHexString( b2 ) +
-                HexUtils.toHexString( b1 ) + HexUtils.toHexString( b0 );
+            text = HexUtils.getHexString( value );
         }
 
         return text;

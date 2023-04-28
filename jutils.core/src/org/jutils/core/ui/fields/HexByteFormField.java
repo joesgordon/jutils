@@ -162,11 +162,11 @@ public class HexByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * @param d
+     * @param value
      * @return
      **************************************************************************/
     private static String toString( Byte value )
     {
-        return value == null ? "" : HexUtils.toHexString( value );
+        return value == null ? "" : HexUtils.getHexString( value );
     }
 }

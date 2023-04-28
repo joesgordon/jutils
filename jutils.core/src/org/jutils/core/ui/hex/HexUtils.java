@@ -88,9 +88,60 @@ public final class HexUtils
      * @param b the byte to be converted.
      * @return the hexadecimal string representation of the byte.
      **************************************************************************/
-    public static String toHexString( byte b )
+    public static String getHexString( byte b )
     {
-        return toHexString( toUnsigned( b ) );
+        return hexStringOfIndex( toUnsigned( b ) );
+    }
+
+    /***************************************************************************
+     * Converts a byte to a two digit hexadecimal string.
+     * @param b the byte to be converted.
+     * @return the hexadecimal string representation of the byte.
+     **************************************************************************/
+    public static String getHexString( short b )
+    {
+        int b1 = ( int )( ( b >> 8 ) & 0xFF );
+        int b0 = ( int )( ( b >> 0 ) & 0xFF );
+
+        return hexStringOfIndex( b1 ) + hexStringOfIndex( b0 );
+    }
+
+    /***************************************************************************
+     * Converts a byte to a two digit hexadecimal string.
+     * @param b the byte to be converted.
+     * @return the hexadecimal string representation of the byte.
+     **************************************************************************/
+    public static String getHexString( int b )
+    {
+        int b3 = ( int )( ( b >> 24 ) & 0xFF );
+        int b2 = ( int )( ( b >> 16 ) & 0xFF );
+        int b1 = ( int )( ( b >> 8 ) & 0xFF );
+        int b0 = ( int )( ( b >> 0 ) & 0xFF );
+
+        return hexStringOfIndex( b3 ) + hexStringOfIndex( b2 ) +
+            hexStringOfIndex( b1 ) + hexStringOfIndex( b0 );
+    }
+
+    /***************************************************************************
+     * Converts a byte to a two digit hexadecimal string.
+     * @param b the byte to be converted.
+     * @return the hexadecimal string representation of the byte.
+     **************************************************************************/
+    public static String getHexString( long b )
+    {
+        int b7 = ( int )( ( b >> 56 ) & 0xFF );
+        int b6 = ( int )( ( b >> 48 ) & 0xFF );
+        int b5 = ( int )( ( b >> 40 ) & 0xFF );
+        int b4 = ( int )( ( b >> 32 ) & 0xFF );
+        int b3 = ( int )( ( b >> 24 ) & 0xFF );
+        int b2 = ( int )( ( b >> 16 ) & 0xFF );
+        int b1 = ( int )( ( b >> 8 ) & 0xFF );
+        int b0 = ( int )( ( b >> 0 ) & 0xFF );
+
+        return hexStringOfIndex( b7 ) + hexStringOfIndex( b6 ) +
+            hexStringOfIndex( b5 ) + hexStringOfIndex( b4 ) +
+            hexStringOfIndex( b3 ) + hexStringOfIndex( b2 ) +
+            hexStringOfIndex( b1 ) + hexStringOfIndex( b0 );
     }
 
     /***************************************************************************
@@ -101,7 +152,7 @@ public final class HexUtils
      * @throws ArrayIndexOutOfBoundsException if the input value is outside the
      * range 0 - 255 inclusive.
      **************************************************************************/
-    public static String toHexString( int b )
+    private static String hexStringOfIndex( int b )
         throws ArrayIndexOutOfBoundsException
     {
         return HEX_STRINGS.get( b );
@@ -125,22 +176,22 @@ public final class HexUtils
      **************************************************************************/
     public static String toHexString( byte [] bytes, String delim )
     {
-        return toHexString( bytes, 0, bytes.length, delim );
+        return toHexString( bytes, delim, 0, bytes.length );
     }
 
     /***************************************************************************
      * @param bytes
-     * @param index
-     * @param len
      * @param delim
+     * @param index
+     * @param count
      * @return
      **************************************************************************/
-    public static String toHexString( byte [] bytes, int index, int len,
-        String delim )
+    public static String toHexString( byte [] bytes, String delim, int index,
+        int count )
     {
         List<Byte> byteList = new ArrayList<Byte>( bytes.length );
 
-        int end = index + len;
+        int end = index + count;
 
         for( int i = index; i < end; i++ )
         {

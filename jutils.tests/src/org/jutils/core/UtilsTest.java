@@ -92,7 +92,7 @@ public class UtilsTest
     public void test_split_multDelimsInMiddle_retained()
     {
         String [] expected = { "f0", "f1", "", "", "f2", "", "", "f3", "f4" };
-        String str = Utils.arrayToString( expected, " " );
+        String str = ArrayPrinter.toString( expected, " " );
         List<String> fields = Utils.split( str );
 
         Assert.assertArrayEquals( expected, fields.toArray() );
@@ -105,7 +105,7 @@ public class UtilsTest
     public void test_split_delimsOnLeft_retained()
     {
         String [] expected = { "", "", "", "", "f0", "f1", "f2", "f3", "f4" };
-        String str = Utils.arrayToString( expected, " " );
+        String str = ArrayPrinter.toString( expected, " " );
         List<String> fields = Utils.split( str );
 
         Assert.assertArrayEquals( expected, fields.toArray() );
@@ -118,7 +118,7 @@ public class UtilsTest
     public void test_split_delimsOnRight_retained()
     {
         String [] expected = { "f0", "f1", "f2", "f3", "f4", "", "", "", "" };
-        String str = Utils.arrayToString( expected, " " );
+        String str = ArrayPrinter.toString( expected, " " );
         List<String> fields = Utils.split( str );
 
         Assert.assertArrayEquals( expected, fields.toArray() );

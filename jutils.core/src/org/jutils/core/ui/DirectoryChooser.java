@@ -16,9 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.jutils.core.ArrayPrinter;
 import org.jutils.core.OptionUtils;
 import org.jutils.core.SwingUtils;
-import org.jutils.core.Utils;
 import org.jutils.core.ValidationException;
 import org.jutils.core.io.IOUtils;
 import org.jutils.core.io.LogUtils;
@@ -116,7 +116,7 @@ public class DirectoryChooser
         dirsField.addValidityChanged( new DirFieldListener( this ) );
 
         tree.addSelectedListener( ( e ) -> dirsField.setText(
-            Utils.collectionToString( e.getItem(), File.pathSeparator ) ) );
+            ArrayPrinter.toString( e.getItem(), File.pathSeparator ) ) );
 
         scrollPane.setMinimumSize(
             new Dimension( messageLabel.getPreferredSize().width,

@@ -56,7 +56,7 @@ public class HexTableModel extends AbstractTableModel
     {
         if( col < 16 )
         {
-            return HexUtils.toHexString( col );
+            return HexUtils.getHexString( ( byte )col );
         }
 
         return "Ascii";
@@ -98,7 +98,7 @@ public class HexTableModel extends AbstractTableModel
         {
             if( index < buffer.size() )
             {
-                str = HexUtils.toHexString( buffer.get( index ) );
+                str = HexUtils.getHexString( buffer.get( index ) );
             }
         }
         else
