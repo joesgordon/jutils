@@ -3,9 +3,12 @@ package org.jutils.core.io;
 import java.util.Iterator;
 
 import org.jutils.core.ArrayPrinter;
+import org.jutils.core.INamedItem;
+import org.jutils.core.INamedValue;
 import org.jutils.core.Iterables;
 import org.jutils.core.Iterables.Iteratorable;
 import org.jutils.core.Utils;
+import org.jutils.core.data.IBitField;
 import org.jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
@@ -85,6 +88,24 @@ public class FieldPrinter
     }
 
     /***************************************************************************
+     * @param tierName
+     * @param tiers
+     **************************************************************************/
+    public <T extends ITierPrinter> void printTiers( String tierName,
+        T [] tiers )
+    {
+        int i = 0;
+        for( T t : tiers )
+        {
+            String tname = tierName + "[" + i + "]";
+            FieldPrinter p = createTier( tname );
+
+            t.printFields( p );
+            i++;
+        }
+    }
+
+    /***************************************************************************
      * @param name
      * @param value
      **************************************************************************/
@@ -97,7 +118,7 @@ public class FieldPrinter
      * @param name
      * @param value
      **************************************************************************/
-    public void printField( String name, Object value )
+    public void printFieldAsString( String name, Object value )
     {
         printField( name, value.toString() );
     }
@@ -159,9 +180,45 @@ public class FieldPrinter
     /***************************************************************************
      * @param name
      * @param value
+     **************************************************************************/
+    public void printHexField( String name, byte value )
+    {
+        printFieldAsHex( name, value & IBitField.BYTE_MASK, 2 );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
+    public void printHexField( String name, short value )
+    {
+        printFieldAsHex( name, value & IBitField.SHORT_MASK, 4 );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
+    public void printHexField( String name, int value )
+    {
+        printFieldAsHex( name, value & IBitField.INT_MASK, 8 );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
+    public void printHexField( String name, long value )
+    {
+        printFieldAsHex( name, value, 16 );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
      * @param digits
      **************************************************************************/
-    public void printField( String name, long value, int digits )
+    public void printFieldAsHex( String name, long value, int digits )
     {
         String fmt = "0x%0" + digits + "X";
         long mask = 0;
@@ -225,6 +282,24 @@ public class FieldPrinter
     {
         String fmt = Utils.buildDoubleFormat( width, precision );
         printField( name, String.format( fmt, value ) );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
+    public void printField( String name, INamedValue value )
+    {
+        printField( name, value == null ? "null" : value.getDescription() );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
+    public void printField( String name, INamedItem value )
+    {
+        printField( name, value == null ? "null" : value.getName() );
     }
 
     /***************************************************************************

@@ -1,11 +1,9 @@
 package org.jutils.core.data;
 
-import org.jutils.core.INamedItem;
-
-/*******************************************************************************
- * Defines a set of functions for identifying and processing bit flags of words.
- ******************************************************************************/
-public interface IBitFlag extends INamedItem
+/**
+ *
+ */
+public interface IBitFlag extends IBitField
 {
     /***************************************************************************
      * Returns the 0-relative bit this flag refers to. Bits 0 and 3 are set in
@@ -15,16 +13,83 @@ public interface IBitFlag extends INamedItem
     public int getBit();
 
     /***************************************************************************
-     * The mask created by shifting the value 0x01, {@link #getBit()} number of
-     * times to the left (i.e. {@code 1 << getBit()}.
-     * @return the mask for the provided bit.
-     * @see #createMask(int)
+     * {@inheritDoc}
      **************************************************************************/
-    public long getMask();
+    @Override
+    public default int getStartBit()
+    {
+        return getBit();
+    }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public String getName();
+    public default int getEndBit()
+    {
+        return getBit();
+    }
+
+    /***************************************************************************
+     * @param <T>
+     * @param word
+     * @param flags
+     * @return
+     **************************************************************************/
+    public static <T extends IBitFlag> String getStatuses( byte word,
+        T [] flags )
+    {
+        return getStatuses( word & IBitField.INT_MASK, flags );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     * @param word
+     * @param flags
+     * @return
+     **************************************************************************/
+    public static <T extends IBitFlag> String getStatuses( short word,
+        T [] flags )
+    {
+        return getStatuses( word & IBitField.INT_MASK, flags );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     * @param word
+     * @param flags
+     * @return
+     **************************************************************************/
+    public static <T extends IBitFlag> String getStatuses( int word,
+        T [] flags )
+    {
+        return getStatuses( word & IBitField.INT_MASK, flags );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     * @param word
+     * @param flags
+     * @return
+     **************************************************************************/
+    public static <T extends IBitFlag> String getStatuses( long word,
+        T [] flags )
+    {
+        StringBuilder stss = new StringBuilder();
+
+        for( IBitFlag def : flags )
+        {
+            if( def.getFlag( word ) )
+            {
+                if( stss.length() > 0 )
+                {
+                    stss.append( ',' );
+                }
+
+                stss.append( def.getName() );
+            }
+        }
+
+        return stss.toString();
+    }
 }
