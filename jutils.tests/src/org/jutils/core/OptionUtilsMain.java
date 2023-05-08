@@ -15,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.jutils.core.OptionUtils.StockIcon;
 import org.jutils.core.data.SystemProperty;
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;

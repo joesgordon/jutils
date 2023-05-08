@@ -4,7 +4,7 @@ import java.awt.*;
 
 import javax.swing.JPanel;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 
 /*******************************************************************************
  * 

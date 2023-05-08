@@ -11,7 +11,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import org.jutils.core.SwingUtils;
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.model.IDataView;
 import org.jutils.core.ui.model.LabelTableCellRenderer;
 import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;

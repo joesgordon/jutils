@@ -21,7 +21,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import org.jutils.core.SwingUtils;
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.RowHeaderRenderer;
 import org.jutils.core.ui.event.ResizingTableModelListener;
 import org.jutils.core.ui.event.TableMouseListener;

@@ -3,8 +3,8 @@ package org.jutils.apps;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jutils.core.laf.JUtilsLookAndFeel;
 import org.jutils.core.ui.IToolView;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.duak.DuakTool;
 import org.jutils.explorer.ExplorerTool;
@@ -28,8 +28,7 @@ public class AppsMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new AppsApp(), false,
-            JUtilsLookAndFeel.class.getName() );
+        FrameRunner.invokeLater( new AppsApp(), false, AppRunner.SIMPLE_LAF );
     }
 
     /***************************************************************************

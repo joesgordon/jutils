@@ -7,7 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IFrameApp;
 

@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ActionMapUIResource;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.event.ActionAdapter;
 
 /*******************************************************************************

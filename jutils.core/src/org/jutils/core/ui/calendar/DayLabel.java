@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 import javax.swing.JLabel;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.model.IView;
 
 /*******************************************************************************

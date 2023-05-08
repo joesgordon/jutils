@@ -7,12 +7,12 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class JUtilsTabbedPaneUI extends BasicTabbedPaneUI
+public class SimpleTabbedPaneUI extends BasicTabbedPaneUI
 {
     /***************************************************************************
      * 
      **************************************************************************/
-    public JUtilsTabbedPaneUI()
+    public SimpleTabbedPaneUI()
     {
         super();
     }
@@ -23,6 +23,6 @@ public class JUtilsTabbedPaneUI extends BasicTabbedPaneUI
      **************************************************************************/
     public static ComponentUI createUI( JComponent c )
     {
-        return new JUtilsTabbedPaneUI();
+        return new SimpleTabbedPaneUI();
     }
 }

@@ -1,4 +1,4 @@
-package org.jutils.core.data;
+package org.jutils.core.laf;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -21,6 +21,9 @@ public enum UIProperty
     /**  */
     CONTROLSHADOW( "controlShadow" ),
     /**  */
+    INTERNALFRAME_ACTIVETITLEBACKGROUND(
+        "InternalFrame.activeTitleBackground" ),
+    /**  */
     LABEL_FONT( "Label.font" ),
     /**  */
     LABEL_BACKGROUND( "Label.background" ),
@@ -39,8 +42,7 @@ public enum UIProperty
     /**  */
     PROGRESSBAR_FOREGROUND( "ProgressBar.foreground" ),
     /**  */
-    INTERNALFRAME_ACTIVETITLEBACKGROUND(
-        "InternalFrame.activeTitleBackground" ),
+    RADIOBUTTON_HIGHLIGHT( "RadioButton.highlight" ),
     /**  */
     SCROLLBAR_THUMB( "ScrollBar.thumb" ),
     /**  */

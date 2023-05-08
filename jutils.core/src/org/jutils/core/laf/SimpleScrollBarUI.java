@@ -7,12 +7,12 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class JUtilsScrollBarUI extends BasicScrollBarUI
+public class SimpleScrollBarUI extends BasicScrollBarUI
 {
     /***************************************************************************
      * 
      **************************************************************************/
-    public JUtilsScrollBarUI()
+    public SimpleScrollBarUI()
     {
         super();
     }
@@ -23,6 +23,6 @@ public class JUtilsScrollBarUI extends BasicScrollBarUI
      **************************************************************************/
     public static ComponentUI createUI( JComponent c )
     {
-        return new JUtilsScrollBarUI();
+        return new SimpleScrollBarUI();
     }
 }

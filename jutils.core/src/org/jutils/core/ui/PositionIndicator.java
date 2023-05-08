@@ -1,15 +1,29 @@
 package org.jutils.core.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JWindow;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.event.RightClickListener;
 import org.jutils.core.ui.event.updater.IUpdater;
 import org.jutils.core.ui.event.updater.UpdaterList;
@@ -284,7 +298,7 @@ public class PositionIndicator implements IView<JComponent>
             this.track = new Rectangle();
             this.bookmarks = new ArrayList<>();
 
-            this.thumbColor = UIProperty.SCROLLBAR_THUMB.getColor();
+            this.thumbColor = UIProperty.PROGRESSBAR_FOREGROUND.getColor();
             this.thumbShadow = UIProperty.SCROLLBAR_THUMBSHADOW.getColor();
 
             this.bookmarkColor = new Color( 0xFF, 0xFF, 0x00 );

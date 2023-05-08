@@ -6,7 +6,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.JList;
 import javax.swing.JTable;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.event.RunnableList;
 
 /*******************************************************************************

@@ -8,7 +8,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 
 /*******************************************************************************
  * 
@@ -16,7 +16,7 @@ import org.jutils.core.data.UIProperty;
 public class ByteCellRenderer implements TableCellRenderer
 {
     /**  */
-    public static final Color ALTERNATING_ROW_COLOR = new Color( 210, 225,
+    public static final Color DEFAULT_ALT_ROW_COLOR = new Color( 210, 225,
         240 );
 
     /**  */
@@ -24,6 +24,8 @@ public class ByteCellRenderer implements TableCellRenderer
     /**  */
     private final Color nullColor;
 
+    /**  */
+    private Color altRowColor;
     /**  */
     private Color highlightColor;
     /**  */
@@ -41,6 +43,7 @@ public class ByteCellRenderer implements TableCellRenderer
         this.renderer = new DefaultTableCellRenderer();
         this.nullColor = UIProperty.PANEL_BACKGROUND.getColor();
 
+        this.altRowColor = UIProperty.CONTROL.getColor();
         this.highlightColor = Color.yellow;
         this.offset = -1;
         this.len = -1;
@@ -49,7 +52,7 @@ public class ByteCellRenderer implements TableCellRenderer
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Component getTableCellRendererComponent( JTable table, Object value,
@@ -78,7 +81,7 @@ public class ByteCellRenderer implements TableCellRenderer
             {
                 if( isAltRow )
                 {
-                    renderer.setBackground( ALTERNATING_ROW_COLOR );
+                    renderer.setBackground( altRowColor );
                 }
                 else
                 {
@@ -90,16 +93,25 @@ public class ByteCellRenderer implements TableCellRenderer
         return renderer;
     }
 
+    /**
+     * @param c
+     */
     public void setHightlightColor( Color c )
     {
         this.highlightColor = c;
     }
 
+    /**
+     * @param length
+     */
     public void setHighlightLength( int length )
     {
         this.len = length;
     }
 
+    /**
+     * @param offset
+     */
     public void setHighlightOffset( int offset )
     {
         this.offset = offset;

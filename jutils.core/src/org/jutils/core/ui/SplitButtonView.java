@@ -29,7 +29,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 import org.jutils.core.SwingUtils;
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.event.IRecentListener;
 import org.jutils.core.ui.model.CollectionListModel;
 import org.jutils.core.ui.model.IView;

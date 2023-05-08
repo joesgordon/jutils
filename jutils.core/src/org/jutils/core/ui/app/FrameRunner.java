@@ -33,7 +33,7 @@ public class FrameRunner
      **************************************************************************/
     public static void invokeLater( IFrameApp app )
     {
-        invokeLater( app, true, null );
+        invokeLater( app, true );
     }
 
     /***************************************************************************

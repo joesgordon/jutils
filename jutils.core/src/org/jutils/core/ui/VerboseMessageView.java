@@ -5,7 +5,7 @@ import java.awt.Dialog.ModalityType;
 
 import javax.swing.*;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IApplication;
 import org.jutils.core.ui.model.IView;

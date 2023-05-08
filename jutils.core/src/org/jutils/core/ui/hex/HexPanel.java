@@ -18,7 +18,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellEditor;
 
 import org.jutils.core.SwingUtils;
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.RowHeaderRenderer;
 import org.jutils.core.ui.hex.HexTable.IRangeSelectedListener;
 import org.jutils.core.ui.model.IView;

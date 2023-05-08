@@ -5,7 +5,7 @@ import java.awt.Graphics;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class BorderlessTabbedPaneUI extends JUtilsTabbedPaneUI
+public class BorderlessTabbedPaneUI extends SimpleTabbedPaneUI
 {
     /***************************************************************************
      * @{@inheritDoc}

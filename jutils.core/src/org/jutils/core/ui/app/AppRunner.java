@@ -13,8 +13,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import org.jutils.core.OptionUtils;
+import org.jutils.core.laf.SimpleLookAndFeel;
 
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
@@ -25,6 +27,16 @@ import com.jgoodies.looks.plastic.theme.DesertBluer;
  ******************************************************************************/
 public final class AppRunner
 {
+    /**  */
+    public static final String JGOODIES_LAF = Options.PLASTICXP_NAME;
+    /**  */
+    public static final String METAL_LAF = MetalLookAndFeel.class.getName();
+    /**  */
+    public static final String SIMPLE_LAF = SimpleLookAndFeel.class.getName();
+    /**  */
+    // public static final String DEFAULT_LAF = SIMPLE_LAF;
+    public static final String DEFAULT_LAF = null;
+
     /***************************************************************************
      * Declare the default and only constructor private to prevent instances.
      **************************************************************************/
@@ -37,19 +49,23 @@ public final class AppRunner
      **************************************************************************/
     public static void setDefaultLaf() throws IllegalStateException
     {
-        setDefaultLaf( null );
+        setLaf( null );
     }
 
     /***************************************************************************
      * @param lafName
      * @throws IllegalStateException
      **************************************************************************/
-    public static void setDefaultLaf( String lafName )
-        throws IllegalStateException
+    public static void setLaf( String lafName ) throws IllegalStateException
     {
         if( lafName == null )
         {
-            lafName = setJGoodiesLaf();
+            lafName = UIManager.getCrossPlatformLookAndFeelClassName();
+        }
+
+        if( lafName.equals( JGOODIES_LAF ) )
+        {
+            setJGoodiesLaf();
             // lafName = JUtilsLookAndFeel.class.getName();
         }
 
@@ -84,7 +100,10 @@ public final class AppRunner
             "focusOwner", new ScrollPaneFocusListener() );
     }
 
-    private static String setJGoodiesLaf()
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private static void setJGoodiesLaf()
     {
         Color c;
         c = new Color( 0x3A6EA7 );
@@ -137,8 +156,6 @@ public final class AppRunner
 
         UIManager.put( "TabbedPaneUI",
             BasicTabbedPaneUI.class.getCanonicalName() );
-
-        return Options.PLASTICXP_NAME;
     }
 
     /***************************************************************************
@@ -218,7 +235,7 @@ public final class AppRunner
     {
         try
         {
-            AppRunner.setDefaultLaf( app.getLookAndFeelName() );
+            AppRunner.setLaf( app.getLookAndFeelName() );
 
             app.createAndShowUi();
         }
@@ -299,7 +316,7 @@ public final class AppRunner
     }
 
     /***************************************************************************
-     * 
+     * @param <T>
      **************************************************************************/
     private static class OptionsApp<T> implements IApplication
     {

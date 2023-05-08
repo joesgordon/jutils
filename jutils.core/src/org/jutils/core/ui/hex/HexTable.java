@@ -1,18 +1,34 @@
 package org.jutils.core.ui.hex;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.event.CellEditorListener;
-import javax.swing.table.*;
-import javax.swing.text.*;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.HighlightedLabel;
 
 /*******************************************************************************
@@ -434,7 +450,8 @@ public class HexTable extends JTable
             label = new HighlightedLabel();
 
             label.setHorizontalAlignment( SwingConstants.CENTER );
-            label.setHighlightColor( ByteCellRenderer.ALTERNATING_ROW_COLOR );
+            // label.setHighlightColor( ByteCellRenderer.ALTERNATING_ROW_COLOR
+            // );
             label.setFont( loadFont() );
         }
 

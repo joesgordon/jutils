@@ -4,7 +4,7 @@ import java.awt.*;
 
 import javax.swing.border.AbstractBorder;
 
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 
 /*******************************************************************************
  * 

@@ -8,7 +8,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
 import org.jutils.core.ValidationException;
-import org.jutils.core.data.UIProperty;
+import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.validators.ITextValidator;
 
 /*******************************************************************************
