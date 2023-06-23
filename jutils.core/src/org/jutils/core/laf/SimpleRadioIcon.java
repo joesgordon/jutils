@@ -53,7 +53,8 @@ public class SimpleRadioIcon implements Icon, UIResource, Serializable
         ButtonModel model = button.getModel();
         boolean enabled = model.isEnabled();
         boolean rollover = ( enabled && model.isRollover() );
-        boolean pressed = ( enabled && model.isPressed() && model.isArmed() );
+        // boolean pressed = ( enabled && model.isPressed() && model.isArmed()
+        // );
         boolean selected = model.isSelected();
 
         Ellipse2D.Float outer = createCentered( 1.0f, size );
