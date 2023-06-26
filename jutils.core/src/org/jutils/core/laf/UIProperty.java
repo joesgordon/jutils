@@ -42,7 +42,11 @@ public enum UIProperty
     /**  */
     PROGRESSBAR_FOREGROUND( "ProgressBar.foreground" ),
     /**  */
+    RADIOBUTTON_FOREGROUND( "RadioButton.foreground" ),
+    /**  */
     RADIOBUTTON_HIGHLIGHT( "RadioButton.highlight" ),
+    /**  */
+    RADIOBUTTON_SELECT( "RadioButton.select" ),
     /**  */
     SCROLLBAR_THUMB( "ScrollBar.thumb" ),
     /**  */

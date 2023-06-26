@@ -14,6 +14,7 @@ import java.io.Serializable;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JRadioButton;
+import javax.swing.UIManager;
 import javax.swing.plaf.UIResource;
 
 /*******************************************************************************
@@ -25,11 +26,11 @@ public class SimpleRadioIcon implements Icon, UIResource, Serializable
     /**  */
     private int size;
     /**  */
-    private Color disabled;
+    private Color disabledColor;
     /**  */
-    private Color border;
+    private Color rolloverColor;
     /**  */
-    private Color rollBorder;
+    private Color selectColor;
 
     /***************************************************************************
      * 
@@ -38,9 +39,9 @@ public class SimpleRadioIcon implements Icon, UIResource, Serializable
     {
         this.size = 10;
 
-        this.disabled = Color.DARK_GRAY;
-        this.border = Color.gray;
-        this.rollBorder = UIProperty.RADIOBUTTON_HIGHLIGHT.getColor();
+        this.disabledColor = UIManager.getColor( "textInactiveText" );
+        this.rolloverColor = UIProperty.RADIOBUTTON_HIGHLIGHT.getColor();
+        this.selectColor = UIProperty.RADIOBUTTON_SELECT.getColor();
     }
 
     /***************************************************************************
@@ -60,8 +61,10 @@ public class SimpleRadioIcon implements Icon, UIResource, Serializable
         Ellipse2D.Float inner = createCentered( .85f, size );
         Ellipse2D.Float check = createCentered( .5f, size );
 
-        Color fg = c.getForeground();
-        Color bg = enabled ? button.getBackground() : this.disabled;
+        Color fg = enabled ? c.getForeground() : this.disabledColor;
+        Color bg = enabled ? button.getBackground() : this.disabledColor;
+
+        bg = pressed ? selectColor : bg;
 
         Graphics2D g2 = ( Graphics2D )g;
 
@@ -75,21 +78,21 @@ public class SimpleRadioIcon implements Icon, UIResource, Serializable
         g2.setColor( bg );
         g2.fill( outer );
 
-        g2.setColor( border );
+        g2.setColor( fg );
         g2.draw( outer );
 
-        if( rollover )
+        if( rollover && !pressed )
         {
             Stroke s = g2.getStroke();
 
             g2.setStroke( new BasicStroke( 1.5f ) );
-            g2.setColor( rollBorder );
+            g2.setColor( rolloverColor );
             g2.draw( inner );
 
             g2.setStroke( s );
         }
 
-        if( selected )
+        if( selected && !pressed )
         {
             g2.setColor( fg );
             g2.fill( check );
