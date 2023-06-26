@@ -329,7 +329,7 @@ public class ArrayPrinter
      **************************************************************************/
     public static String argsToString( Object... items )
     {
-        return argsToString( ", ", items );
+        return argsToStringDelim( ", ", items );
     }
 
     /***************************************************************************
@@ -339,7 +339,7 @@ public class ArrayPrinter
      * @param items the items to be concatenated.
      * @return the string of items.
      **************************************************************************/
-    public static String argsToString( String delimiter, Object... items )
+    public static String argsToStringDelim( String delimiter, Object... items )
     {
         return toString( items, delimiter );
     }
