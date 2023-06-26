@@ -1,0 +1,18 @@
+#pragma once
+
+#include <cinttypes>
+#include <string>
+
+namespace Jerial
+{
+
+enum class StopBits : uint32_t
+{
+    ONE = 0,
+    ONE5 = 1,
+    TWO = 2
+};
+
+std::string to_string(StopBits p);
+
+} // namespace Jerial
