@@ -556,7 +556,7 @@ public final class Utils
 
     /***************************************************************************
      * Returns a list containing the font family names of all available
-     * monospace fonts that can display the ASCII numbers, lower case, and upper
+     * monospaced fonts that can display the ASCII numbers, lower case, and upper
      * case values.
      * @return the generated list.
      **************************************************************************/

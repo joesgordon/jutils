@@ -13,6 +13,7 @@ import javax.swing.UIDefaults.LazyValue;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.plaf.InsetsUIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import org.jutils.core.io.LogUtils;
@@ -27,20 +28,20 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
 
     /**  */
 
-    public final LafColors colors;
+    public final SimpleLafColors colors;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public SimpleLookAndFeel()
     {
-        this( new LafColors() );
+        this( new SimpleLafColors() );
     }
 
     /***************************************************************************
      * @param colors
      **************************************************************************/
-    public SimpleLookAndFeel( LafColors colors )
+    public SimpleLookAndFeel( SimpleLafColors colors )
     {
         super();
 
@@ -236,6 +237,9 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
         table.put( "RadioButton.foreground", colors.foreground );
         table.put( "RadioButton.background", colors.background );
         table.put( "RadioButton.highlight", colors.controlHighlight );
+        table.put( "RadioButton.select", colors.controlHighlight );
+        table.put( "RadioButton.inactive", colors.controlBackground );
+        table.put( "RadioButton.margin", new InsetsUIResource( 0, 0, 0, 0 ) );
         table.put( "RadioButton.icon",
             ( LazyValue )t -> new SimpleRadioIcon() );
     }
@@ -396,9 +400,9 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
             return e1.getKey().toString().compareTo( e2.getKey().toString() );
         } );
 
-        keyTerm = "Button";
+        // keyTerm = "panel";
         // valTerm = Color.class;
-        // valTerm = Border.class;
+        // valTerm = Insets.class;
 
         keyTerm = keyTerm == null ? null : keyTerm.toLowerCase();
 
@@ -453,7 +457,7 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
     /***************************************************************************
      * 
      **************************************************************************/
-    public static final class LafColors
+    public static final class SimpleLafColors
     {
         /**  */
         public Color background;
@@ -475,7 +479,7 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
         /**
          * 
          */
-        public LafColors()
+        public SimpleLafColors()
         {
             this.background = new Color( 0x444444 );
             this.controlBackground = new Color( 0x0C2D40 );
