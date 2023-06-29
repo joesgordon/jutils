@@ -46,8 +46,6 @@ public class SimpleButtonBorder extends AbstractBorder implements UIResource
     public void paintBorder( Component c, Graphics g, int x, int y, int w,
         int h )
     {
-        // LogUtils.printError( "jdklfdsjlkfjl" );
-
         AbstractButton button = ( AbstractButton )c;
         ButtonModel model = ( ( AbstractButton )c ).getModel();
 
