@@ -35,7 +35,7 @@ public final class AppRunner
     public static final String SIMPLE_LAF = SimpleLookAndFeel.class.getName();
     /**  */
     // public static final String DEFAULT_LAF = SIMPLE_LAF;
-    public static final String DEFAULT_LAF = null;
+    public static String DEFAULT_LAF = null;
 
     /***************************************************************************
      * Declare the default and only constructor private to prevent instances.

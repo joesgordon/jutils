@@ -77,6 +77,8 @@ public final class ValidationComboField<T> implements IValidationField
         field.setBackground( validBackground );
         field.addItemListener(
             new ComboBoxUpdater<T>( new ItemChangedListener<T>( this ) ) );
+
+        listenerList.signalValidity();
     }
 
     /***************************************************************************
