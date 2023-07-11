@@ -43,6 +43,7 @@ public class JpegTests
         catch( IOException ex )
         {
             fail( ex.getMessage() );
+            throw new RuntimeException( "Fail didn't stop processing" );
         }
 
         // LogUtils.printDebug( "Bytes written: %d", imgBytes.length );

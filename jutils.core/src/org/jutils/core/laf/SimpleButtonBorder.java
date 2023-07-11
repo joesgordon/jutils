@@ -73,6 +73,7 @@ public class SimpleButtonBorder extends AbstractBorder implements UIResource
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public Insets getBorderInsets( Component c, Insets newInsets )
     {
         newInsets = border.getBorderInsets( c, newInsets );

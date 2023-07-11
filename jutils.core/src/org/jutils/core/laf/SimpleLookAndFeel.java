@@ -39,7 +39,9 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
     }
 
     /***************************************************************************
-     * @param colors
+     * Initializes this look-and-feel with the provided colors.
+     * @param colors the colors of the components to be used for this
+     * look-and-feel instance.
      **************************************************************************/
     public SimpleLookAndFeel( SimpleLafColors colors )
     {
@@ -113,7 +115,14 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
         setToggleButtonDefaults( table );
         setCommonDefaults( table );
 
-        printTable( table );
+        String keyTerm = null;
+        Class<?> valTerm = null;
+
+        // keyTerm = "panel";
+        // valTerm = Color.class;
+        // valTerm = Insets.class;
+
+        printTable( table, keyTerm, valTerm );
     }
 
     /***************************************************************************
@@ -386,23 +395,19 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
     }
 
     /***************************************************************************
-     * @param table
+     * @param table table to be printed.
+     * @param keyTerm text to look for in the key or {@code null}.
+     * @param valTerm type of value to look for or {@code null}.
      **************************************************************************/
-    private static void printTable( UIDefaults table )
+    private static void printTable( UIDefaults table, String keyTerm,
+        Class<?> valTerm )
     {
         ArrayList<Entry<Object, Object>> entries = new ArrayList<>(
             table.entrySet() );
 
-        String keyTerm = null;
-        Class<?> valTerm = null;
-
         Collections.sort( entries, ( e1, e2 ) -> {
             return e1.getKey().toString().compareTo( e2.getKey().toString() );
         } );
-
-        // keyTerm = "panel";
-        // valTerm = Color.class;
-        // valTerm = Insets.class;
 
         keyTerm = keyTerm == null ? null : keyTerm.toLowerCase();
 
@@ -506,6 +511,7 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
         /**
          * {@inheritDoc}
          */
+        @Override
         public void paintBorder( Component c, Graphics g, int x, int y, int w,
             int h )
         {
@@ -524,6 +530,7 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
         /**
          * {@inheritDoc}
          */
+        @Override
         public Insets getBorderInsets( Component c, Insets nset )
         {
             nset.set( nset.top, nset.left, nset.bottom, nset.right );

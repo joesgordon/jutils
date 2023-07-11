@@ -33,5 +33,6 @@ public interface IItemStream<T> extends Iterable<T>
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public Iterator<T> iterator();
 }

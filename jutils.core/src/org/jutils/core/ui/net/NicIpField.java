@@ -28,6 +28,7 @@ public class NicIpField extends IpAddressField
     /***************************************************************************
      * @param point
      **************************************************************************/
+    @Override
     protected void showMenu( Point point )
     {
         nicMenu.show( getView(), point.x, point.y );

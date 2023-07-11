@@ -118,9 +118,9 @@ public class MessageThread<T>
             {
                 msg = msgSerializer.read( stream );
             }
-            catch( ValidationException e )
+            catch( ValidationException ex )
             {
-                msg = null;
+                // TODO add parsing error listeners.
             }
         }
 

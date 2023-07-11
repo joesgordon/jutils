@@ -38,6 +38,7 @@ public class SearchTask implements ITask
     /***************************************************************************
      * @param handler SearchHandler
      * @param params SearchParams
+     * @param finalizer
      **************************************************************************/
     public SearchTask( SearchResultsHandler handler, SearchParams params,
         Runnable finalizer )
@@ -47,11 +48,11 @@ public class SearchTask implements ITask
         {
             fm = params.filename.createMatcher();
         }
-        catch( ValidationException e )
+        catch( ValidationException ex )
         {
             fm = null;
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            ex.printStackTrace();
         }
 
         this.searchHandler = handler;

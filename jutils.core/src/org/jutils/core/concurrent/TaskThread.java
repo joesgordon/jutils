@@ -86,7 +86,7 @@ public class TaskThread
     {
         try
         {
-            Thread.sleep( 95 );
+            Thread.sleep( millis );
             return false;
         }
         catch( InterruptedException ex )
