@@ -1,5 +1,6 @@
 package org.jutils.core.io;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +41,10 @@ public class ReferenceItemStream<T> implements IItemStream<T>
         try
         {
             return stream.read( index, count );
+        }
+        catch( EOFException ex )
+        {
+            throw new RuntimeException( ex );
         }
         catch( IOException ex )
         {

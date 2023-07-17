@@ -5,9 +5,9 @@ package org.jutils.core.data;
  ******************************************************************************/
 public class BitFieldInfo
 {
-    /** The 0-relative start bit this flag refers to. */
+    /** The 0-relative start bit this flag refers to, inclusive. */
     public final int startBit;
-    /** The 0-relative end bit this flag refers to. */
+    /** The 0-relative end bit this flag refers to, inclusive. */
     public final int endBit;
     /**
      * The mask created by shifting the value 0x01, {@link #bit} number of times
@@ -20,7 +20,7 @@ public class BitFieldInfo
     /***************************************************************************
      * Creates a new structure for supporting {@link IBitFlag}.
      * @param bit the bit to create a mask for.
-     * @param name the name of this bit flag.
+     * @param name the name of this field/flag.
      **************************************************************************/
     public BitFieldInfo( int bit, String name )
     {
@@ -28,9 +28,9 @@ public class BitFieldInfo
     }
 
     /***************************************************************************
-     * @param startBit
-     * @param endBit
-     * @param name
+     * @param startBit the first bit of this field, inclusive.
+     * @param endBit the last bit of this field, inclusive.
+     * @param name the name of this field/flag.
      **************************************************************************/
     public BitFieldInfo( int startBit, int endBit, String name )
     {
