@@ -25,6 +25,7 @@ public class MouseEventsListener extends MouseAdapter
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void mouseClicked( MouseEvent e )
     {
         callback.handleEvent( MouseEventType.CLICKED, e );
@@ -33,6 +34,7 @@ public class MouseEventsListener extends MouseAdapter
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void mousePressed( MouseEvent e )
     {
         callback.handleEvent( MouseEventType.PRESSED, e );
@@ -41,6 +43,7 @@ public class MouseEventsListener extends MouseAdapter
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void mouseReleased( MouseEvent e )
     {
         callback.handleEvent( MouseEventType.RELEASED, e );
@@ -49,6 +52,7 @@ public class MouseEventsListener extends MouseAdapter
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void mouseEntered( MouseEvent e )
     {
         callback.handleEvent( MouseEventType.ENTERED, e );
@@ -57,6 +61,7 @@ public class MouseEventsListener extends MouseAdapter
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void mouseExited( MouseEvent e )
     {
         callback.handleEvent( MouseEventType.EXITED, e );
@@ -65,6 +70,7 @@ public class MouseEventsListener extends MouseAdapter
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void mouseWheelMoved( MouseWheelEvent e )
     {
         callback.handleEvent( MouseEventType.WHEEL_MOVED, e );
@@ -73,6 +79,7 @@ public class MouseEventsListener extends MouseAdapter
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void mouseDragged( MouseEvent e )
     {
         callback.handleEvent( MouseEventType.DRAGGED, e );
@@ -81,6 +88,7 @@ public class MouseEventsListener extends MouseAdapter
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void mouseMoved( MouseEvent e )
     {
         callback.handleEvent( MouseEventType.MOVED, e );

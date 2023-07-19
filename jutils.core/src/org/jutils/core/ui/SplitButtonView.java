@@ -37,7 +37,8 @@ import org.jutils.core.ui.model.LabelListCellRenderer;
 import org.jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
 
 /*******************************************************************************
- * @param <T>
+ * Defines a button with a drop-down menu.
+ * @param <T> the type of item to be shown in the drop-down menu.
  ******************************************************************************/
 public class SplitButtonView<T> implements IView<JComponent>
 {

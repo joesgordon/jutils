@@ -3,10 +3,10 @@ package org.jutils.core.task;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public interface IStatusTask extends IStatusRunnable
+public interface IStatusRunnable
 {
     /***************************************************************************
-     * @return
+     * @param handler
      **************************************************************************/
-    public String getName();
+    public void run( ITaskStatusHandler handler );
 }

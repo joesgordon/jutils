@@ -59,6 +59,7 @@ public class SimpleToolBarUI extends MetalToolBarUI
     /***************************************************************************
      * @{@inheritDoc}
      **************************************************************************/
+    @Override
     protected Border createNonRolloverBorder()
     {
         return new SimpleButtonBorder();

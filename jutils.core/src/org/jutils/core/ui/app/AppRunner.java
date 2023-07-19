@@ -34,8 +34,8 @@ public final class AppRunner
     /**  */
     public static final String SIMPLE_LAF = SimpleLookAndFeel.class.getName();
     /**  */
+    public static String DEFAULT_LAF = UIManager.getCrossPlatformLookAndFeelClassName();
     // public static final String DEFAULT_LAF = SIMPLE_LAF;
-    public static final String DEFAULT_LAF = null;
 
     /***************************************************************************
      * Declare the default and only constructor private to prevent instances.
@@ -60,7 +60,7 @@ public final class AppRunner
     {
         if( lafName == null )
         {
-            lafName = UIManager.getCrossPlatformLookAndFeelClassName();
+            lafName = DEFAULT_LAF;
         }
 
         if( lafName.equals( JGOODIES_LAF ) )

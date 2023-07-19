@@ -23,9 +23,9 @@ public class Pair<A, B>
      * @param valueA
      * @param valueB
      **************************************************************************/
-    public Pair( A a, B b )
+    public Pair( A valueA, B valueB )
     {
-        this.a = a;
-        this.b = b;
+        this.a = valueA;
+        this.b = valueB;
     }
 }

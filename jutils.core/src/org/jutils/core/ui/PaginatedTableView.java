@@ -415,7 +415,7 @@ public class PaginatedTableView<T> implements IView<JPanel>
      **************************************************************************/
     private boolean isPaged( long index )
     {
-        return index > pageStartIndex &&
+        return index >= pageStartIndex &&
             index < ( pageStartIndex + itemsPerPage );
     }
 

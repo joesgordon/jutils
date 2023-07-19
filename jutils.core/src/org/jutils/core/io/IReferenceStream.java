@@ -70,5 +70,6 @@ public interface IReferenceStream<T> extends AutoCloseable, Iterable<T>
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public Iterator<T> iterator();
 }

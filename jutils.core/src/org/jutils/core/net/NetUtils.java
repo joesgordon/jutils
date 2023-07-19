@@ -225,7 +225,7 @@ public final class NetUtils
             }
             catch( UnknownHostException ex )
             {
-                address = null;
+                throw new RuntimeException( "Unable to make inaddr_any", ex );
             }
         }
         else

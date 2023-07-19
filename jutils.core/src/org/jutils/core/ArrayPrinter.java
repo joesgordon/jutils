@@ -399,7 +399,7 @@ public class ArrayPrinter
             {
                 buf.append( delimiter );
             }
-            buf.append( items[i + index] );
+            buf.append( writer.toString( items[i + index] ) );
         }
 
         return buf.toString();

@@ -32,7 +32,8 @@ public class TaskRunner implements Runnable
      * @param view
      * @param stopManager
      **************************************************************************/
-    public TaskRunner( IStatusTask task, ITaskView view, ITaskHandler stopManager )
+    public TaskRunner( IStatusTask task, ITaskView view,
+        ITaskHandler stopManager )
     {
         this( task, new TaskStatusHandler( view, stopManager ) );
     }
