@@ -9,7 +9,7 @@ namespace Jerial
 {
 
 int runConsole()
-{
+{ /*
     auto api = Jerial::getApi();
     auto ports = api->listSerialPorts();
 
@@ -24,7 +24,7 @@ int runConsole()
 
         sprt->getConfig();
     }
-
+    */
     return 0;
 }
 

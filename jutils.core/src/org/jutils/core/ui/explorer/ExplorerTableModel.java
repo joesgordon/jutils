@@ -1,7 +1,9 @@
 package org.jutils.core.ui.explorer;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -39,7 +41,7 @@ public class ExplorerTableModel extends AbstractTableModel
     }
 
     /***************************************************************************
-     * 
+     * @param showPath
      **************************************************************************/
     public ExplorerTableModel( boolean showPath )
     {
@@ -107,6 +109,9 @@ public class ExplorerTableModel extends AbstractTableModel
         return name;
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public Class<?> getColumnClass( int col )
     {

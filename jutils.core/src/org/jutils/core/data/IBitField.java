@@ -1,11 +1,9 @@
 package org.jutils.core.data;
 
-import org.jutils.core.INamedItem;
-
 /*******************************************************************************
  * Defines a set of functions for identifying and processing bit flags of words.
  ******************************************************************************/
-public interface IBitField extends INamedItem
+public interface IBitField
 {
     /**  */
     public static final long BYTE_MASK = 0xFFL;
@@ -35,12 +33,6 @@ public interface IBitField extends INamedItem
      * @see #createMask(int)
      **************************************************************************/
     public long getMask();
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public String getName();
 
     /***************************************************************************
      * @param word the field that contains this flag.

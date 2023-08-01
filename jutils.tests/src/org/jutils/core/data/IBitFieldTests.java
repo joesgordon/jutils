@@ -45,10 +45,10 @@ public class IBitFieldTests
             TestBitsField.BITS14_26.getField( word ) );
     }
 
-    /**
+    /***************************************************************************
      * 
-     */
-    private static enum TestBitFlag implements IBitField
+     **************************************************************************/
+    private static enum TestBitFlag implements INamedBitField
     {
         /**  */
         BIT00( 0 ),
@@ -82,7 +82,7 @@ public class IBitFieldTests
         @Override
         public int getStartBit()
         {
-            return info.startBit;
+            return info.getStartBit();
         }
 
         /**
@@ -91,7 +91,7 @@ public class IBitFieldTests
         @Override
         public int getEndBit()
         {
-            return info.endBit;
+            return info.getEndBit();
         }
 
         /**
@@ -100,7 +100,7 @@ public class IBitFieldTests
         @Override
         public long getMask()
         {
-            return info.mask;
+            return info.getMask();
         }
 
         /**
@@ -113,10 +113,10 @@ public class IBitFieldTests
         }
     }
 
-    /**
+    /***************************************************************************
      * 
-     */
-    private static enum TestBitsField implements IBitField
+     **************************************************************************/
+    private static enum TestBitsField implements INamedBitField
     {
         /**  */
         BITS00_07( 0, 7 ),
@@ -131,7 +131,7 @@ public class IBitFieldTests
          */
         private TestBitsField( int b0, int b1 )
         {
-            this.info = new BitFieldInfo( b0, b1, "Bits " + b0 + " - " + b1 );
+            this.info = new BitFieldInfo( "Bits " + b0 + " - " + b1, b0, b1 );
         }
 
         /**
@@ -140,7 +140,7 @@ public class IBitFieldTests
         @Override
         public int getStartBit()
         {
-            return info.startBit;
+            return info.getStartBit();
         }
 
         /**
@@ -149,7 +149,7 @@ public class IBitFieldTests
         @Override
         public int getEndBit()
         {
-            return info.endBit;
+            return info.getEndBit();
         }
 
         /**
@@ -158,7 +158,7 @@ public class IBitFieldTests
         @Override
         public long getMask()
         {
-            return info.mask;
+            return info.getMask();
         }
 
         /**

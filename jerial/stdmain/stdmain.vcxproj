@@ -150,6 +150,14 @@
   <ItemGroup>
     <ClCompile Include="src\SerialMain.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\console\console.vcxproj">
+      <Project>{e99c8cc0-c3ac-4a6d-9038-ae389a09a6df}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\jeriallib.vcxproj">
+      <Project>{8a3d2c41-56b5-412a-904a-f3b4b8e933cc}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

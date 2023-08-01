@@ -4,14 +4,29 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
+import org.jutils.core.OptionUtils;
+import org.jutils.core.Utils;
+import org.jutils.core.io.FileComparator;
+import org.jutils.core.io.LogUtils;
 import org.jutils.core.ui.FileContextMenu;
 import org.jutils.core.ui.model.IView;
+import org.jutils.core.ui.model.LabelTableCellRenderer;
+import org.jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
 
 /*******************************************************************************
  *
@@ -32,8 +47,8 @@ public class ExplorerTable implements IView<JTable>
     }
 
     /***************************************************************************
-    *
-    **************************************************************************/
+     * @param showPath
+     **************************************************************************/
     public ExplorerTable( boolean showPath )
     {
         this.model = new ExplorerTableModel( showPath );
@@ -43,7 +58,7 @@ public class ExplorerTable implements IView<JTable>
         table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
         // this.setAutoCreateRowSorter( true );
-        table.setRowHeight( 21 );
+        table.setRowHeight( 24 );
 
         table.getTableHeader().setReorderingAllowed( false );
 
@@ -80,7 +95,8 @@ public class ExplorerTable implements IView<JTable>
 
         rightRenderer.setHorizontalAlignment( SwingConstants.RIGHT );
 
-        columnModel.getColumn( idx ).setCellRenderer( new FilenameRenderer() );
+        columnModel.getColumn( idx ).setCellRenderer(
+            new LabelTableCellRenderer( new FilenameRenderer() ) );
         columnModel.getColumn( idx++ ).setPreferredWidth( 200 );
 
         if( model.isShowingPath() )
@@ -150,16 +166,65 @@ public class ExplorerTable implements IView<JTable>
         return item;
     }
 
+    /***************************************************************************
+     * @param dir
+     **************************************************************************/
+    public void setDirectory( File dir )
+    {
+        List<DefaultExplorerItem> list = new ArrayList<>();
+        File [] children = dir.listFiles();
+
+        LogUtils.printDebug( "Setting directory to " + dir );
+
+        if( children != null )
+        {
+            Arrays.sort( children, new FileComparator() );
+
+            for( int i = 0; i < children.length; i++ )
+            {
+                list.add( new DefaultExplorerItem( children[i] ) );
+            }
+
+            clearTable();
+            addFiles( list );
+        }
+        else
+        {
+            OptionUtils.showErrorMessage( getView(),
+                "User does not have permissions to view: " + Utils.NEW_LINE +
+                    dir.getAbsolutePath(),
+                "ERROR" );
+        }
+
+        // {
+        // File file = new File( dir, ".project" );
+        // Icon icon = FilenameRenderer.view.getSystemIcon( file );
+        // JLabel label = new JLabel( "<- Icon!!" );
+        // label.setIcon( icon );
+        // OptionUtils.showInfoMessage( getView(), label, "Here's the icon" );
+        // }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private static final class SizeRenderer implements TableCellRenderer
     {
+        /**  */
         private final DefaultTableCellRenderer renderer;
 
+        /**
+         * 
+         */
         public SizeRenderer()
         {
             this.renderer = new DefaultTableCellRenderer();
             renderer.setHorizontalAlignment( SwingConstants.RIGHT );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Component getTableCellRendererComponent( JTable table,
             Object value, boolean isSelected, boolean hasFocus, int row,
@@ -182,43 +247,43 @@ public class ExplorerTable implements IView<JTable>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class FilenameRenderer implements TableCellRenderer
+    private static final class FilenameRenderer
+        implements ITableCellLabelDecorator
     {
+        /**  */
         private static final FileSystemView view = FileSystemView.getFileSystemView();
-        private final DefaultTableCellRenderer renderer;
 
+        /**
+         * 
+         */
         public FilenameRenderer()
         {
-            this.renderer = new DefaultTableCellRenderer();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
-        public Component getTableCellRendererComponent( JTable table,
-            Object value, boolean isSelected, boolean hasFocus, int row,
-            int column )
+        public void decorate( JLabel label, JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int col )
         {
-            renderer.getTableCellRendererComponent( table, value, isSelected,
-                hasFocus, row, column );
-
             if( value instanceof IExplorerItem )
             {
                 File file = ( ( IExplorerItem )value ).getFile();
                 if( file != null && file.exists() )
                 {
                     Icon icon = view.getSystemIcon( file );
-                    renderer.setIcon( icon );
+                    label.setIcon( icon );
                 }
                 else
                 {
-                    renderer.setIcon( null );
+                    label.setIcon( null );
                 }
             }
             else
             {
-                renderer.setIcon( null );
+                label.setIcon( null );
             }
-
-            return renderer;
         }
     }
 
@@ -227,15 +292,23 @@ public class ExplorerTable implements IView<JTable>
      **************************************************************************/
     private static final class TableMouseListener extends MouseAdapter
     {
+        /**  */
         private final ExplorerTable etable;
+        /**  */
         private final FileContextMenu menu;
 
+        /**
+         * @param etable
+         */
         public TableMouseListener( ExplorerTable etable )
         {
             this.etable = etable;
             this.menu = new FileContextMenu( etable.table );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void mouseReleased( MouseEvent e )
         {

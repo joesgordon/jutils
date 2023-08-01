@@ -83,7 +83,7 @@ public class OptionUtils
      * nothing will be initially selected;only meaningful if options is used
      * @return the option pane shown.
      **************************************************************************/
-    private static JOptionPane showOptionPane( Component parent, Object message,
+    public static JOptionPane showOptionPane( Component parent, Object message,
         String title, int messageType, int optionType, Icon icon,
         Object [] options, Object initialValue )
     {

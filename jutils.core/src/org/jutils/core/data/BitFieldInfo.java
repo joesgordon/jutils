@@ -3,19 +3,12 @@ package org.jutils.core.data;
 /*******************************************************************************
  * Class for supporting {@link IBitFlag}.
  ******************************************************************************/
-public class BitFieldInfo
+public class BitFieldInfo implements INamedBitField
 {
-    /** The 0-relative start bit this flag refers to, inclusive. */
-    public final int startBit;
-    /** The 0-relative end bit this flag refers to, inclusive. */
-    public final int endBit;
-    /**
-     * The mask created by shifting the value 0x01, {@link #bit} number of times
-     * to the left
-     */
-    public final long mask;
     /** The name of this item. */
     public final String name;
+    /**  */
+    public final BitField field;
 
     /***************************************************************************
      * Creates a new structure for supporting {@link IBitFlag}.
@@ -24,7 +17,7 @@ public class BitFieldInfo
      **************************************************************************/
     public BitFieldInfo( int bit, String name )
     {
-        this( bit, bit, name );
+        this( name, bit, bit );
     }
 
     /***************************************************************************
@@ -32,11 +25,45 @@ public class BitFieldInfo
      * @param endBit the last bit of this field, inclusive.
      * @param name the name of this field/flag.
      **************************************************************************/
-    public BitFieldInfo( int startBit, int endBit, String name )
+    public BitFieldInfo( String name, int startBit, int endBit )
     {
-        this.startBit = startBit;
-        this.endBit = endBit;
-        this.mask = IBitField.generateMask( startBit, endBit );
         this.name = name;
+        this.field = new BitField( startBit, endBit );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public String getName()
+    {
+        return this.name;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getStartBit()
+    {
+        return field.startBit;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getEndBit()
+    {
+        return field.endBit;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public long getMask()
+    {
+        return field.mask;
     }
 }
