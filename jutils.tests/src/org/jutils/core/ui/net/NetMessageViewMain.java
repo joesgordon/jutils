@@ -27,6 +27,9 @@ public class NetMessageViewMain
      **************************************************************************/
     private static final class HexMessageApp implements IFrameApp
     {
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public JFrame createFrame()
         {
@@ -50,6 +53,9 @@ public class NetMessageViewMain
             return frame;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void finalizeGui()
         {

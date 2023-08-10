@@ -166,9 +166,10 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
 
                 try
                 {
-                    T item = serializer.read( is );
+                    // T item =
+                    serializer.read( is );
 
-                    LogUtils.printDebug( item.toString() );
+                    // LogUtils.printDebug( item.toString() );
                 }
                 catch( ValidationException ex )
                 {

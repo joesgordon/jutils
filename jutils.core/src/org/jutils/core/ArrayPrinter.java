@@ -420,6 +420,7 @@ public class ArrayPrinter
     /***************************************************************************
      * Calls {@link Object#toString()} for each object in the collection and
      * places the provided delimiter between each.
+     * @param <T>
      * @param items the items to be concatenated.
      * @param delimiter the characters to place between the items.
      * @return the string of items.
@@ -427,5 +428,20 @@ public class ArrayPrinter
     public static <T> String toString( Collection<T> items, String delimiter )
     {
         return toString( items, items.size(), delimiter );
+    }
+
+    /***************************************************************************
+     * Calls {@link Object#toString()} for each object in the collection and
+     * places the provided delimiter between each.
+     * @param <T>
+     * @param items the items to be concatenated.
+     * @param delimiter the characters to place between the items.
+     * @param writer
+     * @return the string of items.
+     **************************************************************************/
+    public static <T> String toString( Collection<T> items, String delimiter,
+        IStringWriter<T> writer )
+    {
+        return toString( items, items.size(), delimiter, writer );
     }
 }

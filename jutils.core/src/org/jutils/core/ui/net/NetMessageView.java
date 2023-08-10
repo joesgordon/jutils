@@ -11,7 +11,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import org.jutils.core.net.EndPoint;
 import org.jutils.core.net.NetMessage;
 import org.jutils.core.ui.hex.ByteArrayView;
 import org.jutils.core.ui.model.IDataView;
@@ -55,8 +54,9 @@ public class NetMessageView implements IDataView<NetMessage>
         this.bytesField = new ByteArrayView();
         this.view = createView( addScrollPane );
 
-        setData( new NetMessage( true, new EndPoint( 186 ), new EndPoint( 282 ),
-            new byte[0] ) );
+        // setData( new NetMessage( true, new EndPoint( 186 ), new EndPoint( 282
+        // ),
+        // new byte[0] ) );
     }
 
     /***************************************************************************

@@ -19,10 +19,10 @@ import javax.swing.JTable;
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.io.CircularItemsStream;
+import org.jutils.core.io.DataStream;
 import org.jutils.core.io.FileStream;
+import org.jutils.core.io.IDataStream;
 import org.jutils.core.io.IItemStream;
-import org.jutils.core.io.IOUtils;
-import org.jutils.core.io.IStream;
 import org.jutils.core.io.IStringWriter;
 import org.jutils.core.io.ReferenceItemStream;
 import org.jutils.core.io.ReferenceStream;
@@ -172,7 +172,8 @@ public class NetMessagesView implements IView<JPanel>
             "Choose Net Messages File", true, ifs );
         Icon icon = IconConstants.getIcon( IconConstants.SAVE_16 );
 
-        listener.addExtension( "Net Messages", "netmsgs" );
+        listener.addExtension( "Net Messages",
+            NetMessageSerializer.NETMSGS_EXT );
 
         return new ActionAdapter( listener, "Save Msgs w/ Metadata", icon );
     }
@@ -187,7 +188,8 @@ public class NetMessagesView implements IView<JPanel>
             "Choose Messages File", true, ifs );
         Icon icon = IconConstants.getIcon( IconConstants.SAVE_AS_16 );
 
-        listener.addExtension( "Message Payloads", "msgs" );
+        listener.addExtension( "Message Payloads",
+            NetMessageSerializer.MSGS_EXT );
 
         return new ActionAdapter( listener, "Save Msg Payloads", icon );
     }
@@ -249,41 +251,39 @@ public class NetMessagesView implements IView<JPanel>
     /***************************************************************************
      * @param file
      **************************************************************************/
-    private void saveNetMsgsFile( File file )
+    public void saveNetMsgsFile( File file )
     {
-        byte [] buf = new byte[IOUtils.DEFAULT_BUF_SIZE];
-
         synchronized( table.itemsStream )
         {
-            try( FileStream stream = new FileStream( file ) )
+            saveNetMsgsFile( file, refStream );
+        }
+    }
+
+    /***************************************************************************
+     * @param file
+     * @param msgs
+     **************************************************************************/
+    public static void saveNetMsgsFile( File file, Iterable<NetMessage> msgs )
+    {
+        NetMessageSerializer netMsgSerializer = new NetMessageSerializer();
+
+        try( FileStream fs = new FileStream( file );
+             IDataStream ds = new DataStream( fs ) )
+        {
+            for( NetMessage netMsg : msgs )
             {
-                @SuppressWarnings( "resource")
-                IStream input = refStream.stream.getItemsStream();
-
-                input.seek( 0L );
-
-                long length = input.getLength();
-                long written = 0;
-
-                while( written < length )
-                {
-                    int count = input.read( buf );
-
-                    stream.write( buf, 0, count );
-
-                    written += count;
-                }
+                netMsgSerializer.write( netMsg, ds );
             }
-            catch( FileNotFoundException ex )
-            {
-                // TODO Auto-generated catch block
-                ex.printStackTrace();
-            }
-            catch( IOException ex )
-            {
-                // TODO Auto-generated catch block
-                ex.printStackTrace();
-            }
+        }
+        catch( FileNotFoundException ex )
+        {
+            // TODO Auto-generated catch block
+            ex.printStackTrace();
+        }
+        catch( IOException ex )
+        {
+            // TODO Auto-generated catch block
+            ex.printStackTrace();
         }
     }
 

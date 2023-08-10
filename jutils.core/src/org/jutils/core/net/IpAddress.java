@@ -1,11 +1,15 @@
 package org.jutils.core.net;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
-import org.jutils.core.INamedItem;
+import org.jutils.core.INamedValue;
 import org.jutils.core.Utils;
+import org.jutils.core.ValidationException;
+import org.jutils.core.io.IDataSerializer;
+import org.jutils.core.io.IDataStream;
 import org.jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
@@ -13,12 +17,18 @@ import org.jutils.core.ui.hex.HexUtils;
  ******************************************************************************/
 public class IpAddress
 {
-    /** The number of hextets in an IPv6 address. */
+    /** The number of hextets (16-bit values) in an IPv6 address. */
     public static final int HEXTET_COUNT = 8;
     /** The number of bytes in an IPv4 address. */
     public static final int IPV4_SIZE = 4;
     /** The number of bytes in an IPv6 address. */
     public static final int IPV6_SIZE = 2 * HEXTET_COUNT;
+
+    /**  */
+    public static final int IPV4_LOOPBACK = 0x7F000001;
+    /**  */
+    public static final byte [] IPV6_LOOPBACK = new byte[] { 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 
     /** IP address values (always IPv6 size). */
     public final byte [] address;
@@ -139,12 +149,30 @@ public class IpAddress
         switch( version )
         {
             case IPV4:
-                setValue( 0x7F000001 );
+                setValue( IPV4_LOOPBACK );
                 break;
 
             case IPV6:
-                setHextets( new int[] { 0, 0, 0, 0, 0, 0, 0, 1 } );
+                set( IPV6_LOOPBACK );
                 break;
+        }
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public boolean isLoopback()
+    {
+        switch( version )
+        {
+            case IPV4:
+                return IPV4_LOOPBACK == getValue();
+
+            case IPV6:
+                return Arrays.equals( IPV6_LOOPBACK, address );
+
+            default:
+                return false;
         }
     }
 
@@ -189,7 +217,7 @@ public class IpAddress
      * @return an array of {@link #HEXTET_COUNT} hextets.
      * @throws IllegalStateException if this is not an IPv6 address.
      **************************************************************************/
-    public int [] getHextets() throws IllegalStateException
+    public short [] getHextets() throws IllegalStateException
     {
         if( version != IpVersion.IPV6 )
         {
@@ -197,7 +225,7 @@ public class IpAddress
                 "Cannot represent IPv4 as hextets" );
         }
 
-        int [] value = new int[HEXTET_COUNT];
+        short [] value = new short[HEXTET_COUNT];
 
         for( int i = 0; i < value.length; i++ )
         {
@@ -206,7 +234,7 @@ public class IpAddress
             int a1 = Byte.toUnsignedInt( address[ai] );
             int a2 = Byte.toUnsignedInt( address[ai + 1] );
 
-            value[i] = ( a1 << 8 ) | a2;
+            value[i] = ( short )( ( a1 << 8 ) | a2 );
         }
 
         return value;
@@ -219,24 +247,9 @@ public class IpAddress
      * @throws IllegalArgumentException if the provided value is not of length
      * {@link #HEXTET_COUNT}.
      **************************************************************************/
-    public void setHextets( int [] value ) throws IllegalArgumentException
+    public void setHextets( short [] value ) throws IllegalArgumentException
     {
-        if( value.length != HEXTET_COUNT )
-        {
-            throw new IllegalArgumentException(
-                "Cannot set an IPv6 address with " + value.length +
-                    " hextets" );
-        }
-
-        byte [] addr = new byte[IPV6_SIZE];
-
-        for( int i = 0; i < value.length; i++ )
-        {
-            int a = i * 2;
-
-            addr[a] = ( byte )( ( value[i] >> 8 ) & 0xFF );
-            addr[a + 1] = ( byte )( ( value[i] >> 0 ) & 0xFF );
-        }
+        byte [] addr = toOctets( value );
 
         set( addr );
     }
@@ -443,7 +456,7 @@ public class IpAddress
      **************************************************************************/
     private String toIpv6String()
     {
-        int [] hextets = getHextets();
+        short [] hextets = getHextets();
         StringBuilder str = new StringBuilder();
 
         // winners
@@ -498,6 +511,7 @@ public class IpAddress
             }
             else if( i > zeroIdx && i < fi )
             {
+                // TODO finish function
             }
             else
             {
@@ -511,9 +525,37 @@ public class IpAddress
     }
 
     /***************************************************************************
+     * @param value
+     * @return
+     * @throws IllegalArgumentException
+     **************************************************************************/
+    private static byte [] toOctets( short [] value )
+        throws IllegalArgumentException
+    {
+        byte [] addr = new byte[IPV6_SIZE];
+
+        if( value.length != HEXTET_COUNT )
+        {
+            throw new IllegalArgumentException(
+                "Cannot set an IPv6 address with " + value.length +
+                    " hextets" );
+        }
+
+        for( int i = 0; i < value.length; i++ )
+        {
+            int a = i * 2;
+
+            addr[a] = ( byte )( ( value[i] >>> 8 ) & 0xFF );
+            addr[a + 1] = ( byte )( ( value[i] >>> 0 ) & 0xFF );
+        }
+
+        return addr;
+    }
+
+    /***************************************************************************
      *
      **************************************************************************/
-    public enum IpVersion implements INamedItem
+    public enum IpVersion implements INamedValue
     {
         /** IP version 4 */
         IPV4( IPV4_SIZE, "IPv4" ),
@@ -542,6 +584,80 @@ public class IpAddress
         public String getName()
         {
             return name;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getValue()
+        {
+            return byteCount;
+        }
+
+        /**
+         * @param id
+         * @return
+         */
+        public static IpVersion fromId( byte id )
+        {
+            return INamedValue.fromValue( id, values(), null );
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static class IpAddressSerializer
+        implements IDataSerializer<IpAddress>
+    {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public IpAddress read( IDataStream stream )
+            throws IOException, ValidationException
+        {
+            IpAddress address = new IpAddress();
+
+            read( address, stream );
+
+            return address;
+        }
+
+        /**
+         * @param address
+         * @param stream
+         * @throws IOException
+         * @throws ValidationException
+         */
+        public void read( IpAddress address, IDataStream stream )
+            throws IOException, ValidationException
+        {
+            byte ver = stream.read();
+            IpVersion version = IpVersion.fromId( ver );
+
+            if( version == null )
+            {
+                throw new ValidationException(
+                    "Invalid IP version read: " + ver );
+            }
+
+            byte [] bytes = new byte[version.byteCount];
+            stream.readFully( bytes );
+
+            address.set( bytes );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void write( IpAddress address, IDataStream stream )
+            throws IOException
+        {
+            stream.write( ( byte )address.version.byteCount );
+            stream.write( address.address, 0, address.version.byteCount );
         }
     }
 }

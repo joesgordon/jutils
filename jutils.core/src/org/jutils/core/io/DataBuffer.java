@@ -19,7 +19,7 @@ public class DataBuffer
     private ByteOrdering order;
 
     /***************************************************************************
-     * 
+     * Creates a {@link ByteOrdering#BIG_ENDIAN} data buffer.
      **************************************************************************/
     public DataBuffer()
     {
@@ -27,7 +27,8 @@ public class DataBuffer
     }
 
     /***************************************************************************
-     * @param order
+     * Creates a data buffer of the provided byte ordering.
+     * @param order the byte ordering used to interpret bytes.
      **************************************************************************/
     public DataBuffer( ByteOrdering order )
     {

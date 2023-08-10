@@ -126,7 +126,6 @@ public class PaginatedTableView<T> implements IView<JPanel>
         this.navLastButton = new JButton();
         this.pageLabel = new JLabel( "Page 0 of 0 (0)" );
         this.dialog = null;
-        this.itemView = itemView;
         this.itemsLock = new Object();
         this.itemsStream = itemsStream;
         this.toolbar = createToolbar();
@@ -134,6 +133,8 @@ public class PaginatedTableView<T> implements IView<JPanel>
 
         this.itemsPerPage = 500;
         this.pageStartIndex = 0L;
+
+        this.itemView = new ItemNavigationView<>( this, itemView );
     }
 
     /***************************************************************************
@@ -663,5 +664,145 @@ public class PaginatedTableView<T> implements IView<JPanel>
         TableColumn c = colModel.getColumn( column );
         LabelTableCellRenderer r = new LabelTableCellRenderer( renderer );
         c.setCellRenderer( r );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     **************************************************************************/
+    private static final class ItemNavigationView<T> implements IDataView<T>
+    {
+        /**  */
+        private final PaginatedTableView<T> itemsView;
+        /**  */
+        private final IDataView<T> itemView;
+
+        /**  */
+        private final JPanel view;
+
+        /**  */
+        private final JButton prevButton;
+        /**  */
+        private final JButton nextButton;
+
+        /**
+         * @param msgsView
+         * @param msgView
+         * @param addScrollPane
+         */
+        public ItemNavigationView( PaginatedTableView<T> msgsView,
+            IDataView<T> itemView )
+        {
+            this.itemsView = msgsView;
+            this.itemView = itemView;
+            this.prevButton = new JButton();
+            this.nextButton = new JButton();
+
+            this.view = createView();
+
+            setButtonsEnabled();
+        }
+
+        /**
+         * @return
+         */
+        private JPanel createView()
+        {
+            JPanel panel = new JPanel( new BorderLayout() );
+
+            panel.add( createToolbar(), BorderLayout.NORTH );
+            panel.add( itemView.getView(), BorderLayout.CENTER );
+
+            return panel;
+        }
+
+        /**
+         * @return
+         */
+        private JToolBar createToolbar()
+        {
+            JToolBar toolbar = new JToolBar();
+
+            SwingUtils.setToolbarDefaults( toolbar );
+
+            SwingUtils.addActionToToolbar( toolbar, createNavAction( false ),
+                prevButton );
+
+            SwingUtils.addActionToToolbar( toolbar, createNavAction( true ),
+                nextButton );
+
+            return toolbar;
+        }
+
+        /**
+         * @param forward
+         * @return
+         */
+        private Action createNavAction( boolean forward )
+        {
+            ActionListener listener = ( e ) -> navigate( forward );
+            Icon icon = IconConstants.getIcon(
+                forward ? IconConstants.NAV_NEXT_16
+                    : IconConstants.NAV_PREVIOUS_16 );
+            String name = forward ? "Next Message" : "Previous Message";
+
+            return new ActionAdapter( listener, name, icon );
+        }
+
+        /**
+         * @param forward
+         */
+        private void navigate( boolean forward )
+        {
+            int inc = forward ? 1 : -1;
+            long index = itemsView.table.getSelectedRow() +
+                itemsView.pageStartIndex;
+            long nextIndex = index + inc;
+
+            itemsView.showItem( nextIndex );
+
+            setButtonsEnabled();
+        }
+
+        /**
+         * 
+         */
+        private void setButtonsEnabled()
+        {
+            long index = itemsView.table.getSelectedRow() +
+                itemsView.pageStartIndex;
+            long maxRow = itemsView.getItemCount() - 1;
+
+            prevButton.setEnabled( index > 0 );
+            nextButton.setEnabled( index > -1 && index < maxRow );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public JPanel getView()
+        {
+            return view;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public T getData()
+        {
+            return itemView.getData();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void setData( T data )
+        {
+            itemView.setData( data );
+
+            setButtonsEnabled();
+        }
     }
 }

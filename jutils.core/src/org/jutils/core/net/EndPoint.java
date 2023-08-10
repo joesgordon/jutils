@@ -1,8 +1,15 @@
 package org.jutils.core.net;
 
+import java.io.EOFException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+
+import org.jutils.core.ValidationException;
+import org.jutils.core.io.IDataSerializer;
+import org.jutils.core.io.IDataStream;
+import org.jutils.core.net.IpAddress.IpAddressSerializer;
 
 /*******************************************************************************
  * 
@@ -15,7 +22,7 @@ public class EndPoint
     public int port;
 
     /***************************************************************************
-     * 
+     * Creates and end-point initialized to 0.0.0.0 and port 0.
      **************************************************************************/
     public EndPoint()
     {
@@ -24,13 +31,14 @@ public class EndPoint
     }
 
     /***************************************************************************
-     * @param port
+     * Creates and end-point initialized to 0.0.0.0 and the provided port.
+     * @param port the network port.
      **************************************************************************/
     public EndPoint( int port )
     {
         this();
 
-        this.address.setOctets( 127, 0, 0, 1 );
+        this.address.setOctets( 0, 0, 0, 0 );
         this.port = port;
     }
 
@@ -143,5 +151,60 @@ public class EndPoint
     public String toString()
     {
         return String.format( "%s:%d", address, port );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static class EndPointSerializer implements IDataSerializer<EndPoint>
+    {
+        /**  */
+        private final IpAddressSerializer ipSerializer;
+
+        /**
+         * 
+         */
+        public EndPointSerializer()
+        {
+            this.ipSerializer = new IpAddressSerializer();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public EndPoint read( IDataStream stream )
+            throws IOException, ValidationException
+        {
+            EndPoint point = new EndPoint();
+
+            read( point, stream );
+
+            return point;
+        }
+
+        /**
+         * @param point
+         * @param stream
+         * @throws IOException
+         * @throws EOFException
+         */
+        public void read( EndPoint point, IDataStream stream )
+            throws IOException, ValidationException
+        {
+            ipSerializer.read( point.address, stream );
+            point.port = stream.readInt();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void write( EndPoint point, IDataStream stream )
+            throws IOException
+        {
+            ipSerializer.write( point.address, stream );
+            stream.writeInt( point.port );
+        }
     }
 }

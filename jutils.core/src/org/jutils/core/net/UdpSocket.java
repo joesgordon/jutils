@@ -15,10 +15,13 @@ import java.util.Arrays;
 import org.jutils.core.io.LogUtils;
 
 /*******************************************************************************
- * 
+ * Defines a socket for UDP communications.
  ******************************************************************************/
 public class UdpSocket
 {
+    /** The default time to live as */
+    public static final int DEFAULT_TTL = 5;
+
     /**  */
     private final byte [] rxBuffer;
 
@@ -222,6 +225,11 @@ public class UdpSocket
         }
     }
 
+    public boolean joinGroup( IpAddress group )
+    {
+        return joinGroup( group, new IpAddress() );
+    }
+
     /***************************************************************************
      * @param group
      * @param nic
@@ -262,5 +270,123 @@ public class UdpSocket
         ep.port = socket.getLocalPort();
 
         return ep;
+    }
+
+    /***************************************************************************
+     * @throws SocketException
+     **************************************************************************/
+    public void openUnicast() throws SocketException
+    {
+        openUnicast( 0 );
+    }
+
+    /***************************************************************************
+     * @param port
+     * @throws SocketException
+     **************************************************************************/
+    public void openUnicast( int port ) throws SocketException
+    {
+        openUnicast( new EndPoint( port ) );
+    }
+
+    /***************************************************************************
+     * @param endPoint
+     * @throws SocketException
+     **************************************************************************/
+    public void openUnicast( EndPoint endPoint ) throws SocketException
+    {
+        open();
+        bind( endPoint );
+    }
+
+    /***************************************************************************
+     * @param port
+     * @throws SocketException
+     **************************************************************************/
+    public void openMulticast( int port ) throws SocketException
+    {
+        openMulticast( port, false );
+    }
+
+    /***************************************************************************
+     * @param port
+     * @param loopback
+     * @throws SocketException
+     **************************************************************************/
+    private void openMulticast( int port, boolean loopback )
+        throws SocketException
+    {
+        openMulticast( port, loopback, DEFAULT_TTL );
+    }
+
+    /***************************************************************************
+     * @param port
+     * @param loopback
+     * @param ttl
+     * @throws SocketException
+     **************************************************************************/
+    private void openMulticast( int port, boolean loopback, int ttl )
+        throws SocketException
+    {
+        EndPoint localPoint = new EndPoint( port );
+
+        open();
+        setReuseAddress( true );
+        setTimeToLive( ttl );
+        bind( localPoint );
+        setLoopback( loopback );
+    }
+
+    /***************************************************************************
+     * @param group
+     * @param port
+     * @throws SocketException
+     **************************************************************************/
+    public void openMulticast( IpAddress group, int port )
+        throws SocketException
+    {
+        openMulticast( group, port, new IpAddress() );
+    }
+
+    /***************************************************************************
+     * @param group
+     * @param port
+     * @param nic
+     * @throws SocketException
+     **************************************************************************/
+    public void openMulticast( IpAddress group, int port, IpAddress nic )
+        throws SocketException
+    {
+        openMulticast( group, port, nic, nic.isLoopback() );
+    }
+
+    /***************************************************************************
+     * @param group
+     * @param port
+     * @param nic
+     * @param loopback
+     * @throws SocketException
+     **************************************************************************/
+    private void openMulticast( IpAddress group, int port, IpAddress nic,
+        boolean loopback ) throws SocketException
+    {
+        openMulticast( group, port, nic, loopback, DEFAULT_TTL );
+    }
+
+    /***************************************************************************
+     * @param local
+     * @param group
+     * @param port
+     * @param ttl
+     * @param loopback
+     * @param group
+     * @param nic
+     * @throws SocketException
+     **************************************************************************/
+    public void openMulticast( IpAddress group, int port, IpAddress nic,
+        boolean loopback, int ttl ) throws SocketException
+    {
+        openMulticast( port, loopback, ttl );
+        joinGroup( group, nic );
     }
 }
