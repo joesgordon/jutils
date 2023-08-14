@@ -6,7 +6,7 @@
 	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
 	<property name="jutilsbuild.name" value="jutils.explorer" />
-	<property name="jutilsbuild.main" value="org.jutils.explorer.ExplorerMain" />
+	<property name="jutilsbuild.main" value="jutils.explorer.ExplorerMain" />
 
 	<path id="jutilsbuild.jars">
 	    <fileset file="${juprops.releaseindv}/jutils.core.jar" />

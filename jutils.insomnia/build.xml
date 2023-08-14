@@ -6,7 +6,7 @@
 	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
 	<property name="jutilsbuild.name" value="jutils.insomnia" />
-	<property name="jutilsbuild.main" value="org.jutils.insomnia.InsomniaMain" />
+	<property name="jutilsbuild.main" value="jutils.insomnia.InsomniaMain" />
 
 	<path id="jutilsbuild.jars">
 	    <fileset file="${juprops.releaseindv}/jutils.core.jar" />

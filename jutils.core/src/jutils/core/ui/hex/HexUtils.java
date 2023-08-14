@@ -5,7 +5,7 @@ import java.util.List;
 
 import jutils.core.NumberParsingUtils;
 
-// TODO move to org.jutils.utils
+// TODO move to jutils.utils
 
 /*******************************************************************************
  * Utility class to contain static methods for parsing strings as hex and

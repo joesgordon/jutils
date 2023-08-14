@@ -6,7 +6,7 @@
 	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
 	<property name="jutilsbuild.name" value="jutils.plot" />
-	<property name="jutilsbuild.main" value="org.jutils.plot.app.PlotMain" />
+	<property name="jutilsbuild.main" value="jutils.plot.app.PlotMain" />
 
 	<path id="jutilsbuild.jars">
 		<fileset file="${juprops.releaseindv}/jutils.core.jar" />
