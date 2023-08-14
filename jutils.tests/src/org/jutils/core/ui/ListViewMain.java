@@ -6,7 +6,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import org.jutils.core.ui.ListView.IItemListModel;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 
 /**
@@ -19,7 +19,7 @@ public class ListViewMain
      */
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new ListViewApp() );
+        AppRunner.invokeLater( new ListViewApp() );
     }
 
     /**

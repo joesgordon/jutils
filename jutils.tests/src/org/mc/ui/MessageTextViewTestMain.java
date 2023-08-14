@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.TextHexView;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 
 /*******************************************************************************
@@ -17,9 +17,9 @@ public class MessageTextViewTestMain
     /***************************************************************************
      * @param args
      **************************************************************************/
-    public static void main( String[] args )
+    public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new MessageTextViewTestApp() );
+        AppRunner.invokeLater( new MessageTextViewTestApp() );
     }
 
     /***************************************************************************

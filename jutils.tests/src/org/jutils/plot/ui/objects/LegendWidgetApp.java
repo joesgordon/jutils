@@ -15,7 +15,7 @@ import javax.swing.JToolBar;
 import org.jutils.core.IconConstants;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.plot.ChartUtils;
 import org.jutils.plot.data.QuadSide;
@@ -31,7 +31,7 @@ public class LegendWidgetApp
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new IFrameApp()
+        AppRunner.invokeLater( new IFrameApp()
         {
             @Override
             public void finalizeGui()

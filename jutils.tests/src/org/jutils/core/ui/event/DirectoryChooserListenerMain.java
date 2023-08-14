@@ -12,7 +12,7 @@ import org.jutils.core.SwingUtils;
 import org.jutils.core.io.LogUtils;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.FileChooserListener.IFileSelected;
 import org.jutils.core.ui.event.FileChooserListener.ILastFile;
@@ -27,7 +27,7 @@ public class DirectoryChooserListenerMain
      */
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new DirectoryChooserListenerApp() );
+        AppRunner.invokeLater( new DirectoryChooserListenerApp() );
     }
 
     /**

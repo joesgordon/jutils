@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.jutils.core.laf.UIProperty;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 
 /*******************************************************************************
@@ -21,7 +21,7 @@ public class StandardUncaughtExceptionHandlerMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new StandardUncaughtExceptionHandlerApp() );
+        AppRunner.invokeLater( new StandardUncaughtExceptionHandlerApp() );
     }
 
     /***************************************************************************

@@ -35,7 +35,7 @@ import org.jutils.core.ui.ComponentView;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.hex.HexUtils;
 import org.jutils.core.ui.model.IView;
@@ -54,7 +54,7 @@ public class FormFieldsMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( () -> createFrame() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************

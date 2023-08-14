@@ -13,7 +13,7 @@ import javax.swing.border.LineBorder;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.fields.LongFormField;
@@ -29,7 +29,7 @@ public class PositionIndicatorTestMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new PositionIndicatorApp() );
+        AppRunner.invokeLater( new PositionIndicatorApp() );
     }
 
     /***************************************************************************

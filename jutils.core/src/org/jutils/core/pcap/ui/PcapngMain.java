@@ -2,7 +2,7 @@ package org.jutils.core.pcap.ui;
 
 import javax.swing.JFrame;
 
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 
 /*******************************************************************************
  * 
@@ -14,7 +14,7 @@ public class PcapngMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( () -> createFrame() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************

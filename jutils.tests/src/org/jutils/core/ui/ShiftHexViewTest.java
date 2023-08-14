@@ -6,7 +6,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.hex.ShiftHexView;
 
@@ -20,7 +20,7 @@ public class ShiftHexViewTest
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new ShiftHexViewApp(), true );
+        AppRunner.invokeLater( new ShiftHexViewApp(), true );
     }
 
     /***************************************************************************

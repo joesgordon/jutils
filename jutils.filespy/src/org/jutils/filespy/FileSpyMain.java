@@ -9,7 +9,7 @@ import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.io.xs.XsOptions;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.filespy.data.FileSpyData;
 import org.jutils.filespy.ui.FileSpyFrameView;
 
@@ -27,8 +27,8 @@ public class FileSpyMain
 
     static
     {
-        OPTIONS = XsOptions.getOptions( FileSpyData.class,
-            USER_OPTIONS_FILE, new OptionsCreator() );
+        OPTIONS = XsOptions.getOptions( FileSpyData.class, USER_OPTIONS_FILE,
+            new OptionsCreator() );
     }
 
     /***************************************************************************
@@ -37,7 +37,7 @@ public class FileSpyMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( () -> createFrame() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************

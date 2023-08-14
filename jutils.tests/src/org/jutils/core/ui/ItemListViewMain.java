@@ -14,8 +14,7 @@ import javax.swing.JTabbedPane;
 
 import org.jutils.core.ui.ListView.IItemListModel;
 import org.jutils.core.ui.ListView.ItemListCellRenderer;
-import org.jutils.core.ui.app.FrameRunner;
-import org.jutils.core.ui.app.IFrameApp;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.event.updater.IUpdater;
 import org.jutils.core.ui.event.updater.UpdaterList;
 import org.jutils.core.ui.fields.StringFormField;
@@ -32,32 +31,23 @@ public class ItemListViewMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new ItemListViewApp() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    private static final class ItemListViewApp implements IFrameApp
+    private static JFrame createFrame()
     {
-        @Override
-        public JFrame createFrame()
-        {
-            StandardFrameView frameView = new StandardFrameView();
-            AppView view = new AppView();
+        StandardFrameView frameView = new StandardFrameView();
+        AppView view = new AppView();
 
-            frameView.setContent( view.getView() );
-            frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-            frameView.setSize( 500, 500 );
-            frameView.setTitle( "Item List View Test App" );
+        frameView.setContent( view.getView() );
+        frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frameView.setSize( 500, 500 );
+        frameView.setTitle( "Item List View Test App" );
 
-            return frameView.getView();
-        }
-
-        @Override
-        public void finalizeGui()
-        {
-        }
+        return frameView.getView();
     }
 
     /***************************************************************************
@@ -65,12 +55,20 @@ public class ItemListViewMain
      **************************************************************************/
     private static final class AppView implements IView<JComponent>
     {
+        /**  */
         private final JPanel view;
+        /**  */
         private final ItemListView<TestData> normalItemList;
+        /**  */
         private final ItemListView<TestData> rendererItemList;
+        /**  */
         private final ListView<TestData> normalList;
+        /**  */
         private final ListView<TestData> rendererList;
 
+        /**
+         * 
+         */
         public AppView()
         {
             TestDataView ntdv = new TestDataView();
@@ -98,6 +96,9 @@ public class ItemListViewMain
             rendererList.setData( new ArrayList<>() );
         }
 
+        /**
+         * @return
+         */
         private JPanel createView()
         {
             JPanel panel = new JPanel( new BorderLayout() );
@@ -114,6 +115,9 @@ public class ItemListViewMain
             return panel;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public JComponent getView()
         {
@@ -126,12 +130,19 @@ public class ItemListViewMain
      **************************************************************************/
     private static final class TestDataView implements IDataView<TestData>
     {
+        /**  */
         private final JPanel view;
+        /**  */
         private final StringFormField nameField;
+        /**  */
         private final UpdaterList<String> nameUpdaters;
 
+        /**  */
         private TestData data;
 
+        /**
+         * 
+         */
         public TestDataView()
         {
             this.nameField = new StringFormField( "Name" );
@@ -144,6 +155,9 @@ public class ItemListViewMain
             } );
         }
 
+        /**
+         * @return
+         */
         private JPanel createView()
         {
             StandardFormView form = new StandardFormView();
@@ -153,23 +167,35 @@ public class ItemListViewMain
             return form.getView();
         }
 
+        /**
+         * @param u
+         */
         public void addNameUpdater( IUpdater<String> u )
         {
             nameUpdaters.add( u );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Component getView()
         {
             return view;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public TestData getData()
         {
             return data;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void setData( TestData data )
         {
@@ -184,12 +210,18 @@ public class ItemListViewMain
      **************************************************************************/
     private static final class TestDataModel implements IItemListModel<TestData>
     {
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getTitle( TestData item )
         {
             return item.name;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public TestData promptForNew( ListView<TestData> view )
         {
@@ -212,9 +244,14 @@ public class ItemListViewMain
     private static final class TestDataRenderer
         implements ItemListCellRenderer<TestData>
     {
+        /**  */
         private final DefaultListCellRenderer renderer = new DefaultListCellRenderer();
+        /**  */
         private final ColorIcon icon = new ColorIcon( Color.green );
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Component getListCellRendererComponent(
             JList<? extends TestData> list, TestData value, int index,
@@ -236,6 +273,7 @@ public class ItemListViewMain
      **************************************************************************/
     private static final class TestData
     {
+        /**  */
         public String name;
     }
 }

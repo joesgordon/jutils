@@ -8,19 +8,19 @@ import org.jutils.core.io.IconLoader;
 /*******************************************************************************
  * Defines methods of returning the icons for this application.
  ******************************************************************************/
-public final class AppsIcons
+public final class JUtilsIcons
 {
     /** The name of the 16 x 16 pixel icon for this application. */
     public static final String APP_16 = "jutils016.png";
 
     /** The loader used to access icons in this application. */
     public static final IconLoader loader = new IconLoader(
-        AppsIcons.class, "icons" );
+        JUtilsIcons.class, "icons" );
 
     /***************************************************************************
      * Private default constructor to prevent instantiation of this class.
      **************************************************************************/
-    private AppsIcons()
+    private JUtilsIcons()
     {
     }
 

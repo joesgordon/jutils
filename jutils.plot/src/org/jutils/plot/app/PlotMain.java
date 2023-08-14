@@ -1,6 +1,6 @@
 package org.jutils.plot.app;
 
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 
 /*******************************************************************************
  * 
@@ -21,6 +21,6 @@ public class PlotMain
     {
         PlotApp runnable = new PlotApp();
 
-        FrameRunner.invokeLater( runnable );
+        AppRunner.invokeLater( runnable );
     }
 }

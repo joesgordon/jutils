@@ -2,7 +2,7 @@ package org.jutils.mines;
 
 import javax.swing.JFrame;
 
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.mines.ui.MinesFrameView;
 
 /*******************************************************************************
@@ -15,7 +15,7 @@ public class MinesMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( () -> createFrame(), false );
+        AppRunner.invokeLater( () -> createFrame(), false );
     }
 
     /***************************************************************************

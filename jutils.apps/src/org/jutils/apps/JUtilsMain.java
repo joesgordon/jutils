@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jutils.core.ui.IToolView;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.duak.DuakTool;
 import org.jutils.explorer.ExplorerTool;
 import org.jutils.filespy.FileSpyTool;
@@ -19,7 +19,7 @@ import org.jutils.summer.SummerTool;
  * This class defines the application that will display the main applications
  * contained in JUtils.
  ******************************************************************************/
-public class AppsMain
+public class JUtilsMain
 {
     /***************************************************************************
      * Application Gallery definition to display an AppGallery frame.
@@ -27,7 +27,9 @@ public class AppsMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new AppsApp(), false );
+        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
+
+        AppRunner.invokeLater( new JUtilsApp(), false );
     }
 
     /***************************************************************************

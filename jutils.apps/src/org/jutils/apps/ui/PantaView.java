@@ -39,7 +39,7 @@ public class PantaView implements IView<JComponent>
     /***************************************************************************
      * @return
      **************************************************************************/
-    private JComponent createSwingTab()
+    private static JComponent createSwingTab()
     {
         JPanel panel = new JPanel( new GridBagLayout() );
         GridBagConstraints constraints;
@@ -66,7 +66,7 @@ public class PantaView implements IView<JComponent>
     /***************************************************************************
      * @return
      **************************************************************************/
-    private JComponent createRadioButtonPanel()
+    private static JComponent createRadioButtonPanel()
     {
         StandardFormView form = new StandardFormView();
         JRadioButton btn;

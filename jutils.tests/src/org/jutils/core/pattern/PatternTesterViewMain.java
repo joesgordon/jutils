@@ -18,8 +18,7 @@ import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.StandardFrameView;
 import org.jutils.core.ui.TitleView;
-import org.jutils.core.ui.app.FrameRunner;
-import org.jutils.core.ui.app.IFrameApp;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.fields.StringFormField;
 import org.jutils.core.ui.model.IView;
@@ -168,37 +167,22 @@ public class PatternTesterViewMain implements IView<JComponent>
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new PatternTesterApp() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    private static final class PatternTesterApp implements IFrameApp
+    private static JFrame createFrame()
     {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public JFrame createFrame()
-        {
-            StandardFrameView frameView = new StandardFrameView();
-            PatternTesterViewMain ptv = new PatternTesterViewMain();
+        StandardFrameView frameView = new StandardFrameView();
+        PatternTesterViewMain ptv = new PatternTesterViewMain();
 
-            frameView.setContent( ptv.getView() );
-            frameView.setSize( 400, 600 );
-            frameView.setTitle( "Pattern Tester" );
-            frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frameView.setContent( ptv.getView() );
+        frameView.setSize( 400, 600 );
+        frameView.setTitle( "Pattern Tester" );
+        frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
-            return frameView.getView();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void finalizeGui()
-        {
-        }
+        return frameView.getView();
     }
 }

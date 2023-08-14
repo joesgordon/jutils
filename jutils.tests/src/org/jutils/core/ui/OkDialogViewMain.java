@@ -14,7 +14,7 @@ import org.jutils.core.IconConstants;
 import org.jutils.core.OptionUtils;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.ui.OkDialogView.OkDialogButtons;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.fields.ComboFormField;
@@ -31,7 +31,7 @@ public class OkDialogViewMain
      */
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new OkDialogViewApp(), false );
+        AppRunner.invokeLater( new OkDialogViewApp(), false );
     }
 
     /**

@@ -17,8 +17,7 @@ import org.jutils.core.OptionUtils.StockIcon;
 import org.jutils.core.data.SystemProperty;
 import org.jutils.core.laf.UIProperty;
 import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
-import org.jutils.core.ui.app.IFrameApp;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.fields.IntegerFormField;
 import org.jutils.core.ui.model.IView;
 import org.jutils.core.utils.ByteOrdering;
@@ -34,39 +33,24 @@ public class OptionUtilsMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new OptionUtilsApp() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    private static class OptionUtilsApp implements IFrameApp
+    private static JFrame createFrame()
     {
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public JFrame createFrame()
-        {
-            OptionUtilsView view = new OptionUtilsView();
-            StandardFrameView frameView = new StandardFrameView();
-            JFrame frame = frameView.getView();
+        OptionUtilsView view = new OptionUtilsView();
+        StandardFrameView frameView = new StandardFrameView();
+        JFrame frame = frameView.getView();
 
-            frameView.setTitle( "OptionUtils Tester" );
-            frameView.setSize( 800, 500 );
-            frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-            frameView.setContent( view.getView() );
+        frameView.setTitle( "OptionUtils Tester" );
+        frameView.setSize( 800, 500 );
+        frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frameView.setContent( view.getView() );
 
-            return frame;
-        }
-
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public void finalizeGui()
-        {
-        }
+        return frame;
     }
 
     /***************************************************************************

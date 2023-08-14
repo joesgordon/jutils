@@ -15,7 +15,7 @@ import javax.swing.JToolBar;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
 
@@ -29,7 +29,7 @@ public final class SplitButtonViewMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new SplitButtonViewApp() );
+        AppRunner.invokeLater( new SplitButtonViewApp() );
     }
 
     /***************************************************************************

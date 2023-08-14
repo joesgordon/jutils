@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import org.jutils.apps.AppsIcons;
+import org.jutils.apps.JUtilsIcons;
 import org.jutils.core.JUtilsInfo;
 import org.jutils.core.data.BuildInfo;
 import org.jutils.core.ui.BuildInfoView;
@@ -41,7 +41,7 @@ public class AppsFrameView implements IView<JFrame>
         frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frameView.setSize( 500, 500 );
 
-        frameView.getView().setIconImages( AppsIcons.getAppImages() );
+        frameView.getView().setIconImages( JUtilsIcons.getAppImages() );
     }
 
     /***************************************************************************

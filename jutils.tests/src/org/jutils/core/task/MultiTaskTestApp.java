@@ -16,7 +16,7 @@ import org.jutils.core.SwingUtils;
 import org.jutils.core.io.LogUtils;
 import org.jutils.core.ui.JGoodiesToolBar;
 import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
 
@@ -84,9 +84,12 @@ public class MultiTaskTestApp implements IFrameApp
     {
     }
 
+    /***************************************************************************
+     * @param args
+     **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new MultiTaskTestApp() );
+        AppRunner.invokeLater( new MultiTaskTestApp() );
     }
 
     /***************************************************************************

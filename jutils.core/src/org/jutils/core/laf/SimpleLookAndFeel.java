@@ -115,14 +115,14 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
         setToggleButtonDefaults( table );
         setCommonDefaults( table );
 
-        String keyTerm = null;
-        Class<?> valTerm = null;
+        // String keyTerm = null;
+        // Class<?> valTerm = null;
 
         // keyTerm = "panel";
         // valTerm = Color.class;
         // valTerm = Insets.class;
 
-        printTable( table, keyTerm, valTerm );
+        // printTable( table, keyTerm, valTerm );
     }
 
     /***************************************************************************
@@ -399,8 +399,7 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
      * @param keyTerm text to look for in the key or {@code null}.
      * @param valTerm type of value to look for or {@code null}.
      **************************************************************************/
-    private static void printTable( UIDefaults table, String keyTerm,
-        Class<?> valTerm )
+    static void printTable( UIDefaults table, String keyTerm, Class<?> valTerm )
     {
         ArrayList<Entry<Object, Object>> entries = new ArrayList<>(
             table.entrySet() );

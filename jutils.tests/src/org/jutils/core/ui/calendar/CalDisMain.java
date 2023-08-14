@@ -3,13 +3,15 @@ package org.jutils.core.ui.calendar;
 import java.awt.Component;
 import java.awt.Container;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 
 /*******************************************************************************
@@ -23,7 +25,7 @@ public class CalDisMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new CalDisApp() );
+        AppRunner.invokeLater( new CalDisApp() );
     }
 
     /***************************************************************************

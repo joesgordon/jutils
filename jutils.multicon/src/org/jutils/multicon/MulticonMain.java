@@ -2,11 +2,12 @@ package org.jutils.multicon;
 
 import java.io.File;
 
-import org.jutils.core.io.*;
+import org.jutils.core.io.IOUtils;
+import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.io.xs.XsOptions;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 
 /*******************************************************************************
  * 
@@ -25,7 +26,7 @@ public class MulticonMain
      **************************************************************************/
     public static void main( String[] args )
     {
-        FrameRunner.invokeLater( new MulticonApp(), false );
+        AppRunner.invokeLater( new MulticonApp(), false );
     }
 
     /***************************************************************************

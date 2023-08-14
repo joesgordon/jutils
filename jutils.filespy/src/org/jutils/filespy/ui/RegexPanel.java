@@ -16,7 +16,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -26,9 +25,6 @@ import org.jutils.core.Utils;
 import org.jutils.core.ui.ExitListener;
 import org.jutils.core.ui.SearchableTextArea;
 import org.jutils.core.ui.StandardFormView;
-import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
-import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.model.IView;
 
 import com.jgoodies.forms.builder.ButtonStackBuilder;
@@ -253,37 +249,6 @@ public class RegexPanel implements IView<JPanel>
             regexTextArea.getView().requestFocus();
             regexTextArea.select( ex.getIndex() - 1, ex.getIndex() );
         }
-    }
-
-    /***************************************************************************
-     * @param args
-     **************************************************************************/
-    public static void main( String [] args )
-    {
-        IFrameApp app = new IFrameApp()
-        {
-            @Override
-            public void finalizeGui()
-            {
-            }
-
-            @Override
-            public JFrame createFrame()
-            {
-                RegexPanel view = new RegexPanel();
-                StandardFrameView frameView = new StandardFrameView();
-                JFrame frame = frameView.getView();
-
-                frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-                frame.setTitle( "Regex Friend" );
-                frame.setContentPane( view.getView() );
-                frame.setSize( new Dimension( 500, 500 ) );
-
-                return frame;
-            }
-        };
-
-        FrameRunner.invokeLater( app );
     }
 
     /***************************************************************************

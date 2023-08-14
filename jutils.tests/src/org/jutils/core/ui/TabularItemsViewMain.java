@@ -16,7 +16,7 @@ import org.jutils.core.IconConstants;
 import org.jutils.core.SwingUtils;
 import org.jutils.core.ui.TabularItemsView.ITabularItemsModel;
 import org.jutils.core.ui.TabularView.ITabularNotifier;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.model.IView;
 
@@ -24,7 +24,7 @@ public class TabularItemsViewMain
 {
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( () -> createFrame() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     private static JFrame createFrame()

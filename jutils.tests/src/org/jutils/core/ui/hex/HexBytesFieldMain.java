@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import org.jutils.core.io.IOUtils;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.fields.StringFormField;
 
 /*******************************************************************************
@@ -22,7 +22,7 @@ public class HexBytesFieldMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( () -> createFrame() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************

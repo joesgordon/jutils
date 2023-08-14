@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import org.jutils.core.IconConstants;
 import org.jutils.core.ui.StandardFormView;
 import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.utils.Usable;
 
 /*******************************************************************************
@@ -20,7 +20,7 @@ public class UsableFormFieldMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( () -> createFrame() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************

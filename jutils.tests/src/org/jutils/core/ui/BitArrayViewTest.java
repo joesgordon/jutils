@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.hex.BitArrayView;
 import org.jutils.core.utils.BitArray;
 
@@ -19,7 +19,7 @@ public class BitArrayViewTest
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( () -> createFrame(), true );
+        AppRunner.invokeLater( () -> createFrame(), true );
     }
 
     /***************************************************************************

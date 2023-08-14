@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.model.IView;
 
 /**
@@ -21,7 +21,7 @@ public class RecentFilesMain
      */
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( () -> createFrame() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /**

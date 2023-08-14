@@ -1,14 +1,11 @@
 package org.jutils.core.ui.app;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.KeyboardFocusManager;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -17,13 +14,14 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import org.jutils.core.OptionUtils;
 import org.jutils.core.laf.SimpleLookAndFeel;
+import org.jutils.core.ui.StandardUncaughtExceptionHandler;
 
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.theme.DesertBluer;
 
 /*******************************************************************************
- * 
+ * Utility class for starting applications on the Swing event dispatch thread.
  ******************************************************************************/
 public final class AppRunner
 {
@@ -45,18 +43,33 @@ public final class AppRunner
     }
 
     /***************************************************************************
-     * @throws IllegalStateException
+     * Sets the look-and-feel used when applications are displayed using this
+     * class.
+     * @param laf the name of the look-and-feel to be the default.
      **************************************************************************/
-    public static void setDefaultLaf() throws IllegalStateException
+    public static void setDefaultLaf( String laf )
     {
-        setLaf( null );
+        DEFAULT_LAF = laf;
     }
 
     /***************************************************************************
-     * @param lafName
-     * @throws IllegalStateException
+     * Applies the default look-and-feel, {@link #DEFAULT_LAF}.
+     * @throws IllegalStateException if there is a problem creating or applying
+     * the look-and-feel.
      **************************************************************************/
-    public static void setLaf( String lafName ) throws IllegalStateException
+    public static void applyDefaultLaf() throws IllegalStateException
+    {
+        applyLaf( DEFAULT_LAF );
+    }
+
+    /***************************************************************************
+     * Applies the provided look-and-feel, or {@link #DEFAULT_LAF} if
+     * {@code null}.
+     * @param lafName the name of the look-and-feel to be applied.
+     * @throws IllegalStateException if there is a problem creating or applying
+     * the look-and-feel.
+     **************************************************************************/
+    public static void applyLaf( String lafName ) throws IllegalStateException
     {
         if( lafName == null )
         {
@@ -98,6 +111,178 @@ public final class AppRunner
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(
             "focusOwner", new ScrollPaneFocusListener() );
+    }
+
+    /***************************************************************************
+     * @param frame
+     * @param validate
+     **************************************************************************/
+    public static void prepareAndShowFrame( JFrame frame, boolean validate )
+    {
+        // ---------------------------------------------------------------------
+        // Validate frames that have preset sizes. Pack frames that have
+        // useful preferred size info, e.g. from their layout.
+        // ---------------------------------------------------------------------
+        if( validate )
+        {
+            frame.validate();
+        }
+        else
+        {
+            frame.pack();
+        }
+
+        frame.setLocationRelativeTo( null );
+        frame.setVisible( true );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     * @param message
+     * @param title
+     * @param options
+     * @param defaultValue
+     * @return
+     **************************************************************************/
+    public static <T> T invokeOptions( String message, String title,
+        T [] options, T defaultValue )
+    {
+        OptionsApp<T> app = new OptionsApp<>( message, title, options,
+            defaultValue );
+
+        invokeAndWait( app );
+
+        return app.getAnswer();
+    }
+
+    /***************************************************************************
+     * @param message
+     * @param title
+     **************************************************************************/
+    public static void invokeError( String message, String title )
+    {
+        invokeLater(
+            () -> OptionUtils.showErrorMessage( null, message, title ) );
+    }
+
+    /***************************************************************************
+     * @param uiCreateAndShow
+     **************************************************************************/
+    public static void invokeLater( Runnable uiCreateAndShow )
+    {
+        invokeLater( new SimpleApp( uiCreateAndShow ) );
+    }
+
+    /***************************************************************************
+     * @param app
+     **************************************************************************/
+    public static void invokeLater( IApplication app )
+    {
+        SwingUtilities.invokeLater( () -> runApp( app ) );
+    }
+
+    /***************************************************************************
+     * @param uiCreateAndShow
+     **************************************************************************/
+    public static void invokeAndWait( Runnable uiCreateAndShow )
+    {
+        invokeAndWait( new SimpleApp( uiCreateAndShow ) );
+    }
+
+    /***************************************************************************
+     * @param app
+     **************************************************************************/
+    public static void invokeAndWait( IApplication app )
+    {
+        try
+        {
+            SwingUtilities.invokeAndWait( () -> runApp( app ) );
+        }
+        catch( InvocationTargetException ex )
+        {
+        }
+        catch( InterruptedException ex )
+        {
+        }
+    }
+
+    /***************************************************************************
+     * Validates the frame from the provided creator and starts it on the swing
+     * event queue using the default look-n-feel set by
+     * {@link AppRunner#applyDefaultLaf()}.
+     * @param frameCreator the callback to create the frame.
+     **************************************************************************/
+    public static void invokeLater( IFrameCreator frameCreator )
+    {
+        invokeLater( new SimpleFrameApp( frameCreator ) );
+    }
+
+    /***************************************************************************
+     * Validates the frame from the provided app and starts it on the swing
+     * event queue using the default look-n-feel set by
+     * {@link AppRunner#applyDefaultLaf()}.
+     * @param app the application to be started.
+     **************************************************************************/
+    public static void invokeLater( IFrameApp app )
+    {
+        invokeLater( app, true );
+    }
+
+    /***************************************************************************
+     * Starts the frame from the provided creator on the swing event queue using
+     * the default look-n-feel set by {@link AppRunner#applyDefaultLaf()}.
+     * @param frameCreator the callback to create the frame.
+     * @param validate indicates the application's frame should be validated if
+     * {@code true}; packs the frame if {@code false}.
+     **************************************************************************/
+    public static void invokeLater( IFrameCreator frameCreator,
+        boolean validate )
+    {
+        invokeLater( new SimpleFrameApp( frameCreator ), validate,
+            AppRunner.DEFAULT_LAF );
+    }
+
+    /***************************************************************************
+     * Starts the frame from the provided app on the swing event queue using the
+     * default look-n-feel set by {@link AppRunner#applyDefaultLaf()}.
+     * @param app the application to be started.
+     * @param validate indicates the application's frame should be validated if
+     * {@code true}; packs the frame if {@code false}.
+     **************************************************************************/
+    public static void invokeLater( IFrameApp app, boolean validate )
+    {
+        invokeLater( app, validate, AppRunner.DEFAULT_LAF );
+    }
+
+    /***************************************************************************
+     * Starts the frame from the provided creator on the swing event queue using
+     * the provided look-n-feel.
+     * @param frameCreator the callback to create the frame.
+     * @param validate indicates the application's frame should be validated if
+     * {@code true}; packs the frame if {@code false}.
+     * @param lookAndFeel the name of the look-n-feel to use.
+     **************************************************************************/
+    public static void invokeLater( IFrameCreator frameCreator,
+        boolean validate, String lookAndFeel )
+    {
+        invokeLater( new SimpleFrameApp( frameCreator ), validate,
+            lookAndFeel );
+    }
+
+    /***************************************************************************
+     * Starts the frame from the provided app on the swing event queue using the
+     * provided look-n-feel.
+     * @param app the application to be started.
+     * @param validate indicates the application's frame should be validated if
+     * {@code true}; packs the frame if {@code false}.
+     * @param lookAndFeel the name of the look-n-feel to use.
+     **************************************************************************/
+    public static void invokeLater( IFrameApp app, boolean validate,
+        String lookAndFeel )
+    {
+        IApplication fApp = new FrameApplication( app, validate, lookAndFeel );
+
+        AppRunner.invokeLater( fApp );
     }
 
     /***************************************************************************
@@ -159,83 +344,13 @@ public final class AppRunner
     }
 
     /***************************************************************************
-     * @param <T>
-     * @param message
-     * @param title
-     * @param options
-     * @param defaultValue
-     * @return
-     **************************************************************************/
-    public static <T> T invokeOptions( String message, String title,
-        T [] options, T defaultValue )
-    {
-        OptionsApp<T> app = new OptionsApp<>( message, title, options,
-            defaultValue );
-
-        invokeAndWait( app );
-
-        return app.getAnswer();
-    }
-
-    /***************************************************************************
-     * @param message
-     * @param title
-     **************************************************************************/
-    public static void invokeError( String message, String title )
-    {
-        invokeLater(
-            () -> OptionUtils.showErrorMessage( null, message, title ) );
-    }
-
-    /***************************************************************************
-     * @param app
-     **************************************************************************/
-    public static void invokeLater( IApplication app )
-    {
-        SwingUtilities.invokeLater( () -> runApp( app ) );
-    }
-
-    /***************************************************************************
-     * @param uiCreateAndShow
-     **************************************************************************/
-    public static void invokeLater( Runnable uiCreateAndShow )
-    {
-        invokeLater( new SimpleApp( uiCreateAndShow ) );
-    }
-
-    /***************************************************************************
-     * @param app
-     **************************************************************************/
-    public static void invokeAndWait( IApplication app )
-    {
-        try
-        {
-            SwingUtilities.invokeAndWait( () -> runApp( app ) );
-        }
-        catch( InvocationTargetException ex )
-        {
-        }
-        catch( InterruptedException ex )
-        {
-        }
-    }
-
-    /***************************************************************************
-     * @param uiCreateAndShow
-     **************************************************************************/
-    public static void invokeAndWait( Runnable uiCreateAndShow )
-    {
-        invokeAndWait( new SimpleApp( uiCreateAndShow ) );
-    }
-
-    /***************************************************************************
      * @param app
      **************************************************************************/
     private static void runApp( IApplication app )
     {
         try
         {
-            AppRunner.setLaf( app.getLookAndFeelName() );
+            AppRunner.applyLaf( app.getLookAndFeelName() );
 
             app.createAndShowUi();
         }
@@ -247,72 +362,15 @@ public final class AppRunner
     }
 
     /***************************************************************************
-     * 
+     * Creates a JFrame to be displayed.
      **************************************************************************/
-    private static class ScrollPaneFocusListener
-        implements PropertyChangeListener
+    public static interface IFrameCreator
     {
         /**
-         * {@inheritDoc}
+         * Creates the frame and all other UI (tray icons, etc.)
+         * @return the frame for this application.
          */
-        @Override
-        public void propertyChange( PropertyChangeEvent evt )
-        {
-            if( !( evt.getNewValue() instanceof JComponent ) )
-            {
-                return;
-            }
-
-            Object focusedObj = evt.getNewValue();
-
-            if( focusedObj instanceof Component )
-            {
-                Component focused = ( Component )focusedObj;
-                Container parent = focused.getParent();
-
-                if( parent instanceof JComponent )
-                {
-                    JComponent focusedParent = ( JComponent )parent;
-
-                    focusedParent.scrollRectToVisible( focused.getBounds() );
-                }
-            }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class SimpleApp implements IApplication
-    {
-        /**  */
-        private final Runnable callback;
-
-        /**
-         * @param callback
-         */
-        public SimpleApp( Runnable callback )
-        {
-            this.callback = callback;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getLookAndFeelName()
-        {
-            return null;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void createAndShowUi()
-        {
-            callback.run();
-        }
+        public JFrame createFrame();
     }
 
     /***************************************************************************
@@ -372,6 +430,139 @@ public final class AppRunner
         public T getAnswer()
         {
             return answer;
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private static class SimpleApp implements IApplication
+    {
+        /**  */
+        private final Runnable callback;
+
+        /**
+         * @param callback
+         */
+        public SimpleApp( Runnable callback )
+        {
+            this.callback = callback;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getLookAndFeelName()
+        {
+            return null;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void createAndShowUi()
+        {
+            callback.run();
+        }
+    }
+
+    /***************************************************************************
+     * Defines an {@link IFrameApp} that uses an {@code IFrameCreator} to create
+     * the frame and does nothing to finalize the GUI.
+     **************************************************************************/
+    private final static class SimpleFrameApp implements IFrameApp
+    {
+        /** The base creator */
+        private IFrameCreator frameCreator;
+
+        /**
+         * Creates a new basic app with the provided creator.
+         * @param frameCreator the base creator.
+         */
+        public SimpleFrameApp( IFrameCreator frameCreator )
+        {
+            this.frameCreator = frameCreator;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public JFrame createFrame()
+        {
+            return frameCreator.createFrame();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void finalizeGui()
+        {
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private static class FrameApplication implements IApplication
+    {
+        /**  */
+        private final IFrameApp frameApp;
+        /**  */
+        private final boolean validate;
+        /**  */
+        private final String lookAndFeel;
+
+        /**
+         * @param frameApp
+         * @param validate
+         * @param lookAndFeel
+         */
+        public FrameApplication( IFrameApp frameApp, boolean validate,
+            String lookAndFeel )
+        {
+            this.frameApp = frameApp;
+            this.validate = validate;
+            this.lookAndFeel = lookAndFeel;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getLookAndFeelName()
+        {
+            return lookAndFeel;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void createAndShowUi()
+        {
+            createAndShowFrame();
+        }
+
+        /**
+         * @return
+         */
+        public JFrame createAndShowFrame()
+        {
+            JFrame frame = frameApp.createFrame();
+
+            UncaughtExceptionHandler h;
+            h = new StandardUncaughtExceptionHandler( frame );
+            Thread.setDefaultUncaughtExceptionHandler( h );
+
+            prepareAndShowFrame( frame, validate );
+
+            frameApp.finalizeGui();
+
+            return frame;
         }
     }
 }

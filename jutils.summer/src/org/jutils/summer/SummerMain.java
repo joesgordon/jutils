@@ -13,7 +13,6 @@ import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.io.xs.XsOptions;
 import org.jutils.core.ui.app.AppRunner;
-import org.jutils.core.ui.app.FrameRunner;
 import org.jutils.core.ui.app.IApplication;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.summer.data.ChecksumResult;
@@ -45,7 +44,7 @@ public class SummerMain
         if( args.length == 0 )
         {
             IFrameApp app = new SummerApp();
-            FrameRunner.invokeLater( app );
+            AppRunner.invokeLater( app );
         }
         else
         {

@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 import org.jutils.core.net.EndPoint;
 import org.jutils.core.net.NetMessage;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 
 /*******************************************************************************
@@ -19,7 +19,7 @@ public class NetMessageViewMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new HexMessageApp() );
+        AppRunner.invokeLater( new HexMessageApp() );
     }
 
     /***************************************************************************

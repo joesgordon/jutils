@@ -7,7 +7,7 @@ import org.jutils.core.io.LogUtils;
 import org.jutils.core.io.options.IOptionsCreator;
 import org.jutils.core.io.options.OptionsSerializer;
 import org.jutils.core.io.xs.XsOptions;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.hexedit.data.HexeditOptions;
 
 /*******************************************************************************
@@ -46,7 +46,7 @@ public class HexeditMain
         }
 
         HexeditApp hexApp = new HexeditApp( file );
-        FrameRunner.invokeLater( hexApp );
+        AppRunner.invokeLater( hexApp );
     }
 
     /***************************************************************************

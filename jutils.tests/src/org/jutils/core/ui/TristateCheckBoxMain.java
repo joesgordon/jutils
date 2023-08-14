@@ -8,7 +8,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JRadioButton;
 
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 
 public class TristateCheckBoxMain
@@ -19,7 +19,7 @@ public class TristateCheckBoxMain
      **************************************************************************/
     public static void main( String args[] ) throws Exception
     {
-        FrameRunner.invokeLater( new TristateCheckBoxApp(), false );
+        AppRunner.invokeLater( new TristateCheckBoxApp(), false );
     }
 
     private static final class TristateCheckBoxApp implements IFrameApp

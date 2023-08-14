@@ -5,8 +5,8 @@ import javax.swing.JFrame;
 import org.jutils.apps.ui.PantaView;
 import org.jutils.core.laf.SimpleLookAndFeel;
 import org.jutils.core.ui.StandardFrameView;
-import org.jutils.core.ui.app.FrameRunner;
-import org.jutils.core.ui.app.FrameRunner.IFrameCreator;
+import org.jutils.core.ui.app.AppRunner;
+import org.jutils.core.ui.app.AppRunner.IFrameCreator;
 
 /*******************************************************************************
  *
@@ -35,7 +35,7 @@ public class PantaApp implements IFrameCreator
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new PantaApp(), true,
+        AppRunner.invokeLater( new PantaApp(), true,
             SimpleLookAndFeel.class.getName() );
     }
 }

@@ -15,7 +15,7 @@ import org.jutils.core.io.IItemStream;
 import org.jutils.core.io.IStringWriter;
 import org.jutils.core.io.ReferenceItemStream;
 import org.jutils.core.io.ReferenceStream;
-import org.jutils.core.ui.app.FrameRunner;
+import org.jutils.core.ui.app.AppRunner;
 import org.jutils.core.ui.app.IFrameApp;
 import org.jutils.core.ui.event.ActionAdapter;
 import org.jutils.core.ui.model.ITableConfig;
@@ -30,7 +30,7 @@ public class PaginatedTableViewMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        FrameRunner.invokeLater( new PaginatedTableViewApp() );
+        AppRunner.invokeLater( new PaginatedTableViewApp() );
     }
 
     /***************************************************************************

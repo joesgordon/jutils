@@ -16,7 +16,7 @@ import org.jutils.core.ui.app.IFrameApp;
 /*******************************************************************************
  * Defines the set of functions that displays a frame application.
  ******************************************************************************/
-public class AppsApp implements IFrameApp
+public class JUtilsApp implements IFrameApp
 {
     /***************************************************************************
      * {@inheritDoc}
@@ -24,12 +24,12 @@ public class AppsApp implements IFrameApp
     @Override
     public JFrame createFrame()
     {
-        List<IToolView> apps = AppsMain.getTools();
+        List<IToolView> apps = JUtilsMain.getTools();
         AppsFrameView frameView = new AppsFrameView( apps );
         JFrame frame = frameView.getView();
 
         TrayIcon icon = SwingUtils.createTrayIcon(
-            AppsIcons.getImage( AppsIcons.APP_16 ), "JUtils Apps",
+            JUtilsIcons.getImage( JUtilsIcons.APP_16 ), "JUtils Apps",
             frame, null );
 
         SwingUtils.addTrayMenu( icon, createPopup( frameView ) );
