@@ -10,10 +10,6 @@ import javax.imageio.ImageIO;
 
 import org.junit.Test;
 
-import jutils.core.io.ByteArrayStream;
-import jutils.core.io.StreamInput;
-import jutils.core.io.StreamOutput;
-
 /*******************************************************************************
  * 
  ******************************************************************************/

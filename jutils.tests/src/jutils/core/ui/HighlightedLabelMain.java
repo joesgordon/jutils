@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import jutils.core.ui.HighlightedLabel;
 import jutils.core.ui.app.AppRunner;
 
 /*******************************************************************************

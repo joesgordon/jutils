@@ -8,8 +8,6 @@ import jutils.core.IconConstants;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
-import jutils.core.ui.fields.IntegerFormField;
-import jutils.core.ui.fields.UsableFormField;
 import jutils.core.utils.Usable;
 
 /*******************************************************************************

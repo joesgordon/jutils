@@ -7,8 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import jutils.core.io.LogUtils;
-import jutils.plot.data.Tick;
-import jutils.plot.data.TickGen;
 import jutils.plot.data.TickGen.TickMetrics;
 import jutils.plot.model.Axis;
 import jutils.plot.model.Interval;

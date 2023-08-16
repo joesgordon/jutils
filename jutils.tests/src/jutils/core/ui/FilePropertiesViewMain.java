@@ -13,14 +13,11 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import jutils.core.ui.FilePropertiesView;
-import jutils.core.ui.StandardFormView;
-import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.event.FileChooserListener;
-import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileChooserListener.IFileSelected;
 import jutils.core.ui.event.FileChooserListener.ILastFile;
+import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.fields.BooleanFormField;
 import jutils.core.ui.fields.IntegerFormField;
 

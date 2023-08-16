@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import jutils.core.ui.ListView;
-import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.ListView.IItemListModel;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;

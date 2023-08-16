@@ -3,7 +3,6 @@ package jutils.core.concurrent;
 import org.junit.Assert;
 import org.junit.Test;
 
-import jutils.core.concurrent.EventSignal;
 import jutils.core.time.NanoWatch;
 
 /*******************************************************************************

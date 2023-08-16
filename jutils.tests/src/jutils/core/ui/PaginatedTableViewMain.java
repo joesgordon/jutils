@@ -15,8 +15,6 @@ import jutils.core.io.IItemStream;
 import jutils.core.io.IStringWriter;
 import jutils.core.io.ReferenceItemStream;
 import jutils.core.io.ReferenceStream;
-import jutils.core.ui.PaginatedTableView;
-import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
 import jutils.core.ui.event.ActionAdapter;

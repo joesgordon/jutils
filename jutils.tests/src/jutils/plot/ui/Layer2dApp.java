@@ -35,7 +35,6 @@ import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
 import jutils.core.ui.event.ActionAdapter;
-import jutils.plot.ui.Layer2d;
 
 /*******************************************************************************
  * 

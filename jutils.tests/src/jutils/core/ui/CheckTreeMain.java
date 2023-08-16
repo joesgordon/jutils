@@ -15,10 +15,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import jutils.core.ui.CheckTreeManager;
-import jutils.core.ui.ScrollableEditorPaneView;
-import jutils.core.ui.StandardFormView;
-import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.fields.ComboFormField;
 

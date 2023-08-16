@@ -9,7 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import jutils.core.ValidationException;
-import jutils.core.io.LogUtils;
 import jutils.core.io.xs.XsUtils;
 import jutils.core.ui.ColorMapView;
 

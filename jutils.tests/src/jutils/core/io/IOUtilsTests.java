@@ -6,8 +6,6 @@ import java.nio.charset.Charset;
 import org.junit.Assert;
 import org.junit.Test;
 
-import jutils.core.io.IOUtils;
-
 /*******************************************************************************
  * 
  ******************************************************************************/

@@ -6,11 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
 
-import jutils.core.io.BufferedStream;
-import jutils.core.io.FileStream;
-import jutils.core.io.IStream;
-import jutils.core.io.LogUtils;
-import jutils.core.io.MappedStream;
 import jutils.core.utils.ByteOrdering;
 import jutils.core.utils.Stopwatch;
 

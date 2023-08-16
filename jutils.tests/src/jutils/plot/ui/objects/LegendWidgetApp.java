@@ -23,8 +23,6 @@ import jutils.plot.model.ISeriesData;
 import jutils.plot.model.Legend;
 import jutils.plot.model.Series;
 import jutils.plot.ui.WidgetPanel;
-import jutils.plot.ui.objects.LegendWidget;
-import jutils.plot.ui.objects.PlotWidget;
 
 public class LegendWidgetApp
 {

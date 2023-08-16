@@ -8,8 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import jutils.core.IconConstants;
-import jutils.core.io.ByteArrayStream;
-import jutils.core.io.ByteCache;
 
 /*******************************************************************************
  * 

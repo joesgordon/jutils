@@ -23,8 +23,6 @@ import jutils.plot.model.HorizontalAlignment;
 import jutils.plot.model.TextLabel;
 import jutils.plot.ui.IChartWidget;
 import jutils.plot.ui.WidgetPanel;
-import jutils.plot.ui.objects.TextDirection;
-import jutils.plot.ui.objects.TextWidget;
 
 public class TextWidgetApp
 {

@@ -4,9 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import jutils.core.ValidationException;
-import jutils.core.pattern.IMatcher;
-import jutils.core.pattern.StringPattern;
-import jutils.core.pattern.StringPatternType;
 
 /*******************************************************************************
  *

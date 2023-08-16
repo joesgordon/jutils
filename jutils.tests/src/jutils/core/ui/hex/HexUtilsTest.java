@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import jutils.core.NumberParsingUtils;
 import jutils.core.io.LogUtils;
-import jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
  * 

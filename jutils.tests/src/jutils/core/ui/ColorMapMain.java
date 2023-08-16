@@ -14,8 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import jutils.core.io.ResourceLoader;
-import jutils.core.ui.ColorMapView;
-import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
 
 /*******************************************************************************

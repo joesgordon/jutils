@@ -1,6 +1,5 @@
 package jutils.core;
 
-import jutils.core.ArrayPrinter;
 import jutils.core.io.LogUtils;
 
 /*******************************************************************************

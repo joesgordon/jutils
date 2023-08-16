@@ -1,9 +1,5 @@
 package jutils.core.io;
 
-import jutils.core.io.BufferedStream;
-import jutils.core.io.ByteArrayStream;
-import jutils.core.io.IStream;
-
 /*******************************************************************************
  * 
  ******************************************************************************/

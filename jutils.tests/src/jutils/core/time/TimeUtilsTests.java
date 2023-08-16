@@ -3,8 +3,6 @@ package jutils.core.time;
 import org.junit.Assert;
 import org.junit.Test;
 
-import jutils.core.time.TimeUtils;
-
 public class TimeUtilsTests
 {
     @Test

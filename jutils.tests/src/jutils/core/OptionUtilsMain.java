@@ -13,8 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
-import jutils.core.IconConstants;
-import jutils.core.OptionUtils;
 import jutils.core.OptionUtils.StockIcon;
 import jutils.core.data.SystemProperty;
 import jutils.core.laf.UIProperty;

@@ -3,8 +3,6 @@ package jutils.core.utils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import jutils.core.utils.CircularQueue;
-
 /*******************************************************************************
  * 
  ******************************************************************************/

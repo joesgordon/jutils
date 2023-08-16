@@ -1,7 +1,5 @@
 package jutils.core.task;
 
-import jutils.core.task.ITaskStatusHandler;
-import jutils.core.task.TaskError;
 import jutils.core.ui.event.ItemActionListener;
 
 /*******************************************************************************

@@ -14,8 +14,6 @@ import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
-import jutils.core.ui.StandardFrameView;
-import jutils.core.ui.TabularItemsView;
 import jutils.core.ui.TabularItemsView.ITabularItemsModel;
 import jutils.core.ui.TabularView.ITabularNotifier;
 import jutils.core.ui.app.AppRunner;

@@ -8,8 +8,6 @@ import org.junit.Test;
 import jutils.core.io.BitBuffer;
 import jutils.core.io.BitPosition;
 import jutils.core.io.LogUtils;
-import jutils.core.io.bits.BitShifterFactory;
-import jutils.core.io.bits.IBitShifter;
 
 /*******************************************************************************
  * 

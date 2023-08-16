@@ -8,7 +8,6 @@ import jutils.core.net.EndPoint;
 import jutils.core.net.NetMessage;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
-import jutils.core.ui.net.NetMessageView;
 
 /*******************************************************************************
  * 

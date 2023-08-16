@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import jutils.core.ui.StandardFormView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
 import jutils.core.ui.fields.StringFormField;

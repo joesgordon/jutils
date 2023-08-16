@@ -3,9 +3,6 @@ package jutils.core.data;
 import org.junit.Assert;
 import org.junit.Test;
 
-import jutils.core.data.BitFieldInfo;
-import jutils.core.data.INamedBitField;
-
 /*******************************************************************************
  * 
  ******************************************************************************/

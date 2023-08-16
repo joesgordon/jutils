@@ -10,13 +10,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import jutils.core.ValidationException;
-import jutils.core.io.BufferedStream;
-import jutils.core.io.ByteArrayStream;
-import jutils.core.io.DataStream;
-import jutils.core.io.FileStream;
-import jutils.core.io.IDataSerializer;
-import jutils.core.io.IDataStream;
-import jutils.core.io.IStream;
 
 /***************************************************************************
  * 

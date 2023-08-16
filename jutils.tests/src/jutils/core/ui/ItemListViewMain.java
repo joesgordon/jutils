@@ -12,11 +12,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import jutils.core.ui.ColorIcon;
-import jutils.core.ui.ItemListView;
-import jutils.core.ui.ListView;
-import jutils.core.ui.StandardFormView;
-import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.ListView.IItemListModel;
 import jutils.core.ui.ListView.ItemListCellRenderer;
 import jutils.core.ui.app.AppRunner;

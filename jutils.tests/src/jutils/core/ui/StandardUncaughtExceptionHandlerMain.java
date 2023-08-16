@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import jutils.core.laf.UIProperty;
-import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
 
