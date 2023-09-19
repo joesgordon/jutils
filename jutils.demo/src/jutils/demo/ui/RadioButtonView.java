@@ -1,72 +1,34 @@
-package jutils.apps.ui;
+package jutils.demo.ui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.model.IView;
 
 /*******************************************************************************
- *
+ * Defines a view that displays all states of a {@link JRadioButton}.
  ******************************************************************************/
-public class PantaView implements IView<JComponent>
+public class RadioButtonView implements IView<JComponent>
 {
     /**  */
-    private final JTabbedPane tabs;
+    private final JPanel view;
 
     /***************************************************************************
-     * 
+     * Creates a view that displays all states of a {@link JRadioButton}.
      **************************************************************************/
-    public PantaView()
+    public RadioButtonView()
     {
-        this.tabs = new JTabbedPane();
-
-        tabs.addTab( "Swing", createSwingTab() );
-
-        tabs.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
+        this.view = createView();
     }
 
     /***************************************************************************
-     * @return
+     * Creates a panel to display
+     * @return the component for this view.
      **************************************************************************/
-    private static JComponent createSwingTab()
-    {
-        JPanel panel = new JPanel( new GridBagLayout() );
-        GridBagConstraints constraints;
-        JComponent comp;
-        final int spc = 6;
-
-        int r = 0;
-
-        comp = createRadioButtonPanel();
-        comp.setBorder( new TitledBorder( "JRadioButton" ) );
-        constraints = new GridBagConstraints( 0, r++, 1, 1, 0.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( spc, spc, 0, spc ), 0, 0 );
-        panel.add( comp, constraints );
-
-        constraints = new GridBagConstraints( 0, r++, 2, 1, 1.0, 1.0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 0, 0, spc, 0 ), 0, 0 );
-        panel.add( Box.createHorizontalStrut( 0 ), constraints );
-
-        return panel;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private static JComponent createRadioButtonPanel()
+    private static JPanel createView()
     {
         StandardFormView form = new StandardFormView();
         JRadioButton btn;
@@ -100,6 +62,7 @@ public class PantaView implements IView<JComponent>
     @Override
     public JComponent getView()
     {
-        return tabs;
+        return view;
     }
+
 }

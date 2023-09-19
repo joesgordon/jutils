@@ -1,34 +1,29 @@
-package jutils.core.pcap.ui;
+package jutils.demo.ui;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.border.EmptyBorder;
 
 import jutils.core.ui.model.IView;
 
 /*******************************************************************************
- * 
+ * Defines the main panel of the demo application.
  ******************************************************************************/
-public class PcapngBlockView implements IView<JComponent>
+public class DemoView implements IView<JComponent>
 {
-    /**  */
-    private final JComponent view;
+    /** The component for this view. */
+    private final JTabbedPane tabs;
 
     /***************************************************************************
-     * 
+     * Creates a new view to show all JUtils functionality.
      **************************************************************************/
-    public PcapngBlockView()
+    public DemoView()
     {
-        this.view = createView();
-    }
+        this.tabs = new JTabbedPane();
 
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private static JComponent createView()
-    {
-        JPanel panel = new JPanel();
+        tabs.addTab( "Swing", new SwingView().getView() );
 
-        return panel;
+        tabs.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
     }
 
     /***************************************************************************
@@ -37,7 +32,6 @@ public class PcapngBlockView implements IView<JComponent>
     @Override
     public JComponent getView()
     {
-        return view;
+        return tabs;
     }
-
 }

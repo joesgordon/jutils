@@ -2,6 +2,9 @@
 
 ## General Issues
 
+- Add license to JUtils.
+- Rename license dialog.
+- Add clean target to jutils builds.
 - Error with built-in resolution:
   - message - what happened
   - context - when did it happen/what doing; not time
@@ -10,9 +13,6 @@
   - action - what failed
   - reason - why did it fail
   - context - what did it happen to
-- Rename license dialog
-- Add clean target to jutils builds.
-- Add license to JUtils.
 - Update versioning to support:
   - Rebuild (Same version)
   - Build (Engineering version)
@@ -21,7 +21,10 @@
 - Add cyclic buffer to NetMsgsView.
 - jutils.ini
 - Add focus listeners to form fields
-- Write `fieldHasFocus(field:IFormField):boolean` and `hasFocus(comp:JComponent):boolean` using JFrame.getFocusOwner() and `Container.isAnscestorOf()`.
+- Write 
+  - `fieldHasFocus(field:IFormField):boolean` and 
+  - `hasFocus(comp:JComponent):boolean` using `JFrame.getFocusOwner()` and 
+  - `Container.isAnscestorOf()`.
 - Summer: Find files using `TaskView.startAndShow()`.
 - Summer: Multithread checksum verification.
 - ListView:
@@ -44,10 +47,9 @@
   - solataire
   - pinball
   - magic 8 ball
-
-## jutils.maths
-
-## jutils.serial
+- Finish [jutils.maths](./jutils.math/jumath.md)
+- Finish [jutils.serial](./jutils.serial/juserial.md)
+- See [jutils.plot](./jutils.plot/juplot.md)
 
 ## jutils.plot
 

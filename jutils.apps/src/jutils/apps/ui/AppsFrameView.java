@@ -45,7 +45,8 @@ public class AppsFrameView implements IView<JFrame>
     }
 
     /***************************************************************************
-     * @param menuBar
+     * Fills the menu bar with this applications options.
+     * @param menuBar the menu bar for this application
      **************************************************************************/
     private void createMenubar( JMenuBar menuBar )
     {
@@ -55,14 +56,18 @@ public class AppsFrameView implements IView<JFrame>
     }
 
     /***************************************************************************
-     * @return
+     * Creates the help menu.
+     * @return a menu that has all the "Help" options.
      **************************************************************************/
     private JMenu createHelpMenu()
     {
         JMenu menu = new JMenu( "Help" );
         JMenuItem item;
 
+        menu.setMnemonic( 'H' );
+
         item = new JMenuItem( "About" );
+        item.setMnemonic( 'A' );
         item.addActionListener( ( e ) -> showAbout() );
         menu.add( item );
 
@@ -70,7 +75,7 @@ public class AppsFrameView implements IView<JFrame>
     }
 
     /***************************************************************************
-     * 
+     * Shows the about dialog in a modal dialog.
      **************************************************************************/
     private void showAbout()
     {

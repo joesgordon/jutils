@@ -25,9 +25,9 @@ import jutils.core.ui.FileIcon;
 import jutils.core.ui.IconTextField;
 import jutils.core.ui.event.DirectoryChooserListener;
 import jutils.core.ui.event.FileChooserListener;
+import jutils.core.ui.event.FileChooserListener.IFileSelected;
 import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.TextFieldFilesListener;
-import jutils.core.ui.event.FileChooserListener.IFileSelected;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
@@ -130,7 +130,7 @@ public class FileFormField implements IDataFormField<File>
         this.icon = new FileIcon();
 
         this.fileListener = createFileListener( isSave );
-        this.browseListener = createBrowseListener( fileType, isSave );
+        this.browseListener = createBrowseListener( fileType );
         this.view = createView( showButton, isSave );
 
         this.textField.setIcon( icon );
@@ -228,8 +228,7 @@ public class FileFormField implements IDataFormField<File>
      * indicates open).
      * @return the listener for the browse button.
      **************************************************************************/
-    private ActionListener createBrowseListener( FileType fileType,
-        boolean isSave )
+    private ActionListener createBrowseListener( FileType fileType )
     {
         ActionListener fcl = null;
 

@@ -37,15 +37,14 @@ public class ByteArrayView implements IDataView<byte []>
 
         this.bytes = new byte[0];
 
-        table.addRangeSelectedListener(
-            ( s, e ) -> handleRangeSelected( s, e ) );
+        table.addRangeSelectedListener( ( s, e ) -> handleRangeSelected( s ) );
     }
 
     /***************************************************************************
      * @param start
      * @param end
      **************************************************************************/
-    private void handleRangeSelected( int start, int end )
+    private void handleRangeSelected( int start )
     {
         values.setBytes( bytes, start );
     }

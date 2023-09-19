@@ -11,12 +11,12 @@ import jutils.apps.ui.AppsFrameView;
 import jutils.core.SwingUtils;
 import jutils.core.ui.ExitListener;
 import jutils.core.ui.IToolView;
-import jutils.core.ui.app.IFrameApp;
+import jutils.core.ui.app.AppRunner.IFrameCreator;
 
 /*******************************************************************************
- * Defines the set of functions that displays a frame application.
+ * Defines the set of functions that displays the JUtils frame application.
  ******************************************************************************/
-public class JUtilsApp implements IFrameApp
+public class JUtilsApp implements IFrameCreator
 {
     /***************************************************************************
      * {@inheritDoc}
@@ -29,8 +29,8 @@ public class JUtilsApp implements IFrameApp
         JFrame frame = frameView.getView();
 
         TrayIcon icon = SwingUtils.createTrayIcon(
-            JUtilsIcons.getImage( JUtilsIcons.APP_16 ), "JUtils Apps",
-            frame, null );
+            JUtilsIcons.getImage( JUtilsIcons.APP_16 ), "JUtils Apps", frame,
+            null );
 
         SwingUtils.addTrayMenu( icon, createPopup( frameView ) );
 
@@ -56,13 +56,5 @@ public class JUtilsApp implements IFrameApp
         menu.add( menuItem );
 
         return menu;
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void finalizeGui()
-    {
     }
 }
