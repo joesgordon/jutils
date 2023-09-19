@@ -13,6 +13,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import jutils.core.INamedItem;
+import jutils.core.io.LogUtils;
 import jutils.core.ui.ListView;
 import jutils.core.ui.ListView.IItemListModel;
 import jutils.core.ui.TitleView;
@@ -33,6 +34,8 @@ public class SwingView implements IView<JComponent>
     /**  */
     private final HashMap<ComponentPanel, Supplier<IView<?>>> compViews;
 
+    // TODO create a view for all swing component types
+
     /***************************************************************************
      * 
      **************************************************************************/
@@ -43,6 +46,7 @@ public class SwingView implements IView<JComponent>
             new ComponentPanelListModel(), false, false );
         this.choiceView = new TitleView( "Nothing Selected", null );
 
+        compViews.put( ComponentPanel.JBUTTON, () -> null );
         compViews.put( ComponentPanel.JRADIOBUTTON,
             () -> new RadioButtonView() );
 
@@ -52,6 +56,11 @@ public class SwingView implements IView<JComponent>
             ( e ) -> handleSelction( e.getItem() ) );
 
         choicesView.setData( new ArrayList<>( compViews.keySet() ) );
+
+        if( compViews.size() != ComponentPanel.values().length )
+        {
+            LogUtils.printError( "Not all component types accounted for." );
+        }
     }
 
     /***************************************************************************
@@ -62,6 +71,11 @@ public class SwingView implements IView<JComponent>
         Supplier<IView<?>> supplier = compViews.get( selection );
         IView<?> view = supplier == null ? null : supplier.get();
         Component comp = view == null ? null : view.getView();
+
+        if( comp == null )
+        {
+            LogUtils.printError( "%s has no demo view.", selection.name );
+        }
 
         choiceView.setTitle( selection.name );
         choiceView.setComponent( comp );
@@ -107,7 +121,11 @@ public class SwingView implements IView<JComponent>
     private static enum ComponentPanel implements INamedItem
     {
         /**  */
-        JRADIOBUTTON( "JRadioButton" );
+        JBUTTON( "JButton" ),
+        /**  */
+        JRADIOBUTTON( "JRadioButton" ),
+        /**  */
+        JTOGGLEBUTTON( "JToggleButton" );
 
         /**  */
         private final String name;
