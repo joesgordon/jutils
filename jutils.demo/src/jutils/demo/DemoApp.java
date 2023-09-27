@@ -2,9 +2,8 @@ package jutils.demo;
 
 import javax.swing.JFrame;
 
-import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner.IFrameCreator;
-import jutils.demo.ui.DemoView;
+import jutils.demo.ui.DemoFrame;
 
 /*******************************************************************************
  * Defines the application that shows a frame that displays all UI and
@@ -18,14 +17,8 @@ public class DemoApp implements IFrameCreator
     @Override
     public JFrame createFrame()
     {
-        StandardFrameView frameView = new StandardFrameView();
-        DemoView view = new DemoView();
+        DemoFrame df = new DemoFrame();
 
-        frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        frameView.setSize( 500, 500 );
-        frameView.setTitle( "All the Things" );
-        frameView.setContent( view.getView() );
-
-        return frameView.getView();
+        return df.getView();
     }
 }

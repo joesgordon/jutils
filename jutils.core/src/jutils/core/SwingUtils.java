@@ -577,17 +577,41 @@ public final class SwingUtils
      **************************************************************************/
     public static void setFullScreen( JFrame frame, GraphicsDevice device )
     {
+        frame.dispose();
         frame.setUndecorated( true );
         frame.setAlwaysOnTop( true );
         frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 
-        if( device.isFullScreenSupported() && !"".isEmpty() )
+        if( device.isFullScreenSupported() )
         {
             device.setFullScreenWindow( frame );
         }
         else
         {
             frame.setExtendedState( JFrame.MAXIMIZED_BOTH );
+        }
+
+        frame.setVisible( true );
+    }
+
+    /***************************************************************************
+     * Makes the provided frame undecorated and full-screen using
+     * {@link #setFullScreen(JFrame)} or reversing the actions there-in.
+     * @param frame the frame to be toggled to/from full-screen.
+     **************************************************************************/
+    public static void toggleFullScreen( JFrame frame )
+    {
+        boolean isFullscreen = frame.isUndecorated();
+
+        if( isFullscreen )
+        {
+            frame.dispose();
+            frame.setUndecorated( false );
+            frame.setVisible( true );
+        }
+        else
+        {
+            SwingUtils.setFullScreen( frame );
         }
     }
 
