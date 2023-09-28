@@ -3,13 +3,21 @@ package jutils.core.ui;
 import java.awt.Color;
 import java.awt.Font;
 
-public class LedBooleanLabel
-{
-    /** The color light gray, {@code 0xC0C0C0} */
-    public static final Color DEFAULT_TRUE_COLOR = Color.LIGHT_GRAY;
-    /** The color full green, {@code 0x00FF00}. */
-    public static final Color DEFAULT_FALSE_COLOR = Color.GREEN;
+import javax.swing.JComponent;
 
+import jutils.core.ui.model.IView;
+
+/*******************************************************************************
+ * 
+ ******************************************************************************/
+public class LedBooleanLabel implements IView<JComponent>
+{
+    /** The color full green, {@code 0x00FF00}. */
+    public static final Color DEFAULT_TRUE_COLOR = Color.GREEN;
+    /** The color light gray, {@code 0xC0C0C0} */
+    public static final Color DEFAULT_FALSE_COLOR = Color.LIGHT_GRAY;
+
+    /**  */
     public final LedLabel label;
 
     /**  */
@@ -64,5 +72,14 @@ public class LedBooleanLabel
     {
         label.setColor( value ? trueColor : falseColor );
         label.setText( value ? trueText : falseText );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public JComponent getView()
+    {
+        return label.getView();
     }
 }
