@@ -10,22 +10,17 @@ import javax.swing.JLabel;
  ******************************************************************************/
 public final class LedLabel
 {
-    /** The color light gray, {@code 0xC0C0C0} */
-    public static final Color DEFAULT_OFF_COLOR = Color.lightGray;
-    /** The color full green, {@code 0x00FF00}. */
-    public static final Color DEFAULT_ON_COLOR = Color.green;
+    /** The color yellow. */
+    public static final Color DEFAULT_COLOR = Color.YELLOW;
+    /** The default text, an empty string. */
+    public static final String DEFAULT_TEXT = "";
     /** The default icon size of 16. */
     public static final int DEFAULT_SIZE = 16;
 
     /** */
-    private final JLabel label;
+    public final JLabel label;
     /** */
-    private final LedIcon icon;
-
-    /**  */
-    private final Color onColor;
-    /**  */
-    private final Color offColor;
+    public final LedIcon icon;
 
     /***************************************************************************
      * 
@@ -36,19 +31,19 @@ public final class LedLabel
     }
 
     /***************************************************************************
+     * @param color
+     **************************************************************************/
+    public LedLabel( Color color )
+    {
+        this( color, DEFAULT_TEXT, DEFAULT_SIZE );
+    }
+
+    /***************************************************************************
      * @param text
      **************************************************************************/
     public LedLabel( String text )
     {
-        this( DEFAULT_ON_COLOR, DEFAULT_OFF_COLOR, 16, text );
-    }
-
-    /***************************************************************************
-     * @param onColor
-     **************************************************************************/
-    public LedLabel( Color onColor )
-    {
-        this( onColor, DEFAULT_SIZE );
+        this( DEFAULT_COLOR, text, DEFAULT_SIZE );
     }
 
     /***************************************************************************
@@ -56,59 +51,26 @@ public final class LedLabel
      **************************************************************************/
     public LedLabel( int size )
     {
-        this( DEFAULT_ON_COLOR, size );
+        this( DEFAULT_COLOR, DEFAULT_TEXT, size );
     }
 
     /***************************************************************************
-     * @param onColor
+     * @param color
      * @param size
      **************************************************************************/
-    public LedLabel( Color onColor, int size )
+    public LedLabel( Color color, int size )
     {
-        this( onColor, DEFAULT_OFF_COLOR, size );
+        this( color, DEFAULT_TEXT, size );
     }
 
     /***************************************************************************
-     * @param offColor
-     * @param onColor
-     * @param size
-     **************************************************************************/
-    public LedLabel( Color onColor, Color offColor )
-    {
-        this( onColor, offColor, DEFAULT_SIZE );
-    }
-
-    /***************************************************************************
-     * @param offColor
-     * @param onColor
-     * @param size
-     **************************************************************************/
-    public LedLabel( Color onColor, Color offColor, int size )
-    {
-        this( onColor, offColor, size, "" );
-    }
-
-    /***************************************************************************
-     * @param offColor
-     * @param onColor
+     * @param color
      * @param text
-     **************************************************************************/
-    public LedLabel( Color onColor, Color offColor, String text )
-    {
-        this( onColor, offColor, DEFAULT_SIZE, text );
-    }
-
-    /***************************************************************************
-     * @param onColor
-     * @param offColor
      * @param size
-     * @param text
      **************************************************************************/
-    public LedLabel( Color onColor, Color offColor, int size, String text )
+    public LedLabel( Color color, String text, int size )
     {
-        this.onColor = onColor;
-        this.offColor = offColor;
-        this.icon = new LedIcon( offColor, size );
+        this.icon = new LedIcon( color, size );
         this.label = new JLabel( icon );
 
         this.label.setText( text );
@@ -120,14 +82,6 @@ public final class LedLabel
     public JComponent getView()
     {
         return label;
-    }
-
-    /***************************************************************************
-     * @param isOn
-     **************************************************************************/
-    public void setLit( boolean isOn )
-    {
-        setColor( isOn ? onColor : offColor );
     }
 
     /***************************************************************************
@@ -152,12 +106,12 @@ public final class LedLabel
     }
 
     /***************************************************************************
-     * @param isOn
+     * @param color
      * @param text
      **************************************************************************/
-    public void setStatus( boolean isOn, String text )
+    public void setStatus( Color color, String text )
     {
-        setLit( isOn );
+        setColor( color );
         setText( text );
     }
 

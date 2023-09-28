@@ -29,8 +29,8 @@ public class LedButton implements IView<JButton>
      **************************************************************************/
     public LedButton()
     {
-        this.onColor = LedLabel.DEFAULT_ON_COLOR;
-        this.offColor = LedLabel.DEFAULT_OFF_COLOR;
+        this.onColor = LedBooleanLabel.DEFAULT_TRUE_COLOR;
+        this.offColor = LedBooleanLabel.DEFAULT_FALSE_COLOR;
 
         this.icon = new LedIcon( offColor );
         this.button = new JButton( icon );

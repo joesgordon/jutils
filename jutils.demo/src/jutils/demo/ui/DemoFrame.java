@@ -14,9 +14,9 @@ import jutils.core.ui.model.IView;
 public class DemoFrame implements IView<JFrame>
 {
     /**  */
-    private StandardFrameView view;
+    private final StandardFrameView view;
     /**  */
-    private DemoView demoPanel;
+    private final DemoView demoPanel;
 
     /***************************************************************************
      * 
@@ -28,9 +28,9 @@ public class DemoFrame implements IView<JFrame>
         this.view = createView();
     }
 
-    /**
+    /***************************************************************************
      * @return
-     */
+     **************************************************************************/
     private StandardFrameView createView()
     {
         StandardFrameView frameView = new StandardFrameView();
@@ -57,5 +57,4 @@ public class DemoFrame implements IView<JFrame>
     {
         return view.getView();
     }
-
 }
