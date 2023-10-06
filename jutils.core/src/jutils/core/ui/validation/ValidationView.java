@@ -83,7 +83,7 @@ public class ValidationView implements IView<JPanel>
             new Insets( 4, 0, 0, 0 ), 0, 0 );
 
         Dimension dim = errorField.getPreferredSize();
-        dim.width = field.getView().getPreferredSize().width;
+        dim.width = fieldView.getPreferredSize().width;
 
         errorField.setText( "ERROR: " + field.getValidity().reason );
         errorField.setPreferredSize( dim );

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="jutilsmath" default="jar">
+
+	<dirname property="proj.projdir" file="${ant.file}" />
+
+	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
+
+	<property name="jutilsbuild.name" value="jutils.math" />
+    <property name="jutilsbuild.main" value="jutils.math.MathDemoMain" />
+
+	<path id="jutilsbuild.jars">
+		<fileset file="${juprops.releaseindv}/jutils.core.jar" />
+	</path>
+
+	<import file="${proj.projdir}/../ant/jutilsbuild.xml" />
+
+</project>

@@ -2,6 +2,7 @@ package jutils.core.ui.fields;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 import jutils.core.io.parsers.DoubleParser;
 import jutils.core.ui.event.updater.IUpdater;
@@ -182,6 +183,14 @@ public class DoubleFormField implements IDataFormField<Double>
     public void setFormat( String format )
     {
         this.format = format;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JTextComponent getTextField()
+    {
+        return this.textField.getTextField();
     }
 
     /***************************************************************************
