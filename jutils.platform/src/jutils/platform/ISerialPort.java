@@ -1,84 +1,54 @@
-package jutils.serial;
-
-import java.nio.ByteBuffer;
-import java.util.List;
+package jutils.platform;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class JniSerialApi
+public interface ISerialPort
 {
     /***************************************************************************
-     * @param ports list of port names
-     * @return
-     **************************************************************************/
-    static native boolean listPorts( List<String> ports );
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    static native void initialize();
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    static native void destroy();
-
-    /***************************************************************************
      * @param name
-     * @param config
-     * @param buffer
      * @return
      **************************************************************************/
-    native boolean open( String name );
-
-    /***************************************************************************
-     * @param readBuffer
-     * @param writeBuffer
-     **************************************************************************/
-    native void register( ByteBuffer readBuffer, ByteBuffer writeBuffer );
+    public boolean open( String name );
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    native boolean close();
+    public boolean close();
 
     /***************************************************************************
-     * @param handle the handle of the port to test.
      * @return
      **************************************************************************/
-    native boolean isOpen();
+    public boolean isOpen();
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public SerialConfig getConfig();
 
     /***************************************************************************
      * @param config
-     * @return
      **************************************************************************/
-    native boolean getConfig( SerialConfig config );
-
-    /***************************************************************************
-     * @param config
-     * @return
-     **************************************************************************/
-    native boolean setConfig( SerialConfig config );
+    public void setConfig( SerialConfig config );
 
     /***************************************************************************
      * @param millis
      **************************************************************************/
-    native void setReadTimeout( int millis );
+    public void setReadTimeout( int millis );
 
     /***************************************************************************
      * @param buffer
      * @param offset
-     * @param length
+     * @param len
      * @return
      **************************************************************************/
-    native int read( int length );
+    public int read( byte [] buffer, int offset, int len );
 
     /***************************************************************************
      * @param buffer
      * @param offset
-     * @param length
+     * @param len
      * @return
      **************************************************************************/
-    native int write( int length );
+    public int write( byte [] buffer, int offset, int len );
 }

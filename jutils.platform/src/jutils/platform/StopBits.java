@@ -1,42 +1,18 @@
-package jutils.serial;
+package jutils.platform;
 
 import jutils.core.INamedItem;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum BaudRate implements INamedItem
+public enum StopBits implements INamedItem
 {
     /**  */
-    B110( 110 ),
+    ONE( 0, "1 Bit" ),
     /**  */
-    B300( 300 ),
+    ONE5( 1, "1.5 Bits" ),
     /**  */
-    B600( 600 ),
-    /**  */
-    B1200( 1200 ),
-    /**  */
-    B2400( 2400 ),
-    /**  */
-    B4800( 4800 ),
-    /**  */
-    B9600( 9600 ),
-    /**  */
-    B1440( 14400 ),
-    /**  */
-    B19200( 19200 ),
-    /**  */
-    B56000( 56000 ),
-    /**  */
-    B57600( 57600 ),
-    /**  */
-    B115200( 115200 ),
-    /**  */
-    B234000( 234000 ),
-    /**  */
-    B576000( 576000 ),
-    /**  */
-    B921600( 921600 );
+    TWO( 2, "2 Bits" );
 
     /**  */
     public final int value;
@@ -45,11 +21,12 @@ public enum BaudRate implements INamedItem
 
     /***************************************************************************
      * @param value
+     * @param name
      **************************************************************************/
-    private BaudRate( int value )
+    private StopBits( int value, String name )
     {
         this.value = value;
-        this.name = "" + value;
+        this.name = name;
     }
 
     /***************************************************************************

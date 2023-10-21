@@ -1,4 +1,4 @@
-package jutils.serial;
+package jutils.platform;
 
 import java.util.ArrayList;
 import java.util.List;

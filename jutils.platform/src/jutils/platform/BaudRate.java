@@ -1,22 +1,42 @@
-package jutils.serial;
+package jutils.platform;
 
 import jutils.core.INamedItem;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum WordSize implements INamedItem
+public enum BaudRate implements INamedItem
 {
     /**  */
-    FOUR( 4, "4 Bits" ),
+    B110( 110 ),
     /**  */
-    FIVE( 5, "5 Bits" ),
+    B300( 300 ),
     /**  */
-    SIX( 6, "6 Bits" ),
+    B600( 600 ),
     /**  */
-    SEVEN( 7, "7 Bits" ),
+    B1200( 1200 ),
     /**  */
-    EIGHT( 8, "8 Bits" );
+    B2400( 2400 ),
+    /**  */
+    B4800( 4800 ),
+    /**  */
+    B9600( 9600 ),
+    /**  */
+    B1440( 14400 ),
+    /**  */
+    B19200( 19200 ),
+    /**  */
+    B56000( 56000 ),
+    /**  */
+    B57600( 57600 ),
+    /**  */
+    B115200( 115200 ),
+    /**  */
+    B234000( 234000 ),
+    /**  */
+    B576000( 576000 ),
+    /**  */
+    B921600( 921600 );
 
     /**  */
     public final int value;
@@ -25,12 +45,11 @@ public enum WordSize implements INamedItem
 
     /***************************************************************************
      * @param value
-     * @param name
      **************************************************************************/
-    private WordSize( int value, String name )
+    private BaudRate( int value )
     {
         this.value = value;
-        this.name = name;
+        this.name = "" + value;
     }
 
     /***************************************************************************
