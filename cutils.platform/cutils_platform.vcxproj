@@ -46,7 +46,7 @@
     <ProjectGuid>{8a3d2c41-56b5-412a-904a-f3b4b8e933cc}</ProjectGuid>
     <RootNamespace>serialwindows</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>jerial</ProjectName>
+    <ProjectName>cutils_platform</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

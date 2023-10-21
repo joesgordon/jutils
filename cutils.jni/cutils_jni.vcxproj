@@ -89,7 +89,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\lib\inc;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\cutils.platform\inc;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,7 +106,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\lib\inc;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\cutils.platform\inc;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,7 +123,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\lib\inc;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\cutils.platform\inc;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,7 +140,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\lib\inc;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\cutils.platform\inc;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,7 +157,10 @@
     <ClInclude Include="src\jutils_serial_JniSerialApi.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\lib\jeriallib.vcxproj">
+    <ProjectReference Include="..\cutils.platform.win\cutils_platform_win.vcxproj">
+      <Project>{8caf15a3-8bc2-4c0e-b626-3c186fde25d2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\cutils.platform\cutils_platform.vcxproj">
       <Project>{8a3d2c41-56b5-412a-904a-f3b4b8e933cc}</Project>
     </ProjectReference>
   </ItemGroup>
