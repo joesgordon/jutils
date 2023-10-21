@@ -1,13 +1,13 @@
-# Jerial
+# CUtils
 
-Jerial is a set of that defines these C++ projects:
+CUtils is a set of C++ projects:
 
-- [Jerial JNI](jni/readme.md) (jni) - a JNI implementation to access the library.
-- [Jerial Lib](lib/readme.md) (lib) - a library that provides access to serial ports in a platform independent manner.
-- [Jerial Console](console/readme.md) (console) - a main-entry point that runs a serial console application.
-- [StdMain](stdmain/readme.md) (stdmain) - a main project using the standard C main function definition.
-- [WinLib](winlib/readme.md) (winlib) - an implementation of the library
-- [LinuxLib](linuxlib/readme.md) (linuxlib) - an implementation of the library
+- [cutils.platform](../cutils.platform/cutils_platform.md) - a library that provides platform independent access to funtionality such as threads, sockets, serial ports, etc.
+- [cutils.platform.win](../cutils.platform.win/cutils_platform_win.md) - the Windows implementation of the cutils.platform.
+- [cutils.platform.linux] - the Linux implementation of the cutils.platform.
+- [cutils.jni](../cutils.jni/cutils_jni.md) - a JNI implementation to access cutils.platform.
+- [cutils.console](../cutils.console/) - a main-entry point that runs a serial console application.
+- [cutils.main](stdmain/readme.md) - a main project using the standard C main function definition.
 
 Support Files
 
@@ -19,18 +19,17 @@ Support Files
 
 | Product | Dependencies |
 | --- | --- |
-|  Jerial Lib | none |
-| Jerial JNI | Jerial Lib |
-| Jerial Main | Jerial Lib |
-| WinLib | Jerial Lib |
-| LinuxLib | Jerial Lib |
-| Winmain | Jerial Lib, WinLib |
-| Linuxmain | Jerial Lib, LinuxLib |
+| cutils.platform | none |
+| cutils.platform.win | cutils.platform |
+| cutils.platform.linux | cutils.platform |
+| cutils.jni | cutils.platform, cutils.platform.[impl] |
+| cutils.console | cutils.platform, cutils.platform.[impl] |
+| cutils.main | cutils.platform, cutils.platform.[impl] |
 
 ## Compiling on Windows
 
 1. Run genh.cmd
-1. Open windows/jerial.sln
+1. Open windows/cutils.sln
     1. Select x64/x86 and Release
     1. Clean
     1. Compile
