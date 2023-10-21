@@ -1,4 +1,6 @@
-# WinLib
+# cutils.platform.win
+
+This code describes a platform independent library for accessing serial ports.
 
 - [JNI Functions](https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/functions.html)
 - [Passing Large Amounts of Data via JNI](https://stackoverflow.com/questions/17709210)
