@@ -65,7 +65,7 @@ public class Vector3dField implements IDataFormField<Vector3d>
 
         this.validityManager = new AggregateValidityChangedManager();
 
-        this.vec = new Vector3d();
+        this.vec = null;
         this.updater = null;
 
         this.panel = createPanel();
@@ -74,6 +74,8 @@ public class Vector3dField implements IDataFormField<Vector3d>
         validityManager.addField( xField );
         validityManager.addField( yField );
         validityManager.addField( zField );
+
+        this.setValue( new Vector3d( 1.0, 2.0, 3.0 ) );
     }
 
     /***************************************************************************

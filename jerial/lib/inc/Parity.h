@@ -15,6 +15,6 @@ enum class Parity : uint32_t
     SPACE = 4
 };
 
-std::string to_string(Parity p);
+std::string toString(Parity p);
 
 } // namespace Jerial

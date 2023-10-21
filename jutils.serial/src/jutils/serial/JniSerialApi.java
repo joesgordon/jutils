@@ -1,39 +1,13 @@
 package jutils.serial;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-class JnaSerialPort
+public class JniSerialApi
 {
-    /***************************************************************************
-     * @param name
-     * @param config
-     * @param buffer
-     * @return the handle of the opened port.
-     **************************************************************************/
-    static native int open( String name, JnaPortConfig config );
-
-    /***************************************************************************
-     * @param handle
-     **************************************************************************/
-    static native void close( int handle );
-
-    /***************************************************************************
-     * @param handle
-     * @param config
-     * @return
-     **************************************************************************/
-    static native boolean getConfig( int handle, JnaPortConfig config );
-
-    /***************************************************************************
-     * @param handle
-     * @param config
-     * @return
-     **************************************************************************/
-    static native boolean setConfig( int handle, JnaPortConfig config );
-
     /***************************************************************************
      * @param ports list of port names
      * @return
@@ -41,22 +15,70 @@ class JnaSerialPort
     static native boolean listPorts( List<String> ports );
 
     /***************************************************************************
-     * @param handle
-     * @param buffer
-     * @param offset
-     * @param length
-     * @return
+     * 
      **************************************************************************/
-    static native int read( int handle, byte [] buffer, int offset,
-        int length );
+    static native void initialize();
 
     /***************************************************************************
-     * @param handle
+     * 
+     **************************************************************************/
+    static native void destroy();
+
+    /***************************************************************************
+     * @param name
+     * @param config
+     * @param buffer
+     * @return
+     **************************************************************************/
+    native boolean open( String name );
+
+    /***************************************************************************
+     * @param readBuffer
+     * @param writeBuffer
+     **************************************************************************/
+    native void register( ByteBuffer readBuffer, ByteBuffer writeBuffer );
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    native boolean close();
+
+    /***************************************************************************
+     * @param handle the handle of the port to test.
+     * @return
+     **************************************************************************/
+    native boolean isOpen();
+
+    /***************************************************************************
+     * @param config
+     * @return
+     **************************************************************************/
+    native boolean getConfig( SerialConfig config );
+
+    /***************************************************************************
+     * @param config
+     * @return
+     **************************************************************************/
+    native boolean setConfig( SerialConfig config );
+
+    /***************************************************************************
+     * @param millis
+     **************************************************************************/
+    native void setReadTimeout( int millis );
+
+    /***************************************************************************
      * @param buffer
      * @param offset
      * @param length
      * @return
      **************************************************************************/
-    static native int write( int handle, byte [] buffer, int offset,
-        int length );
+    native int read( int length );
+
+    /***************************************************************************
+     * @param buffer
+     * @param offset
+     * @param length
+     * @return
+     **************************************************************************/
+    native int write( int length );
 }

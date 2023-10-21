@@ -5,7 +5,10 @@ using std::string;
 namespace Jerial
 {
 
-string to_string(Parity p)
+/*******************************************************************************
+ *
+ ******************************************************************************/
+string toString(Parity p)
 {
     switch (p)
     {
@@ -25,7 +28,7 @@ string to_string(Parity p)
         return "Space";
     }
 
-    return "Unknown";
+    return "Undefined";
 }
 
 } // namespace Jerial

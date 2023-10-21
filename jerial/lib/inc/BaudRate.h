@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cinttypes>
 #include <string>
 
 namespace Jerial
@@ -9,16 +8,20 @@ namespace Jerial
 /*******************************************************************************
  *
  ******************************************************************************/
-enum class StopBits : uint32_t
+enum class BaudRate : uint32_t
 {
-    ONE = 0,
-    ONE5 = 1,
-    TWO = 2
+    BAUD_9600 = 9600,
+    BAUD_19200 = 19200,
+    BAUD_38400 = 38400,
+    BAUD_56000 = 56000,
+    BAUD_115200 = 115200,
+    BAUD_128000 = 128000,
+    BAUD_230400 = 230400,
 };
 
 /*******************************************************************************
  *
  ******************************************************************************/
-std::string toString(StopBits p);
+std::string toString(BaudRate size);
 
 } // namespace Jerial

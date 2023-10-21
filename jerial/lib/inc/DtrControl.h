@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cinttypes>
 #include <string>
 
 namespace Jerial
@@ -9,16 +8,16 @@ namespace Jerial
 /*******************************************************************************
  *
  ******************************************************************************/
-enum class StopBits : uint32_t
+enum class DtrControl : uint32_t
 {
-    ONE = 0,
-    ONE5 = 1,
-    TWO = 2
+    DISABLE = 0,
+    ENABLE = 1,
+    HANDSHAKE = 2,
 };
 
 /*******************************************************************************
  *
  ******************************************************************************/
-std::string toString(StopBits p);
+std::string toString(DtrControl size);
 
 } // namespace Jerial

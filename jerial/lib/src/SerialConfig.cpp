@@ -4,7 +4,10 @@
 namespace Jerial
 {
 
-SerialConfig::SerialConfig() : baudRate(0)
+SerialConfig::SerialConfig()
+    : binaryModeEnabled(false), baudRate(0), size(), parity(), stopBits(),
+      ctsEnabled(false), dsrEnabled(false), dtrControl(),
+      swFlowOutputEnabled(false), swFlowInputEnabled(false)
 {
 }
 

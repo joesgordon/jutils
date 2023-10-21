@@ -1,7 +1,4 @@
-#pragma once
-
-#include <cinttypes>
-#include <string>
+#include "ISerialPort.hpp"
 
 namespace Jerial
 {
@@ -9,16 +6,15 @@ namespace Jerial
 /*******************************************************************************
  *
  ******************************************************************************/
-enum class StopBits : uint32_t
+ISerialPort::ISerialPort()
 {
-    ONE = 0,
-    ONE5 = 1,
-    TWO = 2
-};
+}
 
 /*******************************************************************************
  *
  ******************************************************************************/
-std::string toString(StopBits p);
+ISerialPort::~ISerialPort()
+{
+}
 
 } // namespace Jerial

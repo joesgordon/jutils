@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\org_jutils_serial_JnaSerialPort.cpp">
+    <ClCompile Include="src\jutils_serial_JniSerialApi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\org_jutils_serial_JnaSerialPort.h">
+    <ClInclude Include="src\jutils_serial_JniSerialApi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

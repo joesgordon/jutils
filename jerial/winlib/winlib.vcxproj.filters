@@ -21,12 +21,18 @@
     <ClCompile Include="src\SerialPort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\PortInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\WinJerialApi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SerialPort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PortInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

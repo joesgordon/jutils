@@ -2,7 +2,9 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
+#include "ISerialPort.hpp"
 #include "SerialConfig.h"
 
 namespace Jerial
@@ -12,22 +14,70 @@ class PortInfo;
 
 typedef std::shared_ptr<PortInfo> PortInfo_;
 
-class SerialPort
+class SerialPort : public Jerial::ISerialPort
 {
 public:
     SerialPort();
 
+    virtual ~SerialPort() override;
+
+    /***************************************************************************
+     *
+     **************************************************************************/
     explicit SerialPort(const SerialPort &) = delete;
     explicit SerialPort(SerialPort &&) noexcept = delete;
     SerialPort &operator=(const SerialPort &) = delete;
     SerialPort &operator=(SerialPort &&) noexcept = delete;
 
-    bool open(const std::string &device);
+    /***************************************************************************
+     *
+     **************************************************************************/
+    virtual bool open(const std::string &device) override;
 
-    void setConfig(const SerialConfig &config);
+    /***************************************************************************
+     *
+     **************************************************************************/
+    virtual bool close() override;
 
-    SerialConfig getConfig();
+    /***************************************************************************
+     *
+     **************************************************************************/
+    virtual bool isOpen() const override;
 
+    /***************************************************************************
+     *
+     **************************************************************************/
+    virtual std::string getDevice() const override;
+
+    /***************************************************************************
+     *
+     **************************************************************************/
+    virtual void setTimeout(int32_t millis) override;
+
+    /***************************************************************************
+     *
+     **************************************************************************/
+    virtual void setConfig(const SerialConfig &config) override;
+
+    /***************************************************************************
+     *
+     **************************************************************************/
+    virtual SerialConfig getConfig() override;
+
+    /***************************************************************************
+     *
+     **************************************************************************/
+    virtual int32_t read(void *buffer, int count) override;
+
+    /***************************************************************************
+     *
+     **************************************************************************/
+    virtual int32_t write(const void *buffer, int count) override;
+
+    /***************************************************************************
+     *
+     **************************************************************************/
+    static std::vector<std::string> listSerialPorts();
 private:
     PortInfo_ port;
 };

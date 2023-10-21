@@ -1,7 +1,4 @@
-#pragma once
-
-#include <cinttypes>
-#include <string>
+#include "IJerialApi.hpp"
 
 namespace Jerial
 {
@@ -9,16 +6,15 @@ namespace Jerial
 /*******************************************************************************
  *
  ******************************************************************************/
-enum class StopBits : uint32_t
+IJerialApi::IJerialApi()
 {
-    ONE = 0,
-    ONE5 = 1,
-    TWO = 2
-};
+}
 
 /*******************************************************************************
  *
  ******************************************************************************/
-std::string toString(StopBits p);
+IJerialApi::~IJerialApi()
+{
+}
 
 } // namespace Jerial

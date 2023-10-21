@@ -7,6 +7,8 @@ import javax.swing.JTabbedPane;
 
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.model.IView;
+import jutils.math.IMatrix;
+import jutils.math.Matrix;
 
 /*******************************************************************************
  * 
@@ -18,6 +20,8 @@ public class MathDemoView implements IView<JComponent>
 
     /**  */
     private final Vector3dField vec3dField;
+    /**  */
+    private final MatrixView matrixView;
 
     /***************************************************************************
      * 
@@ -26,6 +30,8 @@ public class MathDemoView implements IView<JComponent>
     {
         this.vec3dField = new Vector3dField(
             Vector3dField.class.getSimpleName() );
+
+        this.matrixView = new MatrixView();
 
         this.view = createView();
     }
@@ -38,6 +44,7 @@ public class MathDemoView implements IView<JComponent>
         JTabbedPane tabs = new JTabbedPane();
 
         tabs.addTab( "Fields", createFieldsTab() );
+        tabs.addTab( "Matrix", createMatrixTab() );
 
         return tabs;
     }
@@ -52,6 +59,18 @@ public class MathDemoView implements IView<JComponent>
         form.addField( vec3dField );
 
         return form.getView();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private Component createMatrixTab()
+    {
+        IMatrix m = new Matrix( 5, 4 );
+
+        matrixView.setData( m );
+
+        return matrixView.getView();
     }
 
     /***************************************************************************

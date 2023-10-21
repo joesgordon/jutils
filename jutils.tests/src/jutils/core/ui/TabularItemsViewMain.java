@@ -180,7 +180,7 @@ public class TabularItemsViewMain
             this.items.clear();
             this.items.addAll( items );
 
-            notifier.fireDataChanged();
+            notifier.fireStructureChanged();
         }
 
         @Override

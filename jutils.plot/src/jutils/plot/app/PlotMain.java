@@ -19,8 +19,8 @@ public class PlotMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        PlotApp runnable = new PlotApp();
+        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
 
-        AppRunner.invokeLater( runnable );
+        AppRunner.invokeLater( new PlotApp() );
     }
 }
