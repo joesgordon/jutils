@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IJerialApi.hpp"
+#include "IPlatform.hpp"
 
-namespace Jerial
+namespace CUtils
 {
 
 class WinJerialApi : public IJerialApi
@@ -21,4 +21,4 @@ public:
     virtual std::vector<std::string> listSerialPorts() override;
 };
 
-} // namespace Jerial
+} // namespace CUtils

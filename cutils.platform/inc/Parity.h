@@ -3,7 +3,7 @@
 #include <cinttypes>
 #include <string>
 
-namespace Jerial
+namespace CUtils
 {
 
 enum class Parity : uint32_t
@@ -17,4 +17,4 @@ enum class Parity : uint32_t
 
 std::string toString(Parity p);
 
-} // namespace Jerial
+} // namespace CUtils

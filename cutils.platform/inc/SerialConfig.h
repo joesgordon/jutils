@@ -8,7 +8,7 @@
 #include "DtrControl.h"
 #include "RtsControl.h"
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -46,4 +46,4 @@ public:
     SerialConfig();
 };
 
-} // namespace Jerial
+} // namespace CUtils

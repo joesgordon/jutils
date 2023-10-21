@@ -2,7 +2,7 @@
 
 #include "WordSize.h"
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -33,4 +33,4 @@ std::string toString(WordSize size)
     return "Undefined";
 }
 
-} // namespace Jerial
+} // namespace CUtils

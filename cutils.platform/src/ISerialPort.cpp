@@ -1,6 +1,6 @@
 #include "ISerialPort.hpp"
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -17,4 +17,4 @@ ISerialPort::~ISerialPort()
 {
 }
 
-} // namespace Jerial
+} // namespace CUtils

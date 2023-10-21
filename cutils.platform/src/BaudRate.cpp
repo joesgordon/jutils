@@ -2,7 +2,7 @@
 
 #include "BaudRate.h"
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -39,4 +39,4 @@ std::string toString(BaudRate size)
     return "Undefined";
 }
 
-} // namespace Jerial
+} // namespace CUtils

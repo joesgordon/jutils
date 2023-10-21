@@ -7,14 +7,14 @@
 #include "ISerialPort.hpp"
 #include "SerialConfig.h"
 
-namespace Jerial
+namespace CUtils
 {
 
 class PortInfo;
 
 typedef std::shared_ptr<PortInfo> PortInfo_;
 
-class SerialPort : public Jerial::ISerialPort
+class SerialPort : public CUtils::ISerialPort
 {
 public:
     SerialPort();
@@ -84,4 +84,4 @@ private:
 
 typedef std::shared_ptr<SerialPort> SerialPort_;
 
-} // namespace Jerial
+} // namespace CUtils

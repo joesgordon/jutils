@@ -1,11 +1,11 @@
 
-#include "WinJerialApi.h"
+#include "WinPlatform.h"
 #include "SerialPort.h"
 
 using std::string;
 using std::vector;
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -69,4 +69,4 @@ IJerialApi_ getApi()
     return JERIAL_API;
 }
 
-} // namespace Jerial
+} // namespace CUtils

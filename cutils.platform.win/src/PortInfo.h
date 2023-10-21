@@ -11,7 +11,7 @@
 
 #pragma comment(lib, "OneCore.lib")
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -161,4 +161,4 @@ public:
     void setSwFlowControl(bool isOutput, bool enabled);
 };
 
-} // namespace Jerial
+} // namespace CUtils

@@ -1,7 +1,7 @@
 
 #include "SerialConfig.h"
 
-namespace Jerial
+namespace CUtils
 {
 
 SerialConfig::SerialConfig()
@@ -11,4 +11,4 @@ SerialConfig::SerialConfig()
 {
 }
 
-} // namespace Jerial
+} // namespace CUtils

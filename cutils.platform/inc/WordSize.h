@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -22,4 +22,4 @@ enum class WordSize : uint32_t
  ******************************************************************************/
 std::string toString(WordSize size);
 
-} // namespace Jerial
+} // namespace CUtils

@@ -24,7 +24,7 @@
     <ClInclude Include="inc\StopBits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\IJerialApi.hpp">
+    <ClInclude Include="inc\IPlatform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\ISerialPort.hpp">
@@ -56,7 +56,7 @@
     <ClCompile Include="src\ISerialPort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\IJerialApi.cpp">
+    <ClCompile Include="src\IPlatform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DtrControl.cpp">

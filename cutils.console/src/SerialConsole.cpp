@@ -1,16 +1,16 @@
 #pragma warning(disable : 4996)
 
 #include "SerialConsole.h"
-#include "IJerialApi.hpp"
+#include "IPlatform.hpp"
 #include "BaudRate.h"
 
 #include <cstdio>
 
 using std::string;
 
-using Jerial::ISerialPort_;
+using CUtils::ISerialPort_;
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -215,7 +215,7 @@ void openPort(const string &portName)
 {
     printf("Opening %s\n\n", portName.c_str());
 
-    auto api = Jerial::getApi();
+    auto api = CUtils::getApi();
     auto port = api->createSerialPort();
 
     if (!port->open(portName))
@@ -273,7 +273,7 @@ void openPort(const string &portName)
  ******************************************************************************/
 bool printPorts()
 {
-    auto api = Jerial::getApi();
+    auto api = CUtils::getApi();
     auto ports = api->listSerialPorts();
     int portCount = (int)ports.size();
 
@@ -324,4 +324,4 @@ int runConsole()
     return 0;
 }
 
-} // namespace Jerial
+} // namespace CUtils

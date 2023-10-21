@@ -3,7 +3,7 @@
 #include <cinttypes>
 #include <string>
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -21,4 +21,4 @@ enum class StopBits : uint32_t
  ******************************************************************************/
 std::string toString(StopBits p);
 
-} // namespace Jerial
+} // namespace CUtils

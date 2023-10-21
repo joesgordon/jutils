@@ -2,7 +2,7 @@
 
 #include "RtsControl.h"
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -30,4 +30,4 @@ std::string toString(RtsControl size)
     return "Undefined";
 }
 
-} // namespace Jerial
+} // namespace CUtils

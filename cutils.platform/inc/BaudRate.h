@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************

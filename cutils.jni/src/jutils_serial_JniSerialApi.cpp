@@ -1,12 +1,12 @@
 
 #include "jutils_serial_JniSerialApi.h"
 
-#include "IJerialApi.hpp"
+#include "IPlatform.hpp"
 #include "ISerialPort.hpp"
 
 #include <map>
 
-static std::map<jobject, Jerial::ISerialPort_> ports;
+static std::map<jobject, CUtils::ISerialPort_> ports;
 
 /*******************************************************************************
  *
@@ -16,7 +16,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_listPorts(
 {
     jboolean result = false;
 
-    auto api = Jerial::getApi();
+    auto api = CUtils::getApi();
 
     api->initialize();
     api->destroy();

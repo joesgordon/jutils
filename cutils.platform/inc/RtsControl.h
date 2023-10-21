@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -21,4 +21,4 @@ enum class RtsControl : uint32_t
  ******************************************************************************/
 std::string toString(RtsControl size);
 
-} // namespace Jerial
+} // namespace CUtils

@@ -7,7 +7,7 @@
 using std::string;
 using std::vector;
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -239,4 +239,4 @@ vector<string> SerialPort::listSerialPorts()
     return portNames;
 }
 
-} // namespace Jerial
+} // namespace CUtils

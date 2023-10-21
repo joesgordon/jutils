@@ -1,6 +1,6 @@
-#include "IJerialApi.hpp"
+#include "IPlatform.hpp"
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -17,4 +17,4 @@ IJerialApi::~IJerialApi()
 {
 }
 
-} // namespace Jerial
+} // namespace CUtils

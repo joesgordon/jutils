@@ -6,7 +6,7 @@
 #include <string>
 #include <memory>
 
-namespace Jerial
+namespace CUtils
 {
 
 class IJerialApi
@@ -50,4 +50,4 @@ typedef std::shared_ptr<IJerialApi> IJerialApi_;
  ******************************************************************************/
 IJerialApi_ getApi();
 
-} // namespace Jerial
+} // namespace CUtils

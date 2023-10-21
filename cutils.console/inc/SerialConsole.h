@@ -1,8 +1,8 @@
 #pragma once
 
-namespace Jerial
+namespace CUtils
 {
 
 int runConsole();
 
-} // namespace Jerial
+} // namespace CUtils

@@ -2,7 +2,7 @@
 
 #include "DtrControl.h"
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -27,4 +27,4 @@ std::string toString(DtrControl size)
     return "Undefined";
 }
 
-} // namespace Jerial
+} // namespace CUtils

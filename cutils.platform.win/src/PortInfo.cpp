@@ -1,7 +1,7 @@
 
 #include "PortInfo.h"
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -235,4 +235,4 @@ void PortInfo::setSwFlowControl(bool isOutput, bool enabled)
     }
 }
 
-} // namespace Jerial
+} // namespace CUtils

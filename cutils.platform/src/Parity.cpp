@@ -2,7 +2,7 @@
 
 using std::string;
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -31,4 +31,4 @@ string toString(Parity p)
     return "Undefined";
 }
 
-} // namespace Jerial
+} // namespace CUtils

@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClInclude Include="inc\BaudRate.h" />
     <ClInclude Include="inc\DtrControl.h" />
-    <ClInclude Include="inc\IJerialApi.hpp" />
+    <ClInclude Include="inc\IPlatform.hpp" />
     <ClInclude Include="inc\ISerialPort.hpp" />
     <ClInclude Include="inc\Parity.h" />
     <ClInclude Include="inc\RtsControl.h" />
@@ -32,7 +32,7 @@
   <ItemGroup>
     <ClCompile Include="src\BaudRate.cpp" />
     <ClCompile Include="src\DtrControl.cpp" />
-    <ClCompile Include="src\IJerialApi.cpp" />
+    <ClCompile Include="src\IPlatform.cpp" />
     <ClCompile Include="src\ISerialPort.cpp" />
     <ClCompile Include="src\Parity.cpp" />
     <ClCompile Include="src\RtsControl.cpp" />

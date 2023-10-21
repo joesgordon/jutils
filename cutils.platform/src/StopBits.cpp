@@ -2,7 +2,7 @@
 
 using std::string;
 
-namespace Jerial
+namespace CUtils
 {
 
 /*******************************************************************************
@@ -25,4 +25,4 @@ string toString(StopBits p)
     return "Unknown";
 }
 
-} // namespace Jerial
+} // namespace CUtils
