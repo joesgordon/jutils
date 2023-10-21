@@ -215,7 +215,7 @@ void openPort(const string &portName)
 {
     printf("Opening %s\n\n", portName.c_str());
 
-    auto api = CUtils::getApi();
+    auto api = CUtils::getPlatform();
     auto port = api->createSerialPort();
 
     if (!port->open(portName))
@@ -273,7 +273,7 @@ void openPort(const string &portName)
  ******************************************************************************/
 bool printPorts()
 {
-    auto api = CUtils::getApi();
+    auto api = CUtils::getPlatform();
     auto ports = api->listSerialPorts();
     int portCount = (int)ports.size();
 

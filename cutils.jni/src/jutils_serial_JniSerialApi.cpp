@@ -16,7 +16,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_listPorts(
 {
     jboolean result = false;
 
-    auto api = CUtils::getApi();
+    auto api = CUtils::getPlatform();
 
     api->initialize();
     api->destroy();

@@ -5,12 +5,12 @@
 namespace CUtils
 {
 
-class WinJerialApi : public IJerialApi
+class WinPlatform : public IPlatform
 {
 public:
-    WinJerialApi();
+    WinPlatform();
 
-    virtual ~WinJerialApi() override;
+    virtual ~WinPlatform() override;
 
     virtual void initialize() override;
 

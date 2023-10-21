@@ -24,4 +24,4 @@ enum class BaudRate : uint32_t
  ******************************************************************************/
 std::string toString(BaudRate size);
 
-} // namespace Jerial
+} // namespace CUtils

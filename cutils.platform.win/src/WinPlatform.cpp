@@ -11,35 +11,35 @@ namespace CUtils
 /*******************************************************************************
  *
  ******************************************************************************/
-WinJerialApi::WinJerialApi()
+WinPlatform::WinPlatform()
 {
 }
 
 /*******************************************************************************
  *
  ******************************************************************************/
-WinJerialApi::~WinJerialApi()
+WinPlatform::~WinPlatform()
 {
 }
 
 /*******************************************************************************
  *
  ******************************************************************************/
-void WinJerialApi::initialize()
+void WinPlatform::initialize()
 {
 }
 
 /*******************************************************************************
  *
  ******************************************************************************/
-void WinJerialApi::destroy()
+void WinPlatform::destroy()
 {
 }
 
 /*******************************************************************************
  *
  ******************************************************************************/
-ISerialPort_ WinJerialApi::createSerialPort()
+ISerialPort_ WinPlatform::createSerialPort()
 {
     ISerialPort_ port(new SerialPort());
 
@@ -49,24 +49,24 @@ ISerialPort_ WinJerialApi::createSerialPort()
 /*******************************************************************************
  * 
  ******************************************************************************/
-vector<string> WinJerialApi::listSerialPorts()
+vector<string> WinPlatform::listSerialPorts()
 {
     return SerialPort::listSerialPorts();
 }
 
-static IJerialApi_ JERIAL_API;
+static IPlatform_ PLATFORM;
 
 /*******************************************************************************
  *
  ******************************************************************************/
-IJerialApi_ getApi()
+IPlatform_ getPlatform()
 {
-    if (!JERIAL_API)
+    if (!PLATFORM)
     {
-        JERIAL_API.reset(new WinJerialApi());
+        PLATFORM.reset(new WinPlatform());
     }
 
-    return JERIAL_API;
+    return PLATFORM;
 }
 
 } // namespace CUtils
