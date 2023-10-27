@@ -1,10 +1,8 @@
 package jutils.platform.ui;
 
-import java.util.List;
+import javax.swing.JFrame;
 
-import jutils.core.io.LogUtils;
-import jutils.platform.IPlatform;
-import jutils.platform.PlatformUtils;
+import jutils.core.ui.app.AppRunner;
 
 /*******************************************************************************
  * 
@@ -16,17 +14,19 @@ public class DemoPlatformMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        IPlatform platform = PlatformUtils.getPlatform();
+        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
 
-        platform.initialize();
+        AppRunner.invokeLater( () -> createFrame() );
+    }
 
-        List<String> ports = platform.listSerialPorts();
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private static JFrame createFrame()
+    {
+        DemoPlatformFrame frameView = new DemoPlatformFrame();
+        JFrame frame = frameView.getView();
 
-        for( String port : ports )
-        {
-            LogUtils.printDebug( "> %s", port );
-        }
-
-        platform.destroy();
+        return frame;
     }
 }

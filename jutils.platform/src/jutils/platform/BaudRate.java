@@ -60,4 +60,20 @@ public enum BaudRate implements INamedItem
     {
         return name;
     }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static Integer [] getBauds()
+    {
+        BaudRate [] vals = values();
+        Integer [] bauds = new Integer[vals.length];
+
+        for( int i = 0; i < vals.length; i++ )
+        {
+            bauds[i] = vals[i].value;
+        }
+
+        return bauds;
+    }
 }
