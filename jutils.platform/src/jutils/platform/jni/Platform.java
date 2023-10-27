@@ -14,12 +14,16 @@ class Platform implements IPlatform
     /**  */
     private final JniPlatform jplatform;
 
+    /**  */
+    private boolean initialized;
+
     /***************************************************************************
      * @param jplatform
      **************************************************************************/
     Platform( JniPlatform jplatform )
     {
         this.jplatform = jplatform;
+        this.initialized = false;
     }
 
     /***************************************************************************
@@ -28,7 +32,17 @@ class Platform implements IPlatform
     @Override
     public boolean initialize()
     {
-        return jplatform.initialize();
+        this.initialized = jplatform.initialize();
+
+        return initialized;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    public boolean isInialized()
+    {
+        return initialized;
     }
 
     /***************************************************************************

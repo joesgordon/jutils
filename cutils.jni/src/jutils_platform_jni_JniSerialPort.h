@@ -42,7 +42,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_isOpen
 /*
  * Class:     jutils_platform_jni_JniSerialPort
  * Method:    getConfig
- * Signature: (Ljutils/platform/SerialConfig;)Z
+ * Signature: (Ljutils/platform/SerialParams;)Z
  */
 JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_getConfig
   (JNIEnv *, jobject, jobject);
@@ -50,7 +50,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_getConfig
 /*
  * Class:     jutils_platform_jni_JniSerialPort
  * Method:    setConfig
- * Signature: (Ljutils/platform/SerialConfig;)Z
+ * Signature: (Ljutils/platform/SerialParams;)Z
  */
 JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_setConfig
   (JNIEnv *, jobject, jobject);

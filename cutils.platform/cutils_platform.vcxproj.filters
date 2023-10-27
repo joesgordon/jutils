@@ -18,7 +18,7 @@
     <ClInclude Include="inc\Parity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\SerialConfig.h">
+    <ClInclude Include="inc\SerialParams.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\StopBits.h">
@@ -44,7 +44,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\SerialConfig.cpp">
+    <ClCompile Include="src\SerialParams.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Parity.cpp">

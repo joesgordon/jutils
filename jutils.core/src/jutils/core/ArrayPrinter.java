@@ -57,7 +57,8 @@ public class ArrayPrinter
     private static <T> String toString( Iterable<T> items, int count,
         String delimiter )
     {
-        return toString( items, count, delimiter, ( t ) -> t.toString() );
+        return toString( items, count, delimiter,
+            ( t ) -> t == null ? "" : t.toString() );
     }
 
     /***************************************************************************
@@ -415,7 +416,8 @@ public class ArrayPrinter
      **************************************************************************/
     public static <T> String toString( T [] items, String delimiter )
     {
-        return toString( items, delimiter, ( t ) -> t.toString() );
+        return toString( items, delimiter,
+            ( t ) -> t == null ? "" : t.toString() );
     }
 
     /***************************************************************************

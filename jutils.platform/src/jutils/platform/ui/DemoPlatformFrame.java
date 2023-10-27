@@ -18,7 +18,7 @@ public class DemoPlatformFrame implements IView<JFrame>
     /**  */
     private final StandardFrameView view;
     /**  */
-    private final SerialConfigView configView;
+    private final SerialParamsView configView;
 
     /***************************************************************************
      * 
@@ -26,7 +26,7 @@ public class DemoPlatformFrame implements IView<JFrame>
     public DemoPlatformFrame()
     {
         this.view = new StandardFrameView();
-        this.configView = new SerialConfigView();
+        this.configView = new SerialParamsView();
 
         view.setTitle( "Demo Platform Frame" );
         view.setSize( 800, 800 );

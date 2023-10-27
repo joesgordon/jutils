@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "SerialConfig.h"
+#include "SerialParams.h"
 
 namespace CUtils
 {
@@ -54,12 +54,12 @@ public:
     /***************************************************************************
      *
      **************************************************************************/
-    virtual void setConfig(const SerialConfig &config) = 0;
+    virtual void setConfig(const SerialParams &config) = 0;
 
     /***************************************************************************
      *
      **************************************************************************/
-    virtual SerialConfig getConfig() = 0;
+    virtual SerialParams getConfig() = 0;
 
     /***************************************************************************
      *

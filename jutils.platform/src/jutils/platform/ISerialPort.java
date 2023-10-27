@@ -24,12 +24,12 @@ public interface ISerialPort
     /***************************************************************************
      * @return
      **************************************************************************/
-    public SerialConfig getConfig();
+    public SerialParams getConfig();
 
     /***************************************************************************
      * @param config
      **************************************************************************/
-    public void setConfig( SerialConfig config );
+    public void setConfig( SerialParams config );
 
     /***************************************************************************
      * @param millis

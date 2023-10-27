@@ -3,7 +3,7 @@ package jutils.platform.jni;
 import java.nio.ByteBuffer;
 
 import jutils.platform.ISerialPort;
-import jutils.platform.SerialConfig;
+import jutils.platform.SerialParams;
 
 /*******************************************************************************
  * 
@@ -82,11 +82,11 @@ class SerialPort implements ISerialPort
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public SerialConfig getConfig()
+    public SerialParams getConfig()
     {
         if( isOpen() )
         {
-            SerialConfig config = new SerialConfig();
+            SerialParams config = new SerialParams();
             if( api.getConfig( config ) )
             {
                 return config;
@@ -100,7 +100,7 @@ class SerialPort implements ISerialPort
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setConfig( SerialConfig config )
+    public void setConfig( SerialParams config )
     {
         if( isOpen() )
         {

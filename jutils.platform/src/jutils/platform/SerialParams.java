@@ -3,7 +3,7 @@ package jutils.platform;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class SerialConfig
+public class SerialParams
 {
     /**  */
     public boolean binaryModeEnabled;
@@ -31,7 +31,7 @@ public class SerialConfig
     /***************************************************************************
      * 
      **************************************************************************/
-    public SerialConfig()
+    public SerialParams()
     {
         this.binaryModeEnabled = false;
         this.baudRate = BaudRate.B19200.value;

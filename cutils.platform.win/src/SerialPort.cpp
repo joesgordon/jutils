@@ -113,7 +113,7 @@ void SerialPort::setTimeout(int32_t millis)
 /*******************************************************************************
  *
  ******************************************************************************/
-void SerialPort::setConfig(const SerialConfig &config)
+void SerialPort::setConfig(const SerialParams &config)
 {
     port->setBinaryMode(config.binaryModeEnabled);
     port->setBaudRate(config.baudRate);
@@ -132,9 +132,9 @@ void SerialPort::setConfig(const SerialConfig &config)
 /*******************************************************************************
  *
  ******************************************************************************/
-SerialConfig SerialPort::getConfig()
+SerialParams SerialPort::getConfig()
 {
-    SerialConfig config;
+    SerialParams config;
 
     port->getConfig();
 

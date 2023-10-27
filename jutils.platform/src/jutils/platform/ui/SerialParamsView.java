@@ -12,14 +12,14 @@ import jutils.platform.BaudRate;
 import jutils.platform.DtrControl;
 import jutils.platform.Parity;
 import jutils.platform.RtsControl;
-import jutils.platform.SerialConfig;
+import jutils.platform.SerialParams;
 import jutils.platform.StopBits;
 import jutils.platform.WordSize;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class SerialConfigView implements IDataView<SerialConfig>
+public class SerialParamsView implements IDataView<SerialParams>
 {
     /**  */
     private final JComponent view;
@@ -48,12 +48,12 @@ public class SerialConfigView implements IDataView<SerialConfig>
     private final BooleanFormField swFlowInField;
 
     /**  */
-    private SerialConfig data;
+    private SerialParams data;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public SerialConfigView()
+    public SerialParamsView()
     {
         this.binaryModeField = new BooleanFormField( "Binary Mode Enabled" );
         this.baudField = new ComboFormField<>( "Baud Rate",
@@ -75,7 +75,7 @@ public class SerialConfigView implements IDataView<SerialConfig>
 
         this.view = createView();
 
-        setData( new SerialConfig() );
+        setData( new SerialParams() );
 
         baudField.setUserEditable(
             new IntegerParser( BaudRate.B110.value, null ) );
@@ -146,7 +146,7 @@ public class SerialConfigView implements IDataView<SerialConfig>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public SerialConfig getData()
+    public SerialParams getData()
     {
         return data;
     }
@@ -155,7 +155,7 @@ public class SerialConfigView implements IDataView<SerialConfig>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( SerialConfig config )
+    public void setData( SerialParams config )
     {
         this.data = config;
 

@@ -48,7 +48,7 @@ void promptForTimeout(ISerialPort_ port)
 /*******************************************************************************
  *
  ******************************************************************************/
-void promptForBaudRate(ISerialPort_ port, SerialConfig config)
+void promptForBaudRate(ISerialPort_ port, SerialParams config)
 {
     BaudRate choices[] = {BaudRate::BAUD_9600, BaudRate::BAUD_19200,
         BaudRate::BAUD_38400, BaudRate::BAUD_56000, BaudRate::BAUD_115200,
@@ -74,7 +74,7 @@ void promptForBaudRate(ISerialPort_ port, SerialConfig config)
 /*******************************************************************************
  *
  ******************************************************************************/
-void promptForWordSize(ISerialPort_ port, SerialConfig config)
+void promptForWordSize(ISerialPort_ port, SerialParams config)
 {
     WordSize choices[] = {WordSize::BITS_4, WordSize::BITS_5, WordSize::BITS_6,
         WordSize::BITS_7, WordSize::BITS_8};
@@ -99,7 +99,7 @@ void promptForWordSize(ISerialPort_ port, SerialConfig config)
 /*******************************************************************************
  *
  ******************************************************************************/
-void promptForParity(ISerialPort_ port, SerialConfig config)
+void promptForParity(ISerialPort_ port, SerialParams config)
 {
     Parity choices[] = {
         Parity::NONE, Parity::ODD, Parity::EVEN, Parity::MARK, Parity::SPACE};

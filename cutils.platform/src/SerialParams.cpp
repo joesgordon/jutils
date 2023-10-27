@@ -1,10 +1,10 @@
 
-#include "SerialConfig.h"
+#include "SerialParams.h"
 
 namespace CUtils
 {
 
-SerialConfig::SerialConfig()
+SerialParams::SerialParams()
     : binaryModeEnabled(false), baudRate(0), size(), parity(), stopBits(),
       ctsEnabled(false), dsrEnabled(false), dtrControl(),
       swFlowOutputEnabled(false), swFlowInputEnabled(false)

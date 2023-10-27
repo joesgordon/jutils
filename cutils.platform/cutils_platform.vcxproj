@@ -25,7 +25,7 @@
     <ClInclude Include="inc\ISerialPort.hpp" />
     <ClInclude Include="inc\Parity.h" />
     <ClInclude Include="inc\RtsControl.h" />
-    <ClInclude Include="inc\SerialConfig.h" />
+    <ClInclude Include="inc\SerialParams.h" />
     <ClInclude Include="inc\StopBits.h" />
     <ClInclude Include="inc\WordSize.h" />
   </ItemGroup>
@@ -36,7 +36,7 @@
     <ClCompile Include="src\ISerialPort.cpp" />
     <ClCompile Include="src\Parity.cpp" />
     <ClCompile Include="src\RtsControl.cpp" />
-    <ClCompile Include="src\SerialConfig.cpp" />
+    <ClCompile Include="src\SerialParams.cpp" />
     <ClCompile Include="src\StopBits.cpp" />
     <ClCompile Include="src\WordSize.cpp" />
   </ItemGroup>

@@ -2,7 +2,7 @@ package jutils.platform.jni;
 
 import java.nio.ByteBuffer;
 
-import jutils.platform.SerialConfig;
+import jutils.platform.SerialParams;
 
 /*******************************************************************************
  * 
@@ -38,13 +38,13 @@ public class JniSerialPort
      * @param config
      * @return
      **************************************************************************/
-    native boolean getConfig( SerialConfig config );
+    native boolean getConfig( SerialParams config );
 
     /***************************************************************************
      * @param config
      * @return
      **************************************************************************/
-    native boolean setConfig( SerialConfig config );
+    native boolean setConfig( SerialParams config );
 
     /***************************************************************************
      * @param millis

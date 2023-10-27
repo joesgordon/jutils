@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "ISerialPort.hpp"
-#include "SerialConfig.h"
+#include "SerialParams.h"
 
 namespace CUtils
 {
@@ -57,12 +57,12 @@ public:
     /***************************************************************************
      *
      **************************************************************************/
-    virtual void setConfig(const SerialConfig &config) override;
+    virtual void setConfig(const SerialParams &config) override;
 
     /***************************************************************************
      *
      **************************************************************************/
-    virtual SerialConfig getConfig() override;
+    virtual SerialParams getConfig() override;
 
     /***************************************************************************
      *
