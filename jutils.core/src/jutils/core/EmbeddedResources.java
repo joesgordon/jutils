@@ -89,6 +89,10 @@ public class EmbeddedResources
                         ex );
                 }
             }
+            else
+            {
+                LogUtils.printDebug( "Resource %s is not stale", emb.filename );
+            }
 
             if( emb.isLibrary )
             {

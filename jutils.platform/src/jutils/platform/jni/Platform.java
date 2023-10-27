@@ -1,5 +1,6 @@
 package jutils.platform.jni;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jutils.platform.IPlatform;
@@ -36,8 +37,7 @@ class Platform implements IPlatform
     @Override
     public boolean destroy()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return jplatform.destroy();
     }
 
     /***************************************************************************
@@ -46,8 +46,11 @@ class Platform implements IPlatform
     @Override
     public List<String> listSerialPorts()
     {
-        // TODO Auto-generated method stub
-        return null;
+        List<String> ports = new ArrayList<String>();
+
+        jplatform.listPorts( ports );
+
+        return ports;
     }
 
     /***************************************************************************
