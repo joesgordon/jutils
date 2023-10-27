@@ -1,14 +1,17 @@
-package jutils.platform;
+package jutils.platform.jni;
 
 import java.nio.ByteBuffer;
+
+import jutils.platform.ISerialPort;
+import jutils.platform.SerialConfig;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-class JniSerialPort implements ISerialPort
+class SerialPort implements ISerialPort
 {
     /**  */
-    private final JniSerialApi api;
+    private final JniSerialPort api;
     /**  */
     private ByteBuffer readBuffer;
     /**  */
@@ -17,9 +20,9 @@ class JniSerialPort implements ISerialPort
     /***************************************************************************
      * 
      **************************************************************************/
-    JniSerialPort()
+    SerialPort()
     {
-        this.api = new JniSerialApi();
+        this.api = new JniSerialPort();
         this.readBuffer = null;
         this.writeBuffer = null;
     }
@@ -34,8 +37,8 @@ class JniSerialPort implements ISerialPort
 
         if( result )
         {
-            this.readBuffer = SerialUtils.getBuffers().nextBuffer();
-            this.writeBuffer = SerialUtils.getBuffers().nextBuffer();
+            this.readBuffer = JniUtils.getBuffers().nextBuffer();
+            this.writeBuffer = JniUtils.getBuffers().nextBuffer();
         }
 
         return result;
@@ -56,8 +59,8 @@ class JniSerialPort implements ISerialPort
 
         if( result )
         {
-            SerialUtils.getBuffers().releaseBuffer( this.readBuffer );
-            SerialUtils.getBuffers().releaseBuffer( this.writeBuffer );
+            JniUtils.getBuffers().releaseBuffer( this.readBuffer );
+            JniUtils.getBuffers().releaseBuffer( this.writeBuffer );
 
             this.readBuffer = null;
             this.writeBuffer = null;

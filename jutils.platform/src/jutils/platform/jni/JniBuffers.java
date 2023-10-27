@@ -1,4 +1,4 @@
-package jutils.platform;
+package jutils.platform.jni;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;

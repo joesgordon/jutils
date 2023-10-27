@@ -42,7 +42,7 @@ public class HexIntFormField implements IDataFormField<Integer>
      **************************************************************************/
     public HexIntFormField( String name, String units, int columns )
     {
-        this( name, units, columns, null );
+        this( name, units, columns, null, null );
     }
 
     /***************************************************************************
@@ -61,7 +61,8 @@ public class HexIntFormField implements IDataFormField<Integer>
      * @param name
      * @param units
      * @param columns
-     * @param updater
+     * @param min
+     * @param max
      **************************************************************************/
     public HexIntFormField( String name, String units, int columns, Integer min,
         Integer max )

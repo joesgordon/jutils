@@ -1,5 +1,5 @@
 
-#include "jutils_serial_JniSerialApi.h"
+#include "jutils_platform_jni_JniSerialPort.h"
 
 #include "IPlatform.hpp"
 #include "ISerialPort.hpp"
@@ -11,23 +11,7 @@ static std::map<jobject, CUtils::ISerialPort_> ports;
 /*******************************************************************************
  *
  ******************************************************************************/
-JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_listPorts(
-    JNIEnv *env, jclass clz, jobject obj)
-{
-    jboolean result = false;
-
-    auto api = CUtils::getPlatform();
-
-    api->initialize();
-    api->destroy();
-
-    return result;
-}
-
-/*******************************************************************************
- *
- ******************************************************************************/
-JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_open(
+JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_open(
     JNIEnv *env, jclass clz, jstring jname)
 {
     jboolean result = false;
@@ -38,7 +22,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_open(
 /*******************************************************************************
  *
  ******************************************************************************/
-JNIEXPORT void JNICALL Java_jutils_serial_JniSerialApi_register(
+JNIEXPORT void JNICALL Java_jutils_platform_jni_JniSerialPort_register(
     JNIEnv *env, jobject jthis, jobject jreadBuf, jobject jwriteBuf)
 {
 }
@@ -46,7 +30,7 @@ JNIEXPORT void JNICALL Java_jutils_serial_JniSerialApi_register(
 /*******************************************************************************
  *
  ******************************************************************************/
-JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_close(
+JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_close(
     JNIEnv *env, jobject jthis)
 {
     jboolean result = false;
@@ -57,7 +41,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_close(
 /*******************************************************************************
  *
  ******************************************************************************/
-JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_isOpen(
+JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_isOpen(
     JNIEnv *env, jobject jthis)
 {
     jboolean result = false;
@@ -68,7 +52,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_isOpen(
 /*******************************************************************************
  *
  ******************************************************************************/
-JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_getConfig(
+JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_getConfig(
     JNIEnv *env, jobject jthis, jobject jconfig)
 {
     jboolean result = false;
@@ -79,7 +63,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_getConfig(
 /*******************************************************************************
  *
  ******************************************************************************/
-JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_setConfig(
+JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_setConfig(
     JNIEnv *env, jobject jthis, jobject jconfig)
 {
     jboolean result = false;
@@ -90,7 +74,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_serial_JniSerialApi_setConfig(
 /*******************************************************************************
  *
  ******************************************************************************/
-JNIEXPORT void JNICALL Java_jutils_serial_JniSerialApi_setReadTimeout(
+JNIEXPORT void JNICALL Java_jutils_platform_jni_JniSerialPort_setReadTimeout(
     JNIEnv *env, jobject jthis, jint millis)
 {
 }
@@ -98,7 +82,7 @@ JNIEXPORT void JNICALL Java_jutils_serial_JniSerialApi_setReadTimeout(
 /*******************************************************************************
  *
  ******************************************************************************/
-JNIEXPORT jint JNICALL Java_jutils_serial_JniSerialApi_read(
+JNIEXPORT jint JNICALL Java_jutils_platform_jni_JniSerialPort_read(
     JNIEnv *env, jobject jthis, jint length)
 {
     jint result = -1;
@@ -109,7 +93,7 @@ JNIEXPORT jint JNICALL Java_jutils_serial_JniSerialApi_read(
 /*******************************************************************************
  *
  ******************************************************************************/
-JNIEXPORT jint JNICALL Java_jutils_serial_JniSerialApi_write(
+JNIEXPORT jint JNICALL Java_jutils_platform_jni_JniSerialPort_write(
     JNIEnv *env, jobject jthis, jint length)
 {
     jint result = -1;

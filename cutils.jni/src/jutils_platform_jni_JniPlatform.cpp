@@ -1,0 +1,36 @@
+
+#include "jutils_platform_jni_JniPlatform.h"
+#include "IPlatform.hpp"
+
+using namespace CUtils;
+
+JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniPlatform_initialize(
+    JNIEnv *env, jobject jthis)
+{
+    auto platform = CUtils::getPlatform();
+
+    return platform->initialize();
+}
+
+JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniPlatform_destroy(
+    JNIEnv *env, jobject jthis)
+{
+    auto platform = CUtils::getPlatform();
+
+    return platform->destroy();
+}
+
+JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniPlatform_listPorts(
+    JNIEnv *env, jobject jthis, jobject jports)
+{
+    jboolean result = false;
+
+    auto platform = CUtils::getPlatform();
+    auto ports = platform->listSerialPorts();
+
+    jclass listCls = env->GetObjectClass(jports);
+    jmethodID clearMethod = env->GetMethodID(listCls, "clear", "()V");
+    jmethodID addMethod = env->GetMethodID(listCls, "add", "(Ljava/lang/Object;)Z");
+
+    return result;
+}

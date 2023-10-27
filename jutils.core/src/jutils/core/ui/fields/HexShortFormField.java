@@ -2,37 +2,37 @@ package jutils.core.ui.fields;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
-import jutils.core.io.parsers.HexLongParser;
+import jutils.core.io.parsers.HexShortParser;
 import jutils.core.ui.event.updater.IUpdater;
+import jutils.core.ui.hex.HexUtils;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 
 /*******************************************************************************
- * Defines an {@link IFormField} that contains a hexadecimal long validater.
+ * Defines an {@link IFormField} that contains a double validater.
  ******************************************************************************/
-public class HexLongFormField implements IDataFormField<Long>
+public class HexShortFormField implements IDataFormField<Short>
 {
     /**  */
-    private final JTextField textField;
-    /**  */
-    private final ParserFormField<Long> field;
+    private final ParserFormField<Short> field;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
-    public HexLongFormField( String name )
+    public HexShortFormField( String name )
     {
-        this( name, null );
+        this( name, ( String )null );
     }
 
     /***************************************************************************
      * @param name
      * @param units
      **************************************************************************/
-    public HexLongFormField( String name, String units )
+    public HexShortFormField( String name, String units )
     {
-        this( name, units, 20 );
+        this( name, units, ( short )20, null );
     }
 
     /***************************************************************************
@@ -40,7 +40,7 @@ public class HexLongFormField implements IDataFormField<Long>
      * @param units
      * @param columns
      **************************************************************************/
-    public HexLongFormField( String name, String units, int columns )
+    public HexShortFormField( String name, String units, int columns )
     {
         this( name, units, columns, null, null );
     }
@@ -51,7 +51,7 @@ public class HexLongFormField implements IDataFormField<Long>
      * @param min
      * @param max
      **************************************************************************/
-    public HexLongFormField( String name, String units, Long min, Long max )
+    public HexShortFormField( String name, String units, Short min, Short max )
     {
         this( name, units, 20, min, max );
     }
@@ -60,21 +60,20 @@ public class HexLongFormField implements IDataFormField<Long>
      * @param name
      * @param units
      * @param columns
-     * @param min
-     * @param max
+     * @param updater
      **************************************************************************/
-    public HexLongFormField( String name, String units, int columns, Long min,
-        Long max )
+    public HexShortFormField( String name, String units, int columns, Short min,
+        Short max )
     {
-        IDescriptor<Long> descriptor = ( d ) -> toString( d );
+        JTextField textField = new JTextField( columns );
 
-        this.textField = new JTextField( columns );
-        this.field = new ParserFormField<>( name, new HexLongParser( min, max ),
-            textField, descriptor, textField, units );
+        this.field = new ParserFormField<>( name,
+            new HexShortParser( min, max ), textField, ( d ) -> toString( d ),
+            textField, units );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getName()
@@ -83,7 +82,7 @@ public class HexLongFormField implements IDataFormField<Long>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -92,19 +91,19 @@ public class HexLongFormField implements IDataFormField<Long>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Long getValue()
+    public Short getValue()
     {
         return field.getValue();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setValue( Long value )
+    public void setValue( Short value )
     {
         field.setValue( value );
     }
@@ -113,22 +112,22 @@ public class HexLongFormField implements IDataFormField<Long>
      * 
      **************************************************************************/
     @Override
-    public void setUpdater( IUpdater<Long> updater )
+    public void setUpdater( IUpdater<Short> updater )
     {
         field.setUpdater( updater );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IUpdater<Long> getUpdater()
+    public IUpdater<Short> getUpdater()
     {
         return field.getUpdater();
     }
 
     /***************************************************************************
-     * @param editable
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setEditable( boolean editable )
@@ -137,7 +136,7 @@ public class HexLongFormField implements IDataFormField<Long>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
@@ -164,19 +163,26 @@ public class HexLongFormField implements IDataFormField<Long>
     }
 
     /***************************************************************************
-     * @return
-     **************************************************************************/
-    public JTextField getTextField()
-    {
-        return textField;
-    }
-
-    /***************************************************************************
      * @param value
      * @return
      **************************************************************************/
-    private static String toString( Long value )
+    private static String toString( Short value )
     {
-        return value == null ? "" : Long.toHexString( value ).toUpperCase();
+        String text = "";
+
+        if( value != null )
+        {
+            text = HexUtils.getHexString( value );
+        }
+
+        return text;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JTextComponent getTextField()
+    {
+        return field.getTextField();
     }
 }

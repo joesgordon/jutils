@@ -25,15 +25,17 @@ WinPlatform::~WinPlatform()
 /*******************************************************************************
  *
  ******************************************************************************/
-void WinPlatform::initialize()
+bool WinPlatform::initialize()
 {
+    return true;
 }
 
 /*******************************************************************************
  *
  ******************************************************************************/
-void WinPlatform::destroy()
+bool WinPlatform::destroy()
 {
+    return true;
 }
 
 /*******************************************************************************
@@ -54,7 +56,7 @@ vector<string> WinPlatform::listSerialPorts()
     return SerialPort::listSerialPorts();
 }
 
-static IPlatform_ PLATFORM;
+static IPlatform_ PLATFORM(nullptr);
 
 /*******************************************************************************
  *

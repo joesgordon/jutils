@@ -151,10 +151,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\jutils_serial_JniSerialApi.cpp" />
+    <ClCompile Include="src\jutils_platform_jni_JniPlatform.cpp" />
+    <ClCompile Include="src\jutils_platform_jni_JniSerialPort.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\jutils_serial_JniSerialApi.h" />
+    <ClInclude Include="src\jutils_platform_jni_JniPlatform.h" />
+    <ClInclude Include="src\jutils_platform_jni_JniSerialPort.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cutils.platform.win\cutils_platform_win.vcxproj">

@@ -1,54 +1,29 @@
 package jutils.platform;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public final class SerialUtils
+public interface IPlatform
 {
-    /**  */
-    private static JniBuffers buffers;
-
     /***************************************************************************
-     * Declare the default and only constructor private to prevent instances.
+     * @return
      **************************************************************************/
-    private SerialUtils()
-    {
-    }
+    public boolean initialize();
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public static ISerialPort createSerialPort()
-    {
-        return new JniSerialPort();
-    }
-
-    /***************************************************************************
-     * @param ports list of port names
-     * @return
-     **************************************************************************/
-    public static List<String> listPorts()
-    {
-        List<String> ports = new ArrayList<String>();
-
-        JniSerialApi.listPorts( ports );
-
-        return ports;
-    }
+    public boolean destroy();
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    static synchronized JniBuffers getBuffers()
-    {
-        if( buffers == null )
-        {
-            buffers = new JniBuffers();
-        }
+    public List<String> listSerialPorts();
 
-        return buffers;
-    }
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public ISerialPort createSerialPort();
 }

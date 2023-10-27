@@ -15,12 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\jutils_serial_JniSerialApi.cpp">
+    <ClCompile Include="src\jutils_platform_jni_JniSerialPort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jutils_platform_jni_JniPlatform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\jutils_serial_JniSerialApi.h">
+    <ClInclude Include="src\jutils_platform_jni_JniPlatform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\jutils_platform_jni_JniSerialPort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

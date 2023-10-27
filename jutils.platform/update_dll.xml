@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="update_dll" default="update">
+	<target name="update">
+        <property name="resource.name" value="cutils_jni.dll" />
+		<property name="resource.path" location="../cutils/x64/Release/${resource.name}" />
+		<property name="props.path" location="src/jutils/platform/resources/${resource.name}.props" />
+		
+		<propertyfile file="${props.path}">
+			<entry key="time" type="date" default="now" pattern="YYYY-MM-dd HHmmss" operation="=" value="0" />
+			<entry key="length" type="int" operation="=" value="${jxinput.dll.length}" pattern="0" />
+		</propertyfile>
+	</target>
+</project>

@@ -12,9 +12,9 @@ public:
 
     virtual ~WinPlatform() override;
 
-    virtual void initialize() override;
+    virtual bool initialize() override;
 
-    virtual void destroy() override;
+    virtual bool destroy() override;
 
     virtual ISerialPort_ createSerialPort() override;
 
