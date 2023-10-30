@@ -40,7 +40,7 @@ public class HexAreaFormField implements IDataFormField<byte []>
         this.textField = new JTextArea();
         JScrollPane pane = new JScrollPane( textField );
         this.field = new ParserFormField<>( name, new HexBytesParser(),
-            textField, ( d ) -> toString( d ), pane );
+            textField, ( d ) -> toString( d ), pane, null, true );
 
         pane.setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );

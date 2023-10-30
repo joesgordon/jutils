@@ -9,6 +9,7 @@ import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
+import jutils.core.Utils;
 import jutils.core.io.LogUtils;
 import jutils.core.ui.JGoodiesToolBar;
 import jutils.core.ui.StandardFrameView;
@@ -97,11 +98,7 @@ public class TaskTestMain
                 handler.signalMessage( "Almost there..." );
             }
 
-            try
-            {
-                Thread.sleep( 500 );
-            }
-            catch( InterruptedException e )
+            if( !Utils.sleep( 500 ) )
             {
                 break;
             }

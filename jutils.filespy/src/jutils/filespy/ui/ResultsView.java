@@ -21,7 +21,6 @@ import javax.swing.text.StyleContext;
 
 import jutils.core.OptionUtils;
 import jutils.core.Utils;
-import jutils.core.concurrent.GcThread;
 import jutils.core.io.LogUtils;
 import jutils.core.ui.ScrollableEditorPaneView;
 import jutils.core.ui.explorer.ExplorerTable;
@@ -167,7 +166,7 @@ public class ResultsView implements IView<JComponent>
     {
         resultsTableModel.clearModel();
 
-        GcThread.createAndStart();
+        Utils.runGcThreaded();
     }
 
     /***************************************************************************

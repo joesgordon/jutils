@@ -55,7 +55,12 @@ public class TaskThread
      **************************************************************************/
     public boolean stopAndWait()
     {
-        return runnable.stopAndWaitFor();
+        if( isStarted() )
+        {
+            return runnable.stopAndWaitFor();
+        }
+
+        return false;
     }
 
     /***************************************************************************
@@ -66,7 +71,21 @@ public class TaskThread
      **************************************************************************/
     public boolean waitFor()
     {
-        return runnable.waitFor();
+        if( isStarted() )
+        {
+            return runnable.waitFor();
+        }
+
+        return false;
+    }
+
+    /***************************************************************************
+     * Indicated if the task has been started.
+     * @return {@code true} if the task has been started.
+     **************************************************************************/
+    public boolean isStarted()
+    {
+        return runnable.isStarted();
     }
 
     /***************************************************************************
@@ -79,19 +98,11 @@ public class TaskThread
     }
 
     /***************************************************************************
-     * @param millis see {@link Thread#sleep(long)}.
-     * @return {@code true} if the thread was interrupted while sleeping.
+     * Indicated if the task is running.
+     * @return {@code true} if the task is running.
      **************************************************************************/
-    public static boolean sleep( int millis )
+    public boolean isRunning()
     {
-        try
-        {
-            Thread.sleep( millis );
-            return false;
-        }
-        catch( InterruptedException ex )
-        {
-            return true;
-        }
+        return runnable.isRunning();
     }
 }

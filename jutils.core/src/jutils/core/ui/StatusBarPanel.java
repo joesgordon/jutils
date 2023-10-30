@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 import jutils.core.IconConstants;
 import jutils.core.OptionUtils;
 import jutils.core.SwingUtils;
+import jutils.core.Utils;
 import jutils.core.io.parsers.IntegerParser;
 import jutils.core.ui.event.RightClickListener;
 
@@ -249,6 +250,9 @@ public class StatusBarPanel
         statusLabel.setText( text );
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private void handleRefresh()
     {
         refreshStatus( true );
@@ -256,6 +260,9 @@ public class StatusBarPanel
         IconConstants.playNotify();
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private void handleSetDelay()
     {
         Integer delay = OptionUtils.promptForValue( StatusBarPanel.this.view,
@@ -267,6 +274,9 @@ public class StatusBarPanel
         }
     }
 
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
     private void handleMemoryRightClick( MouseEvent e )
     {
         // LogUtils.printDebug( "Right-click" );
@@ -274,6 +284,9 @@ public class StatusBarPanel
             e.getY() - popup.getPreferredSize().height );
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private void runFlasher()
     {
         for( int i = 1; i < 101; i += 5 )
@@ -281,27 +294,21 @@ public class StatusBarPanel
             int val = i;
             SwingUtilities.invokeLater(
                 () -> statusProgressBar.setValue( val ) );
-            try
-            {
-                Thread.sleep( 30 );
-            }
-            catch( InterruptedException e )
+
+            if( !Utils.sleep( 30 ) )
             {
                 break;
             }
         }
 
-        try
-        {
-            Thread.sleep( 100 );
-        }
-        catch( InterruptedException e )
-        {
-        }
+        Utils.sleep( 100 );
 
         SwingUtilities.invokeLater( () -> statusProgressBar.setValue( 0 ) );
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private void runGc()
     {
         Runtime.getRuntime().gc();

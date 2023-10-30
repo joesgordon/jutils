@@ -130,9 +130,25 @@ public class ParserFormField<T> implements IDataFormField<T>
     public ParserFormField( String name, IParser<T> parser, JTextComponent comp,
         IDescriptor<T> itemDescriptor, JComponent fieldView, String units )
     {
+        this( name, parser, comp, itemDescriptor, fieldView, units, false );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param parser
+     * @param comp
+     * @param itemDescriptor
+     * @param fieldView
+     * @param units
+     * @param fillBoth
+     **************************************************************************/
+    public ParserFormField( String name, IParser<T> parser, JTextComponent comp,
+        IDescriptor<T> itemDescriptor, JComponent fieldView, String units,
+        boolean fillBoth )
+    {
         this.name = name;
         this.textField = new ValidationTextComponentField<>( comp );
-        this.view = new ValidationView( textField, units, fieldView );
+        this.view = new ValidationView( textField, units, fieldView, fillBoth );
         this.itemDescriptor = itemDescriptor == null
             ? new DefaultItemDescriptor<T>()
             : itemDescriptor;

@@ -109,13 +109,14 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
         setScrollpaneDefaults( table );
         setTableDefaults( table );
         setTabsDefaults( table );
+        setTextAreaDefaults( table );
         setTextfieldDefaults( table );
         setTitledBorderDefaults( table );
         setToolbarDefaults( table );
         setToggleButtonDefaults( table );
         setCommonDefaults( table );
 
-        // String keyTerm = null;
+        // String keyTerm = "";
         // Class<?> valTerm = null;
 
         // keyTerm = "panel";
@@ -275,12 +276,12 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
      **************************************************************************/
     private void setScrollpaneDefaults( UIDefaults table )
     {
-        table.put( "ScrollBar.track", colors.control );
-        table.put( "ScrollBar.trackHighlight", colors.controlHighlight );
+        table.put( "ScrollBar.track", colors.background );
+        table.put( "ScrollBar.trackHighlight", colors.highlight );
 
-        table.put( "ScrollBar.thumb", colors.control );
-        table.put( "ScrollBar.thumbDarkShadow", colors.controlBackground );
-        table.put( "ScrollBar.thumbHighlight", colors.controlHighlight );
+        table.put( "ScrollBar.thumb", colors.background );
+        table.put( "ScrollBar.thumbDarkShadow", colors.shadow );
+        table.put( "ScrollBar.thumbHighlight", colors.foreground );
         table.put( "ScrollBar.thumbShadow", colors.shadow );
 
         table.put( "ScrollPane.background", colors.background );
@@ -295,12 +296,13 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
     {
         table.put( "TabbedPane.background", colors.background );
         table.put( "TabbedPane.foreground", colors.foreground );
-        // table.put( "TabbedPane.light", Color.green );
+        // table.put( "TabbedPane.light", Color.red );
         table.put( "TabbedPane.selected", colors.bright );
         // table.put( "TabbedPane.tabAreaBackground", Color.red );
-        // table.put( "TabbedPane.selectHighlight", Color.blue );
+        // table.put( "TabbedPane.selectHighlight", Color.red );
         table.put( "TabbedPane.shadow", colors.shadow );
-        // table.put( "TabbedPane.darkShadow", Color.pink );
+        table.put( "TabbedPane.darkShadow", colors.shadow );
+        // table.put( "TabbedPane.borderHightlightColor", Color.red );
     }
 
     /***************************************************************************
@@ -309,7 +311,7 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
     private void setTableDefaults( UIDefaults table )
     {
         table.put( "Table.background", colors.background );
-        table.put( "Table.gridColor", colors.controlBackground.brighter() );
+        table.put( "Table.gridColor", colors.shadow );
         table.put( "Table.foreground", colors.foreground );
         // table.put( "Table.gridColor", lightBg );
         table.put( "Table.selectionBackground", colors.bright );
@@ -324,9 +326,23 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
     /***************************************************************************
      * @param table default properties for UI components.
      **************************************************************************/
+    private void setTextAreaDefaults( UIDefaults table )
+    {
+        table.put( "TextArea.background", colors.controlBackground );
+        table.put( "TextArea.caretForeground", colors.foreground );
+        table.put( "TextArea.foreground", colors.foreground );
+        table.put( "TextArea.inactiveForeground", colors.background );
+        table.put( "TextArea.selectionBackground", colors.bright );
+        table.put( "TextArea.selectionForeground", colors.foreground );
+    }
+
+    /***************************************************************************
+     * @param table default properties for UI components.
+     **************************************************************************/
     private void setTextfieldDefaults( UIDefaults table )
     {
         table.put( "TextField.background", colors.controlBackground );
+        table.put( "TextField.caretForeground", colors.foreground );
         table.put( "TextField.foreground", colors.foreground );
         table.put( "TextField.inactiveForeground", colors.background );
         table.put( "TextField.selectionBackground", colors.bright );

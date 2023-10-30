@@ -21,6 +21,7 @@ public class DemoView implements IView<JComponent>
     {
         this.tabs = new JTabbedPane();
 
+        tabs.addTab( "JUtils", new JUtilsView().getView() );
         tabs.addTab( "Swing", new SwingView().getView() );
 
         tabs.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );

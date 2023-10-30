@@ -13,6 +13,7 @@ import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
+import jutils.core.Utils;
 import jutils.core.io.LogUtils;
 import jutils.core.ui.JGoodiesToolBar;
 import jutils.core.ui.StandardFrameView;
@@ -189,11 +190,7 @@ public class MultiTaskTestApp implements IFrameApp
 
                 LogUtils.printDebug( "Percent : " + percent );
 
-                try
-                {
-                    Thread.sleep( millis );
-                }
-                catch( InterruptedException e )
+                if( !Utils.sleep( millis ) )
                 {
                     break;
                 }

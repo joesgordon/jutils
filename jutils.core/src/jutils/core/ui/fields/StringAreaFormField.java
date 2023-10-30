@@ -27,11 +27,24 @@ public class StringAreaFormField implements IDataFormField<String>
      **************************************************************************/
     public StringAreaFormField( String name )
     {
-        this.textField = new JTextArea();
-        JScrollPane pane = new JScrollPane( textField );
-        this.field = new ParserFormField<>( name,
-            new StringLengthParser( 0, null ), textField, ( d ) -> d, pane );
+        this( name, false );
+    }
 
+    /***************************************************************************
+     * @param name
+     * @param fillBoth
+     **************************************************************************/
+    public StringAreaFormField( String name, boolean fillBoth )
+    {
+        JScrollPane pane = new JScrollPane();
+        StringLengthParser parser = new StringLengthParser( 0, null );
+        IDescriptor<String> descriptor = ( d ) -> d;
+
+        this.textField = new JTextArea();
+        this.field = new ParserFormField<>( name, parser, textField, descriptor,
+            pane, null, fillBoth );
+
+        pane.setViewportView( textField );
         pane.setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
         pane.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );

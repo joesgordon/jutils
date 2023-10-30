@@ -13,12 +13,16 @@ public class ABButton implements IView<JButton>
     /**  */
     private String aText;
     /**  */
+    private String aTooltip;
+    /**  */
     private Icon aIcon;
     /**  */
     private IABCallback aCallback;
 
     /**  */
     private String bText;
+    /**  */
+    private String bTooltip;
     /**  */
     private Icon bIcon;
     /**  */
@@ -87,9 +91,52 @@ public class ABButton implements IView<JButton>
             if( callback.run() )
             {
                 isAState = !isAState;
-                setButton();
+                updateButton();
             }
         }
+    }
+
+    /***************************************************************************
+     * @param aText
+     * @param bText
+     **************************************************************************/
+    public void setText( String aText, String bText )
+    {
+        this.aText = aText;
+        this.bText = bText;
+        updateButton();
+    }
+
+    /***************************************************************************
+     * @param aTooltip
+     * @param bTooltip
+     **************************************************************************/
+    public void setTooltip( String aTooltip, String bTooltip )
+    {
+        this.aTooltip = aTooltip;
+        this.bTooltip = bTooltip;
+        updateButton();
+    }
+
+    /***************************************************************************
+     * @param aIcon
+     * @param bIcon
+     **************************************************************************/
+    public void setIcon( Icon aIcon, Icon bIcon )
+    {
+        this.aIcon = aIcon;
+        this.bIcon = bIcon;
+        updateButton();
+    }
+
+    /***************************************************************************
+     * @param aCallback
+     * @param bCallback
+     **************************************************************************/
+    public void setIcon( IABCallback aCallback, IABCallback bCallback )
+    {
+        this.aCallback = aCallback;
+        this.bCallback = bCallback;
     }
 
     /***************************************************************************
@@ -98,7 +145,16 @@ public class ABButton implements IView<JButton>
     public void setAText( String text )
     {
         this.aText = text;
-        setButton();
+        updateButton();
+    }
+
+    /***************************************************************************
+     * @param tooltip
+     **************************************************************************/
+    public void setATooltip( String tooltip )
+    {
+        this.aTooltip = tooltip;
+        updateButton();
     }
 
     /***************************************************************************
@@ -107,7 +163,7 @@ public class ABButton implements IView<JButton>
     public void setAIcon( Icon icon )
     {
         this.aIcon = icon;
-        setButton();
+        updateButton();
     }
 
     /***************************************************************************
@@ -124,7 +180,16 @@ public class ABButton implements IView<JButton>
     public void setBText( String text )
     {
         this.bText = text;
-        setButton();
+        updateButton();
+    }
+
+    /***************************************************************************
+     * @param tooltip
+     **************************************************************************/
+    public void setBTooltip( String tooltip )
+    {
+        this.bTooltip = tooltip;
+        updateButton();
     }
 
     /***************************************************************************
@@ -133,7 +198,7 @@ public class ABButton implements IView<JButton>
     public void setBIcon( Icon icon )
     {
         this.bIcon = icon;
-        setButton();
+        updateButton();
     }
 
     /***************************************************************************
@@ -147,16 +212,18 @@ public class ABButton implements IView<JButton>
     /***************************************************************************
      * @param isAState
      **************************************************************************/
-    private void setButton()
+    private void updateButton()
     {
         if( isAState )
         {
             button.setText( aText );
+            button.setToolTipText( aTooltip );
             button.setIcon( aIcon );
         }
         else
         {
             button.setText( bText );
+            button.setToolTipText( bTooltip );
             button.setIcon( bIcon );
         }
     }
@@ -178,7 +245,7 @@ public class ABButton implements IView<JButton>
         if( this.isAState != isAState )
         {
             this.isAState = isAState;
-            setButton();
+            updateButton();
         }
     }
 

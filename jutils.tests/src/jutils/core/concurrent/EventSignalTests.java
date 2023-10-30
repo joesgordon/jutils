@@ -3,6 +3,7 @@ package jutils.core.concurrent;
 import org.junit.Assert;
 import org.junit.Test;
 
+import jutils.core.Utils;
 import jutils.core.time.NanoWatch;
 
 /*******************************************************************************
@@ -42,14 +43,7 @@ public class EventSignalTests
         NanoWatch w = new NanoWatch();
 
         Thread t = new Thread( () -> {
-            try
-            {
-                Thread.sleep( expected );
-            }
-            catch( InterruptedException ex )
-            {
-                throw new RuntimeException( ex );
-            }
+            Utils.sleep( expected );
             s.signal();
         } );
         t.start();

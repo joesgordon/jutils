@@ -556,8 +556,8 @@ public final class Utils
 
     /***************************************************************************
      * Returns a list containing the font family names of all available
-     * monospaced fonts that can display the ASCII numbers, lower case, and upper
-     * case values.
+     * monospaced fonts that can display the ASCII numbers, lower case, and
+     * upper case values.
      * @return the generated list.
      **************************************************************************/
     public static List<String> getMonospacedFonts()
@@ -701,6 +701,33 @@ public final class Utils
         }
 
         return null;
+    }
+
+    /***************************************************************************
+     * Executes {@link Runtime#gc()} in a thread.
+     **************************************************************************/
+    public static void runGcThreaded()
+    {
+        Runnable gcRunner = () -> Runtime.getRuntime().gc();
+        Thread t = new Thread( gcRunner, "GC Thread" );
+        t.start();
+    }
+
+    /***************************************************************************
+     * @param millis see {@link Thread#sleep(long)}.
+     * @return {@code true} if the thread was interrupted while sleeping.
+     **************************************************************************/
+    public static boolean sleep( long millis )
+    {
+        try
+        {
+            Thread.sleep( millis );
+            return false;
+        }
+        catch( InterruptedException ex )
+        {
+            return true;
+        }
     }
 
     /***************************************************************************

@@ -263,21 +263,18 @@ public final class IconConstants
 
                             while( !clip.isRunning() )
                             {
-                                Thread.sleep( 10 );
+                                Utils.sleep( 10 );
                             }
 
                             while( clip.isRunning() )
                             {
-                                Thread.sleep( 10 );
+                                Utils.sleep( 10 );
                             }
                         }
                     }
                     catch( LineUnavailableException ex )
                     {
                         ex.printStackTrace();
-                    }
-                    catch( InterruptedException ex )
-                    {
                     }
                 }
                 catch( UnsupportedAudioFileException ex )

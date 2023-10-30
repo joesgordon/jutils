@@ -9,7 +9,6 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.Icon;
 import javax.swing.InputMap;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -19,9 +18,10 @@ import javax.swing.text.BadLocationException;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
+import jutils.core.ui.ABButton.IABCallback;
 import jutils.core.ui.event.ActionAdapter;
-import jutils.core.ui.event.ItemActionList;
-import jutils.core.ui.event.ItemActionListener;
+import jutils.core.ui.event.updater.IUpdater;
+import jutils.core.ui.event.updater.UpdaterList;
 import jutils.core.ui.fields.HexAreaFormField;
 import jutils.core.ui.fields.StringAreaFormField;
 import jutils.core.ui.hex.HexUtils;
@@ -40,36 +40,57 @@ public class TextHexView implements IDataView<byte []>
     /**  */
     private final TitleView view;
     /**  */
+    private final ABButton hexTextButton;
+    /**  */
     private final ComponentView msgView;
     /**  */
     private final StringAreaFormField textField;
     /**  */
     private final HexAreaFormField hexField;
     /**  */
-    private final HexTextListener hextTextListener;
-    /**  */
-    private final ItemActionList<byte []> enterListeners;
+    private final UpdaterList<byte []> enterListeners;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public TextHexView()
     {
-        this.textField = new StringAreaFormField( "Message Text" );
-        this.hexField = new HexAreaFormField( "Message Bytes" );
+        this.hexTextButton = createHexTextButton();
         this.msgView = new ComponentView();
-        this.hextTextListener = new HexTextListener( this );
+        this.textField = new StringAreaFormField( "Message Text", true );
+        this.hexField = new HexAreaFormField( "Message Bytes" );
         this.view = new TitleView( "Hexadecimal", createMainView() );
-        this.enterListeners = new ItemActionList<>();
-
-        hextTextListener.showHex();
+        this.enterListeners = new UpdaterList<>();
 
         setData( HexUtils.fromHexStringToArray( "EB91" ) );
+
+        handleHex();
+        hexTextButton.setState( false );
 
         SwingUtils.addKeyListener( textField.getTextArea(), "shift ENTER",
             ( e ) -> insertText( LF ), "Shift+Enter Listener", false );
         SwingUtils.addKeyListener( textField.getTextArea(), "control ENTER",
             ( e ) -> insertText( CR ), "Control+Enter Listener", false );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private ABButton createHexTextButton()
+    {
+        Icon hexIcon = IconConstants.getIcon( IconConstants.HEX_16 );
+        Icon textIcon = IconConstants.getIcon( IconConstants.FONT_16 );
+
+        IABCallback hexCallback = () -> handleHex();
+        IABCallback textCallback = () -> handleText();
+
+        ABButton button = new ABButton( "Hex", hexIcon, hexCallback, "Text",
+            textIcon, textCallback );
+
+        button.setATooltip( "Show message as hex" );
+        button.setBTooltip( "Show message as text" );
+
+        return button;
     }
 
     /***************************************************************************
@@ -117,8 +138,7 @@ public class TextHexView implements IDataView<byte []>
 
         SwingUtils.setToolbarDefaults( toolbar );
 
-        SwingUtils.addActionToToolbar( toolbar, createHexTextAction(),
-            hextTextListener.button );
+        toolbar.add( hexTextButton.button );
 
         return toolbar;
     }
@@ -126,99 +146,27 @@ public class TextHexView implements IDataView<byte []>
     /***************************************************************************
      * @return
      **************************************************************************/
-    private Action createHexTextAction()
+    private boolean handleHex()
     {
-        ActionListener listener = ( e ) -> hextTextListener.toggle();
+        byte [] bytes = textField.getValue().getBytes(
+            HexAreaFormField.HEXSET );
+        hexField.setValue( bytes );
+        msgView.setComponent( hexField.getView() );
 
-        return new ActionAdapter( listener, "HexText", null );
+        return true;
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    private static class HexTextListener
+    private boolean handleText()
     {
-        /**  */
-        private final TextHexView view;
-        /**  */
-        public final JButton button;
+        String text = new String( hexField.getValue(),
+            HexAreaFormField.HEXSET );
+        textField.setValue( text );
+        msgView.setComponent( textField.getView() );
 
-        /**  */
-        private final Icon textIcon;
-        /**  */
-        private final String textText;
-        /**  */
-        private final String textTooltip;
-
-        /**  */
-        private final Icon hexIcon;
-        /**  */
-        private final String hexText;
-        /**  */
-        private final String hexTooltip;
-
-        /**
-         * @param view
-         */
-        public HexTextListener( TextHexView view )
-        {
-            this.view = view;
-            this.button = new JButton();
-
-            this.textIcon = IconConstants.getIcon( IconConstants.FONT_16 );
-            this.hexIcon = IconConstants.getIcon( IconConstants.HEX_16 );
-
-            this.textText = "Text";
-            this.hexText = "Hex";
-
-            this.textTooltip = "Show message as text";
-            this.hexTooltip = "Show message as hex";
-        }
-
-        /**
-         * 
-         */
-        public void toggle()
-        {
-            boolean showHex = button.getIcon() == hexIcon;
-
-            if( showHex )
-            {
-                showHex();
-            }
-            else
-            {
-                showText();
-            }
-        }
-
-        /**
-         * 
-         */
-        private void showHex()
-        {
-            button.setIcon( textIcon );
-            button.setText( textText );
-            button.setToolTipText( textTooltip );
-            byte [] bytes = view.textField.getValue().getBytes(
-                HexAreaFormField.HEXSET );
-            view.hexField.setValue( bytes );
-            view.msgView.setComponent( view.hexField.getView() );
-        }
-
-        /**
-         * 
-         */
-        private void showText()
-        {
-            button.setIcon( hexIcon );
-            button.setText( hexText );
-            button.setToolTipText( hexTooltip );
-            String text = new String( view.hexField.getValue(),
-                HexAreaFormField.HEXSET );
-            view.textField.setValue( text );
-            view.msgView.setComponent( view.textField.getView() );
-        }
+        return true;
     }
 
     /***************************************************************************
@@ -250,7 +198,7 @@ public class TextHexView implements IDataView<byte []>
     {
         byte [] msgBuffer = getData();
 
-        enterListeners.fireListeners( this, msgBuffer );
+        enterListeners.fire( msgBuffer );
     }
 
     /***************************************************************************
@@ -289,9 +237,9 @@ public class TextHexView implements IDataView<byte []>
     /***************************************************************************
      * @param l
      **************************************************************************/
-    public void addEnterListener( ItemActionListener<byte []> l )
+    public void addEnterListener( IUpdater<byte []> l )
     {
-        enterListeners.addListener( l );
+        enterListeners.add( l );
     }
 
     /***************************************************************************
@@ -308,7 +256,7 @@ public class TextHexView implements IDataView<byte []>
      **************************************************************************/
     public void setEditable( boolean editable )
     {
-        hextTextListener.button.setEnabled( editable );
+        hexTextButton.button.setEnabled( editable );
         textField.setEditable( editable );
         hexField.setEditable( editable );
     }

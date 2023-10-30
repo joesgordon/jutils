@@ -12,6 +12,12 @@ public class Taskable implements Runnable
     /** The task to run */
     private final ITask task;
 
+    /**
+     * Indicates that the thread has been started. First statement of
+     * {@link #run()}.
+     */
+    private boolean started;
+
     /***************************************************************************
      * Creates the {@link Runnable} to execute the provided task.
      * @param task the task to be executed.
@@ -30,6 +36,7 @@ public class Taskable implements Runnable
     {
         this.stopper = stopManager;
         this.task = task;
+        this.started = false;
     }
 
     /***************************************************************************
@@ -58,6 +65,7 @@ public class Taskable implements Runnable
     @Override
     public void run()
     {
+        this.started = true;
         try
         {
             task.run( stopper );
@@ -77,6 +85,15 @@ public class Taskable implements Runnable
     }
 
     /***************************************************************************
+     * Indicated if the task has been started.
+     * @return {@code true} if the task has been started.
+     **************************************************************************/
+    public boolean isStarted()
+    {
+        return started;
+    }
+
+    /***************************************************************************
      * Returns whether the task is finished.
      * @return {@code true} if the task is finished, {@code false} otherwise.
      * @see ITaskHandler#isFinished()
@@ -84,6 +101,15 @@ public class Taskable implements Runnable
     public boolean isFinished()
     {
         return stopper.isFinished();
+    }
+
+    /***************************************************************************
+     * Indicated if the task is running.
+     * @return {@code true} if the task is running.
+     **************************************************************************/
+    public boolean isRunning()
+    {
+        return isStarted() && !isFinished();
     }
 
     /***************************************************************************

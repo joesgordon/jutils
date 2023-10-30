@@ -8,6 +8,7 @@ import java.awt.Robot;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import jutils.core.Utils;
 import jutils.core.concurrent.ITask;
 import jutils.core.concurrent.ITaskHandler;
 import jutils.core.io.LogUtils;
@@ -71,13 +72,10 @@ public class InsomniaTask implements ITask
         {
             while( handler.canContinue() )
             {
-                Thread.sleep( 100L );
+                Utils.sleep( 100L );
 
                 updateStatus();
             }
-        }
-        catch( InterruptedException ex )
-        {
         }
         finally
         {
@@ -103,7 +101,7 @@ public class InsomniaTask implements ITask
     /***************************************************************************
      * @throws InterruptedException
      **************************************************************************/
-    private void updateStatus() throws InterruptedException
+    private void updateStatus()
     {
         monitor.checkMouse();
 
@@ -159,7 +157,7 @@ public class InsomniaTask implements ITask
          * @return
          * @throws InterruptedException
          */
-        public LocalDateTime stimulateMouse() throws InterruptedException
+        public LocalDateTime stimulateMouse()
         {
             try
             {
@@ -174,7 +172,7 @@ public class InsomniaTask implements ITask
 
                     r.mouseMove( n.x, n.y );
 
-                    Thread.sleep( 100 );
+                    Utils.sleep( 100 );
 
                     r.mouseMove( p.x, p.y );
                 }

@@ -20,35 +20,32 @@ import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
 
 /*******************************************************************************
- * Defines a view to display all swing components in all states.
+ * Defines a view to display all JUtils components.
  ******************************************************************************/
-public class SwingView implements IView<JComponent>
+public class JUtilsView implements IView<JComponent>
 {
     /**  */
     private final JPanel view;
     /**  */
-    private final ListView<ComponentPanel> choicesView;
+    private final ListView<JUtilsComponent> choicesView;
     /**  */
     private final TitleView choiceView;
 
     /**  */
-    private final HashMap<ComponentPanel, Supplier<IView<?>>> compViews;
-
-    // TODO create a view for all swing component types
+    private final HashMap<JUtilsComponent, Supplier<IView<?>>> compViews;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public SwingView()
+    public JUtilsView()
     {
         this.compViews = new HashMap<>();
-        this.choicesView = new ListView<>( new ComponentPanelListModel(), false,
-            false );
+        this.choicesView = new ListView<>( new JUtilsComponentListModel(),
+            false, false );
         this.choiceView = new TitleView( "Nothing Selected", null );
 
-        compViews.put( ComponentPanel.JBUTTON, () -> null );
-        compViews.put( ComponentPanel.JRADIOBUTTON,
-            () -> new RadioButtonView() );
+        compViews.put( JUtilsComponent.MESSAGE_INPUT_VIEW,
+            () -> new MsgInputDemoView() );
 
         this.view = createView();
 
@@ -57,7 +54,7 @@ public class SwingView implements IView<JComponent>
 
         choicesView.setData( new ArrayList<>( compViews.keySet() ) );
 
-        if( compViews.size() != ComponentPanel.values().length )
+        if( compViews.size() != JUtilsComponent.values().length )
         {
             LogUtils.printError( "Not all component types accounted for." );
         }
@@ -66,8 +63,15 @@ public class SwingView implements IView<JComponent>
     /***************************************************************************
      * @param selection
      **************************************************************************/
-    private void handleSelction( ComponentPanel selection )
+    private void handleSelction( JUtilsComponent selection )
     {
+        if( selection == null )
+        {
+            choiceView.setTitle( "No selection" );
+            choiceView.setComponent( null );
+            return;
+        }
+
         Supplier<IView<?>> supplier = compViews.get( selection );
         IView<?> view = supplier == null ? null : supplier.get();
         Component comp = view == null ? null : view.getView();
@@ -118,14 +122,10 @@ public class SwingView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static enum ComponentPanel implements INamedItem
+    private static enum JUtilsComponent implements INamedItem
     {
         /**  */
-        JBUTTON( "JButton" ),
-        /**  */
-        JRADIOBUTTON( "JRadioButton" ),
-        /**  */
-        JTOGGLEBUTTON( "JToggleButton" );
+        MESSAGE_INPUT_VIEW( "Message Input View" );
 
         /**  */
         private final String name;
@@ -133,7 +133,7 @@ public class SwingView implements IView<JComponent>
         /**
          * @param name
          */
-        private ComponentPanel( String name )
+        private JUtilsComponent( String name )
         {
             this.name = name;
         }
@@ -151,14 +151,14 @@ public class SwingView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class ComponentPanelListModel
-        implements IItemListModel<ComponentPanel>
+    private static final class JUtilsComponentListModel
+        implements IItemListModel<JUtilsComponent>
     {
         /**
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( ComponentPanel item )
+        public String getTitle( JUtilsComponent item )
         {
             return item.name;
         }
@@ -167,7 +167,7 @@ public class SwingView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public ComponentPanel promptForNew( ListView<ComponentPanel> view )
+        public JUtilsComponent promptForNew( ListView<JUtilsComponent> view )
         {
             return null;
         }
