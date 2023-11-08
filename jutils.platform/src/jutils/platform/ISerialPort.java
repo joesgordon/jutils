@@ -1,20 +1,18 @@
 package jutils.platform;
 
+import jutils.core.io.IDataFlow;
+import jutils.platform.data.SerialParams;
+
 /*******************************************************************************
  * 
  ******************************************************************************/
-public interface ISerialPort
+public interface ISerialPort extends IDataFlow
 {
     /***************************************************************************
      * @param name
      * @return
      **************************************************************************/
     public boolean open( String name );
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public boolean close();
 
     /***************************************************************************
      * @return
@@ -35,20 +33,4 @@ public interface ISerialPort
      * @param millis
      **************************************************************************/
     public void setReadTimeout( int millis );
-
-    /***************************************************************************
-     * @param buffer
-     * @param offset
-     * @param len
-     * @return
-     **************************************************************************/
-    public int read( byte [] buffer, int offset, int len );
-
-    /***************************************************************************
-     * @param buffer
-     * @param offset
-     * @param len
-     * @return
-     **************************************************************************/
-    public int write( byte [] buffer, int offset, int len );
 }

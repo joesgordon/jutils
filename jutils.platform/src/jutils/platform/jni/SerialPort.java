@@ -1,9 +1,11 @@
 package jutils.platform.jni;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
 
+import jutils.core.io.LogUtils;
+import jutils.core.ui.hex.HexUtils;
 import jutils.platform.ISerialPort;
-import jutils.platform.SerialParams;
+import jutils.platform.data.SerialParams;
 
 /*******************************************************************************
  * 
@@ -12,10 +14,6 @@ class SerialPort implements ISerialPort
 {
     /**  */
     private final JniSerialPort api;
-    /**  */
-    private ByteBuffer readBuffer;
-    /**  */
-    private ByteBuffer writeBuffer;
 
     /***************************************************************************
      * 
@@ -23,8 +21,6 @@ class SerialPort implements ISerialPort
     SerialPort()
     {
         this.api = new JniSerialPort();
-        this.readBuffer = null;
-        this.writeBuffer = null;
     }
 
     /***************************************************************************
@@ -35,11 +31,7 @@ class SerialPort implements ISerialPort
     {
         boolean result = api.open( name );
 
-        if( result )
-        {
-            this.readBuffer = JniUtils.getBuffers().nextBuffer();
-            this.writeBuffer = JniUtils.getBuffers().nextBuffer();
-        }
+        LogUtils.printDebug( "Attempted to open %s: %s", name, result );
 
         return result;
     }
@@ -48,25 +40,12 @@ class SerialPort implements ISerialPort
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public boolean close()
+    public void close() throws IOException
     {
-        boolean result = true;
-
         if( isOpen() )
         {
-            result = api.close();
+            api.close();
         }
-
-        if( result )
-        {
-            JniUtils.getBuffers().releaseBuffer( this.readBuffer );
-            JniUtils.getBuffers().releaseBuffer( this.writeBuffer );
-
-            this.readBuffer = null;
-            this.writeBuffer = null;
-        }
-
-        return result;
     }
 
     /***************************************************************************
@@ -75,7 +54,7 @@ class SerialPort implements ISerialPort
     @Override
     public boolean isOpen()
     {
-        return readBuffer != null;
+        return api.isOpen();
     }
 
     /***************************************************************************
@@ -86,10 +65,11 @@ class SerialPort implements ISerialPort
     {
         if( isOpen() )
         {
-            SerialParams config = new SerialParams();
+            JniSerialParams config = new JniSerialParams();
+
             if( api.getConfig( config ) )
             {
-                return config;
+                return config.getParams();
             }
         }
 
@@ -104,7 +84,9 @@ class SerialPort implements ISerialPort
     {
         if( isOpen() )
         {
-            api.setConfig( config );
+            JniSerialParams params = new JniSerialParams( config );
+
+            api.setConfig( params );
         }
     }
 
@@ -130,13 +112,12 @@ class SerialPort implements ISerialPort
 
         if( isOpen() )
         {
-            readBuffer.position( 0 );
-            count = api.read( len );
+            count = api.read( buffer, offset, len );
 
             if( count > 0 )
             {
-                readBuffer.position( 0 );
-                readBuffer.get( buffer, offset, count );
+                LogUtils.printDebug( "SerialPort.read() - Read %d bytes: %s",
+                    count, HexUtils.toHexString( buffer, " ", offset, count ) );
             }
         }
 
@@ -147,19 +128,23 @@ class SerialPort implements ISerialPort
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int write( byte [] buffer, int offset, int len )
+    public void write( byte [] buffer, int offset, int len ) throws IOException
     {
         int count = -1;
 
+        // LogUtils.printDebug( "Writing bytes to serial port" );
+
         if( isOpen() )
         {
-            writeBuffer.position( 0 );
-            writeBuffer.put( buffer, offset, len );
+            count = api.write( buffer, offset, len );
 
-            writeBuffer.position( 0 );
-            count = api.write( len );
+            LogUtils.printDebug( "Wrote %d bytes", count );
+
+            if( count != len )
+            {
+                throw new IOException( "Unable to write " + len +
+                    " bytes; wrote " + count + " bytes." );
+            }
         }
-
-        return count;
     }
 }

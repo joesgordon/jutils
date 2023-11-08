@@ -73,7 +73,8 @@ class Platform implements IPlatform
     @Override
     public ISerialPort createSerialPort()
     {
-        // TODO Auto-generated method stub
-        return null;
+        SerialPort port = new SerialPort();
+
+        return port;
     }
 }

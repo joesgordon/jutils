@@ -151,10 +151,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\JniSerialPort.cpp" />
+    <ClCompile Include="src\JniUtils.cpp" />
     <ClCompile Include="src\jutils_platform_jni_JniPlatform.cpp" />
     <ClCompile Include="src\jutils_platform_jni_JniSerialPort.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\JniSerialPort.h" />
+    <ClInclude Include="src\JniUtils.h" />
     <ClInclude Include="src\jutils_platform_jni_JniPlatform.h" />
     <ClInclude Include="src\jutils_platform_jni_JniSerialPort.h" />
   </ItemGroup>

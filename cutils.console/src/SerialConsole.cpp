@@ -37,7 +37,7 @@ void promptForTimeout(ISerialPort_ port)
 {
     printf("Enter timeout [cancel]\n");
 
-    int choice = getChoice(-1);
+    int choice = getChoice(0);
 
     if (choice > -1)
     {

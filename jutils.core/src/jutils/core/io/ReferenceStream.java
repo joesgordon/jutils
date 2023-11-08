@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import jutils.core.ValidationException;
+import jutils.core.time.TimeUtils;
 
 /*******************************************************************************
  * Creates a stream where items are written to one file and the offsets (the
@@ -19,6 +20,8 @@ import jutils.core.ValidationException;
  ******************************************************************************/
 public final class ReferenceStream<T> implements IReferenceStream<T>
 {
+    /**  */
+    private static final String TIMEDATE_PREFIX = "uuuu-MM-dd_HHmmss_SSS_";
     /** The serializer to read/write each item. */
     private final IDataSerializer<T> serializer;
     /** The file to which items are written. */
@@ -361,8 +364,8 @@ public final class ReferenceStream<T> implements IReferenceStream<T>
     private static File createTempFile() throws IOException
     {
         LocalDateTime time = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-            "uuuu-MM-dd_HHmmss_SSS_" );
+        DateTimeFormatter formatter = TimeUtils.buildFormatter(
+            TIMEDATE_PREFIX );
         String prefix = time.format( formatter );
         File file = File.createTempFile( prefix, "_refstream.bin" );
 

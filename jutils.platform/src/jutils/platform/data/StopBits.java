@@ -1,22 +1,18 @@
-package jutils.platform;
+package jutils.platform.data;
 
-import jutils.core.INamedItem;
+import jutils.core.INamedValue;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum WordSize implements INamedItem
+public enum StopBits implements INamedValue
 {
     /**  */
-    FOUR( 4, "4 Bits" ),
+    ONE( 0, "1 Bit" ),
     /**  */
-    FIVE( 5, "5 Bits" ),
+    ONE5( 1, "1.5 Bits" ),
     /**  */
-    SIX( 6, "6 Bits" ),
-    /**  */
-    SEVEN( 7, "7 Bits" ),
-    /**  */
-    EIGHT( 8, "8 Bits" );
+    TWO( 2, "2 Bits" );
 
     /**  */
     public final int value;
@@ -27,7 +23,7 @@ public enum WordSize implements INamedItem
      * @param value
      * @param name
      **************************************************************************/
-    private WordSize( int value, String name )
+    private StopBits( int value, String name )
     {
         this.value = value;
         this.name = name;
@@ -40,5 +36,14 @@ public enum WordSize implements INamedItem
     public String getName()
     {
         return name;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getValue()
+    {
+        return value;
     }
 }

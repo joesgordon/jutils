@@ -23,7 +23,7 @@ class JniBuffers
      **************************************************************************/
     JniBuffers()
     {
-        this( DEFAULT_BUFF_SIZE );
+        this( 8 * DEFAULT_BUFF_SIZE );
     }
 
     /***************************************************************************
@@ -42,6 +42,7 @@ class JniBuffers
     synchronized ByteBuffer nextBuffer()
     {
         ByteBuffer buffer = null;
+
         if( !unused.isEmpty() )
         {
             buffer = unused.pop();

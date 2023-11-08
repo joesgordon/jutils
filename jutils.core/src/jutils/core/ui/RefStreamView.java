@@ -41,13 +41,14 @@ import jutils.core.io.IReferenceStream;
 import jutils.core.io.IStream;
 import jutils.core.io.IStringWriter;
 import jutils.core.io.ReferenceStream;
+import jutils.core.time.TimeUtils;
 import jutils.core.ui.OkDialogView.OkDialogButtons;
 import jutils.core.ui.RowHeaderView.PaginatedNumberRowHeaderModel;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.event.BottomScroller;
 import jutils.core.ui.event.FileChooserListener;
-import jutils.core.ui.event.ResizingTableModelListener;
 import jutils.core.ui.event.FileChooserListener.IFileSelected;
+import jutils.core.ui.event.ResizingTableModelListener;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.ITableConfig;
 import jutils.core.ui.model.ItemsTableModel;
@@ -743,7 +744,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
     }
 
     /***************************************************************************
-     * 
+     * @param T
      **************************************************************************/
     private static class ItemMouseListener<T> extends MouseAdapter
     {
@@ -789,7 +790,7 @@ public class RefStreamView<T> implements IDataView<IReferenceStream<T>>
          */
         public LocalDateTimeDecorator()
         {
-            this.dtf = DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss.SSS" );
+            this.dtf = TimeUtils.buildDateTimeDisplayFormat();
         }
 
         /**

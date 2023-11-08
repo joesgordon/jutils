@@ -30,6 +30,11 @@ class JniPlatform
      **************************************************************************/
     native boolean listPorts( List<String> ports );
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    native long getInvalidId();
+
     /**  */
     private static JniPlatform PLATFORM = null;
 

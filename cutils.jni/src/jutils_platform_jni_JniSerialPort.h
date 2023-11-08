@@ -17,14 +17,6 @@ JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_open
 
 /*
  * Class:     jutils_platform_jni_JniSerialPort
- * Method:    register
- * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)V
- */
-JNIEXPORT void JNICALL Java_jutils_platform_jni_JniSerialPort_register
-  (JNIEnv *, jobject, jobject, jobject);
-
-/*
- * Class:     jutils_platform_jni_JniSerialPort
  * Method:    close
  * Signature: ()Z
  */
@@ -42,7 +34,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_isOpen
 /*
  * Class:     jutils_platform_jni_JniSerialPort
  * Method:    getConfig
- * Signature: (Ljutils/platform/SerialParams;)Z
+ * Signature: (Ljutils/platform/jni/JniSerialParams;)Z
  */
 JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_getConfig
   (JNIEnv *, jobject, jobject);
@@ -50,7 +42,7 @@ JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_getConfig
 /*
  * Class:     jutils_platform_jni_JniSerialPort
  * Method:    setConfig
- * Signature: (Ljutils/platform/SerialParams;)Z
+ * Signature: (Ljutils/platform/jni/JniSerialParams;)Z
  */
 JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_setConfig
   (JNIEnv *, jobject, jobject);
@@ -66,18 +58,18 @@ JNIEXPORT void JNICALL Java_jutils_platform_jni_JniSerialPort_setReadTimeout
 /*
  * Class:     jutils_platform_jni_JniSerialPort
  * Method:    read
- * Signature: (I)I
+ * Signature: ([BII)I
  */
 JNIEXPORT jint JNICALL Java_jutils_platform_jni_JniSerialPort_read
-  (JNIEnv *, jobject, jint);
+  (JNIEnv *, jobject, jbyteArray, jint, jint);
 
 /*
  * Class:     jutils_platform_jni_JniSerialPort
  * Method:    write
- * Signature: (I)I
+ * Signature: ([BII)I
  */
 JNIEXPORT jint JNICALL Java_jutils_platform_jni_JniSerialPort_write
-  (JNIEnv *, jobject, jint);
+  (JNIEnv *, jobject, jbyteArray, jint, jint);
 
 #ifdef __cplusplus
 }

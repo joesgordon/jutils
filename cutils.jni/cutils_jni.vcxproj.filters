@@ -21,12 +21,24 @@
     <ClCompile Include="src\jutils_platform_jni_JniPlatform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\JniUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\JniSerialPort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\jutils_platform_jni_JniPlatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\jutils_platform_jni_JniSerialPort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JniUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JniSerialPort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

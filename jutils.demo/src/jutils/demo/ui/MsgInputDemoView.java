@@ -1,27 +1,17 @@
 package jutils.demo.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
 import jutils.core.concurrent.ConsumerTask;
 import jutils.core.concurrent.TaskThread;
-import jutils.core.ui.MessageInputView;
-import jutils.core.ui.hex.HexUtils;
-import jutils.core.ui.model.DefaultTableItemsConfig;
 import jutils.core.ui.model.IView;
-import jutils.core.ui.model.ItemsTableModel;
+import jutils.platform.data.SerialMessage;
+import jutils.platform.ui.SerialConnectionView;
 
 /*******************************************************************************
  * 
@@ -32,11 +22,7 @@ public class MsgInputDemoView implements IView<JComponent>
     private final JComponent view;
 
     /**  */
-    private final MessageInputView msgView;
-    /**  */
-    private final ItemsTableModel<DemoMsg> msgsModel;
-    /**  */
-    private final JTable msgsTable;
+    private final SerialConnectionView consoleView;
 
     /**  */
     private final MessagesThread thread;
@@ -46,16 +32,14 @@ public class MsgInputDemoView implements IView<JComponent>
      **************************************************************************/
     public MsgInputDemoView()
     {
-        this.msgView = new MessageInputView( ( m ) -> handleInputMsg( m ) );
-        this.msgsModel = new ItemsTableModel<MsgInputDemoView.DemoMsg>(
-            new DemoMsgsConfig() );
-        this.msgsTable = new JTable( msgsModel );
+        this.consoleView = new SerialConnectionView(
+            ( m ) -> handleInputMsg( m ) );
 
-        Consumer<DemoMsg> msgConsumer = ( m ) -> SwingUtilities.invokeLater(
-            () -> msgsModel.addItem( m ) );
+        Consumer<SerialMessage> msgConsumer = (
+            m ) -> SwingUtilities.invokeLater( () -> consoleView.addItem( m ) );
         this.thread = new MessagesThread( msgConsumer );
 
-        this.view = createView();
+        this.view = consoleView.getView();
 
         view.addAncestorListener( new AncestorListener()
         {
@@ -78,23 +62,6 @@ public class MsgInputDemoView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return
-     **************************************************************************/
-    private JComponent createView()
-    {
-        JPanel panel = new JPanel( new BorderLayout() );
-        JScrollPane pane = new JScrollPane( msgsTable );
-
-        pane.setMinimumSize( new Dimension( 200, 200 ) );
-        pane.setPreferredSize( new Dimension( 200, 200 ) );
-
-        panel.add( msgView.getView(), BorderLayout.CENTER );
-        panel.add( pane, BorderLayout.SOUTH );
-
-        return panel;
-    }
-
-    /***************************************************************************
      * @param message
      **************************************************************************/
     private void handleInputMsg( byte [] message )
@@ -104,7 +71,7 @@ public class MsgInputDemoView implements IView<JComponent>
             thread.start();
         }
 
-        thread.add( new DemoMsg( message ) );
+        thread.add( new SerialMessage( true, message ) );
     }
 
     /***************************************************************************
@@ -119,60 +86,12 @@ public class MsgInputDemoView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class DemoMsg
-    {
-        /**  */
-        public final LocalDateTime time;
-        /**  */
-        public final byte [] bytes;
-
-        /**
-         * @param bytes
-         */
-        public DemoMsg( byte [] bytes )
-        {
-            this.time = LocalDateTime.now( ZoneOffset.UTC );
-            this.bytes = bytes;
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static final class DemoMsgsConfig
-        extends DefaultTableItemsConfig<DemoMsg>
-    {
-        /**  */
-        private final DateTimeFormatter dateFmt;
-        /**  */
-        private final DateTimeFormatter timeFmt;
-
-        /**
-         * 
-         */
-        public DemoMsgsConfig()
-        {
-            this.dateFmt = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
-            this.timeFmt = DateTimeFormatter.ofPattern( "HHmmss.SSSSSS" );
-            super.addCol( "Date", String.class,
-                ( m ) -> m.time.format( dateFmt ) );
-            super.addCol( "Time", String.class,
-                ( m ) -> m.time.format( timeFmt ) );
-            super.addCol( "Contents", String.class,
-                ( m ) -> HexUtils.toHexString( m.bytes, " ", 0,
-                    Math.min( 64, m.bytes.length ) ) );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
     private static final class MessagesThread
     {
         /**  */
-        private final Consumer<DemoMsg> consumer;
+        private final Consumer<SerialMessage> consumer;
         /**  */
-        private final ConsumerTask<DemoMsg> task;
+        private final ConsumerTask<SerialMessage> task;
 
         /**  */
         private TaskThread thread;
@@ -180,27 +99,28 @@ public class MsgInputDemoView implements IView<JComponent>
         /**
          * @param consumer
          */
-        public MessagesThread( Consumer<DemoMsg> consumer )
+        public MessagesThread( Consumer<SerialMessage> consumer )
         {
             this.consumer = consumer;
-            this.task = new ConsumerTask<DemoMsg>( ( m, h ) -> handleMsg( m ) );
+            this.task = new ConsumerTask<SerialMessage>(
+                ( m, h ) -> handleMsg( m ) );
             this.thread = null;
         }
 
         /**
          * @param m
          */
-        private void handleMsg( DemoMsg m )
+        private void handleMsg( SerialMessage m )
         {
             consumer.accept( m );
         }
 
         /**
-         * @param demoMsg
+         * @param msg
          */
-        public void add( DemoMsg demoMsg )
+        public void add( SerialMessage msg )
         {
-            task.addData( demoMsg );
+            task.addData( msg );
         }
 
         /**

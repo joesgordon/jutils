@@ -1,14 +1,21 @@
 package jutils.platform.jni;
 
-import java.nio.ByteBuffer;
-
-import jutils.platform.SerialParams;
-
 /*******************************************************************************
  * 
  ******************************************************************************/
 public class JniSerialPort
 {
+    /**  */
+    long portId;
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public JniSerialPort()
+    {
+        this.portId = JniPlatform.getPlatform().getInvalidId();
+    }
+
     /***************************************************************************
      * @param name
      * @param config
@@ -16,12 +23,6 @@ public class JniSerialPort
      * @return
      **************************************************************************/
     native boolean open( String name );
-
-    /***************************************************************************
-     * @param readBuffer
-     * @param writeBuffer
-     **************************************************************************/
-    native void register( ByteBuffer readBuffer, ByteBuffer writeBuffer );
 
     /***************************************************************************
      * @return
@@ -38,13 +39,13 @@ public class JniSerialPort
      * @param config
      * @return
      **************************************************************************/
-    native boolean getConfig( SerialParams config );
+    native boolean getConfig( JniSerialParams config );
 
     /***************************************************************************
      * @param config
      * @return
      **************************************************************************/
-    native boolean setConfig( SerialParams config );
+    native boolean setConfig( JniSerialParams config );
 
     /***************************************************************************
      * @param millis
@@ -57,7 +58,7 @@ public class JniSerialPort
      * @param length
      * @return
      **************************************************************************/
-    native int read( int length );
+    native int read( byte [] buffer, int offset, int length );
 
     /***************************************************************************
      * @param buffer
@@ -65,5 +66,5 @@ public class JniSerialPort
      * @param length
      * @return
      **************************************************************************/
-    native int write( int length );
+    native int write( byte [] buffer, int offset, int length );
 }

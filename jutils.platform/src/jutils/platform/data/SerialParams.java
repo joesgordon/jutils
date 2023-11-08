@@ -1,4 +1,4 @@
-package jutils.platform;
+package jutils.platform.data;
 
 /*******************************************************************************
  * 

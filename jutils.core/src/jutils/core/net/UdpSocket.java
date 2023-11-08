@@ -123,13 +123,17 @@ public class UdpSocket
     public NetMessage receive() throws IOException, SocketTimeoutException
     {
         DatagramPacket packet = new DatagramPacket( rxBuffer, rxBuffer.length );
+
         socket.receive( packet );
+
         byte [] contents = Arrays.copyOf( rxBuffer, packet.getLength() );
         InetAddress address = packet.getAddress();
         int port = packet.getPort();
+        EndPoint local = getLocal();
+        EndPoint remote = new EndPoint( address, port );
+        NetMessage msg = new NetMessage( true, local, remote, contents );
 
-        return new NetMessage( true, getLocal(), new EndPoint( address, port ),
-            contents );
+        return msg;
     }
 
     /***************************************************************************

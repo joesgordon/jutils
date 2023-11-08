@@ -1,11 +1,11 @@
-package jutils.platform;
+package jutils.platform.data;
 
-import jutils.core.INamedItem;
+import jutils.core.INamedValue;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum Parity implements INamedItem
+public enum Parity implements INamedValue
 {
     /**  */
     NONE( 0, "None" ),
@@ -40,5 +40,14 @@ public enum Parity implements INamedItem
     public String getName()
     {
         return name;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getValue()
+    {
+        return value;
     }
 }

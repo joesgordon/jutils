@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Formatter;
 
 import jutils.core.Utils;
+import jutils.core.time.TimeUtils;
 
 /*******************************************************************************
  * Defines a set of standard utility functions to printing messages to the
@@ -12,12 +13,14 @@ import jutils.core.Utils;
  ******************************************************************************/
 public class LogUtils
 {
+    /**  */
+    private static final String DATE_FORMAT = "HH:mm:ss:SSS";
     /** A date formatter for displaying debug statements. */
-    private static final DateTimeFormatter dateFormatter;
+    private static final DateTimeFormatter DATE_FORMATTER;
 
     static
     {
-        dateFormatter = DateTimeFormatter.ofPattern( "HH:mm:ss:SSS" );
+        DATE_FORMATTER = TimeUtils.buildFormatter( DATE_FORMAT );
     }
 
     /***************************************************************************
@@ -145,7 +148,7 @@ public class LogUtils
      **************************************************************************/
     private static void printMessage( String msgClass, String message )
     {
-        String timeStr = LocalTime.now().format( dateFormatter );
+        String timeStr = LocalTime.now().format( DATE_FORMATTER );
 
         print( "%s[%s]: %s", msgClass, timeStr, message );
     }

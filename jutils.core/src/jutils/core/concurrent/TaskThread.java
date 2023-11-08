@@ -105,4 +105,12 @@ public class TaskThread
     {
         return runnable.isRunning();
     }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getName()
+    {
+        return thread.getName();
+    }
 }

@@ -1,18 +1,18 @@
-package jutils.platform;
+package jutils.platform.data;
 
-import jutils.core.INamedItem;
+import jutils.core.INamedValue;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum StopBits implements INamedItem
+public enum DtrControl implements INamedValue
 {
     /**  */
-    ONE( 0, "1 Bit" ),
+    DISABLE( 0, "Disable" ),
     /**  */
-    ONE5( 1, "1.5 Bits" ),
+    ENABLE( 1, "Enable" ),
     /**  */
-    TWO( 2, "2 Bits" );
+    HANDSHAKE( 2, "Handshake" );
 
     /**  */
     public final int value;
@@ -23,7 +23,7 @@ public enum StopBits implements INamedItem
      * @param value
      * @param name
      **************************************************************************/
-    private StopBits( int value, String name )
+    private DtrControl( int value, String name )
     {
         this.value = value;
         this.name = name;
@@ -36,5 +36,14 @@ public enum StopBits implements INamedItem
     public String getName()
     {
         return name;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getValue()
+    {
+        return value;
     }
 }

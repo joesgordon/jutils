@@ -28,13 +28,14 @@ import jutils.core.io.ReferenceItemStream;
 import jutils.core.io.ReferenceStream;
 import jutils.core.net.NetMessage;
 import jutils.core.net.NetMessageSerializer;
+import jutils.core.time.TimeUtils;
 import jutils.core.ui.PaginatedTableView;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.event.FileChooserListener;
-import jutils.core.ui.event.FileDropTarget;
-import jutils.core.ui.event.ItemActionListener;
 import jutils.core.ui.event.FileChooserListener.IFileSelected;
+import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import jutils.core.ui.event.ItemActionListener;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.ITableConfig;
 import jutils.core.ui.model.IView;
@@ -455,7 +456,7 @@ public class NetMessagesView implements IView<JPanel>
          */
         public LocalDateTimeDecorator()
         {
-            this.dtf = DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss.SSS" );
+            this.dtf = TimeUtils.buildDateTimeDisplayFormat();
         }
 
         /**

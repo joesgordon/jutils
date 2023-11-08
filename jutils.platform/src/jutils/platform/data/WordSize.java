@@ -1,18 +1,22 @@
-package jutils.platform;
+package jutils.platform.data;
 
-import jutils.core.INamedItem;
+import jutils.core.INamedValue;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum DtrControl implements INamedItem
+public enum WordSize implements INamedValue
 {
     /**  */
-    DISABLE( 0, "Disable" ),
+    FOUR( 4, "4 Bits" ),
     /**  */
-    ENABLE( 1, "Enable" ),
+    FIVE( 5, "5 Bits" ),
     /**  */
-    HANDSHAKE( 2, "Handshake" );
+    SIX( 6, "6 Bits" ),
+    /**  */
+    SEVEN( 7, "7 Bits" ),
+    /**  */
+    EIGHT( 8, "8 Bits" );
 
     /**  */
     public final int value;
@@ -23,7 +27,7 @@ public enum DtrControl implements INamedItem
      * @param value
      * @param name
      **************************************************************************/
-    private DtrControl( int value, String name )
+    private WordSize( int value, String name )
     {
         this.value = value;
         this.name = name;
@@ -36,5 +40,14 @@ public enum DtrControl implements INamedItem
     public String getName()
     {
         return name;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getValue()
+    {
+        return value;
     }
 }

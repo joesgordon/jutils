@@ -32,7 +32,8 @@ bool SerialPort::open(const string &device)
     bool result = false;
     string path = "\\\\.\\" + device;
 
-    auto handle = ::CreateFileA(path.c_str(), GENERIC_READ | GENERIC_WRITE, 0,
+    auto handle = ::CreateFileA(path.c_str(),
+        GENERIC_READ | GENERIC_WRITE, 0,
         0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
     if (handle != INVALID_HANDLE_VALUE)
@@ -64,8 +65,8 @@ bool SerialPort::close()
 
             string errMsg = std::system_category().message(errNumber);
 
-            printf("Error %lu: \"%s\" trying to close port \"%s\".\n",
-                errNumber, errMsg.c_str(), port->name.c_str());
+            // printf("Error %lu: \"%s\" trying to close port \"%s\".\n",
+            //     errNumber, errMsg.c_str(), port->name.c_str());
 
             closed = false;
         }
@@ -167,11 +168,19 @@ int32_t SerialPort::read(void *buffer, int count)
             auto err = GetLastError();
             string errMsg = std::system_category().message(err);
 
-            printf("ReadFile(%p, %p, %d) to %s failed: 0x%X => %s\n",
-                port->handle, buffer, count, port->name.c_str(), err,
-                errMsg.c_str());
+            // printf("DEBUG: ReadFile(%p, %p, %d) to %s failed: 0x%X => %s\n",
+            //     port->handle, buffer, count, port->name.c_str(), err,
+            //     errMsg.c_str());
         }
+
+        // printf("DEBUG: SerialPort::read() - Read %d bytes\n", bytesRead);
+        // fflush(stdout);
     }
+    // else
+    // {
+    //     printf("DEBUG: SerialPort::read() - Port isn't open\n");
+    //     fflush(stdout);
+    // }
 
     return bytesRead;
 }
@@ -183,6 +192,9 @@ int32_t SerialPort::write(const void *buffer, int count)
 {
     DWORD bytesWritten = 0;
 
+    // printf("DEBUG: Writing %d bytes\n", count);
+    // fflush(stdout);
+
     if (port->isOpen())
     {
         if (!WriteFile(port->handle, buffer, count, &bytesWritten, NULL))
@@ -190,11 +202,13 @@ int32_t SerialPort::write(const void *buffer, int count)
             auto err = GetLastError();
             string errMsg = std::system_category().message(err);
 
-            printf("WriteFile(%p, %p, %d) to %s failed: 0x%X => %s\n",
-                port->handle, buffer, count, port->name.c_str(), err,
-                errMsg.c_str());
+            // printf("WriteFile(%p, %p, %d) to %s failed: 0x%X => %s\n",
+            //     port->handle, buffer, count, port->name.c_str(), err,
+            //     errMsg.c_str());
         }
     }
+
+    // fflush(stdout);
 
     return bytesWritten;
 }

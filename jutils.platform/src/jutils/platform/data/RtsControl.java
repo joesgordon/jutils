@@ -1,11 +1,11 @@
-package jutils.platform;
+package jutils.platform.data;
 
-import jutils.core.INamedItem;
+import jutils.core.INamedValue;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum RtsControl implements INamedItem
+public enum RtsControl implements INamedValue
 {
     /**  */
     DISABLE( 0, "Disable" ),
@@ -38,5 +38,14 @@ public enum RtsControl implements INamedItem
     public String getName()
     {
         return name;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getValue()
+    {
+        return value;
     }
 }

@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import jutils.core.net.NetMessage;
+import jutils.core.time.TimeUtils;
 import jutils.core.ui.hex.ByteArrayView;
 import jutils.core.ui.model.IDataView;
 
@@ -175,8 +176,7 @@ public class NetMessageView implements IDataView<NetMessage>
     private static String buildInfoText( NetMessage msg )
     {
         StringBuilder str = new StringBuilder();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(
-            "yyyy-MM-dd HH:mm:ss.SSS" );
+        DateTimeFormatter dtf = TimeUtils.buildDateTimeDisplayFormat();
 
         str.append( "Message with " );
         str.append( msg.contents.length );

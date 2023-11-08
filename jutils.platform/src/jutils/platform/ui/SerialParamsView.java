@@ -8,13 +8,13 @@ import jutils.core.ui.fields.BooleanFormField;
 import jutils.core.ui.fields.ComboFormField;
 import jutils.core.ui.fields.NamedItemDescriptor;
 import jutils.core.ui.model.IDataView;
-import jutils.platform.BaudRate;
-import jutils.platform.DtrControl;
-import jutils.platform.Parity;
-import jutils.platform.RtsControl;
-import jutils.platform.SerialParams;
-import jutils.platform.StopBits;
-import jutils.platform.WordSize;
+import jutils.platform.data.BaudRate;
+import jutils.platform.data.DtrControl;
+import jutils.platform.data.Parity;
+import jutils.platform.data.RtsControl;
+import jutils.platform.data.SerialParams;
+import jutils.platform.data.StopBits;
+import jutils.platform.data.WordSize;
 
 /*******************************************************************************
  * 

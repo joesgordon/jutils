@@ -20,6 +20,7 @@ import jutils.core.io.IOUtils;
 import jutils.core.io.LogUtils;
 import jutils.core.io.ResourceLoader;
 import jutils.core.io.parsers.IntegerParser;
+import jutils.core.time.TimeUtils;
 import jutils.platform.jni.JniUtils;
 
 /*******************************************************************************
@@ -189,8 +190,13 @@ public final class PlatformUtils
      **************************************************************************/
     private static final class ResourceInfo
     {
+        /**  */
+        private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HHmmss";
+        /**  */
         public final String filename;
+        /**  */
         public long size;
+        /**  */
         public LocalDateTime time;
 
         /**
@@ -212,8 +218,8 @@ public final class PlatformUtils
         public void readInfo( URL url )
         {
             IntegerParser parser = new IntegerParser( 0, null );
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern(
-                "yyyy-MM-dd HHmmss" );
+            DateTimeFormatter dtf = TimeUtils.buildFormatter(
+                TIMESTAMP_FORMAT );
 
             try( InputStream stream = url.openStream() )
             {

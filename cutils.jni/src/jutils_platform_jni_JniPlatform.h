@@ -31,6 +31,14 @@ JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniPlatform_destroy
 JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniPlatform_listPorts
   (JNIEnv *, jobject, jobject);
 
+/*
+ * Class:     jutils_platform_jni_JniPlatform
+ * Method:    getInvalidId
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_jutils_platform_jni_JniPlatform_getInvalidId
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

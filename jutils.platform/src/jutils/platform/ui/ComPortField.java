@@ -2,43 +2,44 @@ package jutils.platform.ui;
 
 import javax.swing.JComponent;
 
-import jutils.core.net.NetUtils.NicInfo;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.fields.StringFormField;
-import jutils.core.ui.net.NetworkInterfacePopup;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 
-public class CommPortField implements IDataFormField<String>
+/*******************************************************************************
+ * 
+ ******************************************************************************/
+public class ComPortField implements IDataFormField<String>
 {
     /**  */
-    private final StringFormField nicField;
+    private final StringFormField portField;
     /**  */
-    private final NetworkInterfacePopup nicMenu;
+    private final ComPortPopup menu;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
-    public CommPortField( String name )
+    public ComPortField( String name )
     {
-        this.nicField = new StringFormField( name );
-        this.nicMenu = new NetworkInterfacePopup();
+        this.portField = new StringFormField( name );
+        this.menu = new ComPortPopup();
 
-        nicMenu.addToRightClick( nicField.getTextField() );
-        nicMenu.setUpdater( ( d ) -> handleNicChosen( d ) );
+        menu.addToRightClick( portField.getTextField() );
+        menu.setUpdater( ( d ) -> handlePortChosen( d ) );
     }
 
     /***************************************************************************
-     * @param nic
+     * @param port
      **************************************************************************/
-    private void handleNicChosen( NicInfo nic )
+    private void handlePortChosen( String port )
     {
-        nicField.setValue( nic.address.getHostAddress() );
-        IUpdater<String> updater = nicField.getUpdater();
+        portField.setValue( port );
+        IUpdater<String> updater = portField.getUpdater();
         if( updater != null )
         {
-            updater.update( nicField.getValue() );
+            updater.update( portField.getValue() );
         }
     }
 
@@ -48,7 +49,7 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public String getName()
     {
-        return nicField.getName();
+        return portField.getName();
     }
 
     /***************************************************************************
@@ -57,7 +58,7 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public JComponent getView()
     {
-        return nicField.getView();
+        return portField.getView();
     }
 
     /***************************************************************************
@@ -66,7 +67,7 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public String getValue()
     {
-        return nicField.getValue();
+        return portField.getValue();
     }
 
     /***************************************************************************
@@ -75,7 +76,7 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public void setValue( String value )
     {
-        nicField.setValue( value );
+        portField.setValue( value );
     }
 
     /***************************************************************************
@@ -84,7 +85,7 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public void setUpdater( IUpdater<String> updater )
     {
-        nicField.setUpdater( updater );
+        portField.setUpdater( updater );
     }
 
     /***************************************************************************
@@ -93,7 +94,7 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public IUpdater<String> getUpdater()
     {
-        return nicField.getUpdater();
+        return portField.getUpdater();
     }
 
     /***************************************************************************
@@ -102,7 +103,7 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public void setEditable( boolean editable )
     {
-        nicField.setEditable( editable );
+        portField.setEditable( editable );
     }
 
     /***************************************************************************
@@ -111,7 +112,7 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        nicField.addValidityChanged( l );
+        portField.addValidityChanged( l );
     }
 
     /***************************************************************************
@@ -120,7 +121,7 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        nicField.removeValidityChanged( l );
+        portField.removeValidityChanged( l );
     }
 
     /***************************************************************************
@@ -129,6 +130,6 @@ public class CommPortField implements IDataFormField<String>
     @Override
     public Validity getValidity()
     {
-        return nicField.getValidity();
+        return portField.getValidity();
     }
 }

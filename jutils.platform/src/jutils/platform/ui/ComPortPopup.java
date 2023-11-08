@@ -16,7 +16,7 @@ import jutils.platform.PlatformUtils;
 /*******************************************************************************
  *
  ******************************************************************************/
-public class CommPortPopup implements IView<JPopupMenu>
+public class ComPortPopup implements IView<JPopupMenu>
 {
     /**  */
     private final JPopupMenu menu;
@@ -26,7 +26,7 @@ public class CommPortPopup implements IView<JPopupMenu>
     /***************************************************************************
      * 
      **************************************************************************/
-    public CommPortPopup()
+    public ComPortPopup()
     {
         this.menu = new JPopupMenu();
         this.updater = null;

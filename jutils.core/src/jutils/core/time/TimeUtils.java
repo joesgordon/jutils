@@ -1,12 +1,13 @@
 package jutils.core.time;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.TimeZone;
 
 /*******************************************************************************
  * 
@@ -42,9 +43,16 @@ public final class TimeUtils
     public static final long MAX_MILLIS_IN_YEAR = MAX_SECONDS_IN_YEAR * 1000;
     /**  */
     public static final long MAX_MICROS_IN_YEAR = MAX_MILLIS_IN_YEAR * 1000;
+
     /**  */
+    public static final String DATE_FMT = "yyyy-MM-dd";
     /**  */
-    public static final TimeZone UTC = TimeZone.getTimeZone( "UTC" );
+    public static final String TIME_FMT = "HHmmss.SSSSSS";
+
+    /**  */
+    public static final String DATE_TS_FMT = "yyyyMMdd";
+    /**  */
+    public static final String TIME_TS_FMT = "HHmmss_SSSSSS";
 
     /***************************************************************************
      * Private constructor to prevent instantiation.
@@ -252,5 +260,81 @@ public final class TimeUtils
         long duration = Duration.between( start, end ).toMillis();
 
         return duration;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static LocalDateTime utcNow()
+    {
+        return LocalDateTime.now( ZoneOffset.UTC );
+    }
+
+    /***************************************************************************
+     * Always use 'u' for the year.
+     * @param format
+     * @return
+     **************************************************************************/
+    public static DateTimeFormatter buildFormatter( String format )
+    {
+        return DateTimeFormatter.ofPattern( format );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static DateTimeFormatter buildDateDisplayFormat()
+    {
+        return buildFormatter( DATE_FMT );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static DateTimeFormatter buildTimeDisplayFormat()
+    {
+        return buildFormatter( TIME_FMT );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static DateTimeFormatter buildDateTimeDisplayFormat()
+    {
+        return buildFormatter( DATE_FMT + " " + TIME_FMT );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static DateTimeFormatter buildDateStampFormat()
+    {
+        return buildFormatter( DATE_TS_FMT );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static DateTimeFormatter buildTimeStampFormat()
+    {
+        return buildFormatter( TIME_TS_FMT );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static DateTimeFormatter buildDateTimeStampFormat()
+    {
+        return buildFormatter( DATE_TS_FMT + "_" + TIME_TS_FMT );
+    }
+
+    /***************************************************************************
+     * @param millis
+     * @return
+     **************************************************************************/
+    public static LocalDateTime fromLinuxEpoch( long millis )
+    {
+        return LocalDateTime.ofInstant( Instant.ofEpochMilli( millis ),
+            ZoneOffset.UTC );
     }
 }

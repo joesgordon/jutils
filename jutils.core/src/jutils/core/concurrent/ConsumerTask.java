@@ -1,7 +1,10 @@
 package jutils.core.concurrent;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import jutils.core.io.LogUtils;
 
 /*******************************************************************************
  * Used to process data that is collected by a separate thread. When this task
@@ -51,13 +54,16 @@ public class ConsumerTask<T> implements ITask
     {
         T obj = null;
 
+        LogUtils.printDebug( "Starting consumer task %s",
+            Thread.currentThread().getName() );
+
         while( handler.canContinue() )
         {
             if( acceptInput.get() )
             {
                 try
                 {
-                    obj = data.take();
+                    obj = data.poll( 500, TimeUnit.MILLISECONDS );
                 }
                 catch( InterruptedException e )
                 {
@@ -74,11 +80,10 @@ public class ConsumerTask<T> implements ITask
                 consumer.consume( obj, handler );
                 obj = null;
             }
-            else
-            {
-                break;
-            }
         }
+
+        LogUtils.printDebug( "Stopping consumer task %s",
+            Thread.currentThread().getName() );
 
         stopAcceptingInput();
 

@@ -1,12 +1,16 @@
 package jutils.core.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import jutils.core.io.IOUtils;
@@ -37,7 +41,7 @@ public class FilePropertiesView implements IDataView<File>
     /**  */
     private final VerboseMessageView msgview;
     /**  */
-    private final SimpleDateFormat fmt;
+    private final DateTimeFormatter fmt;
 
     // TODO Create a better properties view.
 
@@ -56,12 +60,10 @@ public class FilePropertiesView implements IDataView<File>
         this.dateField = new JTextField( 20 );
         this.typeField = new JTextField( 20 );
         this.msgview = new VerboseMessageView();
-        this.fmt = new SimpleDateFormat( "MM/dd/yyyy HH:mm:ss.SSS" );
+        this.fmt = TimeUtils.buildTimeDisplayFormat();
         this.view = createView();
 
         this.file = null;
-
-        fmt.setTimeZone( TimeUtils.UTC );
     }
 
     /***************************************************************************
@@ -142,6 +144,7 @@ public class FilePropertiesView implements IDataView<File>
         String desc = icon.fileSys.getSystemTypeDescription( file );
         String ext = IOUtils.getFileExtension( file );
         String type = "Does Not Exist";
+        LocalDateTime time = TimeUtils.fromLinuxEpoch( file.lastModified() );
 
         if( file.exists() )
         {
@@ -163,7 +166,7 @@ public class FilePropertiesView implements IDataView<File>
         pathField.setText( file.getAbsolutePath() );
         typeField.setText( type );
         sizeField.setText( IOUtils.byteCount( len ) + " (" + len + " bytes)" );
-        dateField.setText( fmt.format( new Date( file.lastModified() ) ) );
+        dateField.setText( time.format( fmt ) );
         descField.setText( desc );
 
         pathField.setCaretPosition( 0 );

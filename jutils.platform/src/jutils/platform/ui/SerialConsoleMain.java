@@ -9,7 +9,7 @@ import jutils.platform.PlatformUtils;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class DemoPlatformMain
+public class SerialConsoleMain
 {
     /***************************************************************************
      * @param args
@@ -30,7 +30,7 @@ public class DemoPlatformMain
      **************************************************************************/
     private static JFrame createFrame()
     {
-        DemoPlatformFrame frameView = new DemoPlatformFrame();
+        SerialConsoleFrame frameView = new SerialConsoleFrame();
         JFrame frame = frameView.getView();
 
         return frame;

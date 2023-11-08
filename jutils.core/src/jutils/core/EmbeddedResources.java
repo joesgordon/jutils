@@ -17,6 +17,7 @@ import java.util.Properties;
 import jutils.core.io.LogUtils;
 import jutils.core.io.ResourceLoader;
 import jutils.core.io.parsers.IntegerParser;
+import jutils.core.time.TimeUtils;
 
 /*******************************************************************************
  * 
@@ -218,6 +219,9 @@ public class EmbeddedResources
     private static final class ResourceInfo
     {
         /**  */
+        private static final String TIME_DATE_FMT = "uuuu-MM-dd HHmmss";
+
+        /**  */
         public final String filename;
         /**  */
         public long size;
@@ -250,8 +254,7 @@ public class EmbeddedResources
         public void readInfo( URL url )
         {
             IntegerParser parser = new IntegerParser( 0, null );
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern(
-                "yyyy-MM-dd HHmmss" );
+            DateTimeFormatter dtf = TimeUtils.buildFormatter( TIME_DATE_FMT );
 
             try( InputStream stream = url.openStream() )
             {
