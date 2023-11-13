@@ -9,7 +9,6 @@ import jutils.core.concurrent.ConsumerTask;
 import jutils.core.concurrent.TaskThread;
 import jutils.core.io.LogUtils;
 import jutils.core.task.TaskError;
-import jutils.core.ui.hex.HexUtils;
 import jutils.core.ui.model.IView;
 import jutils.platform.IPlatform;
 import jutils.platform.ISerialPort;
@@ -50,7 +49,6 @@ public class SerialConsoleView implements IView<JComponent>
      **************************************************************************/
     private void handleBytesToSend( byte [] m )
     {
-        LogUtils.printDebug( "handleBytesToSend" );
         serialTask.write( m );
     }
 
@@ -59,7 +57,6 @@ public class SerialConsoleView implements IView<JComponent>
      **************************************************************************/
     private void handleMsgProcessed( SerialMessage m )
     {
-        LogUtils.printDebug( "handleMsgProcessed" );
         msgsDisplayThread.add( m );
     }
 
@@ -68,8 +65,6 @@ public class SerialConsoleView implements IView<JComponent>
      **************************************************************************/
     private void handleMessageToDisplay( SerialMessage m )
     {
-        LogUtils.printDebug( "handleMessageToDisplay: %s",
-            HexUtils.toHexString( m.data ) );
         SwingUtilities.invokeLater( () -> connectionView.addItem( m ) );
     }
 
@@ -98,7 +93,7 @@ public class SerialConsoleView implements IView<JComponent>
     {
         boolean result = false;
 
-        LogUtils.printDebug( "SerialConsoleView.connect()" );
+        // LogUtils.printDebug( "SerialConsoleView.connect()" );
 
         if( !msgsDisplayThread.isRunning() )
         {
@@ -108,6 +103,8 @@ public class SerialConsoleView implements IView<JComponent>
 
             if( serialPort.open( config.comPort ) )
             {
+                serialPort.setConfig( config.params );
+
                 if( serialTask.start( serialPort ) )
                 {
                     result = msgsDisplayThread.start();

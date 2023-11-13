@@ -2,8 +2,6 @@ package jutils.platform.jni;
 
 import java.io.IOException;
 
-import jutils.core.io.LogUtils;
-import jutils.core.ui.hex.HexUtils;
 import jutils.platform.ISerialPort;
 import jutils.platform.data.SerialParams;
 
@@ -31,7 +29,7 @@ class SerialPort implements ISerialPort
     {
         boolean result = api.open( name );
 
-        LogUtils.printDebug( "Attempted to open %s: %s", name, result );
+        // LogUtils.printDebug( "Attempted to open %s: %s", name, result );
 
         return result;
     }
@@ -114,11 +112,11 @@ class SerialPort implements ISerialPort
         {
             count = api.read( buffer, offset, len );
 
-            if( count > 0 )
-            {
-                LogUtils.printDebug( "SerialPort.read() - Read %d bytes: %s",
-                    count, HexUtils.toHexString( buffer, " ", offset, count ) );
-            }
+            // if( count > 0 )
+            // {
+            // LogUtils.printDebug( "SerialPort.read() - Read %d bytes: %s",
+            // count, HexUtils.toHexString( buffer, " ", offset, count ) );
+            // }
         }
 
         return count;
@@ -138,7 +136,7 @@ class SerialPort implements ISerialPort
         {
             count = api.write( buffer, offset, len );
 
-            LogUtils.printDebug( "Wrote %d bytes", count );
+            // LogUtils.printDebug( "Wrote %d bytes", count );
 
             if( count != len )
             {

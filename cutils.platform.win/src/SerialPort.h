@@ -79,7 +79,7 @@ public:
      **************************************************************************/
     static std::vector<std::string> listSerialPorts();
 private:
-    PortInfo_ port;
+    PortInfo_ info;
 };
 
 typedef std::shared_ptr<SerialPort> SerialPort_;

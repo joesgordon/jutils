@@ -196,7 +196,11 @@ void printPortOptions(ISerialPort_ port)
 void readPort(ISerialPort_ port)
 {
     uint8_t buf[64];
-    int32_t count = port->read(&buf, sizeof(buf));
+    int32_t count = sizeof(buf);
+
+    printf("Reading up to %d bytes in %p\n", count, buf);
+    
+    count = port->read(buf, count);
 
     printf("Read %d bytes\n", count);
 }
@@ -206,6 +210,14 @@ void readPort(ISerialPort_ port)
  ******************************************************************************/
 void writePort(ISerialPort_ port)
 {
+    printf("Enter int to send [cancel]\n");
+
+    int choice = getChoice(0);
+
+    if (choice > -1)
+    {
+        port->write(&choice, sizeof(choice));
+    }
 }
 
 /*******************************************************************************
@@ -263,9 +275,12 @@ void openPort(const string &portName)
         }
     }
 
+    printf("Port ptr: %p\n", port.get());
+    fflush(stdout);
+
     port->close();
 
-    printf("\n");
+    port.reset();
 }
 
 /*******************************************************************************

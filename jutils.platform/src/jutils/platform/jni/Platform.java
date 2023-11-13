@@ -3,6 +3,7 @@ package jutils.platform.jni;
 import java.util.ArrayList;
 import java.util.List;
 
+import jutils.core.io.LogUtils;
 import jutils.platform.IPlatform;
 import jutils.platform.ISerialPort;
 
@@ -51,7 +52,11 @@ class Platform implements IPlatform
     @Override
     public boolean destroy()
     {
-        return jplatform.destroy();
+        LogUtils.printDebug( "Calling destroy" );
+        boolean result = jplatform.destroy();
+        LogUtils.printDebug( "Called destroy: %s", result );
+
+        return result;
     }
 
     /***************************************************************************

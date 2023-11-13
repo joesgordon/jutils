@@ -33,8 +33,7 @@ public class DataFlowTask
     {
         this.handler = handler;
         this.writeTask = new ConsumerTask<byte []>(
-            ( d, h ) -> handleWrite( d ),
-            () -> LogUtils.printDebug( "Data Flow consumer finished" ) );
+            ( d, h ) -> handleWrite( d ) );
     }
 
     /***************************************************************************
@@ -61,9 +60,6 @@ public class DataFlowTask
     {
         byte [] buffer = new byte[IOUtils.DEFAULT_BUF_SIZE];
 
-        LogUtils.printDebug( "Starting task %s",
-            Thread.currentThread().getName() );
-
         while( h.canContinue() )
         {
             try
@@ -84,9 +80,6 @@ public class DataFlowTask
                 this.handler.signalError( new TaskError( "Read Error", ex ) );
             }
         }
-
-        LogUtils.printDebug( "Stopping task %s",
-            Thread.currentThread().getName() );
     }
 
     /***************************************************************************
@@ -121,18 +114,10 @@ public class DataFlowTask
 
         if( flow != null )
         {
-            LogUtils.printDebug( "Stopping read thread %s",
-                readThread.getName() );
             this.readThread.stop();
-            LogUtils.printDebug( "Stopping write thread %s",
-                readThread.getName() );
             this.writeThread.stop();
 
-            LogUtils.printDebug( "Wating for read thread %s",
-                readThread.getName() );
             this.readThread.waitFor();
-            LogUtils.printDebug( "Wating for write thread %s",
-                readThread.getName() );
             this.writeThread.waitFor();
 
             try
@@ -165,7 +150,6 @@ public class DataFlowTask
      **************************************************************************/
     public void write( byte [] data )
     {
-        LogUtils.printDebug( "DataFlowTask.write([%d])", data.length );
         writeTask.addData( data );
     }
 

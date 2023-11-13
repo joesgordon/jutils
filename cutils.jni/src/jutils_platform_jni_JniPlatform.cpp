@@ -31,9 +31,24 @@ JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniPlatform_initialize(
 JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniPlatform_destroy(
     JNIEnv *env, jobject jthis)
 {
+    bool result = false;
+
+    printf("DEBUG: JNI Destroy - Entered\n");
+
     auto platform = CUtils::getPlatform();
 
-    return platform->destroy();
+    printf("DEBUG: JNI Destroy - Platform received\n");
+
+    if (platform)
+    {
+        result = platform->destroy();
+
+        printf("DEBUG: JNI Destroy - Platform destroyed\n");
+    }
+
+    printf("DEBUG: JNI Destroy - Exiting\n");
+
+    return result;
 }
 
 /*******************************************************************************

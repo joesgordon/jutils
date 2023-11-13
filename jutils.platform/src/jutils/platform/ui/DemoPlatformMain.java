@@ -3,7 +3,6 @@ package jutils.platform.ui;
 import javax.swing.JFrame;
 
 import jutils.core.ui.app.AppRunner;
-import jutils.platform.IPlatform;
 import jutils.platform.PlatformUtils;
 
 /*******************************************************************************
@@ -18,9 +17,7 @@ public class DemoPlatformMain
     {
         AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
 
-        IPlatform platform = PlatformUtils.getPlatform();
-
-        platform.initialize();
+        PlatformUtils.checkResources();
 
         AppRunner.invokeLater( () -> createFrame() );
     }

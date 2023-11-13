@@ -19,13 +19,34 @@ public class NanoWatch
     private WatchState state;
 
     /***************************************************************************
-     * Creates a new, unhacked, stopwatch.
+     * Creates a new, stopped, stopwatch.
      **************************************************************************/
     public NanoWatch()
     {
-        startTime = 0;
+        this( false );
+    }
 
-        start();
+    /***************************************************************************
+     * Creates a new stopwatch and starts as provided.
+     * @param start starts the stopwatch if {@code true}.
+     **************************************************************************/
+    public NanoWatch( boolean start )
+    {
+        reset();
+        if( start )
+        {
+            start();
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void reset()
+    {
+        startTime = 0L;
+        elapsed = 0L;
+        state = WatchState.STOPPED;
     }
 
     /***************************************************************************

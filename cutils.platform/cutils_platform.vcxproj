@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\BaudRate.h" />
+    <ClInclude Include="inc\CUtils.h" />
     <ClInclude Include="inc\DtrControl.h" />
     <ClInclude Include="inc\IPlatform.hpp" />
     <ClInclude Include="inc\ISerialPort.hpp" />
+    <ClInclude Include="inc\ISignal.hpp" />
     <ClInclude Include="inc\Parity.h" />
     <ClInclude Include="inc\RtsControl.h" />
     <ClInclude Include="inc\SerialParams.h" />
@@ -31,9 +33,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BaudRate.cpp" />
+    <ClCompile Include="src\CUtils.cpp" />
     <ClCompile Include="src\DtrControl.cpp" />
     <ClCompile Include="src\IPlatform.cpp" />
     <ClCompile Include="src\ISerialPort.cpp" />
+    <ClCompile Include="src\ISignal.cpp" />
     <ClCompile Include="src\Parity.cpp" />
     <ClCompile Include="src\RtsControl.cpp" />
     <ClCompile Include="src\SerialParams.cpp" />

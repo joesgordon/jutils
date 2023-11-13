@@ -5,10 +5,14 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <cstdint>
 
 namespace CUtils
 {
 
+/*******************************************************************************
+ *
+ ******************************************************************************/
 class IPlatform
 {
 public:
@@ -33,14 +37,19 @@ public:
     virtual bool destroy() = 0;
 
     /***************************************************************************
-     *
+     * Creates a serial port object.
      **************************************************************************/
     virtual ISerialPort_ createSerialPort() = 0;
 
     /***************************************************************************
-     *
+     * Lists the serial ports on the system
      **************************************************************************/
     virtual std::vector<std::string> listSerialPorts() = 0;
+
+    /***************************************************************************
+     * Returns the string description of the provided error code.
+     **************************************************************************/
+    virtual std::string getError(const int32_t &errorCode) = 0;
 };
 
 typedef std::shared_ptr<IPlatform> IPlatform_;

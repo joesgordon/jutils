@@ -1,51 +1,51 @@
 #pragma once
 
-#include "IPlatform.hpp"
+#define _WINSOCKAPI_ // stops windows.h including winsock.h
+#include <Windows.h>
+
+#include "ISignal.hpp"
+
+#include <atomic>
 
 namespace CUtils
 {
 
-class WinPlatform : public IPlatform
+class Signal : public ISignal
 {
 public:
     /***************************************************************************
      *
      **************************************************************************/
-    WinPlatform();
+    Signal();
 
     /***************************************************************************
      *
      **************************************************************************/
-    virtual ~WinPlatform() override;
+    explicit Signal(const Signal &) = delete;
+    explicit Signal(Signal &&) noexcept = delete;
+    Signal &operator=(const Signal &) = delete;
+    Signal &operator=(Signal &&) noexcept = delete;
 
     /***************************************************************************
      *
      **************************************************************************/
-    virtual bool initialize() override;
+    virtual ~Signal() override;
 
     /***************************************************************************
      *
      **************************************************************************/
-    virtual bool destroy() override;
+    virtual bool wait(int timeout = -1) override;
 
     /***************************************************************************
      *
      **************************************************************************/
-    virtual ISerialPort_ createSerialPort() override;
-
-    /***************************************************************************
-     *
-     **************************************************************************/
-    virtual std::vector<std::string> listSerialPorts() override;
-
-    /***************************************************************************
-     * Returns the string description of the provided error code.
-     **************************************************************************/
-    virtual std::string getError(const int32_t &errorCode) override;
+    virtual void notify() override;
 
 private:
-    bool initialized;
-    bool destroyed;
+    /**  */
+    HANDLE handle;
+    /**  */
+    std::atomic<bool> signaled;
 };
 
 } // namespace CUtils

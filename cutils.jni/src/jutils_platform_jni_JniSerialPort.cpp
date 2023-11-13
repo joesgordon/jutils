@@ -5,6 +5,7 @@
 #include "ISerialPort.hpp"
 #include "JniUtils.h"
 #include "JniSerialPort.h"
+#include "CUtils.h"
 
 #include <map>
 
@@ -29,109 +30,9 @@ const char *SW_IN = "swFlowInputEnabled";
 /*******************************************************************************
  *
  ******************************************************************************/
-void printBytes(void *ptr, int count)
-{
-    uint8_t *bptr = (uint8_t *)ptr;
-    for (int i = 0; i < count; i++)
-    {
-        if (i > 0)
-        {
-            printf(", ");
-        }
-
-        printf("%02X", bptr[i]);
-    }
-}
-
-/*******************************************************************************
- *
- ******************************************************************************/
-jboolean getBoolean(JNIEnv *env, jobject jobj, const char *name)
-{
-    jclass jcls = env->GetObjectClass(jobj);
-    jfieldID id = env->GetFieldID(jcls, name, "Z");
-    jboolean value = env->GetBooleanField(jobj, id);
-
-    env->DeleteLocalRef(jcls);
-
-    return value;
-}
-
-/*******************************************************************************
- *
- ******************************************************************************/
-void setBoolean(JNIEnv *env, jobject jobj, const char *name, jboolean value)
-{
-    jclass jcls = env->GetObjectClass(jobj);
-    jfieldID id = env->GetFieldID(jcls, name, "Z");
-
-    env->SetBooleanField(jobj, id, value);
-
-    env->DeleteLocalRef(jcls);
-}
-
-/*******************************************************************************
- *
- ******************************************************************************/
-jint getInt(JNIEnv *env, jobject jobj, const char *name)
-{
-    jclass jcls = env->GetObjectClass(jobj);
-    jfieldID id = env->GetFieldID(jcls, name, "I");
-    jint value = env->GetIntField(jobj, id);
-
-    env->DeleteLocalRef(jcls);
-
-    return value;
-}
-
-/*******************************************************************************
- *
- ******************************************************************************/
-void setInt(JNIEnv *env, jobject jobj, const char *name, jint value)
-{
-    jclass jcls = env->GetObjectClass(jobj);
-    jfieldID id = env->GetFieldID(jcls, name, "I");
-
-    env->SetIntField(jobj, id, value);
-
-    env->DeleteLocalRef(jcls);
-}
-
-/*******************************************************************************
- *
- ******************************************************************************/
-jlong getLong(JNIEnv *env, jobject jobj, const char *name)
-{
-    jclass jcls = env->GetObjectClass(jobj);
-    jfieldID id = env->GetFieldID(jcls, name, "J");
-    jlong value = env->GetLongField(jobj, id);
-
-    env->DeleteLocalRef(jcls);
-
-    return value;
-}
-
-/*******************************************************************************
- *
- ******************************************************************************/
-void setLong(JNIEnv *env, jobject jobj, const char *name, jlong value)
-{
-    jclass jcls = env->GetObjectClass(jobj);
-    jfieldID id = env->GetFieldID(jcls, name, "J");
-
-    env->SetLongField(jobj, id, value);
-
-    env->DeleteLocalRef(jcls);
-}
-
-/*******************************************************************************
- *
- ******************************************************************************/
 JniSerialPort *getId(JNIEnv *env, jobject jSerialPort)
 {
-    jlong value = getLong(env, jSerialPort, PORT_ID);
-
-    return reinterpret_cast<JniSerialPort *>(value);
+    return getTPointer<JniSerialPort>(env, jSerialPort, PORT_ID);
 }
 
 /*******************************************************************************
@@ -139,9 +40,7 @@ JniSerialPort *getId(JNIEnv *env, jobject jSerialPort)
  ******************************************************************************/
 void setId(JNIEnv *env, jobject jSerialPort, JniSerialPort *jsp)
 {
-    jlong value = reinterpret_cast<jlong>(jsp);
-
-    setLong(env, jSerialPort, PORT_ID, value);
+    setTPointer<JniSerialPort>(env, jSerialPort, PORT_ID, jsp);
 }
 
 /*******************************************************************************
@@ -287,13 +186,13 @@ JNIEXPORT jboolean JNICALL Java_jutils_platform_jni_JniSerialPort_setConfig(
  *
  ******************************************************************************/
 JNIEXPORT void JNICALL Java_jutils_platform_jni_JniSerialPort_setReadTimeout(
-    JNIEnv *env, jobject jthis, jint millis)
+    JNIEnv *env, jobject jthis, jint jmillis)
 {
     JniSerialPort *info = getId(env, jthis);
 
     if (nullptr != info)
     {
-        info->port->setTimeout(millis);
+        info->port->setTimeout(jmillis);
     }
 }
 
@@ -301,35 +200,45 @@ JNIEXPORT void JNICALL Java_jutils_platform_jni_JniSerialPort_setReadTimeout(
  *
  ******************************************************************************/
 JNIEXPORT jint JNICALL Java_jutils_platform_jni_JniSerialPort_read(
-    JNIEnv *env, jobject jthis, jbyteArray jbuf, jint joffset, jint length)
+    JNIEnv *env, jobject jthis, jbyteArray jbuf, jint joffset, jint jlength)
 {
     jint result = -1;
 
-    jbyte *buf = (jbyte *)env->GetPrimitiveArrayCritical(jbuf, nullptr);
+    if (nullptr == jbuf || joffset < 0 || jlength < 0)
+    {
+        return result;
+    }
 
     JniSerialPort *info = getId(env, jthis);
 
-    if (nullptr != info)
+    if (nullptr != info && joffset > -1 && jlength > -1)
     {
-        jbyte *pbuf = &buf[joffset];
-        result = info->port->read(pbuf, length);
+        int remaining = env->GetArrayLength(jbuf) - joffset;
+        int length = remaining < jlength ? remaining : jlength;
+        uint8_t *buffer = new uint8_t[length];
+        result = info->port->read(buffer, length);
 
         if (result > 0)
         {
-            printf(
-                "DEBUG: Read %d bytes: ", result);
-            printBytes(pbuf, result);
-            printf("\n");
+            jbyte *buf = (jbyte *)env->GetPrimitiveArrayCritical(jbuf, nullptr);
+            jbyte *pbuf = &buf[joffset];
+            memcpy(pbuf, buffer, result);
+            env->ReleasePrimitiveArrayCritical(jbuf, buf, 0);
+
+            // printf("DEBUG: Read %d bytes: ", result);
+            // printBytes(buffer, result);
+            // printf("\n");
+            // fflush(stdout);
         }
+
+        delete[] buffer;
     }
     // else
     // {
     //     printf("ERROR: Unable to read bytes: invalid info pointer\n");
     // }
 
-    fflush(stdout);
-
-    env->ReleasePrimitiveArrayCritical(jbuf, buf, 0);
+    // fflush(stdout);
 
     return result;
 }
@@ -338,31 +247,46 @@ JNIEXPORT jint JNICALL Java_jutils_platform_jni_JniSerialPort_read(
  *
  ******************************************************************************/
 JNIEXPORT jint JNICALL Java_jutils_platform_jni_JniSerialPort_write(
-    JNIEnv *env, jobject jthis, jbyteArray jbuf, jint joffset, jint length)
+    JNIEnv *env, jobject jthis, jbyteArray jbuf, jint joffset, jint jlength)
 {
     jint result = -1;
 
+    if (nullptr == jbuf || joffset < 0 || jlength < 0)
+    {
+        return result;
+    }
+
+    int bufLen = env->GetArrayLength(jbuf);
+    int remaining = bufLen - joffset;
+    int length = remaining < jlength ? remaining : jlength;
+    uint8_t *buffer = new uint8_t[length];
     jbyte *buf = (jbyte *)env->GetPrimitiveArrayCritical(jbuf, nullptr);
+    jbyte *pbuf = &buf[joffset];
+    memcpy(buffer, pbuf, length);
+    env->ReleasePrimitiveArrayCritical(jbuf, buf, 0);
 
     JniSerialPort *info = getId(env, jthis);
 
     if (nullptr != info)
     {
-        void *pbuf = &buf[joffset];
-        result = info->port->write(pbuf, length);
+        result = info->port->write(buffer, length);
 
-        printf("DEBUG: Wrote %d bytes:", result);
-        printBytes(pbuf, result);
-        printf("\n");
+        // if (result > 0)
+        // {
+        //     printf("DEBUG: Wrote %d bytes:", result);
+        //     printBytes(buffer, result);
+        //     printf("\n");
+        //     fflush(stdout);
+        // }
     }
     // else
     // {
     //     printf("ERROR: Unable to write bytes: invalid info pointer\n");
     // }
 
-    fflush(stdout);
+    // fflush(stdout);
 
-    env->ReleasePrimitiveArrayCritical(jbuf, buf, 0);
+    delete[] buffer;
 
     return result;
 }

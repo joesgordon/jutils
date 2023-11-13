@@ -150,13 +150,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\PortInfo.cpp" />
+    <ClCompile Include="src\Signal.cpp" />
     <ClCompile Include="src\WinPlatform.cpp" />
     <ClCompile Include="src\SerialPort.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\PortInfo.h" />
+    <ClInclude Include="src\Signal.h" />
     <ClInclude Include="src\WinPlatform.h" />
     <ClInclude Include="src\SerialPort.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\cutils.platform\cutils_platform.vcxproj">
+      <Project>{8a3d2c41-56b5-412a-904a-f3b4b8e933cc}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

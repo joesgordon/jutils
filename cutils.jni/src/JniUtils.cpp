@@ -73,4 +73,105 @@ jstring string_to_jstring(JNIEnv *env, const string &str)
     return jstr;
 }
 
+/*******************************************************************************
+ *
+ ******************************************************************************/
+jboolean getBoolean(JNIEnv *env, jobject jobj, const char *name)
+{
+    jclass jcls = env->GetObjectClass(jobj);
+    jfieldID id = env->GetFieldID(jcls, name, "Z");
+    jboolean value = env->GetBooleanField(jobj, id);
+
+    env->DeleteLocalRef(jcls);
+
+    return value;
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+void setBoolean(JNIEnv *env, jobject jobj, const char *name, jboolean value)
+{
+    jclass jcls = env->GetObjectClass(jobj);
+    jfieldID id = env->GetFieldID(jcls, name, "Z");
+
+    env->SetBooleanField(jobj, id, value);
+
+    env->DeleteLocalRef(jcls);
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+jint getInt(JNIEnv *env, jobject jobj, const char *name)
+{
+    jclass jcls = env->GetObjectClass(jobj);
+    jfieldID id = env->GetFieldID(jcls, name, "I");
+    jint value = env->GetIntField(jobj, id);
+
+    env->DeleteLocalRef(jcls);
+
+    return value;
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+void setInt(JNIEnv *env, jobject jobj, const char *name, jint value)
+{
+    jclass jcls = env->GetObjectClass(jobj);
+    jfieldID id = env->GetFieldID(jcls, name, "I");
+
+    env->SetIntField(jobj, id, value);
+
+    env->DeleteLocalRef(jcls);
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+jlong getLong(JNIEnv *env, jobject jobj, const char *name)
+{
+    jclass jcls = env->GetObjectClass(jobj);
+    jfieldID id = env->GetFieldID(jcls, name, "J");
+    jlong value = env->GetLongField(jobj, id);
+
+    env->DeleteLocalRef(jcls);
+
+    return value;
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+void setLong(JNIEnv *env, jobject jobj, const char *name, jlong value)
+{
+    jclass jcls = env->GetObjectClass(jobj);
+    jfieldID id = env->GetFieldID(jcls, name, "J");
+
+    env->SetLongField(jobj, id, value);
+
+    env->DeleteLocalRef(jcls);
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+void *getPointer(JNIEnv *env, jobject jobj, const char *name)
+{
+    jlong value = getLong(env, jobj, name);
+
+    return reinterpret_cast<void *>(value);
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+void setPointer(JNIEnv *env, jobject jobj, const char *name, void *value)
+{
+    jlong longValue = reinterpret_cast<jlong>(value);
+
+    setLong(env, jobj, name, longValue);
+}
+
 } // namespace CUtils

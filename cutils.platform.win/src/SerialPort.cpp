@@ -2,6 +2,9 @@
 #include <iostream>
 
 #include "SerialPort.h"
+
+#include "CUtils.h"
+#include "IPlatform.hpp"
 #include "PortInfo.h"
 
 using std::string;
@@ -13,7 +16,7 @@ namespace CUtils
 /*******************************************************************************
  *
  ******************************************************************************/
-SerialPort::SerialPort() : port(new PortInfo())
+SerialPort::SerialPort() : info(new PortInfo())
 {
 }
 
@@ -22,6 +25,7 @@ SerialPort::SerialPort() : port(new PortInfo())
  ******************************************************************************/
 SerialPort::~SerialPort()
 {
+    this->info.reset();
 }
 
 /*******************************************************************************
@@ -32,14 +36,13 @@ bool SerialPort::open(const string &device)
     bool result = false;
     string path = "\\\\.\\" + device;
 
-    auto handle = ::CreateFileA(path.c_str(),
-        GENERIC_READ | GENERIC_WRITE, 0,
-        0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    auto handle = ::CreateFileA(path.c_str(), GENERIC_READ | GENERIC_WRITE, 0,
+        0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, 0);
 
     if (handle != INVALID_HANDLE_VALUE)
     {
-        port->handle = handle;
-        port->getConfig();
+        info->handle = handle;
+        info->getConfig();
         result = true;
     }
 
@@ -55,11 +58,7 @@ bool SerialPort::close()
 
     if (this->isOpen())
     {
-        if (CloseHandle(port->handle))
-        {
-            port->reset();
-        }
-        else
+        if (!info->close())
         {
             auto errNumber = GetLastError();
 
@@ -80,7 +79,7 @@ bool SerialPort::close()
  ******************************************************************************/
 bool SerialPort::isOpen() const
 {
-    return port->handle != INVALID_HANDLE_VALUE;
+    return info->handle != INVALID_HANDLE_VALUE;
 }
 
 /*******************************************************************************
@@ -88,7 +87,7 @@ bool SerialPort::isOpen() const
  ******************************************************************************/
 string SerialPort::getDevice() const
 {
-    return port->name;
+    return info->name;
 }
 
 /*******************************************************************************
@@ -98,16 +97,21 @@ void SerialPort::setTimeout(int32_t millis)
 {
     DWORD timeout = (DWORD)millis;
 
-    if (port->isOpen())
+    // printf("DEBUG: Setting timeout to %u\n", millis);
+    // fflush(stdout);
+
+    if (info->isOpen())
     {
+        info->timeout = millis;
+
         COMMTIMEOUTS timeouts = {
-            timeout, // interval timeout. 0 = not used
-            0,       // read multiplier
-            timeout, // read constant (milliseconds)
-            0,       // Write multiplier
-            0        // Write Constant
+            millis, // interval timeout
+            0,      // read multiplier
+            millis, // read constant (milliseconds)
+            0,      // write multiplier
+            0       // write Constant
         };
-        SetCommTimeouts(port->handle, &timeouts);
+        SetCommTimeouts(info->handle, &timeouts);
     }
 }
 
@@ -116,18 +120,18 @@ void SerialPort::setTimeout(int32_t millis)
  ******************************************************************************/
 void SerialPort::setConfig(const SerialParams &config)
 {
-    port->setBinaryMode(config.binaryModeEnabled);
-    port->setBaudRate(config.baudRate);
-    port->setWordSize(config.size);
-    port->setParity(config.parity);
-    port->setStopBits(config.stopBits);
-    port->setCtsEnabled(config.ctsEnabled);
-    port->setDsrEnabled(config.dsrEnabled);
-    port->setDtrControl(config.dtrControl);
-    port->setSwFlowControl(true, config.swFlowOutputEnabled);
-    port->setSwFlowControl(false, config.swFlowInputEnabled);
+    info->setBinaryMode(config.binaryModeEnabled);
+    info->setBaudRate(config.baudRate);
+    info->setWordSize(config.size);
+    info->setParity(config.parity);
+    info->setStopBits(config.stopBits);
+    info->setCtsEnabled(config.ctsEnabled);
+    info->setDsrEnabled(config.dsrEnabled);
+    info->setDtrControl(config.dtrControl);
+    info->setSwFlowControl(true, config.swFlowOutputEnabled);
+    info->setSwFlowControl(false, config.swFlowInputEnabled);
 
-    port->setConfig();
+    info->setConfig();
 }
 
 /*******************************************************************************
@@ -137,19 +141,19 @@ SerialParams SerialPort::getConfig()
 {
     SerialParams config;
 
-    port->getConfig();
+    info->getConfig();
 
-    config.binaryModeEnabled = port->isBinaryMode();
-    config.baudRate = port->getBaudRate();
-    config.size = port->getWordSize();
-    config.parity = port->getParity();
-    config.stopBits = port->getStopBits();
-    config.ctsEnabled = port->isCtsEnabled();
-    config.dsrEnabled = port->isDsrEnabled();
-    config.ctsEnabled = port->isCtsEnabled();
-    config.dtrControl = port->getDtrControl();
-    config.swFlowOutputEnabled = port->isSwFlowControl(true);
-    config.swFlowInputEnabled = port->isSwFlowControl(false);
+    config.binaryModeEnabled = info->isBinaryMode();
+    config.baudRate = info->getBaudRate();
+    config.size = info->getWordSize();
+    config.parity = info->getParity();
+    config.stopBits = info->getStopBits();
+    config.ctsEnabled = info->isCtsEnabled();
+    config.dsrEnabled = info->isDsrEnabled();
+    config.ctsEnabled = info->isCtsEnabled();
+    config.dtrControl = info->getDtrControl();
+    config.swFlowOutputEnabled = info->isSwFlowControl(true);
+    config.swFlowInputEnabled = info->isSwFlowControl(false);
 
     return config;
 }
@@ -157,30 +161,143 @@ SerialParams SerialPort::getConfig()
 /*******************************************************************************
  *
  ******************************************************************************/
+DWORD handlePending(HANDLE handle, OVERLAPPED &ovrlpd, int32_t timeout)
+{
+    // printf("DEBUG: handlePending(%p, %d) - Enter\n", handle, timeout);
+
+    DWORD bytesXferred = 0;
+    DWORD toMillis = timeout;
+    DWORD toWait = TRUE;
+
+    if (timeout < 0)
+    {
+        toMillis = INFINITE;
+    }
+    else if (timeout == 0)
+    {
+        toWait = FALSE;
+    }
+
+    DWORD dwRes = WaitForSingleObject(ovrlpd.hEvent, timeout);
+    if (WAIT_OBJECT_0 == dwRes)
+    {
+        if (!GetOverlappedResult(handle, &ovrlpd, &bytesXferred, TRUE))
+        {
+            DWORD err = GetLastError();
+            string errMsg = getPlatform()->getError(err);
+            // if (timeout > -1)
+            // {
+            //     printf("DEBUG: handlePending() failed: 0x%X => %s\n", err,
+            //         errMsg.c_str());
+            //     // fflush(stdout);
+            // }
+        }
+        else
+        {
+            // if (timeout > -1)
+            // {
+            //     printf("DEBUG: handlePending() - Got overlapped: %d\n",
+            //         bytesXferred);
+            //     // fflush(stdout);
+            // }
+        }
+    }
+    else if (WAIT_TIMEOUT == dwRes)
+    {
+        // if (timeout > -1)
+        // {
+        //     printf("DEBUG: handlePending() - Timed out\n");
+        //     // fflush(stdout);
+        // }
+        SetEvent(ovrlpd.hEvent);
+    }
+    else if (WAIT_FAILED)
+    {
+        auto err = GetLastError();
+        if (err != ERROR_IO_PENDING)
+        {
+            DWORD err = GetLastError();
+            string errMsg = getPlatform()->getError(err);
+            printf("handlePending(%p, %d) failed: 0x%X => %s\n", handle,
+                timeout, err, errMsg.c_str());
+            fflush(stdout);
+        }
+    }
+
+    // fflush(stdout);
+
+    return bytesXferred;
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
 int32_t SerialPort::read(void *buffer, int count)
 {
-    DWORD bytesRead = 0;
+    // printf("DEBUG: SerialPort::read(%p, %d) - Enter\n", buffer, count);
 
-    if (port->isOpen())
+    DWORD bytesRead = -1;
+
+    if (info->isOpen())
     {
-        if (!ReadFile(port->handle, buffer, count, &bytesRead, NULL))
+        OVERLAPPED ovrlpd = {0};
+        //
+        // create the overlapped structure hEvent
+        //
+        ovrlpd.hEvent = CreateEventA(NULL, TRUE, FALSE, NULL);
+        if (ovrlpd.hEvent == NULL)
+        {
+            return -1;
+        }
+
+        bool readResult = true;
+        readResult = ReadFile(info->handle, buffer, count, &bytesRead, &ovrlpd);
+        if (!readResult)
         {
             auto err = GetLastError();
-            string errMsg = std::system_category().message(err);
+            bool stillError = true;
 
-            // printf("DEBUG: ReadFile(%p, %p, %d) to %s failed: 0x%X => %s\n",
-            //     port->handle, buffer, count, port->name.c_str(), err,
-            //     errMsg.c_str());
+            if (err == ERROR_IO_PENDING)
+            {
+                bytesRead = handlePending(info->handle, ovrlpd, -1);
+
+                // printf("DEBUG: Read (2) %d bytes:", bytesRead);
+                // if (bytesRead > 0)
+                // {
+                //     printBytes(buffer, bytesRead);
+                // }
+                // printf("\n");
+                // fflush(stdout);
+            }
+            else
+            {
+                string errMsg = getPlatform()->getError(err);
+                printf("ReadFile(%p, %p, %d) to %s failed: 0x%X => %s\n",
+                    info->handle, buffer, count, info->name.c_str(), err,
+                    errMsg.c_str());
+                fflush(stdout);
+            }
         }
+        // else
+        // {
+        //     printf("DEBUG: Read (1) %d bytes:", bytesRead);
+        //     printBytes(buffer, bytesRead);
+        //     printf("\n");
+        //     fflush(stdout);
+        // }
 
         // printf("DEBUG: SerialPort::read() - Read %d bytes\n", bytesRead);
         // fflush(stdout);
+
+        CloseHandle(ovrlpd.hEvent);
     }
     // else
     // {
     //     printf("DEBUG: SerialPort::read() - Port isn't open\n");
     //     fflush(stdout);
     // }
+
+    // fflush(stdout);
 
     return bytesRead;
 }
@@ -190,24 +307,58 @@ int32_t SerialPort::read(void *buffer, int count)
  ******************************************************************************/
 int32_t SerialPort::write(const void *buffer, int count)
 {
+    // printf("DEBUG: SerialPort::write(%p, %d) - Enter\n", buffer, count);
+
     DWORD bytesWritten = 0;
 
     // printf("DEBUG: Writing %d bytes\n", count);
     // fflush(stdout);
 
-    if (port->isOpen())
+    if (info->isOpen())
     {
-        if (!WriteFile(port->handle, buffer, count, &bytesWritten, NULL))
+        OVERLAPPED ovrlpd = {0};
+
+        //
+        // create the overlapped structure hEvent
+        //
+        ovrlpd.hEvent = CreateEventA(NULL, TRUE, FALSE, NULL);
+        if (ovrlpd.hEvent == NULL)
+        {
+            return -1;
+        }
+
+        bool writeResult =
+            WriteFile(info->handle, buffer, count, &bytesWritten, &ovrlpd);
+
+        if (!writeResult)
         {
             auto err = GetLastError();
-            string errMsg = std::system_category().message(err);
+            bool stillError = true;
 
-            // printf("WriteFile(%p, %p, %d) to %s failed: 0x%X => %s\n",
-            //     port->handle, buffer, count, port->name.c_str(), err,
-            //     errMsg.c_str());
+            if (err == ERROR_IO_PENDING)
+            {
+                bytesWritten = handlePending(info->handle, ovrlpd, -1);
+                stillError = err != ERROR_SUCCESS;
+            }
+            else
+            {
+                string errMsg = getPlatform()->getError(err);
+                printf("WriteFile(%p, %p, %d) to %s failed: 0x%X => %s\n",
+                    info->handle, buffer, count, info->name.c_str(), err,
+                    errMsg.c_str());
+                fflush(stdout);
+            }
         }
+
+        CloseHandle(ovrlpd.hEvent);
     }
 
+    // printf("DEBUG: Wrote %d bytes:", bytesWritten);
+    // if (bytesWritten > 0)
+    // {
+    //     printBytes(buffer, bytesWritten);
+    // }
+    // printf("\n");
     // fflush(stdout);
 
     return bytesWritten;

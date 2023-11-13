@@ -1,10 +1,11 @@
 package jutils.core.concurrent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import jutils.core.io.LogUtils;
+import jutils.core.time.NanoWatch;
 
 /*******************************************************************************
  * Used to process data that is collected by a separate thread. When this task
@@ -14,14 +15,17 @@ import jutils.core.io.LogUtils;
  ******************************************************************************/
 public class ConsumerTask<T> implements ITask
 {
-    /** {@code true} if input should be accepted, {@code false} otherwise. */
-    private final AtomicBoolean acceptInput;
-    /** List of data to be consumed. */
-    private final LinkedBlockingQueue<T> data;
     /** The callback to serially consume items. */
     private final IConsumer<T> consumer;
     /** The callback to run after the task is complete. */
     private final Runnable finalizer;
+
+    /** {@code true} if input should be accepted, {@code false} otherwise. */
+    private final AtomicBoolean acceptInput;
+    /** List of data to be consumed. */
+    private final LinkedBlockingQueue<T> data;
+    /**  */
+    private final EventSignal dataReady;
 
     /***************************************************************************
      * Creates a new consumer task with no finished callback.
@@ -44,6 +48,7 @@ public class ConsumerTask<T> implements ITask
 
         this.acceptInput = new AtomicBoolean( true );
         this.data = new LinkedBlockingQueue<T>();
+        this.dataReady = new EventSignal();
     }
 
     /***************************************************************************
@@ -52,38 +57,49 @@ public class ConsumerTask<T> implements ITask
     @Override
     public final void run( ITaskHandler handler )
     {
-        T obj = null;
+        // LogUtils.printDebug( "Starting consumer task %s",
+        // Thread.currentThread().getName() );
 
-        LogUtils.printDebug( "Starting consumer task %s",
-            Thread.currentThread().getName() );
+        List<T> items = new ArrayList<>();
+        NanoWatch watch = new NanoWatch();
 
         while( handler.canContinue() )
         {
-            if( acceptInput.get() )
+            int size = data.size();
+
+            if( size < 1 )
             {
-                try
-                {
-                    obj = data.poll( 500, TimeUnit.MILLISECONDS );
-                }
-                catch( InterruptedException e )
-                {
-                    obj = data.poll();
-                }
-            }
-            else
-            {
-                obj = data.poll();
+                watch.start();
+                dataReady.mawait( 400 );
+                watch.stop();
+                size = data.size();
             }
 
-            if( obj != null )
+            if( size > 0 )
             {
-                consumer.consume( obj, handler );
-                obj = null;
+                items.addAll( data );
+                data.clear();
+
+                // LogUtils.printDebug( "Waited %d",
+                // watch.getElapsed() / 1000000 );
+
+                watch.start();
+                for( T item : items )
+                {
+                    consumer.consume( item, handler );
+                }
+                items.clear();
+                watch.stop();
+
+                // LogUtils.printDebug( "Sent %d message in %d", size,
+                // watch.getElapsed() / 1000000 );
+
+                watch.reset();
             }
         }
 
-        LogUtils.printDebug( "Stopping consumer task %s",
-            Thread.currentThread().getName() );
+        // LogUtils.printDebug( "Stopping consumer task %s",
+        // Thread.currentThread().getName() );
 
         stopAcceptingInput();
 
@@ -93,6 +109,9 @@ public class ConsumerTask<T> implements ITask
         }
 
         handler.signalFinished();
+
+        // LogUtils.printDebug( "Stopped consumer task %s",
+        // Thread.currentThread().getName() );
     }
 
     /***************************************************************************
@@ -125,6 +144,7 @@ public class ConsumerTask<T> implements ITask
             try
             {
                 data.put( obj );
+                dataReady.signal();
             }
             catch( InterruptedException e )
             {

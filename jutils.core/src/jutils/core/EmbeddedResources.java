@@ -90,13 +90,15 @@ public class EmbeddedResources
                         ex );
                 }
             }
-            else
-            {
-                LogUtils.printDebug( "Resource %s is not stale", emb.filename );
-            }
+            // else
+            // {
+            // LogUtils.printDebug( "Resource %s is not stale", emb.filename );
+            // }
 
             if( emb.isLibrary )
             {
+                // LogUtils.printDebug( "Loading library %s",
+                // file.getAbsolutePath() );
                 System.load( file.getAbsolutePath() );
             }
         }
