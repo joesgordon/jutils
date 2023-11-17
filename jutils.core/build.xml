@@ -4,8 +4,8 @@
 	<dirname property="proj.projdir" file="${ant.file}" />
 
 	<property name="jutilsbuild.name" value="jutils.core" />
-    <property name="jutilsbuild.main" value="org.jutils.core.JUtilsInfo" />
-	<property name="jutilsbuild.infoprops" value="${proj.projdir}/src/org/jutils/core/icons/info.properties" />
+    <property name="jutilsbuild.main" value="jutils.core.JUtilsInfo" />
+	<property name="jutilsbuild.infoprops" value="${proj.projdir}/src/jutils/core/icons/info.properties" />
 
 	<path id="jutilsbuild.jars">
 	</path>

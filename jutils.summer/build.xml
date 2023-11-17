@@ -6,7 +6,7 @@
 	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
 	<property name="jutilsbuild.name" value="jutils.summer" />
-	<property name="jutilsbuild.main" value="org.jutils.summer.SummerMain" />
+	<property name="jutilsbuild.main" value="jutils.summer.SummerMain" />
 
 	<path id="jutilsbuild.jars">
 		<fileset file="${juprops.releaseindv}/jutils.core.jar" />

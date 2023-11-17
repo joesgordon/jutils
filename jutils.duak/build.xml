@@ -6,7 +6,7 @@
 	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
 	<property name="jutilsbuild.name" value="jutils.duak" />
-	<property name="jutilsbuild.main" value="org.jutils.duak.DuakMain" />
+	<property name="jutilsbuild.main" value="jutils.duak.DuakMain" />
 
 	<path id="jutilsbuild.jars">
 		<fileset file="${juprops.releaseindv}/jutils.core.jar" />
