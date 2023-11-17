@@ -236,61 +236,70 @@ public final class IconConstants
      **************************************************************************/
     public static void playNotify()
     {
-        Runnable r = () -> {
-            try( InputStream is = loader.loader.getInputStream( "done.wav" );
-                 BufferedInputStream sstream = new BufferedInputStream( is ) )
+        Runnable r = () -> playSound( "done.wav" );
+        new Thread( r, "Wave Player" ).start();
+    }
+
+    /***************************************************************************
+     * @param name
+     **************************************************************************/
+    private static void playSound( String name )
+    {
+        try( InputStream is = loader.loader.getInputStream( name );
+             BufferedInputStream sstream = new BufferedInputStream( is ) )
+        {
+            // new JavaSoundAudioClip( is ).play();
+
+            // try( AudioStream audioStream = new AudioStream( is ) )
+            // {
+            // AudioPlayer.player.start( audioStream );
+            // }
+
+            try( AudioInputStream stream = AudioSystem.getAudioInputStream(
+                sstream ) )
             {
-                // new JavaSoundAudioClip( is ).play();
+                AudioFormat format = stream.getFormat();
+                DataLine.Info info = new DataLine.Info( Clip.class, format );
 
-                // try( AudioStream audioStream = new AudioStream( is ) )
-                // {
-                // AudioPlayer.player.start( audioStream );
-                // }
-
-                try( AudioInputStream stream = AudioSystem.getAudioInputStream(
-                    sstream ) )
+                try( Line line = AudioSystem.getLine( info ) )
                 {
-                    AudioFormat format = stream.getFormat();
-                    DataLine.Info info = new DataLine.Info( Clip.class,
-                        format );
-
-                    try( Line line = AudioSystem.getLine( info ) )
+                    try( Clip clip = ( Clip )line )
                     {
-                        try( Clip clip = ( Clip )line )
+                        clip.open( stream );
+                        clip.start();
+
+                        while( !clip.isRunning() )
                         {
-                            clip.open( stream );
-                            clip.start();
+                            Thread.sleep( 10 );
+                        }
 
-                            while( !clip.isRunning() )
-                            {
-                                Thread.sleep( 10 );
-                            }
-
-                            while( clip.isRunning() )
-                            {
-                                Thread.sleep( 10 );
-                            }
+                        while( clip.isRunning() )
+                        {
+                            Thread.sleep( 10 );
                         }
                     }
                     catch( LineUnavailableException ex )
                     {
                         ex.printStackTrace();
                     }
-                    catch( InterruptedException ex )
-                    {
-                    }
                 }
-                catch( UnsupportedAudioFileException ex )
+                catch( LineUnavailableException ex )
                 {
                     ex.printStackTrace();
                 }
             }
-            catch( IOException ex )
+            catch( UnsupportedAudioFileException ex )
             {
                 ex.printStackTrace();
             }
-        };
-        new Thread( r, "Wave Player" ).start();
+        }
+        catch( IOException ex )
+        {
+            ex.printStackTrace();
+        }
+        catch( InterruptedException ex )
+        {
+        }
     }
 
     /***************************************************************************
