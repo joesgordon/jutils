@@ -1,7 +1,7 @@
-# Jerial Lib
+# CUtils Platform
 This code describes a platform independent library for accessing serial ports.
 
-## Supported Options
+## Supported Serial Options
 
 - Port - String
 - Baud rate - integer from 50 to 10,000,000

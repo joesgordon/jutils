@@ -33,8 +33,8 @@ public final class DuakConstants
     {
         if( options == null )
         {
-            options = XsOptions.getOptions( DuakOptions.class,
-                OPTIONS_FILE, new OptionsCreator() );
+            options = XsOptions.getOptions( DuakOptions.class, OPTIONS_FILE,
+                new OptionsCreator() );
         }
 
         return options;

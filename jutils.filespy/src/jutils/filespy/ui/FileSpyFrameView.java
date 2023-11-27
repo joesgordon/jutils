@@ -25,7 +25,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import jutils.core.IconConstants;
-import jutils.core.JUtilsInfo;
+import jutils.core.JUtilsMain;
 import jutils.core.OptionUtils;
 import jutils.core.SwingUtils;
 import jutils.core.Utils;
@@ -33,7 +33,7 @@ import jutils.core.ValidationException;
 import jutils.core.data.BuildInfo;
 import jutils.core.io.options.OptionsSerializer;
 import jutils.core.io.xs.XsUtils;
-import jutils.core.licensing.LicenseDialog;
+import jutils.core.licensing.LicensesView;
 import jutils.core.time.TimeUtils;
 import jutils.core.ui.BuildInfoView;
 import jutils.core.ui.JGoodiesToolBar;
@@ -306,9 +306,9 @@ public class FileSpyFrameView implements IView<JFrame>
      **************************************************************************/
     private void showAbout()
     {
-        LicenseDialog view = new LicenseDialog();
+        LicensesView view = new LicensesView();
         JTabbedPane pane = view.getView();
-        BuildInfo info = JUtilsInfo.load();
+        BuildInfo info = JUtilsMain.load();
         OkDialogView dialogView = new OkDialogView( getView(), pane,
             OkDialogButtons.OK_ONLY );
         BuildInfoView infoView = new BuildInfoView();

@@ -33,7 +33,7 @@ public final class InsomniaTool implements IToolView
     @Override
     public String getDescription()
     {
-        return "Keeps the system awake";
+        return "Measures when the user is awake";
     }
 
     /***************************************************************************

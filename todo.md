@@ -15,7 +15,6 @@
 - ListView:
   - add `ItemActionList<ItemChanged<T>>` change listeners.
   - make add/delete item listeners lamdas & call change listeners.
-- Add `IStringWriter` to `ParserFormField`.
 - TaskPool: Add `AtomicInteger` complete count.
 - Add `Utils.contains(items:List<T>, data:D, IBinaryComparator<T,D>)`
 - Write `InputStreamLineReader` or `InputLineStream`.
@@ -32,6 +31,21 @@
 - Update jutils.chart widgets to support log space in both the x & y axes.
 - JPlot - add copy button
 - Move point removal to chart or appOptions.fillbetween
+
+## jutils.math
+
+- Add units to Vector3dField
+- Add EastNorthUpView
+- Add EcefView
+- Add EciView
+- Add LatLonAltView
+- Add NorthEastDownView
+- Add RangeAzElView
+- Add MatrixEditorView
+- Add QuaternionField
+- Add Vector4dField
+- Add CoordinateTransformView
+- Add unit tests
 
 ## jutils.multicon
 

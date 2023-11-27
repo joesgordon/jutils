@@ -143,6 +143,9 @@ public final class IconConstants
     public final static String IMPORT_16 = "document-import16.png";
 
     /**  */
+    public final static String JUTILS_16 = "jutils016.png";
+
+    /**  */
     public final static String EXPORT_16 = "document-export16.png";
 
     /**  */
@@ -308,6 +311,20 @@ public final class IconConstants
      **************************************************************************/
     public static List<Image> getImages( String... names )
     {
+        return loader.getImages( names );
+    }
+
+    /***************************************************************************
+     * Loads all images with the provided prefix if appended with a 3-digit
+     * number and are PNGs.
+     * @param prefix the characters prior to the standard sizes suffix.
+     * @return the list of images loaded using the provided prefix.
+     * @see IconLoader#buildNameList(String)
+     **************************************************************************/
+    public static List<Image> getAllImages( String prefix )
+    {
+        String [] names = IconLoader.buildNameList( prefix );
+
         return loader.getImages( names );
     }
 

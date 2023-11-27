@@ -14,21 +14,21 @@ JUtils comes with no warranty of correctness though it totally is.
 
 | Name | Description |
 | --- | --- |
-| [Apps](./docs/apps_readme.md) | Provides a launcher that bundles all applications, tools, and displays into a single application.
-| [Core](./docs/core_readme.md) | A library of the core JUtils classes.
-| Demo |  |
-| Duak | Disk Usage Analyser Kit |
-| Explorer |  |
-| FileSpy |  |
-| HexEdit |  |
-| [Jerial](./jerial/jerial.md) |  |
-| Insomnia |  |
-| Math |  |
-| Mines |  |
-| Multicon |  |
-| Plot |  |
-| Serial |  |
-| Summer |  |
+| [Apps](./docs/apps.md) | Provides a launcher that bundles all applications, tools, and displays into a single application. |
+| [Core](./docs/core.md) | A library of the core JUtils classes. |
+| [Demo](./docs/demo.md) | Demonstrates the look and operation of JUtils components. |
+| [Duak](./docs/duak.md) | Disk Usage Analyser Kit |
+| [Explorer](./docs/explorer.md) | A file explorer. |
+| [FileSpy](./docs/filespy.md) | Search for, and within, files. |
+| [HexEdit](./docs/hexedit.md) | A hex view who dreams of being an editor. |
+| [CUtils](./docs/cutils.md) | A set of C++ classes; some of which, has access through JNI. |
+| [Insomnia](./docs/insomnia.md) | Measures when the user is awake.  |
+| [Math](./docs/math.md) | Provides a library of math, matrix operations, and coordinate transformations. |
+| [Mines](./docs/mines.md) | Java version of minesweeper. |
+| [Multicon](./docs/multicon.md) | Multiple network connection manager. |
+| [Platform](./docs/platform.md) | Provides an library for platform specific functions including Serial UART. |
+| [Plot](./docs/plot.md) | Creates scatter plots. |
+| [Summer](./docs/summer.md) | Generates/validates checksums. |
 
 ## Supporting Projects
 

@@ -1,5 +1,6 @@
 package jutils.apps;
 
+import java.awt.Image;
 import java.awt.TrayIcon;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import jutils.apps.ui.AppsFrameView;
+import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
 import jutils.core.ui.ExitListener;
 import jutils.core.ui.IToolView;
@@ -28,11 +30,11 @@ public class JUtilsApp implements IFrameCreator
         AppsFrameView frameView = new AppsFrameView( apps );
         JFrame frame = frameView.getView();
 
-        TrayIcon icon = SwingUtils.createTrayIcon(
-            JUtilsIcons.getImage( JUtilsIcons.APP_16 ), "JUtils Apps", frame,
-            null );
+        Image image = IconConstants.getImage( IconConstants.JUTILS_16 );
+        TrayIcon trayicon = SwingUtils.createTrayIcon( image, "JUtils Apps",
+            frame, null );
 
-        SwingUtils.addTrayMenu( icon, createPopup( frameView ) );
+        SwingUtils.addTrayMenu( trayicon, createPopup( frameView ) );
 
         return frame;
     }

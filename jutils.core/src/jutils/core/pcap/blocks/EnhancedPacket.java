@@ -1,0 +1,136 @@
+package jutils.core.pcap.blocks;
+
+import java.io.IOException;
+
+import jutils.core.ValidationException;
+import jutils.core.io.ByteArrayStream;
+import jutils.core.io.DataStream;
+import jutils.core.io.FieldPrinter;
+import jutils.core.io.IDataStream;
+import jutils.core.pcap.BlockType;
+import jutils.core.pcap.IBlock;
+import jutils.core.pcap.ethernet.TcpIpPacket;
+import jutils.core.pcap.ethernet.TcpIpPacket.TcpIpPacketSerializer;
+import jutils.core.ui.hex.HexUtils;
+
+/*******************************************************************************
+ * 
+ ******************************************************************************/
+public class EnhancedPacket extends IBlock
+{
+    /**  */
+    public int interfaceId;
+    /**  */
+    public long timestamp;
+    /**  */
+    public int capturedLength;
+    /**  */
+    public int originalLength;
+
+    /**  */
+    public byte [] data;
+    /**  */
+    public byte [] options;
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public EnhancedPacket()
+    {
+        super( BlockType.ENHANCED_PACKET );
+
+        this.data = new byte[0];
+        this.options = new byte[0];
+    }
+
+    /***************************************************************************
+     * @return
+     * @throws IOException
+     * @throws ValidationException
+     **************************************************************************/
+    public TcpIpPacket readData()
+    {
+        try( ByteArrayStream byteStream = new ByteArrayStream( data,
+            data.length, 0, false );
+             IDataStream stream = new DataStream( byteStream ) )
+        {
+            TcpIpPacketSerializer serializer = new TcpIpPacketSerializer();
+
+            return serializer.read( stream );
+        }
+        catch( IOException | ValidationException ex )
+        {
+            throw new RuntimeException( ex );
+        }
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void printFields( FieldPrinter printer )
+    {
+        printer.printField( "Interface ID", interfaceId );
+        printer.printField( "Timestamp", interfaceId );
+        printer.printField( "Captured Length", interfaceId );
+        printer.printField( "Original Length", interfaceId );
+        printer.printTier( "Packet", readData() );
+        printer.printField( "Options", HexUtils.toHexString( options, " " ) );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static final class EnhancedPacketSerializer
+        implements IBlockBodySerializer
+    {
+        /**  */
+        public static final int PROTO_OFFSET = 0x17;
+        /**  */
+        public static final int TCP_HDR_OFFSET = 0x22;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public IBlock read( IDataStream stream, int id, int length )
+            throws IOException
+        {
+            EnhancedPacket block = new EnhancedPacket();
+
+            block.length = length;
+
+            block.interfaceId = stream.readInt();
+            block.timestamp = readTimestamp( stream );
+            block.capturedLength = stream.readInt();
+            block.originalLength = stream.readInt();
+
+            int packetLen = ( ( block.capturedLength + 3 ) / 4 ) * 4;
+            int paddingLen = packetLen - block.capturedLength;
+            int optionsLen = block.length - 8 * 4 - packetLen;
+
+            block.data = new byte[block.capturedLength];
+            block.options = new byte[optionsLen];
+
+            stream.readFully( block.data );
+            stream.skip( paddingLen );
+            stream.readFully( block.options );
+
+            return block;
+        }
+
+        /**
+         * @param stream
+         * @return
+         * @throws IOException
+         */
+        private static long readTimestamp( IDataStream stream )
+            throws IOException
+        {
+            long tsHigh = stream.readInt() & 0xFFFFFFFFL;
+            long tsLow = stream.readInt() & 0xFFFFFFFFL;
+
+            return tsHigh << 32 | tsLow;
+        }
+    }
+}

@@ -3,11 +3,8 @@ package jutils.core.data;
 import java.io.IOException;
 
 import jutils.core.ValidationException;
-import jutils.core.io.ByteArrayStream;
-import jutils.core.io.DataStream;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
-import jutils.core.utils.ByteOrdering;
 
 /*******************************************************************************
  * @param <T>
@@ -30,33 +27,20 @@ public class DataItemPair<T>
     }
 
     /***************************************************************************
-     * 
+     * @param <T>
      **************************************************************************/
     public static class DataItemPairSerializer<T>
         implements IDataSerializer<DataItemPair<T>>
     {
         /**  */
         private final IDataSerializer<T> itemSerializer;
-        /**  */
-        private ByteOrdering itemOrder;
 
         /**
          * @param itemSerializer
          */
         public DataItemPairSerializer( IDataSerializer<T> itemSerializer )
         {
-            this( itemSerializer, ByteOrdering.BIG_ENDIAN );
-        }
-
-        /**
-         * @param itemSerializer
-         * @param order
-         */
-        public DataItemPairSerializer( IDataSerializer<T> itemSerializer,
-            ByteOrdering order )
-        {
             this.itemSerializer = itemSerializer;
-            this.itemOrder = order;
         }
 
         /**
@@ -66,26 +50,15 @@ public class DataItemPair<T>
         public DataItemPair<T> read( IDataStream stream )
             throws IOException, ValidationException
         {
-            int length;
-            byte [] data;
-            T item = null;
+            long startPos = stream.getPosition();
+            T item = itemSerializer.read( stream );
+            long endPos = stream.getPosition();
 
-            length = stream.readInt();
-            data = new byte[length];
+            int length = ( int )( endPos - startPos );
+            byte [] data = new byte[length];
 
+            stream.seek( startPos );
             stream.readFully( data );
-
-            try( ByteArrayStream bas = new ByteArrayStream( data, data.length,
-                0, false );
-                 IDataStream itemStream = new DataStream( bas,
-                     this.itemOrder ) )
-            {
-                item = itemSerializer.read( itemStream );
-            }
-            catch( IOException | ValidationException ex )
-            {
-                throw new RuntimeException( ex );
-            }
 
             return new DataItemPair<T>( data, item );
         }
@@ -97,7 +70,6 @@ public class DataItemPair<T>
         public void write( DataItemPair<T> pair, IDataStream stream )
             throws IOException
         {
-            stream.writeInt( pair.data.length );
             stream.write( pair.data );
         }
     }

@@ -148,20 +148,30 @@ public class RecentFilesViews
      **************************************************************************/
     private static final class FileListItemModel implements IListItemModel<File>
     {
+        /**  */
         private final FileSystemView fsv = FileSystemView.getFileSystemView();
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getName( File file )
         {
             return file.getName();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getTooltip( File file )
         {
             return file.getAbsolutePath();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Icon getIcon( File file )
         {
