@@ -1,10 +1,9 @@
-package jutils.platform.ui;
+package jutils.platform;
 
 import javax.swing.JFrame;
 
 import jutils.core.ui.app.AppRunner;
-import jutils.platform.IPlatform;
-import jutils.platform.PlatformUtils;
+import jutils.platform.ui.SerialConsoleFrame;
 
 /*******************************************************************************
  * 
@@ -28,7 +27,7 @@ public class SerialConsoleMain
     /***************************************************************************
      * @return
      **************************************************************************/
-    private static JFrame createFrame()
+    public static JFrame createFrame()
     {
         SerialConsoleFrame frameView = new SerialConsoleFrame();
         JFrame frame = frameView.getView();

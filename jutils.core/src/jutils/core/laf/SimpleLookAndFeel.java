@@ -387,7 +387,7 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
      **************************************************************************/
     private void setCommonDefaults( UIDefaults table )
     {
-        table.put( "control", colors.controlHighlight );
+        table.put( "control", colors.background );
         // table.put( "controlDkShadow", colors.controlHighlight );
         table.put( "controlShadow", colors.controlHighlight );
         table.put( "window", Color.RED );

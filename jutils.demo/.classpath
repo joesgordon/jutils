@@ -19,7 +19,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jutils.mines"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jutils.multicon"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jutils.summer"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.tests"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jutils.plot"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

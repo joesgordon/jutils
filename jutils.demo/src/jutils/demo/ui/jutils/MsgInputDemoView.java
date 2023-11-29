@@ -1,4 +1,4 @@
-package jutils.demo.ui;
+package jutils.demo.ui.jutils;
 
 import java.util.function.Consumer;
 

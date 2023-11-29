@@ -22,7 +22,7 @@ public class PcapMain
     /***************************************************************************
      * @return
      **************************************************************************/
-    private static JFrame createFrame()
+    public static JFrame createFrame()
     {
         PcapFrame view = new PcapFrame();
 

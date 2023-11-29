@@ -1,4 +1,4 @@
-package jutils.demo.ui;
+package jutils.demo.ui.swing;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;

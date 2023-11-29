@@ -3,6 +3,7 @@ package jutils.apps;
 import java.util.ArrayList;
 import java.util.List;
 
+import jutils.core.pcap.ui.PcapTool;
 import jutils.core.ui.IToolView;
 import jutils.core.ui.app.AppRunner;
 import jutils.duak.DuakTool;
@@ -12,6 +13,7 @@ import jutils.hexedit.HexeditTool;
 import jutils.insomnia.InsomniaTool;
 import jutils.mines.MinesTool;
 import jutils.multicon.MulticonTool;
+import jutils.platform.SerialConsoleTool;
 import jutils.plot.app.PlotTool;
 import jutils.summer.SummerTool;
 
@@ -42,12 +44,14 @@ public class JUtilsMain
 
         apps.add( new HexeditTool() );
         apps.add( new MulticonTool() );
+        apps.add( new SerialConsoleTool() );
         apps.add( new FileSpyTool() );
         apps.add( new PlotTool() );
         apps.add( new SummerTool() );
         apps.add( new MinesTool() );
         apps.add( new ExplorerTool() );
         apps.add( new DuakTool() );
+        apps.add( new PcapTool() );
         apps.add( new InsomniaTool() );
 
         return apps;

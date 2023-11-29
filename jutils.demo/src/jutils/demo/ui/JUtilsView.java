@@ -7,7 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.Supplier;
+import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -18,6 +18,8 @@ import jutils.core.ui.ListView;
 import jutils.core.ui.ListView.IItemListModel;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
+import jutils.demo.ui.jutils.DateTimeViews;
+import jutils.demo.ui.jutils.MsgInputDemoView;
 
 /*******************************************************************************
  * Defines a view to display all JUtils components.
@@ -32,7 +34,7 @@ public class JUtilsView implements IView<JComponent>
     private final TitleView choiceView;
 
     /**  */
-    private final HashMap<JUtilsComponent, Supplier<IView<?>>> compViews;
+    private final HashMap<JUtilsComponent, IViewCreator> compViews;
 
     /***************************************************************************
      * 
@@ -44,8 +46,7 @@ public class JUtilsView implements IView<JComponent>
             false, false );
         this.choiceView = new TitleView( "Nothing Selected", null );
 
-        compViews.put( JUtilsComponent.MESSAGE_INPUT_VIEW,
-            () -> new MsgInputDemoView() );
+        buildViewCreators( compViews );
 
         this.view = createView();
 
@@ -61,6 +62,17 @@ public class JUtilsView implements IView<JComponent>
     }
 
     /***************************************************************************
+     * @param views
+     **************************************************************************/
+    private static void buildViewCreators(
+        Map<JUtilsComponent, IViewCreator> views )
+    {
+        views.put( JUtilsComponent.MESSAGE_INPUT_VIEW,
+            () -> new MsgInputDemoView() );
+        views.put( JUtilsComponent.DATETIME_VIEWS, () -> new DateTimeViews() );
+    }
+
+    /***************************************************************************
      * @param selection
      **************************************************************************/
     private void handleSelction( JUtilsComponent selection )
@@ -72,7 +84,7 @@ public class JUtilsView implements IView<JComponent>
             return;
         }
 
-        Supplier<IView<?>> supplier = compViews.get( selection );
+        IViewCreator supplier = compViews.get( selection );
         IView<?> view = supplier == null ? null : supplier.get();
         Component comp = view == null ? null : view.getView();
 
@@ -125,7 +137,9 @@ public class JUtilsView implements IView<JComponent>
     private static enum JUtilsComponent implements INamedItem
     {
         /**  */
-        MESSAGE_INPUT_VIEW( "Message Input View" );
+        DATETIME_VIEWS( "Date/Time Views" ),
+        /**  */
+        MESSAGE_INPUT_VIEW( "Message Input View" ),;
 
         /**  */
         private final String name;
