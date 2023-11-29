@@ -18,6 +18,7 @@
 		<fileset file="${juprops.releaseindv}/jutils.mines.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.multicon.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.plot.jar" />
+		<fileset file="${juprops.releaseindv}/jutils.platform.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.summer.jar" />
 	</path>
 

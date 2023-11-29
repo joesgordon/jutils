@@ -1,9 +1,9 @@
-package jutils.platform.ui;
+package jutils.platform;
 
 import javax.swing.JFrame;
 
 import jutils.core.ui.app.AppRunner;
-import jutils.platform.PlatformUtils;
+import jutils.platform.ui.DemoPlatformFrame;
 
 /*******************************************************************************
  * 

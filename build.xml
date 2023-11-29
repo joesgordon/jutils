@@ -24,6 +24,7 @@
     <target name="individual" description="Builds a release jar that includes source and libs">
 
         <calldir dir="jutils.core" target="release" />
+        <calldir dir="jutils.platform" target="release" />
         <calldir dir="jutils.plot" target="release" />
         <calldir dir="jutils.duak" target="release" />
         <calldir dir="jutils.explorer" target="release" />
@@ -52,6 +53,7 @@
             <zipfileset src="${juprops.releaseindv}/jutils.insomnia.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.platform.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.plot.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.summer.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.core.jar" />
@@ -78,6 +80,7 @@
             <zipfileset src="${juprops.releaseindv}/jutils.insomnia.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.platform.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.plot.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.summer.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.math.jar" />
@@ -97,6 +100,7 @@
             <zipfileset src="${juprops.releaseindv}/jutils.insomnia-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.platform-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.plot-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.summer-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.math-debug.jar" />
@@ -117,6 +121,7 @@
             <fileset dir="jutils.insomnia/src" />
             <fileset dir="jutils.mines/src" />
             <fileset dir="jutils.multicon/src" />
+            <fileset dir="jutils.platform/src" />
             <fileset dir="jutils.plot/src" />
             <fileset dir="jutils.summer/src" />
             <fileset dir="jutils.math/src" />
