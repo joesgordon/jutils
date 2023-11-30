@@ -7,7 +7,6 @@ import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataStream;
 import jutils.core.pcap.BlockType;
 import jutils.core.pcap.IBlock;
-import jutils.core.pcap.IBlock.IBlockBodySerializer;
 
 /*******************************************************************************
  * 

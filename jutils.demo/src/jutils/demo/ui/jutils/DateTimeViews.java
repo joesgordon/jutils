@@ -13,14 +13,17 @@ import jutils.core.ui.calendar.DateView;
 import jutils.core.ui.calendar.TimeField;
 import jutils.core.ui.model.IView;
 
+/*******************************************************************************
+ * 
+ ******************************************************************************/
 public class DateTimeViews implements IView<JComponent>
 {
     /**  */
     private final JTabbedPane tabs;
 
-    /**
+    /***************************************************************************
      * 
-     */
+     **************************************************************************/
     public DateTimeViews()
     {
         this.tabs = new JTabbedPane();
@@ -34,6 +37,9 @@ public class DateTimeViews implements IView<JComponent>
         tabs.addTab( "Date/Time Field", createDateTimeField() );
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private static Component createDateView()
     {
         JPanel panel = new JPanel();
@@ -43,6 +49,9 @@ public class DateTimeViews implements IView<JComponent>
         return panel;
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private static Component createDateField()
     {
         StandardFormView form = new StandardFormView();
@@ -52,6 +61,9 @@ public class DateTimeViews implements IView<JComponent>
         return form.getView();
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private static Component createTimeField()
     {
         StandardFormView form = new StandardFormView();
@@ -61,6 +73,9 @@ public class DateTimeViews implements IView<JComponent>
         return form.getView();
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private static Component createDateTimeField()
     {
         StandardFormView form = new StandardFormView();
@@ -70,6 +85,9 @@ public class DateTimeViews implements IView<JComponent>
         return form.getView();
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public JComponent getView()
     {

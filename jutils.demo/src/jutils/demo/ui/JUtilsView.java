@@ -20,6 +20,7 @@ import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
 import jutils.demo.ui.jutils.DateTimeViews;
 import jutils.demo.ui.jutils.MsgInputDemoView;
+import jutils.demo.ui.jutils.ScreenFormFieldView;
 
 /*******************************************************************************
  * Defines a view to display all JUtils components.
@@ -70,6 +71,8 @@ public class JUtilsView implements IView<JComponent>
         views.put( JUtilsComponent.MESSAGE_INPUT_VIEW,
             () -> new MsgInputDemoView() );
         views.put( JUtilsComponent.DATETIME_VIEWS, () -> new DateTimeViews() );
+        views.put( JUtilsComponent.SCREEN_FIELD_VIEW,
+            () -> new ScreenFormFieldView() );
     }
 
     /***************************************************************************
@@ -138,6 +141,8 @@ public class JUtilsView implements IView<JComponent>
     {
         /**  */
         DATETIME_VIEWS( "Date/Time Views" ),
+        /**  */
+        SCREEN_FIELD_VIEW( "Screen Field View" ),
         /**  */
         MESSAGE_INPUT_VIEW( "Message Input View" ),;
 

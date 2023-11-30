@@ -323,22 +323,6 @@ public final class XsUtils
     }
 
     /***************************************************************************
-     * @param clazz
-     * @param classes
-     **************************************************************************/
-    private static void addSupers( Class<?> clazz, List<Class<?>> classes )
-    {
-        Class<?> parent = clazz.getSuperclass();
-
-        while( parent != null && !Object.class.equals( parent ) )
-        {
-            buildClasses( parent, classes );
-
-            parent = clazz.getSuperclass();
-        }
-    }
-
-    /***************************************************************************
      * @param paramType
      * @param classes
      **************************************************************************/
