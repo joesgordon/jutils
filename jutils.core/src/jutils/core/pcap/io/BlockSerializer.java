@@ -1,20 +1,17 @@
 package jutils.core.pcap.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import jutils.core.ValidationException;
-import jutils.core.io.DataStream;
-import jutils.core.io.FileStream;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
-import jutils.core.io.LogUtils;
 import jutils.core.pcap.BlockType;
 import jutils.core.pcap.IBlock;
 import jutils.core.pcap.IBlock.IBlockBodySerializer;
 import jutils.core.pcap.blocks.EnhancedPacket.EnhancedPacketSerializer;
+import jutils.core.pcap.blocks.InterfaceDescription.InterfaceDescriptionSerializer;
 import jutils.core.pcap.blocks.UnknownBlock.UnknownBlockSerializer;
 
 /*******************************************************************************
@@ -23,7 +20,7 @@ import jutils.core.pcap.blocks.UnknownBlock.UnknownBlockSerializer;
 public class BlockSerializer implements IDataSerializer<IBlock>
 {
     /**  */
-    private final Map<BlockType, IBlockBodySerializer> bodySerializers;
+    private final Map<BlockType, IBlockBodySerializer<?>> bodySerializers;
     /**  */
     private final UnknownBlockSerializer unknownSerializer;
 
@@ -35,6 +32,8 @@ public class BlockSerializer implements IDataSerializer<IBlock>
         this.bodySerializers = new HashMap<>();
         this.unknownSerializer = new UnknownBlockSerializer();
 
+        bodySerializers.put( BlockType.INTERFACE_DESC,
+            new InterfaceDescriptionSerializer() );
         bodySerializers.put( BlockType.ENHANCED_PACKET,
             new EnhancedPacketSerializer() );
     }
@@ -48,16 +47,16 @@ public class BlockSerializer implements IDataSerializer<IBlock>
     {
         int id = stream.readInt();
         int length = stream.readInt();
-        BlockType bt = BlockType.fromValue( id );
+        BlockType type = BlockType.fromValue( id );
 
-        IBlockBodySerializer serializer = bodySerializers.get( bt );
+        IBlockBodySerializer<?> serializer = bodySerializers.get( type );
 
         if( serializer == null )
         {
             serializer = unknownSerializer;
         }
 
-        IBlock block = serializer.read( stream, id, length );
+        IBlock block = serializer.read( stream, type, length );
 
         int length2 = stream.readInt();
 
@@ -80,39 +79,5 @@ public class BlockSerializer implements IDataSerializer<IBlock>
     {
         throw new IllegalStateException( "Not implemented" );
         // TODO implement function
-    }
-
-    /***************************************************************************
-     * @param args
-     **************************************************************************/
-    public static void main( String [] args )
-    {
-        if( args.length == 1 )
-        {
-            File f = new File( args[0] );
-
-            try( FileStream fs = new FileStream( f );
-                 DataStream ds = new DataStream( fs ) )
-            {
-                BlockSerializer bs = new BlockSerializer();
-
-                while( ds.getAvailable() > 0 )
-                {
-                    IBlock block = bs.read( ds );
-
-                    LogUtils.printDebug( "Read %X", block.id );
-                }
-            }
-            catch( IOException ex )
-            {
-                // TODO Auto-generated catch block
-                ex.printStackTrace();
-            }
-            catch( ValidationException ex )
-            {
-                // TODO Auto-generated catch block
-                ex.printStackTrace();
-            }
-        }
     }
 }

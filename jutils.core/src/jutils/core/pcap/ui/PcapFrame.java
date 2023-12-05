@@ -14,8 +14,13 @@ import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
+import jutils.core.Iterables.Iteratorable;
 import jutils.core.SwingUtils;
+import jutils.core.data.DataItemPair;
+import jutils.core.io.FilePrintStream;
+import jutils.core.io.IOUtils;
 import jutils.core.io.LogUtils;
+import jutils.core.pcap.IBlock;
 import jutils.core.ui.RecentFilesViews;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.event.ActionAdapter;
@@ -36,7 +41,7 @@ public class PcapFrame implements IView<JFrame>
     /**  */
     private final RecentFilesViews recentViews;
     /**  */
-    private final PcapView parserView;
+    private final PcapView content;
 
     /***************************************************************************
      * 
@@ -45,7 +50,7 @@ public class PcapFrame implements IView<JFrame>
     {
         this.view = new StandardFrameView();
         this.recentViews = new RecentFilesViews();
-        this.parserView = new PcapView();
+        this.content = new PcapView();
 
         view.setTitle( "PCAP Viewer" );
         view.setSize( 800, 800 );
@@ -53,9 +58,9 @@ public class PcapFrame implements IView<JFrame>
 
         createMenus( view.getFileMenu() );
         view.setToolbar( createToolbar() );
-        view.setContent( parserView.getView() );
+        view.setContent( content.getView() );
 
-        parserView.getView().setDropTarget( new FileDropTarget(
+        content.getView().setDropTarget( new FileDropTarget(
             ( fde ) -> handleFileDropEvent( fde.getItem() ) ) );
 
         PcapOptions options = PcapOptions.read();
@@ -88,7 +93,73 @@ public class PcapFrame implements IView<JFrame>
 
         recentViews.install( toolbar, createOpenListener() );
 
+        toolbar.addSeparator();
+
+        SwingUtils.addActionToToolbar( toolbar, createExportAction() );
+
         return toolbar;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private Action createExportAction()
+    {
+        IFileSelected ifs = ( f ) -> exportFile( f );
+        ILastFile irf = () -> IOUtils.replaceExtension( getLastFileOpened(),
+            "csv" );
+        FileChooserListener listener = new FileChooserListener( getView(),
+            "Save CSV", true, ifs, irf );
+        Icon icon = IconConstants.getIcon( IconConstants.EXPORT_16 );
+
+        return new ActionAdapter( listener, "Export", icon );
+    }
+
+    /***************************************************************************
+     * @param f
+     **************************************************************************/
+    private void exportFile( File f )
+    {
+        BlockTableConfig config = new BlockTableConfig();
+        Iteratorable<DataItemPair<IBlock>> pairs;
+
+        pairs = new Iteratorable<>( content.getItems() );
+
+        try( FilePrintStream printer = new FilePrintStream( f ) )
+        {
+            String [] headers = config.getColumnNames();
+
+            for( int i = 0; i < headers.length; i++ )
+            {
+                if( i > 0 )
+                {
+                    printer.print( ", " );
+                }
+
+                printer.print( headers[i] );
+            }
+
+            printer.println();
+
+            for( DataItemPair<IBlock> pair : pairs )
+            {
+                for( int i = 0; i < headers.length; i++ )
+                {
+                    if( i > 0 )
+                    {
+                        printer.print( ", " );
+                    }
+
+                    printer.print( "%s", config.getItemData( pair, i ) );
+                }
+                printer.println();
+            }
+        }
+        catch( IOException ex )
+        {
+            // TODO Auto-generated catch block
+            ex.printStackTrace();
+        }
     }
 
     /***************************************************************************
@@ -163,7 +234,7 @@ public class PcapFrame implements IView<JFrame>
 
         try
         {
-            parserView.openFile( file );
+            content.openFile( file );
         }
         catch( IOException ex )
         {

@@ -35,13 +35,14 @@ public class UnknownBlock extends IBlock
     @Override
     public void printFields( FieldPrinter printer )
     {
+        printer.printFieldValues( "Block Data", body );
     }
 
     /***************************************************************************
      * 
      **************************************************************************/
     public static final class UnknownBlockSerializer
-        implements IBlockBodySerializer
+        implements IBlockBodySerializer<UnknownBlock>
     {
         /**
          * {@inheritDoc}
@@ -49,11 +50,10 @@ public class UnknownBlock extends IBlock
          * @throws EOFException
          */
         @Override
-        public IBlock read( IDataStream stream, int id, int length )
-            throws IOException
+        public UnknownBlock read( IDataStream stream, BlockType type,
+            int length ) throws IOException
         {
-            BlockType bt = BlockType.fromValue( id );
-            UnknownBlock block = new UnknownBlock( bt, length );
+            UnknownBlock block = new UnknownBlock( type, length );
 
             block.body = new byte[length - 12];
 

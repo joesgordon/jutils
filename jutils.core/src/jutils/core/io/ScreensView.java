@@ -51,7 +51,7 @@ public class ScreensView implements IView<JComponent>
         this.editable = true;
         this.screenId = null;
 
-        this.screens.addAll( generateScreens() );
+        this.screens.addAll( detectScreens() );
     }
 
     /***************************************************************************

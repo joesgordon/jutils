@@ -2,6 +2,7 @@ package jutils.core.pcap.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.swing.JComponent;
 
@@ -47,6 +48,14 @@ public class PcapView implements IView<JComponent>
     public JComponent getView()
     {
         return streamView.getView();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public Iterator<DataItemPair<IBlock>> getItems()
+    {
+        return streamView.getItems();
     }
 
     /***************************************************************************

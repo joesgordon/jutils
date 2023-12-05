@@ -3,6 +3,7 @@ package jutils.core.pcap.ui;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -81,6 +82,14 @@ public class ReferenceStreamView<T> implements IView<JComponent>
     public JComponent getView()
     {
         return view;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public Iterator<T> getItems()
+    {
+        return table.getItemIterator();
     }
 
     /***************************************************************************

@@ -11,7 +11,6 @@ import jutils.core.pcap.BlockType;
 import jutils.core.pcap.IBlock;
 import jutils.core.pcap.ethernet.TcpIpPacket;
 import jutils.core.pcap.ethernet.TcpIpPacket.TcpIpPacketSerializer;
-import jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
  * 
@@ -20,17 +19,24 @@ public class EnhancedPacket extends IBlock
 {
     /**  */
     public int interfaceId;
-    /**  */
+    /**
+     * The units of time from Linux epoch UTC. The length of a unit of time is
+     * specified by the 'if_tsresol' option of the {@link InterfaceDescription}
+     * block.
+     */
     public long timestamp;
-    /**  */
+    /**
+     * The number of octets captured from the packet (i.e. the length of the
+     * Packet Data field)
+     */
     public int capturedLength;
-    /**  */
+    /**
+     * The actual length of the packet when it was transmitted on the network.
+     */
     public int originalLength;
 
     /**  */
     public byte [] data;
-    /**  */
-    public byte [] options;
 
     /***************************************************************************
      * 
@@ -40,7 +46,6 @@ public class EnhancedPacket extends IBlock
         super( BlockType.ENHANCED_PACKET );
 
         this.data = new byte[0];
-        this.options = new byte[0];
     }
 
     /***************************************************************************
@@ -71,18 +76,17 @@ public class EnhancedPacket extends IBlock
     public void printFields( FieldPrinter printer )
     {
         printer.printField( "Interface ID", interfaceId );
-        printer.printField( "Timestamp", interfaceId );
-        printer.printField( "Captured Length", interfaceId );
-        printer.printField( "Original Length", interfaceId );
+        printer.printField( "Timestamp", timestamp );
+        printer.printField( "Captured Length", capturedLength );
+        printer.printField( "Original Length", originalLength );
         printer.printTier( "Packet", readData() );
-        printer.printField( "Options", HexUtils.toHexString( options, " " ) );
     }
 
     /***************************************************************************
      * 
      **************************************************************************/
     public static final class EnhancedPacketSerializer
-        implements IBlockBodySerializer
+        implements IBlockBodySerializer<EnhancedPacket>
     {
         /**  */
         public static final int PROTO_OFFSET = 0x17;
@@ -93,8 +97,8 @@ public class EnhancedPacket extends IBlock
          * {@inheritDoc}
          */
         @Override
-        public IBlock read( IDataStream stream, int id, int length )
-            throws IOException
+        public EnhancedPacket read( IDataStream stream, BlockType type,
+            int length ) throws IOException
         {
             EnhancedPacket block = new EnhancedPacket();
 
@@ -110,11 +114,11 @@ public class EnhancedPacket extends IBlock
             int optionsLen = block.length - 8 * 4 - packetLen;
 
             block.data = new byte[block.capturedLength];
-            block.options = new byte[optionsLen];
 
             stream.readFully( block.data );
             stream.skip( paddingLen );
-            stream.readFully( block.options );
+
+            readOptions( stream, block, optionsLen );
 
             return block;
         }

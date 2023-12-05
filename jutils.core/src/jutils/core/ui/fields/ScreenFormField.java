@@ -132,7 +132,7 @@ public class ScreenFormField implements IDataFormField<String>
      **************************************************************************/
     private void handleRefreshScreens()
     {
-        this.field.setValues( ScreensView.generateScreens() );
+        this.field.setValues( ScreensView.detectScreens() );
     }
 
     /***************************************************************************
