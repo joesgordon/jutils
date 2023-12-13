@@ -573,6 +573,33 @@ public final class SwingUtils
     /***************************************************************************
      * Makes the provided frame full screen on the provided device.
      * @param frame the frame to make full screen.
+     * @param deviceId the ID corresponding to a device's
+     * {@link GraphicsDevice#getIDstring()}.
+     * @return {@code true} if the screen was found.
+     **************************************************************************/
+    public static boolean setFullScreen( JFrame frame, String deviceId )
+    {
+        boolean found = false;
+
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
+        GraphicsDevice [] devs = ge.getScreenDevices();
+
+        for( GraphicsDevice device : devs )
+        {
+            if( deviceId.equals( device.getIDstring() ) )
+            {
+                found = true;
+                setFullScreen( frame, device );
+            }
+        }
+
+        return found;
+    }
+
+    /***************************************************************************
+     * Makes the provided frame full screen on the provided device.
+     * @param frame the frame to make full screen.
      * @param device the screen on which the frame shall be full screen.
      **************************************************************************/
     public static void setFullScreen( JFrame frame, GraphicsDevice device )
@@ -582,7 +609,7 @@ public final class SwingUtils
         frame.setAlwaysOnTop( true );
         frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 
-        if( device.isFullScreenSupported() )
+        if( device != null && device.isFullScreenSupported() )
         {
             device.setFullScreenWindow( frame );
         }

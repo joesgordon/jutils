@@ -16,9 +16,9 @@ import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
-import jutils.core.io.ScreensView;
-import jutils.core.io.ScreensView.ScreenInfo;
 import jutils.core.ui.OkDialogView;
+import jutils.core.ui.ScreensView;
+import jutils.core.ui.ScreensView.ScreenInfo;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.validation.IValidityChangedListener;
@@ -116,6 +116,9 @@ public class ScreenFormField implements IDataFormField<String>
         ScreensView screensView = new ScreensView();
         OkDialogView dialogView = new OkDialogView( getView(),
             screensView.getView() );
+
+        screensView.setUpdater(
+            ( d ) -> dialogView.setTitle( "Select Screen: " + d ) );
 
         screensView.setSelected( getValue() );
 

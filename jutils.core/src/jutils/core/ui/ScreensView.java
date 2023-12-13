@@ -1,23 +1,27 @@
-package jutils.core.io;
+package jutils.core.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import jutils.core.INamedItem;
-import jutils.core.ui.PaintingComponent;
+import jutils.core.laf.UIProperty;
 import jutils.core.ui.event.MouseClickListener;
+import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IView;
 
 /*******************************************************************************
@@ -27,6 +31,16 @@ public class ScreensView implements IView<JComponent>
 {
     /**  */
     private final PaintingComponent view;
+    /**  */
+    private final JLabel idLabel;
+    /**  */
+    private final Color screenBgColor;
+    /**  */
+    private final Color screenFgColor;
+    /**  */
+    private final Color selectedBgColor;
+    /**  */
+    private final Color selectedFgColor;
 
     /**  */
     private final List<ScreenInfo> screens;
@@ -35,6 +49,8 @@ public class ScreensView implements IView<JComponent>
     private String screenId;
     /**  */
     private boolean editable;
+    /**  */
+    private IUpdater<String> updater;
 
     /***************************************************************************
      * 
@@ -42,16 +58,28 @@ public class ScreensView implements IView<JComponent>
     public ScreensView()
     {
         this.view = new PaintingComponent( ( c, g ) -> paintScreens( c, g ) );
-        this.view.addMouseListener(
-            new MouseClickListener( ( pc, c, p ) -> handleClick( pc, c, p ) ) );
-
-        view.setPreferredSize( new Dimension( 200, 200 ) );
+        this.idLabel = new JLabel();
+        this.screenBgColor = UIProperty.LIST_BACKGROUND.getColor();
+        this.screenFgColor = idLabel.getForeground();
+        this.selectedBgColor = UIProperty.LIST_SELECTIONBACKGROUND.getColor();
+        this.selectedFgColor = UIProperty.LIST_SELECTIONFOREGROUND.getColor();
 
         this.screens = new ArrayList<>();
-        this.editable = true;
-        this.screenId = null;
 
-        this.screens.addAll( detectScreens() );
+        this.screenId = "";
+        this.editable = true;
+        this.updater = null;
+
+        view.setPreferredSize( new Dimension( 200, 200 ) );
+        view.addMouseListener( new MouseClickListener(
+            ( pc, c, p, m ) -> handleClick( pc, c, p, m ) ) );
+
+        idLabel.setFont(
+            view.getFont().deriveFont( Font.BOLD ).deriveFont( 16f ) );
+        idLabel.setHorizontalAlignment( SwingConstants.CENTER );
+        idLabel.setVerticalAlignment( SwingConstants.CENTER );
+
+        screens.addAll( detectScreens() );
     }
 
     /***************************************************************************
@@ -63,33 +91,10 @@ public class ScreensView implements IView<JComponent>
         int w = c.getWidth();
         int h = c.getHeight();
 
-        g.setRenderingHint( RenderingHints.KEY_ALPHA_INTERPOLATION,
-            RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY );
-        g.setRenderingHint( RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON );
-        g.setRenderingHint( RenderingHints.KEY_COLOR_RENDERING,
-            RenderingHints.VALUE_COLOR_RENDER_QUALITY );
-        g.setRenderingHint( RenderingHints.KEY_DITHERING,
-            RenderingHints.VALUE_DITHER_ENABLE );
-        g.setRenderingHint( RenderingHints.KEY_FRACTIONALMETRICS,
-            RenderingHints.VALUE_FRACTIONALMETRICS_ON );
-        g.setRenderingHint( RenderingHints.KEY_INTERPOLATION,
-            RenderingHints.VALUE_INTERPOLATION_BILINEAR );
-        g.setRenderingHint( RenderingHints.KEY_RENDERING,
-            RenderingHints.VALUE_RENDER_QUALITY );
-        g.setRenderingHint( RenderingHints.KEY_STROKE_CONTROL,
-            RenderingHints.VALUE_STROKE_PURE );
-        g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
-
         g.setColor( c.getBackground() );
         g.fillRect( 0, 0, w, h );
 
         g.setColor( c.getForeground() );
-
-        int selectionColor = c.getForeground().getRGB();
-
-        selectionColor = 0xFFFFFF - selectionColor;
 
         int minSx = 0;
         int maxSx = 0;
@@ -133,6 +138,7 @@ public class ScreensView implements IView<JComponent>
         for( int i = 0; i < screens.size(); i++ )
         {
             ScreenInfo screen = screens.get( i );
+            boolean selected = screen.id.equals( screenId );
 
             screen.screen.x = dx + ( screen.bounds.x - minSx ) * r;
             screen.screen.y = dy + ( screen.bounds.y - minSy ) * r;
@@ -149,33 +155,55 @@ public class ScreensView implements IView<JComponent>
             g.setColor( c.getForeground() );
             g.draw( outer );
 
-            if( screen.id.equals( screenId ) )
-            {
-                RoundRectangle2D.Double inner = new RoundRectangle2D.Double();
+            RoundRectangle2D.Double inner = new RoundRectangle2D.Double();
 
-                inner.x = outer.x + 2;
-                inner.y = outer.y + 2;
-                inner.width = outer.width - 4;
-                inner.height = outer.height - 4;
-                inner.archeight = outer.archeight;
-                inner.arcwidth = outer.arcwidth;
+            inner.x = outer.x + 2;
+            inner.y = outer.y + 2;
+            inner.width = outer.width - 4;
+            inner.height = outer.height - 4;
+            inner.archeight = outer.archeight;
+            inner.arcwidth = outer.arcwidth;
 
-                g.setColor( new Color( selectionColor ) );
-                g.fill( inner );
-            }
+            g.setColor( selected ? selectedBgColor : screenBgColor );
+            g.fill( inner );
+
+            idLabel.setText( screen.id );
+            idLabel.repaint();
+            idLabel.validate();
+
+            Dimension td = idLabel.getPreferredSize();
+
+            int tx = ( int )Math.round(
+                screen.screen.x + screen.screen.width / 2. - td.width / 2. );
+            int ty = ( int )Math.round(
+                screen.screen.y + screen.screen.height / 2. - td.height / 2. );
+
+            idLabel.setSize( td );
+            idLabel.setForeground( selected ? selectedFgColor : screenFgColor );
+
+            g.translate( tx, ty );
+            idLabel.paint( g );
+            g.translate( -tx, -ty );
         }
     }
 
     /***************************************************************************
-     * @param type
-     * @param event
+     * @param primaryClicked
+     * @param count
+     * @param p
+     * @param modifiers
      **************************************************************************/
-    private void handleClick( boolean primaryClicked, int count, Point p )
+    private void handleClick( boolean primaryClicked, int count, Point p,
+        int modifiers )
     {
         if( !editable || !primaryClicked || count != 1 )
         {
             return;
         }
+
+        boolean controlPressed = MouseEvent.CTRL_DOWN_MASK == ( modifiers &
+            MouseEvent.CTRL_DOWN_MASK );
+
         String newSelection = null;
 
         for( int i = 0; i < screens.size(); i++ )
@@ -184,7 +212,14 @@ public class ScreensView implements IView<JComponent>
 
             if( screen.screen.contains( p ) )
             {
-                newSelection = screen.id;
+                if( controlPressed && screen.id.equals( this.screenId ) )
+                {
+                    newSelection = "";
+                }
+                else
+                {
+                    newSelection = screen.id;
+                }
                 break;
             }
         }
@@ -192,6 +227,11 @@ public class ScreensView implements IView<JComponent>
         if( newSelection != null && !newSelection.equals( this.screenId ) )
         {
             this.screenId = newSelection;
+
+            if( updater != null )
+            {
+                updater.update( screenId );
+            }
         }
 
         view.repaint();
@@ -244,6 +284,14 @@ public class ScreensView implements IView<JComponent>
         {
             screenId = defaultId;
         }
+    }
+
+    /***************************************************************************
+     * @param updater
+     **************************************************************************/
+    public void setUpdater( IUpdater<String> updater )
+    {
+        this.updater = updater;
     }
 
     /***************************************************************************

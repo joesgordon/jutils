@@ -37,8 +37,9 @@ public class MouseClickListener extends MouseEventsListener
         boolean primaryClicked = notPopupButton && isLr;
         int count = event.getClickCount();
         Point point = event.getPoint();
+        int modifiers = event.getModifiersEx();
 
-        handler.handleClick( primaryClicked, count, point );
+        handler.handleClick( primaryClicked, count, point, modifiers );
     }
 
     /***************************************************************************
@@ -50,8 +51,9 @@ public class MouseClickListener extends MouseEventsListener
          * @param primaryClicked
          * @param count
          * @param point
+         * @param modifiers
          */
-        public void handleClick( boolean primaryClicked, int count,
-            Point point );
+        public void handleClick( boolean primaryClicked, int count, Point point,
+            int modifiers );
     }
 }

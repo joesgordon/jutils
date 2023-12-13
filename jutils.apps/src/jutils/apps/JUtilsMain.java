@@ -24,12 +24,19 @@ import jutils.summer.SummerTool;
 public class JUtilsMain
 {
     /***************************************************************************
+     * Declare the default and only constructor private to prevent instances.
+     **************************************************************************/
+    private JUtilsMain()
+    {
+    }
+
+    /***************************************************************************
      * Application Gallery definition to display an AppGallery frame.
      * @param args Unused arguments to the Application Gallery application.
      **************************************************************************/
     public static void main( String [] args )
     {
-        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
+        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
 
         AppRunner.invokeLater( new JUtilsApp(), false );
     }
