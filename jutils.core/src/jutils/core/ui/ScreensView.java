@@ -350,6 +350,7 @@ public class ScreensView implements IView<JComponent>
     public void setSelected( String screenId )
     {
         this.screenId = screenId;
+        view.repaint();
     }
 
     /***************************************************************************
