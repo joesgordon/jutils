@@ -45,4 +45,32 @@ public class SerialParams
         this.swFlowOutputEnabled = false;
         this.swFlowInputEnabled = false;
     }
+
+    /***************************************************************************
+     * @param params
+     **************************************************************************/
+    public SerialParams( SerialParams params )
+    {
+        this();
+
+        set( params );
+    }
+
+    /***************************************************************************
+     * @param params
+     **************************************************************************/
+    public void set( SerialParams params )
+    {
+        this.binaryModeEnabled = params.binaryModeEnabled;
+        this.baudRate = params.baudRate;
+        this.size = params.size;
+        this.parity = params.parity;
+        this.stopBits = params.stopBits;
+        this.ctsEnabled = params.ctsEnabled;
+        this.dsrEnabled = params.dsrEnabled;
+        this.dtrControl = params.dtrControl;
+        this.rtsControl = params.rtsControl;
+        this.swFlowOutputEnabled = params.swFlowOutputEnabled;
+        this.swFlowInputEnabled = params.swFlowInputEnabled;
+    }
 }
