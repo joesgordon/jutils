@@ -195,7 +195,7 @@ void printPortOptions(ISerialPort_ port)
  ******************************************************************************/
 void readPort(ISerialPort_ port)
 {
-    uint8_t buf[64];
+    uint8_t buf[1024];
     int32_t count = sizeof(buf);
 
     printf("Reading up to %d bytes in %p\n", count, buf);
