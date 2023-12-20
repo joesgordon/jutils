@@ -234,12 +234,24 @@ public class BitShifterFactory
      **************************************************************************/
     private static class PhaseInfo
     {
+        /**  */
         public final int count;
+        /**  */
         public final int fromByte;
+        /**  */
         public final int fromBit;
+        /**  */
         public final int toByte;
+        /**  */
         public final int toBit;
 
+        /**
+         * @param count
+         * @param fromByte
+         * @param fromBit
+         * @param toByte
+         * @param toBit
+         */
         public PhaseInfo( int count, int fromByte, int fromBit, int toByte,
             int toBit )
         {
@@ -250,6 +262,9 @@ public class BitShifterFactory
             this.toBit = toBit;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String toString()
         {
@@ -263,6 +278,9 @@ public class BitShifterFactory
      **************************************************************************/
     public static class ByteBitShifter implements IBitShifter
     {
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void shift( BitBuffer from, BitBuffer to, int byteCount )
         {
@@ -284,9 +302,15 @@ public class BitShifterFactory
      **************************************************************************/
     public static class TwoPhaseBitShifter implements IBitShifter
     {
+        /**  */
         private final IBitShiftPhase phase1;
+        /**  */
         private final IBitShiftPhase phase2;
 
+        /**
+         * @param phase1
+         * @param phase2
+         */
         public TwoPhaseBitShifter( IBitShiftPhase phase1,
             IBitShiftPhase phase2 )
         {
@@ -294,6 +318,9 @@ public class BitShifterFactory
             this.phase2 = phase2;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void shift( BitBuffer from, BitBuffer to, int byteCount )
         {
@@ -318,10 +345,18 @@ public class BitShifterFactory
      **************************************************************************/
     public static class ThreePhaseBitShifter implements IBitShifter
     {
+        /**  */
         private final IBitShiftPhase phase1;
+        /**  */
         private final IBitShiftPhase phase2;
+        /**  */
         private final IBitShiftPhase phase3;
 
+        /**
+         * @param phase1
+         * @param phase2
+         * @param phase3
+         */
         public ThreePhaseBitShifter( IBitShiftPhase phase1,
             IBitShiftPhase phase2, IBitShiftPhase phase3 )
         {
@@ -330,6 +365,9 @@ public class BitShifterFactory
             this.phase3 = phase3;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void shift( BitBuffer from, BitBuffer to, int byteCount )
         {
@@ -356,6 +394,12 @@ public class BitShifterFactory
      **************************************************************************/
     private static interface IBitShiftPhase
     {
+        /**
+         * @param from
+         * @param to
+         * @param fromIdx
+         * @param toIdx
+         */
         public void shift( byte [] from, byte [] to, int fromIdx, int toIdx );
     }
 
@@ -364,12 +408,24 @@ public class BitShifterFactory
      **************************************************************************/
     private static class LeftBitShiftPhase implements IBitShiftPhase
     {
+        /**  */
         private final int fromMask;
+        /**  */
         private final int toMask;
+        /**  */
         private final int fromIdx;
+        /**  */
         private final int toIdx;
+        /**  */
         private final int shift;
 
+        /**
+         * @param fromMask
+         * @param toMask
+         * @param fromIdx
+         * @param toIdx
+         * @param shift
+         */
         public LeftBitShiftPhase( int fromMask, int toMask, int fromIdx,
             int toIdx, int shift )
         {
@@ -382,6 +438,9 @@ public class BitShifterFactory
             this.shift = shift;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void shift( byte [] from, byte [] to, int fi, int ti )
         {
@@ -401,12 +460,24 @@ public class BitShifterFactory
      **************************************************************************/
     private static class RightBitShiftPhase implements IBitShiftPhase
     {
+        /**  */
         private final int fromMask;
+        /**  */
         private final int toMask;
+        /**  */
         private final int fromIdx;
+        /**  */
         private final int toIdx;
+        /**  */
         private final int shift;
 
+        /**
+         * @param fromMask
+         * @param toMask
+         * @param fromIdx
+         * @param toIdx
+         * @param shift
+         */
         public RightBitShiftPhase( int fromMask, int toMask, int fromIdx,
             int toIdx, int shift )
         {
@@ -419,6 +490,9 @@ public class BitShifterFactory
             this.shift = shift;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void shift( byte [] from, byte [] to, int fi, int ti )
         {
@@ -438,11 +512,21 @@ public class BitShifterFactory
      **************************************************************************/
     private static class NoBitShiftPhase implements IBitShiftPhase
     {
+        /**  */
         private final int fromMask;
+        /**  */
         private final int toMask;
+        /**  */
         private final int fromIdx;
+        /**  */
         private final int toIdx;
 
+        /**
+         * @param fromMask
+         * @param toMask
+         * @param fromIdx
+         * @param toIdx
+         */
         public NoBitShiftPhase( int fromMask, int toMask, int fromIdx,
             int toIdx )
         {
@@ -453,6 +537,9 @@ public class BitShifterFactory
             this.toIdx = toIdx;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void shift( byte [] from, byte [] to, int fi, int ti )
         {

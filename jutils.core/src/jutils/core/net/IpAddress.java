@@ -29,6 +29,10 @@ public class IpAddress
     /**  */
     public static final byte [] IPV6_LOOPBACK = new byte[] { 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+    /**  */
+    public static final int IP4_MIN_GROUP = 0xE0000000;
+    /**  */
+    public static final int IP4_MAX_GROUP = 0xEFFFFFFF;
 
     /** IP address values (always IPv6 size). */
     public final byte [] address;
@@ -41,6 +45,16 @@ public class IpAddress
     public IpAddress()
     {
         this( IpVersion.IPV4 );
+    }
+
+    /***************************************************************************
+     * @param ipv4Value
+     **************************************************************************/
+    public IpAddress( int ipv4Value )
+    {
+        this( IpVersion.IPV4 );
+
+        this.setValue( ipv4Value );
     }
 
     /***************************************************************************
@@ -176,6 +190,26 @@ public class IpAddress
         }
     }
 
+    public boolean isMulticast()
+    {
+        switch( version )
+        {
+            case IPV4:
+            {
+                int value = this.getValue();
+
+                return IP4_MIN_GROUP <= value && value <= IP4_MAX_GROUP;
+            }
+
+            case IPV6:
+                return getHextet( 0 ) == 0xFF00;
+
+            default:
+                throw new IllegalStateException(
+                    "Unknown IP version: " + version );
+        }
+    }
+
     /***************************************************************************
      * Sets this address to the provided address.
      * @param address the IP to set this address to.
@@ -227,17 +261,26 @@ public class IpAddress
 
         short [] value = new short[HEXTET_COUNT];
 
-        for( int i = 0; i < value.length; i++ )
+        for( int i = 0; i < HEXTET_COUNT; i++ )
         {
-            int ai = i * 2;
-
-            int a1 = Byte.toUnsignedInt( address[ai] );
-            int a2 = Byte.toUnsignedInt( address[ai + 1] );
-
-            value[i] = ( short )( ( a1 << 8 ) | a2 );
+            value[i] = getHextet( i );
         }
 
         return value;
+    }
+
+    /***************************************************************************
+     * @param index
+     * @return
+     **************************************************************************/
+    public short getHextet( int index )
+    {
+        int ai = index * 2;
+
+        int a1 = Byte.toUnsignedInt( address[ai] );
+        int a2 = Byte.toUnsignedInt( address[ai + 1] );
+
+        return ( short )( ( a1 << 8 ) | a2 );
     }
 
     /***************************************************************************
@@ -361,10 +404,14 @@ public class IpAddress
                 "Cannot represent IPv6 as an int" );
         }
 
-        int addr = ( address[0] << 24 ) | ( address[1] << 16 ) |
-            ( address[2] << 8 ) | ( address[3] << 0 );
+        int value = 0;
 
-        return addr;
+        value |= ( address[0] & 0xFF ) << 24;
+        value |= ( address[1] & 0xFF ) << 16;
+        value |= ( address[2] & 0xFF ) << 8;
+        value |= address[3] & 0xFF;
+
+        return value;
     }
 
     /***************************************************************************
