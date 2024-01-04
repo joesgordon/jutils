@@ -13,6 +13,8 @@ import jutils.hexedit.HexeditTool;
 import jutils.insomnia.InsomniaTool;
 import jutils.mines.MinesTool;
 import jutils.multicon.MulticonTool;
+import jutils.platform.IPlatform;
+import jutils.platform.PlatformUtils;
 import jutils.platform.SerialConsoleTool;
 import jutils.plot.app.PlotTool;
 import jutils.summer.SummerTool;
@@ -37,6 +39,10 @@ public class JUtilsMain
     public static void main( String [] args )
     {
         AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
+
+        IPlatform platform = PlatformUtils.getPlatform();
+
+        platform.initialize();
 
         AppRunner.invokeLater( new JUtilsApp(), false );
     }
