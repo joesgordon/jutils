@@ -57,7 +57,7 @@ public class DoubleParser implements IParser<Double>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Double parse( String text ) throws ValidationException
@@ -81,6 +81,10 @@ public class DoubleParser implements IParser<Double>
         }
     }
 
+    /***************************************************************************
+     * @param d
+     * @throws ValidationException
+     **************************************************************************/
     private void testBounds( double d ) throws ValidationException
     {
         boolean exceedsMin = min != null && d < min;

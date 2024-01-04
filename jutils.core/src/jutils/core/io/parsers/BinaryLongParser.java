@@ -1,6 +1,5 @@
 package jutils.core.io.parsers;
 
-import jutils.core.NumberParsingUtils;
 import jutils.core.ValidationException;
 import jutils.core.io.IParser;
 
@@ -8,7 +7,7 @@ import jutils.core.io.IParser;
  * A parser that ensures that the provided text represents a hexadecimal
  * integer.
  ******************************************************************************/
-public class HexLongParser implements IParser<Long>
+public class BinaryLongParser implements IParser<Long>
 {
     /** The minimum bound, inclusive; not checked if {@code null}. */
     private final Long min;
@@ -18,7 +17,7 @@ public class HexLongParser implements IParser<Long>
     /***************************************************************************
      * 
      **************************************************************************/
-    public HexLongParser()
+    public BinaryLongParser()
     {
         this( null, null );
     }
@@ -27,7 +26,7 @@ public class HexLongParser implements IParser<Long>
      * @param min
      * @param max
      **************************************************************************/
-    public HexLongParser( Long min, Long max )
+    public BinaryLongParser( Long min, Long max )
     {
         this.min = min;
         this.max = max;
@@ -40,28 +39,51 @@ public class HexLongParser implements IParser<Long>
     public Long parse( String text ) throws ValidationException
     {
         long value = 0;
+        int digits = 0;
 
-        try
+        for( int i = 0; i < text.length(); i++ )
         {
-            value = NumberParsingUtils.parseHexLong( text );
-        }
-        catch( NumberFormatException ex )
-        {
-            throw new ValidationException( ex.getMessage() );
+            char c = text.charAt( i );
+
+            if( c == '0' )
+            {
+                value = value << 1;
+                digits++;
+            }
+            else if( c == '1' )
+            {
+                value = value << 1;
+                value |= 1;
+                digits++;
+            }
+            else if( c == ' ' )
+            {
+                continue;
+            }
+            else
+            {
+                throw new ValidationException( "Invalid binary character '" +
+                    c + "' found at index " + i );
+            }
+
+            if( digits > Long.SIZE )
+            {
+                throw new ValidationException( "Too many binary digits found" );
+            }
         }
 
         if( min != null && value < min )
         {
-            throw new ValidationException( "Value less than minimum: " +
-                Long.toHexString( value ).toUpperCase() + " < " +
-                Long.toHexString( min ).toUpperCase() );
+            String err = String.format( "Value less than minimum: %s < %s",
+                Long.toBinaryString( value ), Long.toBinaryString( min ) );
+            throw new ValidationException( err );
         }
 
         if( max != null && value > max )
         {
-            throw new ValidationException( "Value greater than maximum: " +
-                Long.toHexString( value ).toUpperCase() + " > " +
-                Long.toHexString( max ).toUpperCase() );
+            String err = String.format( "Value greater than maximum: %s > %s",
+                Long.toBinaryString( value ), Long.toBinaryString( max ) );
+            throw new ValidationException( err );
         }
 
         return value;

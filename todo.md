@@ -21,16 +21,9 @@
 - Move `FileField` to validation and rename.
 - Write `ComboFileFormField`.
 - Write jutils.ini.
-- Finish [jutils.maths](./jutils.math/jumath.md)
-- Finish [jutils.serial](./jutils.serial/juserial.md)
-- See [jutils.plot](./jutils.plot/juplot.md)
-
-## jutils.plot
-
-- jutils.chart.StripChart
-- Update jutils.chart widgets to support log space in both the x & y axes.
-- JPlot - add copy button
-- Move point removal to chart or appOptions.fillbetween
+- Finish [jutils.maths](./docs/math.md)
+- Finish [cutils.platform](./docs/cutils.md)
+- See [jutils.plot](./docs/plot.md)
 
 ## jutils.math
 

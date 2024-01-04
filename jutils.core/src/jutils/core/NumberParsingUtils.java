@@ -190,31 +190,125 @@ public final class NumberParsingUtils
     }
 
     /***************************************************************************
-     * Converts the provided long into a string of its binary representation
+     * Converts the provided value into a string of its binary representation
      * without any leading 0's.
-     * @param value the long to convert.
+     * @param value the value to convert.
+     * @return the binary string.
+     **************************************************************************/
+    public static String toBinaryString( byte value )
+    {
+        return toBinaryString( value, false, Byte.SIZE );
+    }
+
+    /***************************************************************************
+     * Converts the provided value into a string of its binary representation
+     * with leading 0's.
+     * @param value the value to convert.
+     * @return the binary string.
+     **************************************************************************/
+    public static String toLeadingBinaryString( byte value )
+    {
+        return toBinaryString( value, true, Byte.SIZE );
+    }
+
+    /***************************************************************************
+     * Converts the provided value into a string of its binary representation
+     * without any leading 0's.
+     * @param value the value to convert.
+     * @return the binary string.
+     **************************************************************************/
+    public static String toBinaryString( short value )
+    {
+        return toBinaryString( value, false, Short.SIZE );
+    }
+
+    /***************************************************************************
+     * Converts the provided value into a string of its binary representation
+     * with leading 0's.
+     * @param value the value to convert.
+     * @return the binary string.
+     **************************************************************************/
+    public static String toLeadingBinaryString( short value )
+    {
+        return toBinaryString( value, true, Short.SIZE );
+    }
+
+    /***************************************************************************
+     * Converts the provided value into a string of its binary representation
+     * without any leading 0's.
+     * @param value the value to convert.
+     * @return the binary string.
+     **************************************************************************/
+    public static String toBinaryString( int value )
+    {
+        return toBinaryString( value, false, Integer.SIZE );
+    }
+
+    /***************************************************************************
+     * Converts the provided value into a string of its binary representation
+     * with leading 0's.
+     * @param value the value to convert.
+     * @return the binary string.
+     **************************************************************************/
+    public static String toLeadingBinaryString( int value )
+    {
+        return toBinaryString( value, true, Integer.SIZE );
+    }
+
+    /***************************************************************************
+     * Converts the provided value into a string of its binary representation
+     * without any leading 0's.
+     * @param value the value to convert.
      * @return the binary string.
      **************************************************************************/
     public static String toBinaryString( long value )
     {
-        StringBuilder builder = new StringBuilder( 64 );
+        return toBinaryString( value, false, Long.SIZE );
+    }
 
-        boolean foundLeading = false;
+    /***************************************************************************
+     * Converts the provided value into a string of its binary representation
+     * with leading 0's.
+     * @param value the value to convert.
+     * @return the binary string.
+     **************************************************************************/
+    public static String toLeadingBinaryString( long value )
+    {
+        return toBinaryString( value, true, Long.SIZE );
+    }
 
-        for( int i = 0; i < 64; i++ )
+    /***************************************************************************
+     * @param value
+     * @param leading
+     * @param size
+     * @return
+     **************************************************************************/
+    private static String toBinaryString( long value, boolean leading,
+        int size )
+    {
+        char [] chars = new char[size];
+        int off = 0;
+        int len = 0;
+
+        for( int i = 0, b = size - 1; i < chars.length; i++, b-- )
         {
-            int b = ( int )( ( value >>> ( 63 - i ) ) & 1 );
+            int bit = ( int )( ( value >>> b ) & 1 );
+            boolean isOne = bit == 1;
 
-            if( b == 1 || foundLeading )
+            if( isOne || leading )
             {
-                foundLeading = true;
-                builder.append( b == 0 ? "0" : "1" );
+                chars[i] = isOne ? '1' : '0';
+                leading = true;
+                len++;
+            }
+            else
+            {
+                off++;
             }
         }
 
-        String str = builder.toString();
+        return new String( chars, off, len );
 
-        return str.isEmpty() ? "0" : str;
     }
 
     /***************************************************************************

@@ -35,7 +35,7 @@ public class LongParser implements IParser<Long>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Long parse( String text ) throws ValidationException
@@ -60,36 +60,48 @@ public class LongParser implements IParser<Long>
         }
         catch( NumberFormatException ex )
         {
-            int idx = 0;
-            char c;
-
-            if( !text.isEmpty() )
-            {
-                c = text.charAt( idx );
-
-                if( c == '+' || c == '-' )
-                {
-                    idx++;
-                }
-            }
-            else
-            {
-                throw new ValidationException( "No input" );
-            }
-
-            for( ; idx < text.length(); idx++ )
-            {
-                c = text.charAt( idx );
-                if( !Character.isDigit( c ) )
-                {
-                    String msg = String.format(
-                        "Invalid integer character '%c' at index %d", c, idx );
-                    throw new ValidationException( msg );
-                }
-            }
-
-            throw new ValidationException( "Input outside of range " +
-                Long.MIN_VALUE + " to " + Long.MAX_VALUE );
+            String err = generateErrorMessage( text, Long.MIN_VALUE,
+                Long.MAX_VALUE );
+            throw new ValidationException( err );
         }
+    }
+
+    /***************************************************************************
+     * @param text
+     * @param min
+     * @param max
+     * @return
+     **************************************************************************/
+    public static String generateErrorMessage( String text, long min, long max )
+    {
+        int idx = 0;
+        char c;
+
+        if( !text.isEmpty() )
+        {
+            c = text.charAt( idx );
+
+            if( c == '+' || c == '-' )
+            {
+                idx++;
+            }
+        }
+        else
+        {
+            return "No input";
+        }
+
+        for( ; idx < text.length(); idx++ )
+        {
+            c = text.charAt( idx );
+            if( !Character.isDigit( c ) )
+            {
+                String msg = String.format(
+                    "Invalid integer character '%c' at index %d", c, idx );
+                return msg;
+            }
+        }
+
+        return "Input outside of range " + min + " to " + max;
     }
 }

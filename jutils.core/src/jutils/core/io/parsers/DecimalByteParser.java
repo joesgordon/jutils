@@ -1,6 +1,5 @@
 package jutils.core.io.parsers;
 
-import jutils.core.NumberParsingUtils;
 import jutils.core.ValidationException;
 import jutils.core.io.IParser;
 
@@ -8,17 +7,17 @@ import jutils.core.io.IParser;
  * A parser that ensures that the provided text represents a hexadecimal
  * integer.
  ******************************************************************************/
-public class HexLongParser implements IParser<Long>
+public class DecimalByteParser implements IParser<Byte>
 {
     /** The minimum bound, inclusive; not checked if {@code null}. */
-    private final Long min;
+    private final Byte min;
     /** The maximum bound, inclusive; not checked if {@code null}. */
-    private final Long max;
+    private final Byte max;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public HexLongParser()
+    public DecimalByteParser()
     {
         this( null, null );
     }
@@ -27,7 +26,7 @@ public class HexLongParser implements IParser<Long>
      * @param min
      * @param max
      **************************************************************************/
-    public HexLongParser( Long min, Long max )
+    public DecimalByteParser( Byte min, Byte max )
     {
         this.min = min;
         this.max = max;
@@ -37,33 +36,44 @@ public class HexLongParser implements IParser<Long>
      * 
      **************************************************************************/
     @Override
-    public Long parse( String text ) throws ValidationException
+    public Byte parse( String text ) throws ValidationException
     {
-        long value = 0;
+        byte value;
 
         try
         {
-            value = NumberParsingUtils.parseHexLong( text );
+            value = Byte.valueOf( text );
         }
         catch( NumberFormatException ex )
         {
-            throw new ValidationException( ex.getMessage() );
+            String err = LongParser.generateErrorMessage( text, Byte.MIN_VALUE,
+                Byte.MAX_VALUE );
+            throw new ValidationException( err );
         }
 
         if( min != null && value < min )
         {
-            throw new ValidationException( "Value less than minimum: " +
-                Long.toHexString( value ).toUpperCase() + " < " +
-                Long.toHexString( min ).toUpperCase() );
+            String err = String.format( "Value less than minimum: %s < %d",
+                value, min );
+            throw new ValidationException( err );
         }
 
         if( max != null && value > max )
         {
-            throw new ValidationException( "Value greater than maximum: " +
-                Long.toHexString( value ).toUpperCase() + " > " +
-                Long.toHexString( max ).toUpperCase() );
+            String err = String.format( "Value greater than maximum: %s > %d",
+                value, max );
+            throw new ValidationException( err );
         }
 
         return value;
+    }
+
+    /***************************************************************************
+     * @param value
+     * @return
+     **************************************************************************/
+    public static String toString( byte value )
+    {
+        return Long.toBinaryString( value & 0xFF );
     }
 }

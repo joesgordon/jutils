@@ -275,10 +275,13 @@ public final class HexUtils
         }
 
         int b = 0;
-        char c = text.charAt( 0 );
+        char c;
 
+        c = text.charAt( 0 );
         b = NumberParsingUtils.digitFromHex( c );
         b = b << 4;
+
+        c = text.charAt( 1 );
         b |= NumberParsingUtils.digitFromHex( c );
 
         return ( byte )b;

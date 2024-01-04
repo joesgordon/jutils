@@ -6,8 +6,8 @@ import jutils.core.ArrayPrinter;
 import jutils.core.INamedItem;
 import jutils.core.INamedValue;
 import jutils.core.Iterables;
-import jutils.core.Utils;
 import jutils.core.Iterables.Iteratorable;
+import jutils.core.Utils;
 import jutils.core.data.IBitField;
 import jutils.core.ui.hex.HexUtils;
 
@@ -79,12 +79,15 @@ public class FieldPrinter
     /***************************************************************************
      * @param tierName
      * @param tier
+     * @return
      **************************************************************************/
-    public void printTier( String tierName, ITierPrinter tier )
+    public FieldPrinter printTier( String tierName, ITierPrinter tier )
     {
         FieldPrinter p = createTier( tierName );
 
         tier.printFields( p );
+
+        return p;
     }
 
     /***************************************************************************
@@ -487,6 +490,18 @@ public class FieldPrinter
     {
         Iterable<Short> array = Iterables.buildIteratable( values );
         printIterableField( name, array, values.length, 0,
+            ( t ) -> HexUtils.getHexString( t ) );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param values
+     **************************************************************************/
+    public void printFieldValuesHex( String name, int itemsPerLine,
+        short... values )
+    {
+        Iterable<Short> array = Iterables.buildIteratable( values );
+        printIterableField( name, array, values.length, itemsPerLine,
             ( t ) -> HexUtils.getHexString( t ) );
     }
 

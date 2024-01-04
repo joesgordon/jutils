@@ -2,26 +2,28 @@ package jutils.core.ui.fields;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
-import jutils.core.io.parsers.HexByteParser;
+import jutils.core.NumberParsingUtils;
+import jutils.core.io.IParser;
+import jutils.core.io.parsers.BinaryByteParser;
 import jutils.core.ui.event.updater.IUpdater;
-import jutils.core.ui.hex.HexUtils;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 
 /*******************************************************************************
- * Defines an {@link IFormField} that contains a double validater.
+ * Defines an {@link IFormField} that contains a hexadecimal byte validater.
  ******************************************************************************/
-public class HexByteFormField implements IDataFormField<Byte>
+public class BinaryByteFormField implements IDataFormField<Byte>
 {
+    /**  */
+    private final JTextField textField;
     /**  */
     private final ParserFormField<Byte> field;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
-    public HexByteFormField( String name )
+    public BinaryByteFormField( String name )
     {
         this( name, null );
     }
@@ -30,7 +32,7 @@ public class HexByteFormField implements IDataFormField<Byte>
      * @param name
      * @param units
      **************************************************************************/
-    public HexByteFormField( String name, String units )
+    public BinaryByteFormField( String name, String units )
     {
         this( name, units, 20 );
     }
@@ -40,7 +42,7 @@ public class HexByteFormField implements IDataFormField<Byte>
      * @param units
      * @param columns
      **************************************************************************/
-    public HexByteFormField( String name, String units, int columns )
+    public BinaryByteFormField( String name, String units, int columns )
     {
         this( name, units, columns, null, null );
     }
@@ -51,7 +53,7 @@ public class HexByteFormField implements IDataFormField<Byte>
      * @param min
      * @param max
      **************************************************************************/
-    public HexByteFormField( String name, String units, Byte min, Byte max )
+    public BinaryByteFormField( String name, String units, Byte min, Byte max )
     {
         this( name, units, 20, min, max );
     }
@@ -60,20 +62,22 @@ public class HexByteFormField implements IDataFormField<Byte>
      * @param name
      * @param units
      * @param columns
-     * @param updater
+     * @param min
+     * @param max
      **************************************************************************/
-    public HexByteFormField( String name, String units, int columns, Byte min,
-        Byte max )
+    public BinaryByteFormField( String name, String units, int columns,
+        Byte min, Byte max )
     {
-        HexByteParser parser = new HexByteParser( min, max );
-        JTextField textField = new JTextField( columns );
+        IDescriptor<Byte> descriptor = ( d ) -> toString( d );
+        IParser<Byte> parser = new BinaryByteParser( min, max );
 
-        this.field = new ParserFormField<>( name, parser, textField,
-            ( d ) -> toString( d ), textField, units );
+        this.textField = new JTextField( columns );
+        this.field = new ParserFormField<>( name, parser, textField, descriptor,
+            textField, units );
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public String getName()
@@ -82,7 +86,7 @@ public class HexByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -91,7 +95,7 @@ public class HexByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public Byte getValue()
@@ -100,7 +104,7 @@ public class HexByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public void setValue( Byte value )
@@ -109,7 +113,7 @@ public class HexByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public void setUpdater( IUpdater<Byte> updater )
@@ -118,7 +122,7 @@ public class HexByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public IUpdater<Byte> getUpdater()
@@ -136,7 +140,7 @@ public class HexByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
@@ -163,19 +167,20 @@ public class HexByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JTextField getTextField()
+    {
+        return textField;
+    }
+
+    /***************************************************************************
      * @param value
      * @return
      **************************************************************************/
     private static String toString( Byte value )
     {
-        return value == null ? "" : HexUtils.getHexString( value );
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public JTextComponent getTextField()
-    {
-        return field.getTextField();
+        return value == null ? ""
+            : NumberParsingUtils.toLeadingBinaryString( value );
     }
 }
