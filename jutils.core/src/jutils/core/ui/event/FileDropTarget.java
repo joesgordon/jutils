@@ -71,12 +71,24 @@ public class FileDropTarget extends DropTarget
     {
         switch( action )
         {
-            case DnDConstants.ACTION_LINK:
-                return DropActionType.LINK;
             case DnDConstants.ACTION_COPY:
                 return DropActionType.COPY;
+
+            case DnDConstants.ACTION_COPY_OR_MOVE:
+                return DropActionType.MOVE;
+
+            case DnDConstants.ACTION_LINK:
+                return DropActionType.LINK;
+
             case DnDConstants.ACTION_MOVE:
                 return DropActionType.MOVE;
+
+            case DnDConstants.ACTION_NONE:
+                return DropActionType.MOVE;
+
+            // case DnDConstants.ACTION_REFERENCE:
+            // return DropActionType.MOVE;
+
             default:
                 return DropActionType.MOVE;
         }

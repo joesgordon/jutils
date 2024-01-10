@@ -178,6 +178,57 @@ public class Crc16 implements ITierPrinter
     }
 
     /***************************************************************************
+     * @param data
+     * @return
+     **************************************************************************/
+    public short calcDirect( byte [] data )
+    {
+        return calcDirect( data, 0, data.length );
+    }
+
+    /***************************************************************************
+     * @param table
+     * @param data
+     * @param start
+     * @param length
+     * @return
+     **************************************************************************/
+    public short calcDirect( byte [] data, int start, int length )
+    {
+        int crc = ( short )( value & 0xFFFF );
+
+        for( int i = 0; i < length; i++ )
+        {
+            int dataIndex = i + start;
+            int dataValue = data[dataIndex] & 0xFF;
+
+            dataValue = reflectIn ? reverseBits8( dataValue ) : dataValue;
+
+            crc = crc ^ ( dataValue << 8 );
+
+            for( int b = 0; b < 8; b++ )
+            {
+                boolean isHighBitSet = ( crc & 0x8000 ) != 0;
+                if( isHighBitSet )
+                {
+                    crc = ( crc << 1 ) ^ polynomial;
+                }
+                else
+                {
+                    crc = crc << 1;
+                }
+            }
+        }
+
+        crc = reflectOut ? reverseBits16( crc ) : crc;
+        crc ^= xorout;
+
+        value = ( short )( crc );
+
+        return value;
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     public void reset()
@@ -205,6 +256,8 @@ public class Crc16 implements ITierPrinter
      */
     public static void main( String [] args )
     {
+        byte [] data = "123456789".getBytes();
+
         Crc16 arc = Crc16.create( 0x8005, 0x0000, true, true, 0x0000 );
         short arcSum = ( short )0xBB3D;
         Crc16 augCcitt = Crc16.create( 0x1021, 0x1D0F, false, false, 0x0000 );
@@ -225,8 +278,6 @@ public class Crc16 implements ITierPrinter
         short [] expecteds = new short[] { arcSum, argCcittSum, buypassSum,
             ccittFalseSum, dnpSum, en13757Sum };
 
-        byte [] data = "123456789".getBytes();
-
         FieldPrinter p = new FieldPrinter();
 
         p.printFieldValues( "Data", data );
@@ -236,11 +287,16 @@ public class Crc16 implements ITierPrinter
             String name = names[i];
             Crc16 crc = crcs[i];
             short expected = expecteds[i];
-            crcs[i].calculate( data );
+            short direct;
+
+            crc.calculate( data );
+            crc.reset();
+            direct = crc.calcDirect( data );
 
             FieldPrinter cp = p.printTier( name, crc );
 
             cp.printHexField( "Expected", expected );
+            cp.printHexField( "Direct", direct );
         }
 
         LogUtils.print( p.toString() );

@@ -2,7 +2,6 @@
 
 ## General Issues
 
-- Add JUtils license to license dialog.
 - Add time chooser that uses Chronos
 - Add cyclic buffer to NetMsgsView.
 - Add focus listeners to form fields

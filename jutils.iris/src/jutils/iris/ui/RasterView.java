@@ -1,27 +1,31 @@
 package jutils.iris.ui;
 
+import java.awt.Graphics2D;
+
 import javax.swing.JComponent;
 
+import jutils.core.ui.PaintingComponent;
 import jutils.core.ui.model.IView;
+import jutils.iris.data.IRaster;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class ImageView implements IView<JComponent>
+public class RasterView implements IView<JComponent>
 {
     /**  */
-    private final JComponent view;
+    private final PaintingComponent view;
+
     /**  */
-    private final ImagesView imgsView;
+    private IRaster raster;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public ImageView()
+    public RasterView()
     {
-        this.imgsView = new ImagesView();
-
-        this.view = createView();
+        this.view = new PaintingComponent( ( c, g ) -> paintRaster( c, g ) );
+        this.raster = null;
     }
 
     /***************************************************************************
@@ -29,7 +33,21 @@ public class ImageView implements IView<JComponent>
      **************************************************************************/
     private JComponent createView()
     {
-        return imgsView.getView();
+        return view;
+    }
+
+    /***************************************************************************
+     * @param c
+     * @param g
+     **************************************************************************/
+    private void paintRaster( JComponent c, Graphics2D g )
+    {
+        if( null == raster )
+        {
+            return;
+        }
+
+        // TODO Auto-generated method stub
     }
 
     /***************************************************************************

@@ -2,7 +2,6 @@ package jutils.iris.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -104,68 +103,68 @@ public class ProfileView implements IView<JComponent>
      **************************************************************************/
     private void paintProfile( IProfile profile, Graphics2D g, int w, int h )
     {
-        FontMetrics m = g.getFontMetrics();
-
-        boolean isMajor = true;
-
-        for( int i = 0; i <= profile.getCount(); i++ )
-        {
-            int screenx = i;
-            int n = isHorizontal ? i : imgLen - i;
-
-            if( n == imgLen )
-            {
-                n--;
-            }
-
-            if( isMajor )
-            {
-                String str = "" + n;
-                int sw = m.stringWidth( str );
-                // int x = i - Math.round( sw / 2.0f );
-                int strx = ( int )Math.ceil( i * cfg.getZoomScale() - sw );
-
-                strx = strx < 0 ? 0 : strx;
-                strx = ( strx + sw ) > w ? w - sw : strx;
-
-                g.drawLine( screenx, h - RULER_SIZE + 6, screenx, h - 1 );
-
-                g.drawString( str, strx, PROFILE_SIZE + m.getHeight() - 2 );
-            }
-            else
-            {
-                g.drawLine( screenx, h - RULER_SIZE + 10, screenx, h - 1 );
-            }
-
-            isMajor = !isMajor;
-        }
-
-        if( strip > -1 )
-        {
-            int range = stripMax - stripMin + 1;
-            range = Math.max( 1, range );
-            float ys = PROFILE_SIZE / ( float )range;
-            float min = ys * stripMin;
-
-            int lastPy = -1;
-            for( int i = 0; i < stripPixels.length; i++ )
-            {
-                int pixel = stripPixels[i];
-
-                pixel = Math.min( maxPixel, pixel );
-
-                int py = PROFILE_SIZE - Math.round( pixel * ys - min );
-                // g.drawRect( i, py, 1, 1 );
-
-                if( lastPy > -1 )
-                {
-                    int x1 = ( int )Math.ceil( ( i - 1 ) * cfg.zoomLevel );
-                    int x2 = ( int )Math.ceil( i * cfg.zoomLevel );
-                    g.drawLine( x1, lastPy, x2, py );
-                }
-                lastPy = py;
-            }
-        }
+        // FontMetrics m = g.getFontMetrics();
+        //
+        // boolean isMajor = true;
+        //
+        // for( int i = 0; i <= profile.getCount(); i++ )
+        // {
+        // int screenx = i;
+        // int n = isHorizontal ? i : imgLen - i;
+        //
+        // if( n == imgLen )
+        // {
+        // n--;
+        // }
+        //
+        // if( isMajor )
+        // {
+        // String str = "" + n;
+        // int sw = m.stringWidth( str );
+        // // int x = i - Math.round( sw / 2.0f );
+        // int strx = ( int )Math.ceil( i * cfg.getZoomScale() - sw );
+        //
+        // strx = strx < 0 ? 0 : strx;
+        // strx = ( strx + sw ) > w ? w - sw : strx;
+        //
+        // g.drawLine( screenx, h - RULER_SIZE + 6, screenx, h - 1 );
+        //
+        // g.drawString( str, strx, PROFILE_SIZE + m.getHeight() - 2 );
+        // }
+        // else
+        // {
+        // g.drawLine( screenx, h - RULER_SIZE + 10, screenx, h - 1 );
+        // }
+        //
+        // isMajor = !isMajor;
+        // }
+        //
+        // if( strip > -1 )
+        // {
+        // int range = stripMax - stripMin + 1;
+        // range = Math.max( 1, range );
+        // float ys = PROFILE_SIZE / ( float )range;
+        // float min = ys * stripMin;
+        //
+        // int lastPy = -1;
+        // for( int i = 0; i < stripPixels.length; i++ )
+        // {
+        // int pixel = stripPixels[i];
+        //
+        // pixel = Math.min( maxPixel, pixel );
+        //
+        // int py = PROFILE_SIZE - Math.round( pixel * ys - min );
+        // // g.drawRect( i, py, 1, 1 );
+        //
+        // if( lastPy > -1 )
+        // {
+        // int x1 = ( int )Math.ceil( ( i - 1 ) * cfg.zoomLevel );
+        // int x2 = ( int )Math.ceil( i * cfg.zoomLevel );
+        // g.drawLine( x1, lastPy, x2, py );
+        // }
+        // lastPy = py;
+        // }
+        // }
     }
 
     /***************************************************************************
