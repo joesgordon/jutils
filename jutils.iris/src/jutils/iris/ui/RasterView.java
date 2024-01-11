@@ -6,7 +6,9 @@ import javax.swing.JComponent;
 
 import jutils.core.ui.PaintingComponent;
 import jutils.core.ui.model.IView;
+import jutils.iris.data.IColorModel;
 import jutils.iris.data.IRaster;
+import jutils.iris.data.RasterImage;
 
 /*******************************************************************************
  * 
@@ -17,7 +19,11 @@ public class RasterView implements IView<JComponent>
     private final PaintingComponent view;
 
     /**  */
+    private RasterImage image;
+    /**  */
     private IRaster raster;
+    /**  */
+    private IColorModel colorModel;
 
     /***************************************************************************
      * 
@@ -26,14 +32,6 @@ public class RasterView implements IView<JComponent>
     {
         this.view = new PaintingComponent( ( c, g ) -> paintRaster( c, g ) );
         this.raster = null;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private JComponent createView()
-    {
-        return view;
     }
 
     /***************************************************************************
@@ -47,7 +45,7 @@ public class RasterView implements IView<JComponent>
             return;
         }
 
-        // TODO Auto-generated method stub
+        image.draw( g, c );
     }
 
     /***************************************************************************
@@ -57,5 +55,25 @@ public class RasterView implements IView<JComponent>
     public JComponent getView()
     {
         return view;
+    }
+
+    /***************************************************************************
+     * @param raster
+     **************************************************************************/
+    public void set( IRaster raster )
+    {
+        set( raster, colorModel );
+    }
+
+    /***************************************************************************
+     * @param raster
+     * @param colorModel
+     **************************************************************************/
+    private void set( IRaster raster, IColorModel colorModel )
+    {
+        this.raster = raster;
+        this.colorModel = colorModel;
+
+        view.repaint();
     }
 }

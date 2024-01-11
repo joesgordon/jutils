@@ -8,11 +8,9 @@ public class PixelConfig
     /**  */
     public PixelFormat format;
     /**  */
-    public int formatType;
+    public int channelCount;
     /**  */
     public int bitDepth;
-    /**  */
-    public boolean packed;
 
     /***************************************************************************
      * 
@@ -20,8 +18,15 @@ public class PixelConfig
     public PixelConfig()
     {
         this.format = PixelFormat.MONOCHROME;
-        this.formatType = MonochromeType.DEFAULT.value;
+        this.channelCount = format.channelCount;
         this.bitDepth = 8;
-        this.packed = false;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getBitsPerPixel()
+    {
+        return bitDepth * channelCount;
     }
 }

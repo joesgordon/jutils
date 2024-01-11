@@ -7,9 +7,9 @@ import jutils.core.INamedValue;
  ******************************************************************************/
 public enum IndexingType implements INamedValue
 {
-    /**  */
+    /** Indexing proceeds a row of data at a time. */
     ROW_MAJOR( 0, "Row-Major" ),
-    /**  */
+    /** Indexing proceeds a column of data at a time. */
     COLUMN_MAJOR( 1, "Column-Major" ),;
 
     /**  */

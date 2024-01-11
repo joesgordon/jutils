@@ -8,7 +8,7 @@ public interface IRaster
     /***************************************************************************
      * @return a copy of the image configuration.
      **************************************************************************/
-    public ImageConfig getConfig();
+    public RasterConfig getConfig();
 
     /***************************************************************************
      * @param p
@@ -38,17 +38,17 @@ public interface IRaster
 
     /***************************************************************************
      * @param p
-     * @param b
+     * @param c
      * @return
      **************************************************************************/
-    public int getBand( int p, int b );
+    public int getChannel( int p, int c );
 
     /***************************************************************************
-     * @param n
-     * @param b
+     * @param p
+     * @param c
      * @param value
      **************************************************************************/
-    public void setBand( int n, int b, int value );
+    public void setChannel( int p, int c, int value );
 
     /***************************************************************************
      * @param x
@@ -56,7 +56,7 @@ public interface IRaster
      * @param c
      * @return
      **************************************************************************/
-    public int getBand( int x, int y, int c );
+    public int getChannel( int x, int y, int c );
 
     /***************************************************************************
      * @param x
@@ -64,5 +64,5 @@ public interface IRaster
      * @param c
      * @param value
      **************************************************************************/
-    public void setBand( int x, int y, int c, int value );
+    public void setChannel( int x, int y, int c, int value );
 }

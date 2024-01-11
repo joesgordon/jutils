@@ -5,13 +5,13 @@ import java.awt.Color;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public interface IMonoColorModel
+public interface IColorModel
 {
     /***************************************************************************
      * @param pixel
      * @return
      **************************************************************************/
-    public default Color getColor( int pixel )
+    public default Color getColor( long pixel )
     {
         return new Color( getColorValue( pixel ) );
     }
@@ -20,5 +20,5 @@ public interface IMonoColorModel
      * @param pixel
      * @return
      **************************************************************************/
-    public int getColorValue( int pixel );
+    public int getColorValue( long pixel );
 }

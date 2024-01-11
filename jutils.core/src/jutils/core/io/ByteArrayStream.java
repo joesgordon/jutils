@@ -128,7 +128,7 @@ public class ByteArrayStream implements IStream
         {
             byte [] newBuf = Arrays.copyOf( buffer, buffer.length + inc );
 
-            setBuffer( newBuf, position );
+            setBuffer( newBuf, position, nextPos );
         }
 
         if( nextPos > bufferSize )
@@ -144,18 +144,20 @@ public class ByteArrayStream implements IStream
      **************************************************************************/
     public void setBuffer( byte [] newBuf )
     {
-        setBuffer( newBuf, 0 );
+        setBuffer( newBuf, 0, newBuf.length );
     }
 
     /***************************************************************************
      * Sets the buffer backing this stream to the provided bytes.
      * @param newBuf the bytes to back this stream.
      * @param newPos the position to read/write within the new buffer.
+     * @param newLen
      **************************************************************************/
-    public void setBuffer( byte [] newBuf, int newPos )
+    public void setBuffer( byte [] newBuf, int newPos, int newLen )
     {
         this.buffer = newBuf;
         this.position = newPos;
+        this.bufferSize = newLen;
     }
 
     /***************************************************************************
