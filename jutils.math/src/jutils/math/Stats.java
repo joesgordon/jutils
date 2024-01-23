@@ -1,39 +1,46 @@
-package jutils.iris;
-
-import javax.swing.JFrame;
-
-import jutils.core.ui.app.AppRunner;
-import jutils.iris.ui.IrisFrame;
+package jutils.math;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class IrisMain
+public class Stats
 {
-    /***************************************************************************
-     * Declare the default and only constructor private to prevent instances.
-     **************************************************************************/
-    private IrisMain()
-    {
-    }
+    /**  */
+    public final double min;
+    /**  */
+    public final double max;
+    /**  */
+    public final double mean;
+    /**  */
+    public final double variance;
 
     /***************************************************************************
-     * @param args
+     * @param min
+     * @param max
+     * @param mean
+     * @param variance
      **************************************************************************/
-    public static void main( String [] args )
+    public Stats( double min, double max, double mean, double variance )
     {
-        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
-
-        AppRunner.invokeLater( () -> createFrame() );
+        this.min = min;
+        this.max = max;
+        this.mean = mean;
+        this.variance = variance;
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public static JFrame createFrame()
+    public double getRange()
     {
-        IrisFrame frame = new IrisFrame();
+        return max - min;
+    }
 
-        return frame.getView();
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public double getStddev()
+    {
+        return Math.sqrt( variance );
     }
 }

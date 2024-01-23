@@ -57,4 +57,14 @@ public final class MathUtils
     {
         m.translate( ( d ) -> Math.toRadians( d ) );
     }
+
+    /***************************************************************************
+     * @param x
+     * @param y
+     * @return
+     **************************************************************************/
+    public static double rss( double x, double y )
+    {
+        return Math.sqrt( x * x + y * y );
+    }
 }

@@ -2,6 +2,7 @@ package jutils.iris.colors;
 
 import java.awt.Color;
 
+import jutils.iris.IrisUtils;
 import jutils.iris.data.IColorModel;
 
 /*******************************************************************************
@@ -13,14 +14,17 @@ public class MonoColorModel implements IColorModel
     private final int [] seeds;
     /**  */
     private final MonoColorConfig config;
+    /**  */
+    private final int pixelMax;
 
     /***************************************************************************
      * @param seeds
      **************************************************************************/
-    private MonoColorModel( int [] seeds )
+    private MonoColorModel( int [] seeds, int bitDepth )
     {
         this.seeds = seeds;
         this.config = new MonoColorConfig();
+        this.pixelMax = IrisUtils.getMaxValue( bitDepth );
     }
 
     /***************************************************************************
@@ -30,7 +34,7 @@ public class MonoColorModel implements IColorModel
     public int getColorValue( long pixel )
     {
         long x0 = config.lowThreshold.value;
-        long x1 = config.highThreshold.value;
+        long x1 = Math.min( pixelMax, config.highThreshold.value );
 
         int y1 = seeds.length - 1;
 
@@ -67,9 +71,9 @@ public class MonoColorModel implements IColorModel
     public static final class MonoColorConfig
     {
         /**  */
-        public final MonoThreshold highThreshold;
-        /**  */
         public final MonoThreshold lowThreshold;
+        /**  */
+        public final MonoThreshold highThreshold;
         /**  */
         public double gain;
         /**  */
@@ -80,8 +84,10 @@ public class MonoColorModel implements IColorModel
          */
         public MonoColorConfig()
         {
-            this.highThreshold = new MonoThreshold();
             this.lowThreshold = new MonoThreshold();
+            this.highThreshold = new MonoThreshold();
+
+            this.highThreshold.value = Integer.MAX_VALUE;
 
             this.gain = 1.0;
             this.offset = 0.0;
@@ -89,9 +95,10 @@ public class MonoColorModel implements IColorModel
     }
 
     /***************************************************************************
+     * @param bitDepth
      * @return
      **************************************************************************/
-    public static IColorModel createGrayscaleMap()
+    public static IColorModel createGrayscaleMap( int bitDepth )
     {
         int [] seeds = new int[256];
         int cnt = seeds.length;
@@ -106,7 +113,7 @@ public class MonoColorModel implements IColorModel
             gray += grayIncr;
         }
 
-        return new MonoColorModel( seeds );
+        return new MonoColorModel( seeds, bitDepth );
     }
 
     /***************************************************************************
@@ -114,7 +121,7 @@ public class MonoColorModel implements IColorModel
      * @param upper
      * @return
      **************************************************************************/
-    public static IColorModel createMatlabHotMap()
+    public static IColorModel createMatlabHotMap( int bitDepth )
     {
         int [] seeds = new int[] { 720896, 1376256, 2097152, 2818048, 3473408,
             4194304, 4849664, 5570560, 6291456, 6946816, 7667712, 8388608,
@@ -128,7 +135,7 @@ public class MonoColorModel implements IColorModel
             16777088, 16777103, 16777119, 16777135, 16777151, 16777167,
             16777183, 16777199, 16777215 };
 
-        return new MonoColorModel( seeds );
+        return new MonoColorModel( seeds, bitDepth );
     }
 
     /***************************************************************************
@@ -136,7 +143,7 @@ public class MonoColorModel implements IColorModel
      * @param upper
      * @return
      **************************************************************************/
-    public static IColorModel createMatlabDefault()
+    public static IColorModel createMatlabDefault( int bitDepth )
     {
         int [] seeds = new int[] { 143, 159, 175, 191, 207, 223, 239, 255, 4351,
             8447, 12543, 16639, 20735, 24831, 28927, 33023, 36863, 40959, 45055,
@@ -148,7 +155,7 @@ public class MonoColorModel implements IColorModel
             16723968, 16719872, 16715776, 16711680, 15663104, 14614528,
             13565952, 12517376, 11468800, 10420224, 9371648, 8388608 };
 
-        return new MonoColorModel( seeds );
+        return new MonoColorModel( seeds, bitDepth );
     }
 
     /***************************************************************************
@@ -156,7 +163,7 @@ public class MonoColorModel implements IColorModel
      * @param upper
      * @return
      **************************************************************************/
-    public static IColorModel createNightVision()
+    public static IColorModel createNightVision( int bitDepth )
     {
         int [] seeds = new int[256];
 
@@ -177,10 +184,13 @@ public class MonoColorModel implements IColorModel
             seeds[i + 128] = ( r << 16 ) | ( 255 << 8 ) | b;
         }
 
-        return new MonoColorModel( seeds );
+        return new MonoColorModel( seeds, bitDepth );
     }
 
-    public static IColorModel createCoolWarm()
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static IColorModel createCoolWarm( int bitDepth )
     {
         int [] seeds = new int[] { 3886272, 3952322, 4018371, 4084165, 4150214,
             4216264, 4347849, 4413643, 4479692, 4545742, 4611535, 4677585,
@@ -225,7 +235,7 @@ public class MonoColorModel implements IColorModel
             12461358, 12395053, 12328492, 12196395, 12129833, 11997480,
             11864871, 11797542 };
 
-        return new MonoColorModel( seeds );
+        return new MonoColorModel( seeds, bitDepth );
     }
 
     /***************************************************************************

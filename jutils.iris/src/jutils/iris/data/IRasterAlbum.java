@@ -1,39 +1,23 @@
-package jutils.iris;
-
-import javax.swing.JFrame;
-
-import jutils.core.ui.app.AppRunner;
-import jutils.iris.ui.IrisFrame;
+package jutils.iris.data;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class IrisMain
+public interface IRasterAlbum
 {
     /***************************************************************************
-     * Declare the default and only constructor private to prevent instances.
+     * @return
      **************************************************************************/
-    private IrisMain()
-    {
-    }
+    public int getRasterCount();
 
     /***************************************************************************
-     * @param args
+     * @param index
+     * @return
      **************************************************************************/
-    public static void main( String [] args )
-    {
-        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
-
-        AppRunner.invokeLater( () -> createFrame() );
-    }
+    public IRaster getRaster( int index );
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public static JFrame createFrame()
-    {
-        IrisFrame frame = new IrisFrame();
-
-        return frame.getView();
-    }
+    public IColorModel getColors();
 }

@@ -11,6 +11,7 @@ import jutils.explorer.ExplorerTool;
 import jutils.filespy.FileSpyTool;
 import jutils.hexedit.HexeditTool;
 import jutils.insomnia.InsomniaTool;
+import jutils.iris.IrisTool;
 import jutils.mines.MinesTool;
 import jutils.multicon.MulticonTool;
 import jutils.platform.IPlatform;
@@ -66,6 +67,7 @@ public class JUtilsMain
         apps.add( new DuakTool() );
         apps.add( new PcapTool() );
         apps.add( new InsomniaTool() );
+        apps.add( new IrisTool() );
 
         return apps;
     }

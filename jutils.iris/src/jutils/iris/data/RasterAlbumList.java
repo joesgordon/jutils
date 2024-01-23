@@ -1,86 +1,66 @@
-package jutils.iris.ui;
+package jutils.iris.data;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JComponent;
-
-import jutils.core.ui.event.FileDropTarget;
-import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
-import jutils.core.ui.event.ItemActionEvent;
-import jutils.core.ui.model.IView;
-import jutils.iris.data.IRasterAlbum;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class IrisView implements IView<JComponent>
+public class RasterAlbumList implements IRasterAlbum
 {
     /**  */
-    private final JComponent view;
+    private final List<IRaster> rasters;
     /**  */
-    private final ImagesView imgsView;
+    private IColorModel colors;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public IrisView()
+    public RasterAlbumList()
     {
-        this.imgsView = new ImagesView();
-
-        this.view = createView();
-
-        imgsView.hashCode();
-
-        view.setDropTarget( new FileDropTarget( ( ie ) -> fileDropped( ie ) ) );
+        this.rasters = new ArrayList<>();
     }
 
     /***************************************************************************
-     * @param ie
+     * @param raster
      **************************************************************************/
-    private void fileDropped( ItemActionEvent<IFileDropEvent> ie )
+    public void addRaster( IRaster raster )
     {
-        IFileDropEvent fde = ie.getItem();
-        List<File> files = fde.getFiles();
-
-        if( files.size() == 1 )
-        {
-            File file = files.get( 0 );
-
-            openFile( file );
-        }
+        rasters.add( raster );
     }
 
     /***************************************************************************
-     * @param file
+     * @param model
      **************************************************************************/
-    private void openFile( File file )
+    public void setColors( IColorModel model )
     {
-        // TODO Auto-generated method stub
-    }
-
-    /***************************************************************************
-     * @param images
-     **************************************************************************/
-    public void setImages( IRasterAlbum images )
-    {
-        imgsView.setImages( images );
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private JComponent createView()
-    {
-        return imgsView.getView();
+        this.colors = model;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public JComponent getView()
+    public int getRasterCount()
     {
-        return view;
+        return rasters.size();
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public IRaster getRaster( int index )
+    {
+        return rasters.get( index );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public IColorModel getColors()
+    {
+        return colors;
     }
 }

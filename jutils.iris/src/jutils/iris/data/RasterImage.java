@@ -11,6 +11,9 @@ import java.awt.image.ImageObserver;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 
+import jutils.iris.colors.MonoColorModel;
+import jutils.iris.rasters.Mono8Raster;
+
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -46,8 +49,9 @@ public class RasterImage
 
         this.pixels = pixels;
         this.bufImage = new BufferedImage( mdl, raster, false, null );
-        this.raster = null;
-        this.colors = null;
+        this.raster = new Mono8Raster( width, height );
+        this.colors = MonoColorModel.createGrayscaleMap(
+            this.raster.getConfig().bitDepth );
     }
 
     /***************************************************************************
@@ -67,10 +71,12 @@ public class RasterImage
      **************************************************************************/
     public void draw( Graphics2D g, int x, int y, ImageObserver observer )
     {
-        double fz = 1.0; // config.getZoomScale();
-        g.scale( fz, fz );
+        double zoomScale = 1.0; // config.getZoomScale();
+        double reScale = 1.0 / zoomScale;
+
+        g.scale( zoomScale, zoomScale );
         g.drawImage( bufImage, x, y, observer );
-        g.scale( 1.0 / fz, 1.0 / fz );
+        g.scale( reScale, reScale );
     }
 
     /***************************************************************************
@@ -111,9 +117,16 @@ public class RasterImage
             long pixel = raster.getPixel( i );
             int rgb = colors.getColorValue( pixel );
             pixels[i] = rgb;
-
-            // WritableRaster wr = image.getRaster();
-            // wr.setDataElements( 0, 0, getWidth(), getHeight(), bp );
         }
+    }
+
+    /***************************************************************************
+     * @param width
+     * @param height
+     * @return
+     **************************************************************************/
+    public boolean needsResize( int width, int height )
+    {
+        return bufImage.getWidth() != width || bufImage.getHeight() != height;
     }
 }

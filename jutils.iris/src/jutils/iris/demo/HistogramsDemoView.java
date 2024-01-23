@@ -1,34 +1,29 @@
-package jutils.iris.ui;
+package jutils.iris.demo;
 
 import java.awt.BorderLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import jutils.core.ui.PositionIndicator;
 import jutils.core.ui.model.IView;
-import jutils.iris.data.IRasterAlbum;
+import jutils.math.ui.HistogramView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class ImagesView implements IView<JComponent>
+public class HistogramsDemoView implements IView<JComponent>
 {
     /**  */
     private final JComponent view;
     /**  */
-    private final PositionIndicator positionView;
-    /**  */
-    private final ImageView imgView;
+    private final HistogramView histogramsView;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public ImagesView()
+    public HistogramsDemoView()
     {
-        this.positionView = new PositionIndicator();
-        this.imgView = new ImageView();
-
+        this.histogramsView = new HistogramView();
         this.view = createView();
     }
 
@@ -39,8 +34,7 @@ public class ImagesView implements IView<JComponent>
     {
         JPanel panel = new JPanel( new BorderLayout() );
 
-        panel.add( positionView.getView(), BorderLayout.NORTH );
-        panel.add( imgView.getView(), BorderLayout.CENTER );
+        panel.add( histogramsView.getView(), BorderLayout.CENTER );
 
         return panel;
     }
@@ -52,21 +46,5 @@ public class ImagesView implements IView<JComponent>
     public JComponent getView()
     {
         return view;
-    }
-
-    /***************************************************************************
-     * @param images
-     **************************************************************************/
-    public void setImages( IRasterAlbum images )
-    {
-        int imgCount = images.getRasterCount();
-
-        positionView.setLength( imgCount );
-        positionView.setPosition( 0 );
-
-        if( imgCount > 0 )
-        {
-            imgView.setRaster( images.getRaster( 0 ), images.getColors() );
-        }
     }
 }

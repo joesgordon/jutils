@@ -8,6 +8,7 @@ import jutils.core.ui.PaintingComponent;
 import jutils.core.ui.model.IView;
 import jutils.iris.data.IColorModel;
 import jutils.iris.data.IRaster;
+import jutils.iris.data.RasterConfig;
 import jutils.iris.data.RasterImage;
 
 /*******************************************************************************
@@ -20,10 +21,6 @@ public class RasterView implements IView<JComponent>
 
     /**  */
     private RasterImage image;
-    /**  */
-    private IRaster raster;
-    /**  */
-    private IColorModel colorModel;
 
     /***************************************************************************
      * 
@@ -31,7 +28,7 @@ public class RasterView implements IView<JComponent>
     public RasterView()
     {
         this.view = new PaintingComponent( ( c, g ) -> paintRaster( c, g ) );
-        this.raster = null;
+        this.image = new RasterImage( 256, 256 );
     }
 
     /***************************************************************************
@@ -40,11 +37,6 @@ public class RasterView implements IView<JComponent>
      **************************************************************************/
     private void paintRaster( JComponent c, Graphics2D g )
     {
-        if( null == raster )
-        {
-            return;
-        }
-
         image.draw( g, c );
     }
 
@@ -62,17 +54,24 @@ public class RasterView implements IView<JComponent>
      **************************************************************************/
     public void set( IRaster raster )
     {
-        set( raster, colorModel );
+        image.set( raster );
     }
 
     /***************************************************************************
      * @param raster
      * @param colorModel
      **************************************************************************/
-    private void set( IRaster raster, IColorModel colorModel )
+    public void set( IRaster raster, IColorModel colorModel )
     {
-        this.raster = raster;
-        this.colorModel = colorModel;
+        RasterConfig config = raster.getConfig();
+
+        if( image.needsResize( config.width, config.height ) )
+        {
+            int w = config.width;
+            int h = config.height;
+            this.image = new RasterImage( w, h );
+        }
+        this.image.set( raster, colorModel );
 
         view.repaint();
     }

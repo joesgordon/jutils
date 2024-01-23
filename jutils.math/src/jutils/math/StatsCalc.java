@@ -1,9 +1,9 @@
-package jutils.core.utils;
+package jutils.math;
 
 /*******************************************************************************
  *
  ******************************************************************************/
-public class RunningStat
+public class StatsCalc
 {
     /**  */
     private int count;
@@ -23,7 +23,7 @@ public class RunningStat
     /***************************************************************************
      * 
      **************************************************************************/
-    public RunningStat()
+    public StatsCalc()
     {
         this.count = 0;
         this.oldMean = 0.0;
@@ -107,50 +107,5 @@ public class RunningStat
     public Stats calcStats()
     {
         return new Stats( min, max, calcMean(), calcVariance() );
-    }
-
-    /***************************************************************************
-     *
-     **************************************************************************/
-    public static class Stats
-    {
-        /**  */
-        public final double min;
-        /**  */
-        public final double max;
-        /**  */
-        public final double mean;
-        /**  */
-        public final double variance;
-
-        /**
-         * @param min
-         * @param max
-         * @param mean
-         * @param variance
-         */
-        public Stats( double min, double max, double mean, double variance )
-        {
-            this.min = min;
-            this.max = max;
-            this.mean = mean;
-            this.variance = variance;
-        }
-
-        /**
-         * @return
-         */
-        public double getRange()
-        {
-            return max - min;
-        }
-
-        /**
-         * @return
-         */
-        public double getStddev()
-        {
-            return Math.sqrt( variance );
-        }
     }
 }

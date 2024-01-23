@@ -15,6 +15,10 @@ public class RasterConfig
     public int bitDepth;
     /**  */
     public boolean packed;
+    /**  */
+    public IndexingType indexing;
+    /**  */
+    public ChannelPlacement channels;
 
     /***************************************************************************
      * 
@@ -26,6 +30,20 @@ public class RasterConfig
         this.channelCount = 1;
         this.bitDepth = 8;
         this.packed = false;
+        this.indexing = IndexingType.ROW_MAJOR;
+        this.channels = ChannelPlacement.INTERLEAVED;
+    }
+
+    /***************************************************************************
+     * @param config
+     **************************************************************************/
+    public RasterConfig( RasterConfig config )
+    {
+        this.width = config.width;
+        this.height = config.height;
+        this.channelCount = config.channelCount;
+        this.bitDepth = config.bitDepth;
+        this.packed = config.packed;
     }
 
     /***************************************************************************
@@ -66,5 +84,13 @@ public class RasterConfig
     public int getUnpackedSize()
     {
         return getPixelCount() * getBytesPerPixel();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getMaxPixelValue()
+    {
+        return ( int )( ( 1L << bitDepth ) - 1 );
     }
 }
