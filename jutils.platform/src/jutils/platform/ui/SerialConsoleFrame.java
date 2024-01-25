@@ -10,6 +10,7 @@ import jutils.core.ui.ABButton;
 import jutils.core.ui.ABButton.IABCallback;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.model.IView;
+import jutils.platform.PlatformIcons;
 
 /*******************************************************************************
  * 
@@ -40,6 +41,7 @@ public class SerialConsoleFrame implements IView<JFrame>
         view.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         view.setToolbar( createToolbar() );
         view.setContent( configView.getView() );
+        view.getView().setIconImages( PlatformIcons.getAppImages() );
     }
 
     /***************************************************************************

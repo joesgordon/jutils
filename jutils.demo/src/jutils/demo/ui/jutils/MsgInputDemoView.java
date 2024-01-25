@@ -139,6 +139,7 @@ public class MsgInputDemoView implements IView<JComponent>
         {
             if( thread == null )
             {
+                task.startAcceptingInput();
                 thread = new TaskThread( task, "MessagesThread" );
                 thread.start();
             }

@@ -46,8 +46,7 @@ public class SerialConsoleTool implements IToolView
     @Override
     public List<Image> getImages()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return PlatformIcons.getAppImages();
     }
 
     /***************************************************************************
@@ -56,7 +55,6 @@ public class SerialConsoleTool implements IToolView
     @Override
     public Icon getIcon24()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return PlatformIcons.getIcon( PlatformIcons.APP_024 );
     }
 }

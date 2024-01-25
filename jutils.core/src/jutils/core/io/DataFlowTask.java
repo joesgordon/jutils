@@ -92,6 +92,8 @@ public class DataFlowTask
         {
             ITask readTask = ( h ) -> handleReceiveRun( h );
 
+            writeTask.startAcceptingInput();
+
             this.flow = flow;
             this.readThread = new TaskThread( readTask, "DataFlowReadTask" );
             this.writeThread = new TaskThread( writeTask, "DataFlowWriteTask" );

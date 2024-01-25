@@ -251,6 +251,7 @@ public class SerialConsoleView implements IView<JComponent>
         {
             if( thread == null )
             {
+                consumerTask.startAcceptingInput();
                 thread = new TaskThread( consumerTask, "DisplayThread" );
                 thread.start();
 

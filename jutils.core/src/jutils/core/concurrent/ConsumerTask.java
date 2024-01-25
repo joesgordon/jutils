@@ -63,6 +63,8 @@ public class ConsumerTask<T> implements ITask
         List<T> items = new ArrayList<>();
         NanoWatch watch = new NanoWatch();
 
+        // acceptInput.set( true );
+
         while( handler.canContinue() )
         {
             int size = data.size();
@@ -124,8 +126,15 @@ public class ConsumerTask<T> implements ITask
     }
 
     /***************************************************************************
-     * Flags the task to stop accepting input, but the user must ensure that the
-     * Thread running this task is interrupted.
+     * Flags the task to accept input
+     **************************************************************************/
+    public void startAcceptingInput()
+    {
+        this.acceptInput.set( true );
+    }
+
+    /***************************************************************************
+     * Flags the task to stop accepting input.
      **************************************************************************/
     public void stopAcceptingInput()
     {

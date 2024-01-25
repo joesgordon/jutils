@@ -51,8 +51,7 @@ public final class InsomniaTool implements IToolView
     @Override
     public List<Image> getImages()
     {
-        // TODO make icons
-        return null;
+        return InsomniaIcons.getAppImages();
     }
 
     /***************************************************************************
@@ -61,6 +60,6 @@ public final class InsomniaTool implements IToolView
     @Override
     public Icon getIcon24()
     {
-        return null;
+        return InsomniaIcons.getIcon( InsomniaIcons.APP_024 );
     }
 }

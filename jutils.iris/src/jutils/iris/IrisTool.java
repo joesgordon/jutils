@@ -19,7 +19,7 @@ public class IrisTool implements IToolView
     @Override
     public Icon getIcon24()
     {
-        return null;
+        return IrisIcons.getIcon( IrisIcons.APP_024 );
     }
 
     /***************************************************************************
@@ -55,6 +55,6 @@ public class IrisTool implements IToolView
     @Override
     public List<Image> getImages()
     {
-        return null;
+        return IrisIcons.getAppImages();
     }
 }

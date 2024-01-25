@@ -7,6 +7,7 @@ import javax.swing.JMenuItem;
 
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.model.IView;
+import jutils.iris.IrisIcons;
 import jutils.iris.IrisUtils;
 import jutils.iris.colors.MonoColorModel;
 import jutils.iris.data.IColorModel;
@@ -36,6 +37,7 @@ public class IrisFrame implements IView<JFrame>
         frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frameView.setSize( 800, 800 );
         frameView.setContent( contentView.getView() );
+        frameView.getView().setIconImages( IrisIcons.getAppImages() );
 
         createMenus( frameView.getMenuBar(), frameView.getFileMenu() );
     }
