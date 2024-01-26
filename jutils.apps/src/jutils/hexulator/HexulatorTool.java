@@ -1,4 +1,4 @@
-package jutils.hexinator;
+package jutils.hexulator;
 
 import java.awt.Container;
 import java.awt.Image;
@@ -7,12 +7,12 @@ import java.util.List;
 import javax.swing.Icon;
 
 import jutils.core.ui.IToolView;
-import jutils.hexinator.ui.HexinatorView;
+import jutils.hexulator.ui.HexulatorView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class HexinatorTool implements IToolView
+public class HexulatorTool implements IToolView
 {
     /***************************************************************************
      * {@inheritDoc}
@@ -20,7 +20,7 @@ public class HexinatorTool implements IToolView
     @Override
     public Container getView()
     {
-        HexinatorView view = new HexinatorView();
+        HexulatorView view = new HexulatorView();
 
         return view.getView();
     }
@@ -40,7 +40,7 @@ public class HexinatorTool implements IToolView
     @Override
     public String getName()
     {
-        return "Hexinator";
+        return "Hexulator";
     }
 
     /***************************************************************************
@@ -49,8 +49,7 @@ public class HexinatorTool implements IToolView
     @Override
     public List<Image> getImages()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return HexulatorIcons.getAppImages();
     }
 
     /***************************************************************************
@@ -59,7 +58,6 @@ public class HexinatorTool implements IToolView
     @Override
     public Icon getIcon24()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return HexulatorIcons.getIcon( HexulatorIcons.APP_024 );
     }
 }

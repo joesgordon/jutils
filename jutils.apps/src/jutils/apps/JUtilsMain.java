@@ -10,6 +10,7 @@ import jutils.duak.DuakTool;
 import jutils.explorer.ExplorerTool;
 import jutils.filespy.FileSpyTool;
 import jutils.hexedit.HexeditTool;
+import jutils.hexulator.HexulatorTool;
 import jutils.insomnia.InsomniaTool;
 import jutils.iris.IrisTool;
 import jutils.mines.MinesTool;
@@ -57,6 +58,7 @@ public class JUtilsMain
         List<IToolView> apps = new ArrayList<IToolView>();
 
         apps.add( new HexeditTool() );
+        apps.add( new HexulatorTool() );
         apps.add( new MulticonTool() );
         apps.add( new SerialConsoleTool() );
         apps.add( new FileSpyTool() );

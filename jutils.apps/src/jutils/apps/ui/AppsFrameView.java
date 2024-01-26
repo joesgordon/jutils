@@ -8,7 +8,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import jutils.core.IconConstants;
-import jutils.core.JUtilsMain;
+import jutils.core.JUtilsCoreMain;
 import jutils.core.data.BuildInfo;
 import jutils.core.ui.BuildInfoView;
 import jutils.core.ui.IToolView;
@@ -80,8 +80,8 @@ public class AppsFrameView implements IView<JFrame>
      **************************************************************************/
     private void showAbout()
     {
-        BuildInfo info = JUtilsMain.load();
-        BuildInfoView.show( getView(), "About Duak", info );
+        BuildInfo info = JUtilsCoreMain.load();
+        BuildInfoView.show( getView(), "JUtils Version", info );
     }
 
     /***************************************************************************

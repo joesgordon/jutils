@@ -1,32 +1,32 @@
-package jutils.hexinator.fields;
+package jutils.hexulator.fields;
 
 import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import jutils.core.io.DataStream;
-import jutils.core.ui.fields.BinaryLongFormField;
+import jutils.core.ui.fields.LongFormField;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class BinaryLongDataField extends DefaultDataField
+public class LongDataField extends DefaultDataField
 {
     /**  */
-    private final BinaryLongFormField [] fields;
+    private final LongFormField [] fields;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public BinaryLongDataField()
+    public LongDataField()
     {
-        this.fields = new BinaryLongFormField[1];
+        this.fields = new LongFormField[1];
 
         for( int i = 0; i < fields.length; i++ )
         {
             int index = i;
 
-            fields[i] = new BinaryLongFormField( "" );
+            fields[i] = new LongFormField( "" );
             fields[i].getTextField().setColumns( TEXT_COLS );
             fields[i].setUpdater( ( d ) -> update( index, d ) );
         }
@@ -65,9 +65,17 @@ public class BinaryLongDataField extends DefaultDataField
     @Override
     protected void setData( DataStream stream ) throws IOException
     {
-        for( BinaryLongFormField field : fields )
+        for( LongFormField field : fields )
         {
             field.setValue( stream.readLong() );
         }
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public Long getValue()
+    {
+        return fields[0].getValue();
     }
 }

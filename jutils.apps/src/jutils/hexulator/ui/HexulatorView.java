@@ -1,4 +1,4 @@
-package jutils.hexinator.ui;
+package jutils.hexulator.ui;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -20,7 +20,7 @@ import jutils.core.utils.ByteOrdering;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class HexinatorView implements IView<JComponent>
+public class HexulatorView implements IView<JComponent>
 {
     /**  */
     private final JPanel view;
@@ -32,7 +32,7 @@ public class HexinatorView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    public HexinatorView()
+    public HexulatorView()
     {
         this.fieldsView = new DataFieldsView();
         this.textField = new TextHexView();

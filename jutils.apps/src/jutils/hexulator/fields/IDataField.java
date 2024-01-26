@@ -1,4 +1,4 @@
-package jutils.hexinator.fields;
+package jutils.hexulator.fields;
 
 import javax.swing.JPanel;
 

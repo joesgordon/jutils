@@ -14,7 +14,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import jutils.core.IconConstants;
-import jutils.core.JUtilsMain;
+import jutils.core.JUtilsCoreMain;
 import jutils.core.data.BuildInfo;
 import jutils.core.io.options.OptionsSerializer;
 import jutils.core.task.TaskView;
@@ -131,7 +131,7 @@ public class DuakFrame implements IView<JFrame>
      **************************************************************************/
     private void showAbout()
     {
-        BuildInfo info = JUtilsMain.load();
+        BuildInfo info = JUtilsCoreMain.load();
         BuildInfoView.show( getView(), "About Duak", info );
     }
 

@@ -1,32 +1,32 @@
-package jutils.hexinator.fields;
+package jutils.hexulator.fields;
 
 import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import jutils.core.io.DataStream;
-import jutils.core.ui.fields.IntegerFormField;
+import jutils.core.ui.fields.HexLongFormField;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class IntsDataField extends DefaultDataField
+public class HexLongDataField extends DefaultDataField
 {
     /**  */
-    private final IntegerFormField [] fields;
+    private final HexLongFormField [] fields;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public IntsDataField()
+    public HexLongDataField()
     {
-        this.fields = new IntegerFormField[2];
+        this.fields = new HexLongFormField[1];
 
         for( int i = 0; i < fields.length; i++ )
         {
             int index = i;
 
-            fields[i] = new IntegerFormField( "" );
+            fields[i] = new HexLongFormField( "" );
             fields[i].getTextField().setColumns( TEXT_COLS );
             fields[i].setUpdater( ( d ) -> update( index, d ) );
         }
@@ -36,12 +36,12 @@ public class IntsDataField extends DefaultDataField
      * @param index
      * @param data
      **************************************************************************/
-    private void update( int index, int data )
+    private void update( int index, long data )
     {
         try
         {
-            super.stream.seek( index * Integer.BYTES );
-            super.stream.writeInt( data );
+            super.stream.seek( index * Long.BYTES );
+            super.stream.writeLong( data );
             super.updater.update( super.data );
         }
         catch( IOException ex )
@@ -65,9 +65,9 @@ public class IntsDataField extends DefaultDataField
     @Override
     protected void setData( DataStream stream ) throws IOException
     {
-        for( IntegerFormField field : fields )
+        for( HexLongFormField field : fields )
         {
-            field.setValue( stream.readInt() );
+            field.setValue( stream.readLong() );
         }
     }
 }

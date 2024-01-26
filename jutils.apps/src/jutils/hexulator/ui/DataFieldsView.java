@@ -1,4 +1,4 @@
-package jutils.hexinator.ui;
+package jutils.hexulator.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -10,18 +10,18 @@ import javax.swing.JSeparator;
 
 import jutils.core.ui.model.IDataView;
 import jutils.core.utils.ByteOrdering;
-import jutils.hexinator.fields.BinaryBytesDataField;
-import jutils.hexinator.fields.BinaryLongDataField;
-import jutils.hexinator.fields.DecimalBytesDataField;
-import jutils.hexinator.fields.DoubleDataField;
-import jutils.hexinator.fields.FloatsDataField;
-import jutils.hexinator.fields.HeaderDataField;
-import jutils.hexinator.fields.HexBytesDataField;
-import jutils.hexinator.fields.HexLongDataField;
-import jutils.hexinator.fields.IDataField;
-import jutils.hexinator.fields.IntsDataField;
-import jutils.hexinator.fields.LongDataField;
-import jutils.hexinator.fields.ShortsDataField;
+import jutils.hexulator.fields.BinaryBytesDataField;
+import jutils.hexulator.fields.BinaryLongDataField;
+import jutils.hexulator.fields.DecimalBytesDataField;
+import jutils.hexulator.fields.DoubleDataField;
+import jutils.hexulator.fields.FloatsDataField;
+import jutils.hexulator.fields.HeaderDataField;
+import jutils.hexulator.fields.HexBytesDataField;
+import jutils.hexulator.fields.HexLongDataField;
+import jutils.hexulator.fields.IDataField;
+import jutils.hexulator.fields.IntsDataField;
+import jutils.hexulator.fields.LongDataField;
+import jutils.hexulator.fields.ShortsDataField;
 
 /*******************************************************************************
  * 

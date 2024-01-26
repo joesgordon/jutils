@@ -1,32 +1,32 @@
-package jutils.hexinator.fields;
+package jutils.hexulator.fields;
 
 import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import jutils.core.io.DataStream;
-import jutils.core.ui.fields.DecimalByteFormField;
+import jutils.core.ui.fields.BinaryByteFormField;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class DecimalBytesDataField extends DefaultDataField
+public class BinaryBytesDataField extends DefaultDataField
 {
     /**  */
-    private final DecimalByteFormField [] fields;
+    private final BinaryByteFormField [] fields;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public DecimalBytesDataField()
+    public BinaryBytesDataField()
     {
-        this.fields = new DecimalByteFormField[8];
+        this.fields = new BinaryByteFormField[8];
 
         for( int i = 0; i < fields.length; i++ )
         {
             int index = i;
 
-            fields[i] = new DecimalByteFormField( "" );
+            fields[i] = new BinaryByteFormField( "" );
             fields[i].getTextField().setColumns( TEXT_COLS );
             fields[i].setUpdater( ( d ) -> update( index, d ) );
         }
@@ -65,7 +65,7 @@ public class DecimalBytesDataField extends DefaultDataField
     @Override
     protected void setData( DataStream stream ) throws IOException
     {
-        for( DecimalByteFormField field : fields )
+        for( BinaryByteFormField field : fields )
         {
             field.setValue( stream.read() );
         }

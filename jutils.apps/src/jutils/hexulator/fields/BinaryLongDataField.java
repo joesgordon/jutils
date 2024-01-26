@@ -1,32 +1,32 @@
-package jutils.hexinator.fields;
+package jutils.hexulator.fields;
 
 import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import jutils.core.io.DataStream;
-import jutils.core.ui.fields.BinaryByteFormField;
+import jutils.core.ui.fields.BinaryLongFormField;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class BinaryBytesDataField extends DefaultDataField
+public class BinaryLongDataField extends DefaultDataField
 {
     /**  */
-    private final BinaryByteFormField [] fields;
+    private final BinaryLongFormField [] fields;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public BinaryBytesDataField()
+    public BinaryLongDataField()
     {
-        this.fields = new BinaryByteFormField[8];
+        this.fields = new BinaryLongFormField[1];
 
         for( int i = 0; i < fields.length; i++ )
         {
             int index = i;
 
-            fields[i] = new BinaryByteFormField( "" );
+            fields[i] = new BinaryLongFormField( "" );
             fields[i].getTextField().setColumns( TEXT_COLS );
             fields[i].setUpdater( ( d ) -> update( index, d ) );
         }
@@ -36,12 +36,12 @@ public class BinaryBytesDataField extends DefaultDataField
      * @param index
      * @param data
      **************************************************************************/
-    private void update( int index, byte data )
+    private void update( int index, long data )
     {
         try
         {
-            super.stream.seek( index * Byte.BYTES );
-            super.stream.write( data );
+            super.stream.seek( index * Long.BYTES );
+            super.stream.writeLong( data );
             super.updater.update( super.data );
         }
         catch( IOException ex )
@@ -65,9 +65,9 @@ public class BinaryBytesDataField extends DefaultDataField
     @Override
     protected void setData( DataStream stream ) throws IOException
     {
-        for( BinaryByteFormField field : fields )
+        for( BinaryLongFormField field : fields )
         {
-            field.setValue( stream.read() );
+            field.setValue( stream.readLong() );
         }
     }
 }

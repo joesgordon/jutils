@@ -16,7 +16,7 @@ import jutils.core.ui.app.AppRunner;
 /*******************************************************************************
  * Defines an application to display the current version of this library.
  ******************************************************************************/
-public class JUtilsMain
+public class JUtilsCoreMain
 {
     /** The name of the file containing the JUtils build information. */
     private static final String FILE_NAME = "info.properties";
@@ -24,7 +24,7 @@ public class JUtilsMain
     /***************************************************************************
      * Declare the default and only constructor private to prevent instances.
      **************************************************************************/
-    private JUtilsMain()
+    private JUtilsCoreMain()
     {
     }
 
@@ -65,7 +65,7 @@ public class JUtilsMain
         JPanel panel = new JPanel( new BorderLayout() );
 
         BuildInfoView buildView = new BuildInfoView();
-        BuildInfo info = JUtilsMain.load();
+        BuildInfo info = JUtilsCoreMain.load();
         LicensesView licensesView = new LicensesView();
 
         buildView.setData( info );

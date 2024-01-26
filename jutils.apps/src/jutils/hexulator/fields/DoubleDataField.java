@@ -1,4 +1,4 @@
-package jutils.hexinator.fields;
+package jutils.hexulator.fields;
 
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;

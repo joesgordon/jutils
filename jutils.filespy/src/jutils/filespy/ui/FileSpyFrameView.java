@@ -25,7 +25,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import jutils.core.IconConstants;
-import jutils.core.JUtilsMain;
+import jutils.core.JUtilsCoreMain;
 import jutils.core.OptionUtils;
 import jutils.core.SwingUtils;
 import jutils.core.Utils;
@@ -308,7 +308,7 @@ public class FileSpyFrameView implements IView<JFrame>
     {
         LicensesView view = new LicensesView();
         JTabbedPane pane = view.getView();
-        BuildInfo info = JUtilsMain.load();
+        BuildInfo info = JUtilsCoreMain.load();
         OkDialogView dialogView = new OkDialogView( getView(), pane,
             OkDialogButtons.OK_ONLY );
         BuildInfoView infoView = new BuildInfoView();

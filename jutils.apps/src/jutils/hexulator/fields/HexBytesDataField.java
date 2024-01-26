@@ -1,33 +1,32 @@
-package jutils.hexinator.fields;
+package jutils.hexulator.fields;
 
 import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import jutils.core.io.DataStream;
-import jutils.core.ui.fields.HexLongFormField;
+import jutils.core.ui.fields.HexByteFormField;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class HexLongDataField extends DefaultDataField
+public class HexBytesDataField extends DefaultDataField
 {
     /**  */
-    private final HexLongFormField [] fields;
+    private final HexByteFormField [] fields;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public HexLongDataField()
+    public HexBytesDataField()
     {
-        this.fields = new HexLongFormField[1];
+        this.fields = new HexByteFormField[8];
 
         for( int i = 0; i < fields.length; i++ )
         {
             int index = i;
 
-            fields[i] = new HexLongFormField( "" );
-            fields[i].getTextField().setColumns( TEXT_COLS );
+            fields[i] = new HexByteFormField( "", null, TEXT_COLS );
             fields[i].setUpdater( ( d ) -> update( index, d ) );
         }
     }
@@ -36,12 +35,12 @@ public class HexLongDataField extends DefaultDataField
      * @param index
      * @param data
      **************************************************************************/
-    private void update( int index, long data )
+    private void update( int index, byte data )
     {
         try
         {
-            super.stream.seek( index * Long.BYTES );
-            super.stream.writeLong( data );
+            super.stream.seek( index * Byte.BYTES );
+            super.stream.write( data );
             super.updater.update( super.data );
         }
         catch( IOException ex )
@@ -65,9 +64,9 @@ public class HexLongDataField extends DefaultDataField
     @Override
     protected void setData( DataStream stream ) throws IOException
     {
-        for( HexLongFormField field : fields )
+        for( HexByteFormField field : fields )
         {
-            field.setValue( stream.readLong() );
+            field.setValue( stream.read() );
         }
     }
 }

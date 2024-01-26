@@ -1,32 +1,32 @@
-package jutils.hexinator.fields;
+package jutils.hexulator.fields;
 
 import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import jutils.core.io.DataStream;
-import jutils.core.ui.fields.ShortFormField;
+import jutils.core.ui.fields.IntegerFormField;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class ShortsDataField extends DefaultDataField
+public class IntsDataField extends DefaultDataField
 {
     /**  */
-    private final ShortFormField [] fields;
+    private final IntegerFormField [] fields;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public ShortsDataField()
+    public IntsDataField()
     {
-        this.fields = new ShortFormField[4];
+        this.fields = new IntegerFormField[2];
 
         for( int i = 0; i < fields.length; i++ )
         {
             int index = i;
 
-            fields[i] = new ShortFormField( "" );
+            fields[i] = new IntegerFormField( "" );
             fields[i].getTextField().setColumns( TEXT_COLS );
             fields[i].setUpdater( ( d ) -> update( index, d ) );
         }
@@ -36,12 +36,12 @@ public class ShortsDataField extends DefaultDataField
      * @param index
      * @param data
      **************************************************************************/
-    private void update( int index, short data )
+    private void update( int index, int data )
     {
         try
         {
-            super.stream.seek( index * Short.BYTES );
-            super.stream.writeShort( data );
+            super.stream.seek( index * Integer.BYTES );
+            super.stream.writeInt( data );
             super.updater.update( super.data );
         }
         catch( IOException ex )
@@ -65,9 +65,9 @@ public class ShortsDataField extends DefaultDataField
     @Override
     protected void setData( DataStream stream ) throws IOException
     {
-        for( ShortFormField field : fields )
+        for( IntegerFormField field : fields )
         {
-            field.setValue( stream.readShort() );
+            field.setValue( stream.readInt() );
         }
     }
 }
