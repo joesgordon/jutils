@@ -1,260 +1,53 @@
 package jutils.iris.colors;
 
-import java.awt.Color;
-
-import jutils.iris.IrisUtils;
-import jutils.iris.data.IColorModel;
+import jutils.core.INamedValue;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class MonoColorModel implements IColorModel
+public enum MonoColorModel implements INamedValue
 {
+    /** Indexing proceeds a row of data at a time. */
+    GRAYSCALE( 0, "Grayscale" ),
+    /** Indexing proceeds a column of data at a time. */
+    BGR( 1, "Blue-Green-Red" ),
     /**  */
-    private final int [] seeds;
+    HOT( 2, "Hot" ),
     /**  */
-    private final MonoColorConfig config;
+    NIGHT_VISION( 3, "Night Vision" ),
     /**  */
-    private final int pixelMax;
+    COOL_WARM( 4, "Cool-Warm" ),;
+
+    /**  */
+    public final int value;
+    /**  */
+    public final String name;
 
     /***************************************************************************
-     * @param seeds
+     * @param value
+     * @param name
      **************************************************************************/
-    private MonoColorModel( int [] seeds, int bitDepth )
+    private MonoColorModel( int value, String name )
     {
-        this.seeds = seeds;
-        this.config = new MonoColorConfig();
-        this.pixelMax = IrisUtils.getMaxValue( bitDepth );
+        this.value = value;
+        this.name = name;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int getColorValue( long pixel )
+    public String getName()
     {
-        long x0 = config.lowThreshold.value;
-        long x1 = Math.min( pixelMax, config.highThreshold.value );
-
-        int y1 = seeds.length - 1;
-
-        if( pixel < x0 )
-        {
-            return config.lowThreshold.color.getRGB();
-        }
-        else if( pixel > x1 )
-        {
-            return config.highThreshold.color.getRGB();
-        }
-
-        double adjPixel = config.gain * pixel + config.offset;
-
-        int index = ( int )( y1 * ( adjPixel - x0 ) / ( x1 - x0 ) );
-
-        index = Math.min( index, y1 );
-        index = Math.max( index, 0 );
-
-        // if( pixel == y1 )
-        // {
-        // LogUtils.printDebug(
-        // "[%d - %d] pixel %d (function %f %f) -> index %d = value %d",
-        // config.lowThreshold.value, config.highThreshold.value,
-        // pixel, function[0], function[1], index, seeds[index] );
-        // }
-
-        return seeds[index];
+        return this.name;
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
-    public static final class MonoColorConfig
+    @Override
+    public int getValue()
     {
-        /**  */
-        public final MonoThreshold lowThreshold;
-        /**  */
-        public final MonoThreshold highThreshold;
-        /**  */
-        public double gain;
-        /**  */
-        public double offset;
-
-        /**
-         * 
-         */
-        public MonoColorConfig()
-        {
-            this.lowThreshold = new MonoThreshold();
-            this.highThreshold = new MonoThreshold();
-
-            this.highThreshold.value = Integer.MAX_VALUE;
-
-            this.gain = 1.0;
-            this.offset = 0.0;
-        }
-    }
-
-    /***************************************************************************
-     * @param bitDepth
-     * @return
-     **************************************************************************/
-    public static IColorModel createGrayscaleMap( int bitDepth )
-    {
-        int [] seeds = new int[256];
-        int cnt = seeds.length;
-        int grayIncr = 1;
-
-        // The gray ramp will be between lower and upper
-        int gray = 0;
-
-        for( int i = 0; i < cnt; i++ )
-        {
-            seeds[i] = ( gray << 16 ) | ( gray << 8 ) | gray;
-            gray += grayIncr;
-        }
-
-        return new MonoColorModel( seeds, bitDepth );
-    }
-
-    /***************************************************************************
-     * @param lower
-     * @param upper
-     * @return
-     **************************************************************************/
-    public static IColorModel createMatlabHotMap( int bitDepth )
-    {
-        int [] seeds = new int[] { 720896, 1376256, 2097152, 2818048, 3473408,
-            4194304, 4849664, 5570560, 6291456, 6946816, 7667712, 8388608,
-            9043968, 9764864, 10420224, 11141120, 11862016, 12517376, 13238272,
-            13959168, 14614528, 15335424, 15990784, 16711680, 16714496,
-            16717056, 16719872, 16722688, 16725248, 16728064, 16730624,
-            16733440, 16736256, 16738816, 16741632, 16744448, 16747008,
-            16749824, 16752384, 16755200, 16758016, 16760576, 16763392,
-            16766208, 16768768, 16771584, 16774144, 16776960, 16776976,
-            16776992, 16777008, 16777024, 16777040, 16777056, 16777072,
-            16777088, 16777103, 16777119, 16777135, 16777151, 16777167,
-            16777183, 16777199, 16777215 };
-
-        return new MonoColorModel( seeds, bitDepth );
-    }
-
-    /***************************************************************************
-     * @param lower
-     * @param upper
-     * @return
-     **************************************************************************/
-    public static IColorModel createMatlabDefault( int bitDepth )
-    {
-        int [] seeds = new int[] { 143, 159, 175, 191, 207, 223, 239, 255, 4351,
-            8447, 12543, 16639, 20735, 24831, 28927, 33023, 36863, 40959, 45055,
-            49151, 53247, 57343, 61439, 65535, 1114095, 2162655, 3211215,
-            4259775, 5308335, 6356895, 7405455, 8454016, 9437040, 10485600,
-            11534160, 12582720, 13631280, 14679840, 15728400, 16776960,
-            16772864, 16768768, 16764672, 16760576, 16756480, 16752384,
-            16748288, 16744448, 16740352, 16736256, 16732160, 16728064,
-            16723968, 16719872, 16715776, 16711680, 15663104, 14614528,
-            13565952, 12517376, 11468800, 10420224, 9371648, 8388608 };
-
-        return new MonoColorModel( seeds, bitDepth );
-    }
-
-    /***************************************************************************
-     * @param lower
-     * @param upper
-     * @return
-     **************************************************************************/
-    public static IColorModel createNightVision( int bitDepth )
-    {
-        int [] seeds = new int[256];
-
-        int g = 0;
-        int r = 0;
-        int b = 0;
-
-        double delta = 256.0 / seeds.length * 2.0;
-        for( int i = 0; i < 128; i++ )
-        {
-            g = ( int )Math.round( i * delta );
-            seeds[i] = ( g << 8 );
-        }
-        for( int i = 0; i < 128; i++ )
-        {
-            r = ( int )Math.round( i * delta );
-            b = r;
-            seeds[i + 128] = ( r << 16 ) | ( 255 << 8 ) | b;
-        }
-
-        return new MonoColorModel( seeds, bitDepth );
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public static IColorModel createCoolWarm( int bitDepth )
-    {
-        int [] seeds = new int[] { 3886272, 3952322, 4018371, 4084165, 4150214,
-            4216264, 4347849, 4413643, 4479692, 4545742, 4611535, 4677585,
-            4809170, 4875219, 4941013, 5007062, 5073111, 5204441, 5270490,
-            5336539, 5402333, 5533918, 5599967, 5665760, 5731809, 5863394,
-            5929188, 5995237, 6126566, 6192615, 6258664, 6324457, 6456042,
-            6521835, 6587884, 6719469, 6785262, 6851311, 6982639, 7048688,
-            7114481, 7246066, 7311859, 7377907, 7509236, 7575285, 7641078,
-            7772662, 7838455, 7904503, 8035832, 8101625, 8167673, 8299002,
-            8365050, 8496379, 8562171, 8628220, 8759548, 8825340, 8891389,
-            9022717, 9088509, 9219838, 9285886, 9351678, 9483006, 9548798,
-            9680383, 9746175, 9811967, 9943295, 10009087, 10074879, 10206207,
-            10271999, 10403583, 10469375, 10535167, 10666495, 10732287,
-            10798078, 10929406, 10995198, 11060990, 11192317, 11257853,
-            11323645, 11454973, 11520764, 11586556, 11717883, 11783675,
-            11849211, 11980538, 12046330, 12112121, 12177656, 12308984,
-            12374775, 12440311, 12506102, 12637429, 12702965, 12768756,
-            12834291, 12965619, 13031154, 13096945, 13162480, 13228271,
-            13359342, 13425134, 13490669, 13556204, 13621995, 13687530,
-            13753321, 13818856, 13884391, 14015462, 14081253, 14146788,
-            14212323, 14277857, 14343392, 14408927, 14474718, 14540253,
-            14605531, 14671066, 14736344, 14801879, 14867158, 14932692,
-            14997971, 15063249, 15128784, 15194062, 15259597, 15259339,
-            15324618, 15389896, 15455431, 15520709, 15520452, 15585730,
-            15651265, 15651007, 15716286, 15781564, 15781307, 15846585,
-            15846328, 15911606, 15911349, 15976627, 15976370, 16041648,
-            16041390, 16106669, 16106411, 16106154, 16105896, 16171175,
-            16170917, 16170659, 16170146, 16235424, 16235167, 16234909,
-            16234652, 16234138, 16233880, 16233623, 16233109, 16232852,
-            16232594, 16232081, 16231823, 16231565, 16231052, 16230794,
-            16230281, 16230023, 16163974, 16163716, 16163203, 16162945,
-            16096895, 16096638, 16096124, 16030331, 16029817, 16029560,
-            15963510, 15962997, 15897203, 15896690, 15830640, 15830383,
-            15764333, 15763820, 15698026, 15631977, 15631463, 15565414,
-            15499620, 15499107, 15433057, 15367008, 15300959, 15300701,
-            15234652, 15168602, 15102553, 15036504, 14970454, 14904405,
-            14903891, 14837842, 14771793, 14705743, 14639694, 14573645,
-            14507595, 14441546, 14309961, 14243911, 14177862, 14111813,
-            14045763, 13979714, 13913665, 13781824, 13715774, 13649725,
-            13583676, 13451835, 13385785, 13319736, 13253431, 13121846,
-            13055541, 12989236, 12857650, 12791345, 12659504, 12593199,
-            12461358, 12395053, 12328492, 12196395, 12129833, 11997480,
-            11864871, 11797542 };
-
-        return new MonoColorModel( seeds, bitDepth );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static final class MonoThreshold
-    {
-        /**  */
-        public long value;
-        /**  */
-        public Color color;
-
-        /**
-         * 
-         */
-        public MonoThreshold()
-        {
-            this.value = 0;
-            this.color = Color.black;
-        }
+        return this.value;
     }
 }

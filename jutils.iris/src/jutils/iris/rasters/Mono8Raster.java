@@ -29,10 +29,11 @@ public class Mono8Raster implements IRaster
         config.width = width;
         config.height = height;
         config.channelCount = 1;
-        config.bitDepth = 8;
+        config.channels[0].name = "Mono8";
+        config.channels[0].bitDepth = 8;
         config.packed = false;
         config.indexing = IndexingType.ROW_MAJOR;
-        config.channels = ChannelPlacement.INTERLEAVED;
+        config.channelLoc = ChannelPlacement.INTERLEAVED;
         this.indexer = IPixelIndexer.createIndexer( config.indexing );
 
         this.pixels = new byte[config.getUnpackedSize()];

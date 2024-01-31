@@ -5,6 +5,13 @@ package jutils.iris.data;
  ******************************************************************************/
 public interface IRaster
 {
+    /**
+     * Indicates there is no channel data present; 0d -2147483648, 0x80000000.
+     */
+    public static final int CHANNEL_MISSING = Integer.MIN_VALUE;
+    /**  */
+    public static final long PIXEL_MISSING = CHANNEL_MISSING;
+
     /***************************************************************************
      * @return a copy of the image configuration.
      **************************************************************************/

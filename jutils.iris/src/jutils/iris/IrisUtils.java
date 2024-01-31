@@ -32,15 +32,19 @@ public final class IrisUtils
     public static void setDiagonalGradient( IRaster r )
     {
         RasterConfig config = r.getConfig();
-        int w = config.width;
-        int h = config.height;
+        int max = config.getMaxPixelValue();
+        float w = config.width - 1;
+        float h = config.height - 1;
         int cc = config.channelCount;
 
         for( int x = 0; x < w; x++ )
         {
             for( int y = 0; y < h; y++ )
             {
-                byte v = ( byte )Math.max( x, y );
+                int xf = ( int )Math.ceil( x / w * max );
+                int yf = ( int )Math.ceil( y / h * max );
+
+                int v = Math.max( xf, yf );
 
                 for( int c = 0; c < cc; c++ )
                 {

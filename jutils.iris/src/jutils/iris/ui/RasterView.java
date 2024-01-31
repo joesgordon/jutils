@@ -6,7 +6,7 @@ import javax.swing.JComponent;
 
 import jutils.core.ui.PaintingComponent;
 import jutils.core.ui.model.IView;
-import jutils.iris.data.IColorModel;
+import jutils.iris.colors.IColorizer;
 import jutils.iris.data.IRaster;
 import jutils.iris.data.RasterConfig;
 import jutils.iris.data.RasterImage;
@@ -61,7 +61,7 @@ public class RasterView implements IView<JComponent>
      * @param raster
      * @param colorModel
      **************************************************************************/
-    public void set( IRaster raster, IColorModel colorModel )
+    public void set( IRaster raster, IColorizer colorModel )
     {
         RasterConfig config = raster.getConfig();
 

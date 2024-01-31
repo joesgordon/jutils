@@ -7,8 +7,9 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import jutils.core.ui.model.IView;
-import jutils.iris.data.IColorModel;
+import jutils.iris.colors.IColorizer;
 import jutils.iris.data.IRaster;
+import jutils.iris.data.RasterConfig;
 import jutils.math.Histogram;
 import jutils.math.ui.HistogramView;
 
@@ -52,8 +53,10 @@ public class ImageView implements IView<JComponent>
      * @param r
      * @param c
      **************************************************************************/
-    public void setRaster( IRaster r, IColorModel c )
+    public void setRaster( IRaster r, IColorizer c )
     {
+        RasterConfig config = r.getConfig();
+        int binCount = config.channels[0].getPixelValueCount();
         Histogram histogram = new Histogram( "Mono", 256,
             r.getConfig().getMaxPixelValue() );
 

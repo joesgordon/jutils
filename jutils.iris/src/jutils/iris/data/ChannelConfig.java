@@ -1,68 +1,59 @@
 package jutils.iris.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jutils.iris.colors.IColorizer;
-
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class RasterAlbumList implements IRasterAlbum
+public class ChannelConfig
 {
     /**  */
-    private final List<IRaster> rasters;
+    public static final int MAX_BIT_DEPTH = 16;
+
     /**  */
-    private IColorizer colors;
+    public int bitDepth;
+    /**  */
+    public String name;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public RasterAlbumList()
+    public ChannelConfig()
     {
-        this.rasters = new ArrayList<>();
+        this.bitDepth = 8;
+        this.name = "Mono";
     }
 
     /***************************************************************************
-     * @param raster
+     * @param bitDepth
+     * @param name
      **************************************************************************/
-    public void addRaster( IRaster raster )
+    public ChannelConfig( int bitDepth, String name )
     {
-        rasters.add( raster );
+        this.bitDepth = bitDepth;
+        this.name = name;
     }
 
     /***************************************************************************
-     * @param model
+     * @param config
      **************************************************************************/
-    public void setColorizer( IColorizer model )
+    public ChannelConfig( ChannelConfig config )
     {
-        this.colors = model;
+        this.bitDepth = config.bitDepth;
+        this.name = config.name;
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * @return
      **************************************************************************/
-    @Override
-    public int getRasterCount()
+    public int getMaxPixelValue()
     {
-        return rasters.size();
+        return getPixelValueCount() - 1;
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * @return
      **************************************************************************/
-    @Override
-    public IRaster getRaster( int index )
+    public int getPixelValueCount()
     {
-        return rasters.get( index );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public IColorizer getColorizer()
-    {
-        return colors;
+        return 1 << bitDepth;
     }
 }

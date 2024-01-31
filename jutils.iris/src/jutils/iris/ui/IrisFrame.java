@@ -9,8 +9,8 @@ import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.model.IView;
 import jutils.iris.IrisIcons;
 import jutils.iris.IrisUtils;
-import jutils.iris.colors.MonoColorModel;
-import jutils.iris.data.IColorModel;
+import jutils.iris.colors.IColorizer;
+import jutils.iris.colors.MonoColorizer;
 import jutils.iris.data.IRaster;
 import jutils.iris.data.RasterAlbumList;
 import jutils.iris.rasters.Mono8Raster;
@@ -73,18 +73,17 @@ public class IrisFrame implements IView<JFrame>
      **************************************************************************/
     private void handleDiagonalGradient()
     {
-        int w = 256;
-        int h = 256;
+        int w = 512;
+        int h = 512;
         IRaster r = new Mono8Raster( w, h );
 
         IrisUtils.setDiagonalGradient( r );
 
-        int bitDepth = r.getConfig().bitDepth;
-        IColorModel colors = MonoColorModel.createGrayscaleMap( bitDepth );
+        IColorizer colorizer = new MonoColorizer();
         RasterAlbumList rasters = new RasterAlbumList();
 
         rasters.addRaster( r );
-        rasters.setColors( colors );
+        rasters.setColorizer( colorizer );
 
         contentView.setImages( rasters );
     }
@@ -100,12 +99,11 @@ public class IrisFrame implements IView<JFrame>
 
         IrisUtils.setJuliaFractal( r );
 
-        int bitDepth = r.getConfig().bitDepth;
-        IColorModel colors = MonoColorModel.createMatlabDefault( bitDepth );
+        IColorizer colorizer = new MonoColorizer();
         RasterAlbumList rasters = new RasterAlbumList();
 
         rasters.addRaster( r );
-        rasters.setColors( colors );
+        rasters.setColorizer( colorizer );
 
         contentView.setImages( rasters );
     }

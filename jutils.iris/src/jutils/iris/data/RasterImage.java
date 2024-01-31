@@ -11,7 +11,8 @@ import java.awt.image.ImageObserver;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 
-import jutils.iris.colors.MonoColorModel;
+import jutils.iris.colors.IColorizer;
+import jutils.iris.colors.MonoColorizer;
 import jutils.iris.rasters.Mono8Raster;
 
 /*******************************************************************************
@@ -26,7 +27,7 @@ public class RasterImage
     /**  */
     public IRaster raster;
     /**  */
-    public IColorModel colors;
+    public IColorizer colorizer;
 
     /***************************************************************************
      * @param width
@@ -50,8 +51,7 @@ public class RasterImage
         this.pixels = pixels;
         this.bufImage = new BufferedImage( mdl, raster, false, null );
         this.raster = new Mono8Raster( width, height );
-        this.colors = MonoColorModel.createGrayscaleMap(
-            this.raster.getConfig().bitDepth );
+        this.colorizer = new MonoColorizer();
     }
 
     /***************************************************************************
@@ -84,25 +84,25 @@ public class RasterImage
      **************************************************************************/
     public void set( IRaster raster )
     {
-        set( raster, colors );
+        set( raster, colorizer );
     }
 
     /***************************************************************************
-     * @param colors
+     * @param colorizer
      **************************************************************************/
-    public void set( IColorModel colors )
+    public void set( IColorizer colorizer )
     {
-        set( raster, colors );
+        set( raster, colorizer );
     }
 
     /***************************************************************************
      * @param raster
-     * @param colors
+     * @param colorizer
      **************************************************************************/
-    public void set( IRaster raster, IColorModel colors )
+    public void set( IRaster raster, IColorizer colorizer )
     {
         this.raster = raster;
-        this.colors = colors;
+        this.colorizer = colorizer;
 
         update();
     }
@@ -112,12 +112,7 @@ public class RasterImage
      **************************************************************************/
     public void update()
     {
-        for( int i = 0; i < pixels.length; i++ )
-        {
-            long pixel = raster.getPixel( i );
-            int rgb = colors.getColorValue( pixel );
-            pixels[i] = rgb;
-        }
+        colorizer.colorize( raster, pixels );
     }
 
     /***************************************************************************

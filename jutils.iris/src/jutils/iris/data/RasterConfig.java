@@ -12,26 +12,31 @@ public class RasterConfig
     /**  */
     public int channelCount;
     /**  */
-    public int bitDepth;
+    public ChannelConfig [] channels;
     /**  */
     public boolean packed;
     /**  */
     public IndexingType indexing;
     /**  */
-    public ChannelPlacement channels;
+    public ChannelPlacement channelLoc;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public RasterConfig()
     {
-        this.width = 256;
-        this.height = 256;
+        this.width = 512;
+        this.height = 512;
         this.channelCount = 1;
-        this.bitDepth = 8;
+        this.channels = new ChannelConfig[4];
         this.packed = false;
         this.indexing = IndexingType.ROW_MAJOR;
-        this.channels = ChannelPlacement.INTERLEAVED;
+        this.channelLoc = ChannelPlacement.INTERLEAVED;
+
+        for( int i = 0; i < channels.length; i++ )
+        {
+            channels[i] = new ChannelConfig();
+        }
     }
 
     /***************************************************************************
@@ -42,8 +47,15 @@ public class RasterConfig
         this.width = config.width;
         this.height = config.height;
         this.channelCount = config.channelCount;
-        this.bitDepth = config.bitDepth;
+        this.channels = new ChannelConfig[4];
         this.packed = config.packed;
+        this.indexing = config.indexing;
+        this.channelLoc = config.channelLoc;
+
+        for( int i = 0; i < channels.length; i++ )
+        {
+            channels[i] = new ChannelConfig( config.channels[i] );
+        }
     }
 
     /***************************************************************************
@@ -57,15 +69,23 @@ public class RasterConfig
     /***************************************************************************
      * @return
      **************************************************************************/
-    private int getBitsPerPixel()
+    public int getBitsPerPixel()
     {
-        return bitDepth * channelCount;
+        return channels[0].bitDepth * channelCount;
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    private int getBytesPerPixel()
+    public int getMaxPixelValue()
+    {
+        return channels[0].getMaxPixelValue();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getBytesPerPixel()
     {
         return ( getBitsPerPixel() + 7 ) / 8;
     }
@@ -84,13 +104,5 @@ public class RasterConfig
     public int getUnpackedSize()
     {
         return getPixelCount() * getBytesPerPixel();
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public int getMaxPixelValue()
-    {
-        return ( int )( ( 1L << bitDepth ) - 1 );
     }
 }

@@ -46,7 +46,7 @@ public class JUtilsMain
 
         platform.initialize();
 
-        AppRunner.invokeLater( new JUtilsApp(), false );
+        AppRunner.invokeLater( new JUtilsApp() );
     }
 
     /***************************************************************************

@@ -66,7 +66,7 @@ public class ImagesView implements IView<JComponent>
 
         if( imgCount > 0 )
         {
-            imgView.setRaster( images.getRaster( 0 ), images.getColors() );
+            imgView.setRaster( images.getRaster( 0 ), images.getColorizer() );
         }
     }
 }
