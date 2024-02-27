@@ -76,6 +76,30 @@ public class Vector3dField implements IDataFormField<Vector3d>
         validityManager.addField( zField );
 
         this.setValue( new Vector3d( 1.0, 2.0, 3.0 ) );
+
+        xField.setUpdater( ( d ) -> {
+            vec.x = d;
+            handleFieldUpdated();
+        } );
+        yField.setUpdater( ( d ) -> {
+            vec.y = d;
+            handleFieldUpdated();
+        } );
+        zField.setUpdater( ( d ) -> {
+            vec.z = d;
+            handleFieldUpdated();
+        } );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void handleFieldUpdated()
+    {
+        if( updater != null )
+        {
+            updater.update( vec );
+        }
     }
 
     /***************************************************************************
@@ -104,6 +128,28 @@ public class Vector3dField implements IDataFormField<Vector3d>
         panel.add( zField.getTextField(), constraints );
 
         return panel;
+    }
+
+    /***************************************************************************
+     * @param format
+     **************************************************************************/
+    public void setFormat( String format )
+    {
+        xField.setFormat( format );
+        yField.setFormat( format );
+        zField.setFormat( format );
+    }
+
+    /***************************************************************************
+     * @param xTip
+     * @param yTip
+     * @param zTip
+     **************************************************************************/
+    public void setTooltips( String xTip, String yTip, String zTip )
+    {
+        xField.getTextField().setToolTipText( xTip );
+        yField.getTextField().setToolTipText( yTip );
+        zField.getTextField().setToolTipText( zTip );
     }
 
     /***************************************************************************

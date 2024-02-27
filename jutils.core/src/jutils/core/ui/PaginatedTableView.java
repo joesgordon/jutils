@@ -249,6 +249,26 @@ public class PaginatedTableView<T> extends PaginatedView
         return itemWriter == null ? null : new StringWriterView<>( itemWriter );
     }
 
+    public T setSelected( long itemIndex )
+    {
+        if( itemIndex < 0 || itemIndex >= itemsStream.getCount() )
+        {
+            return null;
+        }
+
+        if( !isPaged( itemIndex ) )
+        {
+            long start = itemIndex - itemIndex % itemsPerPage;
+            navigatePage( start );
+        }
+
+        int tableIndex = ( int )( itemIndex - pageStartIndex );
+
+        table.setRowSelectionInterval( tableIndex, tableIndex );
+
+        return tableModel.getItem( tableIndex );
+    }
+
     /***************************************************************************
      * @param itemIndex the index of the item to be shown.
      **************************************************************************/
