@@ -18,6 +18,7 @@ public class SerialConfig
     public SerialConfig()
     {
         this.comPort = "";
+        this.rxTimeout = 50;
         this.params = new SerialParams();
     }
 
@@ -37,6 +38,7 @@ public class SerialConfig
     public void set( SerialConfig config )
     {
         this.comPort = config.comPort;
+        this.rxTimeout = config.rxTimeout;
         this.params.set( config.params );
     }
 }

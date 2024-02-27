@@ -104,6 +104,7 @@ public class SerialConsoleView implements IView<JComponent>
             if( serialPort.open( config.comPort ) )
             {
                 serialPort.setConfig( config.params );
+                serialPort.setReadTimeout( config.rxTimeout );
 
                 if( serialTask.start( serialPort ) )
                 {

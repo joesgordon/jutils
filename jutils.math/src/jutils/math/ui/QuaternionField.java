@@ -107,7 +107,7 @@ public class QuaternionField implements IDataFormField<Quaternion>
             new Insets( 0, m, 0, 0 ), 0, 0 );
         panel.add( kField.getTextField(), constraints );
 
-        constraints = new GridBagConstraints( 2, 0, 1, 1, 1.0, 0.0,
+        constraints = new GridBagConstraints( 3, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
             new Insets( 0, m, 0, 0 ), 0, 0 );
         panel.add( rField.getTextField(), constraints );

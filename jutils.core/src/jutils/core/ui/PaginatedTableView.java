@@ -107,7 +107,7 @@ public class PaginatedTableView<T> extends PaginatedView
         this.itemsLock = new Object();
         this.itemsStream = itemsStream;
 
-        this.itemsPerPage = 5;
+        this.itemsPerPage = 500;
         this.pageStartIndex = 0L;
 
         this.itemView = new ItemNavigationView<>( this, itemView );
