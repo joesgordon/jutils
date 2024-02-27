@@ -215,6 +215,9 @@ public final class IconConstants
     public final static IconLoader loader = new IconLoader( IconConstants.class,
         "icons" );
 
+    /**  */
+    public static final String FILE_CLOSE_016 = "fileClose16.png";
+
     /***************************************************************************
      * Private constructor to prevent instantiation.
      **************************************************************************/

@@ -8,6 +8,8 @@ public class SerialConfig
     /**  */
     public String comPort;
     /**  */
+    public int rxTimeout;
+    /**  */
     public SerialParams params;
 
     /***************************************************************************

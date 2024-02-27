@@ -6,6 +6,9 @@ package jutils.iris.data;
 public class RasterConfig
 {
     /**  */
+    public static final int MAX_CHANNELS = 4;
+
+    /**  */
     public int width;
     /**  */
     public int height;
@@ -28,7 +31,7 @@ public class RasterConfig
         this.width = 512;
         this.height = 512;
         this.channelCount = 1;
-        this.channels = new ChannelConfig[4];
+        this.channels = new ChannelConfig[MAX_CHANNELS];
         this.packed = false;
         this.indexing = IndexingType.ROW_MAJOR;
         this.channelLoc = ChannelPlacement.INTERLEAVED;

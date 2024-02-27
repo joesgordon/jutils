@@ -68,7 +68,7 @@ public class PaginatedTableViewMain
 
             frameView.setContent( view.getView() );
 
-            frameView.setTitle( "Net Messages View Test" );
+            frameView.setTitle( "PaginatedTableView Test" );
             frameView.setSize( 680, 400 );
             frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 

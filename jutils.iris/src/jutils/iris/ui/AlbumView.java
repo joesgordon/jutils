@@ -12,7 +12,7 @@ import jutils.iris.data.IRasterAlbum;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class ImagesView implements IView<JComponent>
+public class AlbumView implements IView<JComponent>
 {
     /**  */
     private final JComponent view;
@@ -24,7 +24,7 @@ public class ImagesView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    public ImagesView()
+    public AlbumView()
     {
         this.positionView = new PositionIndicator();
         this.imgView = new ImageView();

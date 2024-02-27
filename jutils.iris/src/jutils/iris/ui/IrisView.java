@@ -1,15 +1,20 @@
 package jutils.iris.ui;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
 
+import jutils.core.OptionUtils;
+import jutils.core.io.LogUtils;
 import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.model.IView;
 import jutils.iris.data.IRasterAlbum;
+import jutils.iris.io.IRasterAlbumReader;
+import jutils.iris.readers.StandardImageReader;
 
 /*******************************************************************************
  * 
@@ -19,20 +24,27 @@ public class IrisView implements IView<JComponent>
     /**  */
     private final JComponent view;
     /**  */
-    private final ImagesView imgsView;
+    private final AlbumView imgsView;
+
+    /**  */
+    private final List<IRasterAlbumReader> readers;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public IrisView()
     {
-        this.imgsView = new ImagesView();
+        this.imgsView = new AlbumView();
+
+        this.readers = new ArrayList<>();
 
         this.view = createView();
 
         imgsView.hashCode();
 
         view.setDropTarget( new FileDropTarget( ( ie ) -> fileDropped( ie ) ) );
+
+        readers.add( new StandardImageReader() );
     }
 
     /***************************************************************************
@@ -52,11 +64,49 @@ public class IrisView implements IView<JComponent>
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    private JComponent createView()
+    {
+        return imgsView.getView();
+    }
+
+    /***************************************************************************
      * @param file
      **************************************************************************/
-    private void openFile( File file )
+    public void openFile( File file )
     {
-        // TODO Auto-generated method stub
+        LogUtils.printDebug( "opening file %s", file );
+
+        IRasterAlbumReader fileReader = null;
+
+        for( IRasterAlbumReader reader : readers )
+        {
+            if( reader.isReadable( file ) )
+            {
+                fileReader = reader;
+                break;
+            }
+        }
+
+        if( fileReader == null )
+        {
+            OptionUtils.showErrorMessage( getView(),
+                "No reader found for file " + file.getName(), "Read Error" );
+            return;
+        }
+
+        IRasterAlbum album = fileReader.readFile( file, getView() );
+
+        setImages( album );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public List<IRasterAlbumReader> getReaders()
+    {
+        return new ArrayList<>( readers );
     }
 
     /***************************************************************************
@@ -65,14 +115,6 @@ public class IrisView implements IView<JComponent>
     public void setImages( IRasterAlbum images )
     {
         imgsView.setImages( images );
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private JComponent createView()
-    {
-        return imgsView.getView();
     }
 
     /***************************************************************************

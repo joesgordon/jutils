@@ -32,7 +32,7 @@ public class HexIntFormField implements IDataFormField<Integer>
      **************************************************************************/
     public HexIntFormField( String name, String units )
     {
-        this( name, units, 20, null );
+        this( name, units, 20 );
     }
 
     /***************************************************************************

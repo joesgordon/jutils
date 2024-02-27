@@ -15,12 +15,12 @@ import jutils.core.ui.validation.AggregateValidityChangedManager;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.ValidationView;
 import jutils.core.ui.validation.Validity;
-import jutils.math.Vector3d;
+import jutils.math.Quaternion;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class Vector3dField implements IDataFormField<Vector3d>
+public class QuaternionField implements IDataFormField<Quaternion>
 {
     /**  */
     private final String name;
@@ -30,24 +30,26 @@ public class Vector3dField implements IDataFormField<Vector3d>
     private final JPanel panel;
 
     /**  */
-    private final DoubleFormField xField;
+    private final DoubleFormField iField;
     /**  */
-    private final DoubleFormField yField;
+    private final DoubleFormField jField;
     /**  */
-    private final DoubleFormField zField;
+    private final DoubleFormField kField;
+    /**  */
+    private final DoubleFormField rField;
 
     /**  */
     private final AggregateValidityChangedManager validityManager;
 
     /**  */
-    private Vector3d vec;
+    private Quaternion vec;
     /**  */
-    private IUpdater<Vector3d> updater;
+    private IUpdater<Quaternion> updater;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
-    public Vector3dField( String name )
+    public QuaternionField( String name )
     {
         this( name, null );
     }
@@ -56,12 +58,13 @@ public class Vector3dField implements IDataFormField<Vector3d>
      * @param name
      * @param units
      **************************************************************************/
-    public Vector3dField( String name, String units )
+    public QuaternionField( String name, String units )
     {
         this.name = name;
-        this.xField = new DoubleFormField( "X" );
-        this.yField = new DoubleFormField( "Y" );
-        this.zField = new DoubleFormField( "Z" );
+        this.iField = new DoubleFormField( "I" );
+        this.jField = new DoubleFormField( "J" );
+        this.kField = new DoubleFormField( "K" );
+        this.rField = new DoubleFormField( "Real" );
 
         this.validityManager = new AggregateValidityChangedManager();
 
@@ -71,11 +74,12 @@ public class Vector3dField implements IDataFormField<Vector3d>
         this.panel = createPanel();
         this.view = new ValidationView( this, units, panel );
 
-        validityManager.addField( xField );
-        validityManager.addField( yField );
-        validityManager.addField( zField );
+        validityManager.addField( iField );
+        validityManager.addField( jField );
+        validityManager.addField( kField );
+        validityManager.addField( rField );
 
-        this.setValue( new Vector3d( 1.0, 2.0, 3.0 ) );
+        this.setValue( new Quaternion( 0.0, 1.0, 2.0, 3.0 ) );
     }
 
     /***************************************************************************
@@ -91,17 +95,22 @@ public class Vector3dField implements IDataFormField<Vector3d>
         constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
             new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( xField.getTextField(), constraints );
+        panel.add( iField.getTextField(), constraints );
 
         constraints = new GridBagConstraints( 1, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
             new Insets( 0, m, 0, 0 ), 0, 0 );
-        panel.add( yField.getTextField(), constraints );
+        panel.add( jField.getTextField(), constraints );
 
         constraints = new GridBagConstraints( 2, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
             new Insets( 0, m, 0, 0 ), 0, 0 );
-        panel.add( zField.getTextField(), constraints );
+        panel.add( kField.getTextField(), constraints );
+
+        constraints = new GridBagConstraints( 2, 0, 1, 1, 1.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+            new Insets( 0, m, 0, 0 ), 0, 0 );
+        panel.add( rField.getTextField(), constraints );
 
         return panel;
     }
@@ -110,7 +119,7 @@ public class Vector3dField implements IDataFormField<Vector3d>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Vector3d getValue()
+    public Quaternion getValue()
     {
         return vec;
     }
@@ -119,20 +128,21 @@ public class Vector3dField implements IDataFormField<Vector3d>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setValue( Vector3d value )
+    public void setValue( Quaternion value )
     {
         this.vec = value;
 
-        xField.setValue( value.x );
-        yField.setValue( value.y );
-        zField.setValue( value.z );
+        iField.setValue( value.i );
+        jField.setValue( value.j );
+        kField.setValue( value.k );
+        rField.setValue( value.r );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setUpdater( IUpdater<Vector3d> updater )
+    public void setUpdater( IUpdater<Quaternion> updater )
     {
         this.updater = updater;
     }
@@ -141,7 +151,7 @@ public class Vector3dField implements IDataFormField<Vector3d>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IUpdater<Vector3d> getUpdater()
+    public IUpdater<Quaternion> getUpdater()
     {
         return updater;
     }
@@ -152,9 +162,10 @@ public class Vector3dField implements IDataFormField<Vector3d>
     @Override
     public void setEditable( boolean editable )
     {
-        xField.setEditable( editable );
-        yField.setEditable( editable );
-        zField.setEditable( editable );
+        iField.setEditable( editable );
+        jField.setEditable( editable );
+        kField.setEditable( editable );
+        rField.setEditable( editable );
     }
 
     /***************************************************************************
