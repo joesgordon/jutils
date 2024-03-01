@@ -69,4 +69,12 @@ public class ImageView implements IView<JComponent>
         rasterView.set( r, c );
         histView.setData( histogram );
     }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public IRaster getRaster()
+    {
+        return rasterView.getRaster();
+    }
 }

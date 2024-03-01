@@ -93,7 +93,7 @@ public class QuaternionField implements IDataFormField<Quaternion>
             vec.j = d;
             handleFieldUpdated();
         } );
-        jField.setUpdater( ( d ) -> {
+        kField.setUpdater( ( d ) -> {
             vec.k = d;
             handleFieldUpdated();
         } );
@@ -124,12 +124,12 @@ public class QuaternionField implements IDataFormField<Quaternion>
 
         constraints = new GridBagConstraints( c++, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-            new Insets( 0, m, 0, 0 ), 0, 0 );
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
         panel.add( rField.getTextField(), constraints );
 
         constraints = new GridBagConstraints( c++, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-            new Insets( 0, 0, 0, 0 ), 0, 0 );
+            new Insets( 0, m, 0, 0 ), 0, 0 );
         panel.add( iField.getTextField(), constraints );
 
         constraints = new GridBagConstraints( c++, 0, 1, 1, 1.0, 0.0,

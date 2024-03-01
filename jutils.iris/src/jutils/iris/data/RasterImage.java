@@ -124,4 +124,12 @@ public class RasterImage
     {
         return bufImage.getWidth() != width || bufImage.getHeight() != height;
     }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public IRaster getRaster()
+    {
+        return raster;
+    }
 }

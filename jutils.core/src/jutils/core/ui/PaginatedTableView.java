@@ -46,6 +46,9 @@ import jutils.core.ui.net.StringWriterView;
 public class PaginatedTableView<T> extends PaginatedView
 {
     /**  */
+    public static final int DEFAULT_ITEMS_PER_PAGE = 500;
+
+    /**  */
     private final ItemsTableModel<T> tableModel;
     /**  */
     private final JTable table;
@@ -88,7 +91,21 @@ public class PaginatedTableView<T> extends PaginatedView
     public PaginatedTableView( ITableConfig<T> tableCfg,
         IItemStream<T> itemsStream, IStringWriter<T> itemWriter )
     {
-        this( tableCfg, itemsStream, createItemWriterView( itemWriter ) );
+        this( tableCfg, itemsStream, itemWriter, DEFAULT_ITEMS_PER_PAGE );
+    }
+
+    /***************************************************************************
+     * @param tableCfg the configuration of the table to be displayed.
+     * @param itemsStream
+     * @param itemWriter the method of creating a string that represents an
+     * item.
+     **************************************************************************/
+    public PaginatedTableView( ITableConfig<T> tableCfg,
+        IItemStream<T> itemsStream, IStringWriter<T> itemWriter,
+        int itemsPerPage )
+    {
+        this( tableCfg, itemsStream, createItemWriterView( itemWriter ),
+            itemsPerPage );
     }
 
     /***************************************************************************
@@ -99,6 +116,18 @@ public class PaginatedTableView<T> extends PaginatedView
     public PaginatedTableView( ITableConfig<T> tableCfg,
         IItemStream<T> itemsStream, IDataView<T> itemView )
     {
+        this( tableCfg, itemsStream, itemView, DEFAULT_ITEMS_PER_PAGE );
+    }
+
+    /***************************************************************************
+     * @param tableCfg the configuration of the table to be displayed.
+     * @param itemsStream
+     * @param itemView a view that will display an item.
+     * @param itemsPerPage
+     **************************************************************************/
+    public PaginatedTableView( ITableConfig<T> tableCfg,
+        IItemStream<T> itemsStream, IDataView<T> itemView, int itemsPerPage )
+    {
         this.tableModel = new ItemsTableModel<>( tableCfg );
         this.table = new JTable( tableModel );
         this.tablePane = new JScrollPane( table );
@@ -107,7 +136,7 @@ public class PaginatedTableView<T> extends PaginatedView
         this.itemsLock = new Object();
         this.itemsStream = itemsStream;
 
-        this.itemsPerPage = 500;
+        this.itemsPerPage = itemsPerPage;
         this.pageStartIndex = 0L;
 
         this.itemView = new ItemNavigationView<>( this, itemView );
@@ -249,6 +278,10 @@ public class PaginatedTableView<T> extends PaginatedView
         return itemWriter == null ? null : new StringWriterView<>( itemWriter );
     }
 
+    /***************************************************************************
+     * @param itemIndex
+     * @return
+     **************************************************************************/
     public T setSelected( long itemIndex )
     {
         if( itemIndex < 0 || itemIndex >= itemsStream.getCount() )

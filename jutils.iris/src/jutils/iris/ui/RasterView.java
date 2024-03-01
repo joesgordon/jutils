@@ -75,4 +75,12 @@ public class RasterView implements IView<JComponent>
 
         view.repaint();
     }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public IRaster getRaster()
+    {
+        return image.getRaster();
+    }
 }

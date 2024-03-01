@@ -19,6 +19,7 @@ import jutils.multicon.ui.IConnectionView;
  ******************************************************************************/
 public class UdpView implements IConnectionView<UdpInputs>
 {
+    /**  */
     public static final String NAME = "UDP Connection";
 
     /**  */
