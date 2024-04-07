@@ -1,5 +1,6 @@
 package jutils.iris.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -7,6 +8,7 @@ import java.awt.Insets;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 import jutils.core.ui.model.IView;
 import jutils.iris.colors.IColorizer;
@@ -47,6 +49,8 @@ public class ImageView implements IView<JComponent>
     {
         JPanel panel = new JPanel( new GridBagLayout() );
         GridBagConstraints constraints;
+
+        rasterView.getView().setBorder( new LineBorder( Color.GRAY ) );
 
         constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,

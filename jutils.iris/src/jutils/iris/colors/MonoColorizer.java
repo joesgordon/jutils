@@ -75,7 +75,7 @@ public class MonoColorizer implements IColorizer
             //
             // int idx = col * config.height + row;
 
-            pixels[i] = rgb;
+            pixels[i] = 0xFF000000 | rgb;
         }
     }
 

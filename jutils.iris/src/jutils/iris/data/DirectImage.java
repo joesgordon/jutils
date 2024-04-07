@@ -8,12 +8,10 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DirectColorModel;
 import java.awt.image.ImageObserver;
-import java.awt.image.SinglePixelPackedSampleModel;
+import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 
 import javax.swing.JComponent;
-import javax.swing.border.AbstractBorder;
-import javax.swing.border.BevelBorder;
 
 import jutils.core.ui.IPaintable;
 
@@ -54,15 +52,15 @@ public class DirectImage implements IPaintable
         int gmask = 0x0000FF00;
         int bmask = 0x000000FF;
 
-        // ColorModel mdl = new DirectColorModel( 32, rmask, gmask, bmask, amask
-        // );
-        // SampleModel sampleModel = mdl.createCompatibleSampleModel( width,
-        // height );
+        ColorModel mdl = new DirectColorModel( 32, rmask, gmask, bmask, amask );
+        SampleModel sampleModel = mdl.createCompatibleSampleModel( width,
+            height );
 
-        int [] masks = new int[] { rmask, gmask, bmask };
-        ColorModel mdl = new DirectColorModel( 32, rmask, gmask, bmask );
-        SinglePixelPackedSampleModel sampleModel = new SinglePixelPackedSampleModel(
-            DataBuffer.TYPE_INT, width, height, masks );
+        // int [] masks = new int[] { rmask, gmask, bmask };
+        // ColorModel mdl = new DirectColorModel( 32, rmask, gmask, bmask );
+        // SinglePixelPackedSampleModel sampleModel = new
+        // SinglePixelPackedSampleModel(
+        // DataBuffer.TYPE_INT, width, height, masks );
 
         DataBuffer dataBuf = new DataBufferInt( pixels, pixels.length );
         WritableRaster raster = WritableRaster.createWritableRaster(
@@ -77,10 +75,7 @@ public class DirectImage implements IPaintable
     @Override
     public void paint( JComponent c, Graphics2D g )
     {
-        draw( g, 4, 4, c );
-
-        AbstractBorder bdr = new BevelBorder( BevelBorder.LOWERED );
-        bdr.paintBorder( c, g, 4, 4, width, height );
+        draw( g, 0, 0, c );
     }
 
     /***************************************************************************
