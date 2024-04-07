@@ -1,7 +1,7 @@
 package jutils.iris.colors;
 
-import jutils.iris.data.IRaster;
 import jutils.iris.data.RasterConfig;
+import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
  * Defines a method to represent raw values as a color image.

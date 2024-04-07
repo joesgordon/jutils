@@ -5,13 +5,16 @@ import java.io.File;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
+import jutils.core.SwingUtils;
 import jutils.core.ui.RecentFilesViews;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.event.ActionAdapter;
@@ -24,9 +27,9 @@ import jutils.iris.IrisMain;
 import jutils.iris.IrisUtils;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.colors.MonoColorizer;
-import jutils.iris.data.IRaster;
-import jutils.iris.data.RasterAlbumList;
+import jutils.iris.data.RasterListAlbum;
 import jutils.iris.io.IRasterAlbumReader;
+import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
 
 /*******************************************************************************
@@ -41,7 +44,9 @@ public class IrisFrame implements IView<JFrame>
     /**  */
     private final Action saveAction;
     /**  */
-    private final IrisView contentView;
+    private final IrisView viewer;
+    /**  */
+    private final SaveOptionsView saveView;
 
     /***************************************************************************
      * 
@@ -50,13 +55,15 @@ public class IrisFrame implements IView<JFrame>
     {
         this.frameView = new StandardFrameView();
         this.recentOpenedFiles = new RecentFilesViews( 20 );
+        this.saveView = new SaveOptionsView();
         this.saveAction = createSaveAction();
-        this.contentView = new IrisView();
+        this.viewer = new IrisView();
 
         frameView.setTitle( "Iris" );
         frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frameView.setSize( 800, 800 );
-        frameView.setContent( contentView.getView() );
+        frameView.setToolbar( createToolbar() );
+        frameView.setContent( viewer.getView() );
         frameView.getView().setIconImages( IrisIcons.getAppImages() );
 
         createMenus( frameView.getMenuBar(), frameView.getFileMenu() );
@@ -129,7 +136,7 @@ public class IrisFrame implements IView<JFrame>
         FileChooserListener listener = new FileChooserListener(
             frameView.getView(), "Open Image", false, fileSelected, lastFile );
 
-        for( IRasterAlbumReader reader : contentView.getReaders() )
+        for( IRasterAlbumReader reader : viewer.getReaders() )
         {
             String name = reader.getName() + " Image Files";
 
@@ -145,22 +152,21 @@ public class IrisFrame implements IView<JFrame>
      **************************************************************************/
     private Action createSaveAction()
     {
-        // IFileSelected ifs = ( f ) -> handleSaveFile( f );
-        // ILastFile ilf = () ->
-        // IrisMain.getOptions().getOptions().getLastSavedFile();
-        // FileChooserListener chooserListener = new FileChooserListener(
-        // frameView.getView(), "Save Images", true, ifs, ilf );
+        IFileSelected ifs = ( f ) -> handleSaveFile( f );
+        ILastFile ilf = () -> IrisMain.getOptions().getOptions().getLastSavedFile();
+        FileChooserListener chooserListener = new FileChooserListener(
+            frameView.getView(), "Save Images", true, ifs, ilf );
 
-        // JComponent comp = optionsView.view;
-        //
-        // chooserListener.setAdditional( comp );
-        //
-        // chooserListener.addExtension( "PNG Files", "png" );
-        // chooserListener.addExtension( "JPG Files", "jpg" );
-        // chooserListener.addExtension( "Bitmap Files", "bmp" );
+        JComponent comp = saveView.getView();
+
+        chooserListener.setAdditional( comp );
+
+        chooserListener.addExtension( "PNG Files", "png" );
+        chooserListener.addExtension( "JPG Files", "jpg" );
+        chooserListener.addExtension( "Bitmap Files", "bmp" );
 
         ActionListener listener = ( e ) -> {
-            // SaveOptions options = optionsView.getData();
+            // SaveOptions options = saveView.getData();
             // options.firstIndex = viewer.getIndex() + 1;
             // optionsView.setData( options );
             // chooserListener.actionPerformed( e );
@@ -183,6 +189,22 @@ public class IrisFrame implements IView<JFrame>
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    private JToolBar createToolbar()
+    {
+        JToolBar toolbar = new JToolBar();
+
+        SwingUtils.setToolbarDefaults( toolbar );
+
+        recentOpenedFiles.install( toolbar, createOpenAction() );
+
+        SwingUtils.addActionToToolbar( toolbar, saveAction );
+
+        return toolbar;
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     private void handleDiagonalGradient()
@@ -194,12 +216,12 @@ public class IrisFrame implements IView<JFrame>
         IrisUtils.setDiagonalGradient( r );
 
         IColorizer colorizer = new MonoColorizer();
-        RasterAlbumList rasters = new RasterAlbumList();
+        RasterListAlbum rasters = new RasterListAlbum();
 
         rasters.addRaster( r );
         rasters.setColorizer( colorizer );
 
-        contentView.setImages( rasters );
+        viewer.setAlbum( rasters );
     }
 
     /***************************************************************************
@@ -214,12 +236,12 @@ public class IrisFrame implements IView<JFrame>
         IrisUtils.setJuliaFractal( r );
 
         IColorizer colorizer = new MonoColorizer();
-        RasterAlbumList rasters = new RasterAlbumList();
+        RasterListAlbum rasters = new RasterListAlbum();
 
         rasters.addRaster( r );
         rasters.setColorizer( colorizer );
 
-        contentView.setImages( rasters );
+        viewer.setAlbum( rasters );
     }
 
     /***************************************************************************
@@ -227,7 +249,7 @@ public class IrisFrame implements IView<JFrame>
      **************************************************************************/
     private void handleOpenFile( File file )
     {
-        contentView.openFile( file );
+        viewer.openFile( file );
     }
 
     /***************************************************************************
@@ -238,9 +260,12 @@ public class IrisFrame implements IView<JFrame>
         // TODO Auto-generated method stub
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private void handleCloseFile()
     {
-        ;
+        viewer.resetImages();
     }
 
     /***************************************************************************

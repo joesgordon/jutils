@@ -1,8 +1,8 @@
 package jutils.iris;
 
 import jutils.core.io.BitsReader;
-import jutils.iris.data.IRaster;
 import jutils.iris.data.RasterConfig;
+import jutils.iris.rasters.IRaster;
 import jutils.math.MathUtils;
 
 /*******************************************************************************
@@ -33,16 +33,19 @@ public final class IrisUtils
     {
         RasterConfig config = r.getConfig();
         int max = config.getMaxPixelValue();
-        float w = config.width - 1;
-        float h = config.height - 1;
+        int w = config.width;
+        int h = config.height;
         int cc = config.channelCount;
 
-        for( int x = 0; x < w; x++ )
+        float xscale = max / ( float )( w - 1 );
+        float yscale = max / ( float )( h - 1 );
+
+        for( int y = 0; y < h; y++ )
         {
-            for( int y = 0; y < h; y++ )
+            for( int x = 0; x < w; x++ )
             {
-                int xf = ( int )Math.ceil( x / w * max );
-                int yf = ( int )Math.ceil( y / h * max );
+                int xf = ( int )Math.round( x * xscale );
+                int yf = ( int )Math.round( y * yscale );
 
                 int v = Math.max( xf, yf );
 

@@ -24,6 +24,19 @@
 - Finish [cutils.platform](./docs/cutils.md)
 - See [jutils.plot](./docs/plot.md)
 
+## jutils.iris
+
+- Color maps
+- Image data definitions
+- Image viewers
+- Histogram
+- X/Y Levels
+- Centroid algorithm
+- Playback
+- Open (raw, png, jpg, bmp, tiff)
+- Save (raw, png, jpg, bmp, tiff)
+- Define the Raw Image Album format and add to open/save support. Default save to this format.
+
 ## jutils.math
 
 - Add units to Vector3dField
@@ -81,21 +94,6 @@ help system
 *PROPOSED*
 
 replacement for xstream
-
-## jutils.img
-*PROPOSED*
-
-App name: Joptical
-
-- Color maps
-- Image data definitions
-- Image viewers
-- Histogram
-- X/Y Levels
-- Centroid algorithm
-- Playback
-- Open (raw, png, jpg, bmp, tiff)
-- Save (raw, png, jpg, bmp, tiff)
 
 ## Error exploration
 

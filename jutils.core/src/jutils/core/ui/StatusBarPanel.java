@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -15,7 +16,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.border.EmptyBorder;
 
 import jutils.core.IconConstants;
 import jutils.core.OptionUtils;
@@ -23,23 +23,24 @@ import jutils.core.SwingUtils;
 import jutils.core.Utils;
 import jutils.core.io.parsers.IntegerParser;
 import jutils.core.ui.event.RightClickListener;
+import jutils.core.ui.model.IView;
 
 /*******************************************************************************
  *
  ******************************************************************************/
-public class StatusBarPanel
+public class StatusBarPanel implements IView<JComponent>
 {
     // -------------------------------------------------------------------------
     // Main panel components
     // -------------------------------------------------------------------------
     /**  */
-    private final JProgressBar statusProgressBar;
+    private final JLabel statusLabel;
+    /**  */
+    private final JProgressBar statusBar;
     /**  */
     private final JLabel memoryLabel;
     /**  */
     private final JPanel view;
-    /**  */
-    private final JLabel statusLabel;
 
     // -------------------------------------------------------------------------
     // Popup menu components.
@@ -51,90 +52,92 @@ public class StatusBarPanel
     // Supporting members.
     // -------------------------------------------------------------------------
     /**  */
-    private final Timer swingTimer;
-    /**  */
     private final ComponentFlasher flasher;
+    /**  */
+    private final Timer swingTimer;
 
     /***************************************************************************
      *
      **************************************************************************/
     public StatusBarPanel()
     {
-        GridBagConstraints constraints;
-
-        // ---------------------------------------------------------------------
-        // Setup popup menu.
-        // ---------------------------------------------------------------------
-        popup = createPopupMenu();
-
-        // ---------------------------------------------------------------------
-        // Setup the memory panel. Need to put the label in its own panel to
-        // make the spacing right.
-        // ---------------------------------------------------------------------
-        memoryLabel = new JLabel( "" );
-        memoryLabel.addMouseListener(
-            new RightClickListener( ( e ) -> handleMemoryRightClick( e ) ) );
-
-        statusLabel = new JLabel();
-
-        // ---------------------------------------------------------------------
-        // Setup refresh toobar.
-        // ---------------------------------------------------------------------
-        JToolBar toolbar = createToolbar();
-
-        // ---------------------------------------------------------------------
-        // Setup the progress bar.
-        // ---------------------------------------------------------------------
-        statusProgressBar = new JProgressBar();
-
-        statusProgressBar.setLayout( new GridBagLayout() );
-
-        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
-            GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-            new Insets( 0, 4, 0, 4 ), 0, 0 );
-        statusProgressBar.add( statusLabel, constraints );
-
-        // ---------------------------------------------------------------------
-        // Setup the main panel.
-        // ---------------------------------------------------------------------
-        view = new JPanel( new GridBagLayout() );
-
-        // statusProgress.setForeground( new Color( 50, 130, 180 ) );
-        statusProgressBar.setBorder( new EmptyBorder( 4, 4, 4, 4 ) );
-        statusProgressBar.setOpaque( false );
-        statusProgressBar.setString( "" );
-        statusProgressBar.setStringPainted( true );
-        statusProgressBar.setBorderPainted( false );
-        statusProgressBar.setAlignmentX( Component.LEFT_ALIGNMENT );
-
-        view.add( statusProgressBar,
-            new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets( 0, 0, 0, 0 ), 0, 0 ) );
-        view.add( memoryLabel,
-            new GridBagConstraints( 1, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.EAST, GridBagConstraints.BOTH,
-                new Insets( 0, 0, 0, 0 ), 0, 0 ) );
-        view.add( toolbar,
-            new GridBagConstraints( 2, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.EAST, GridBagConstraints.BOTH,
-                new Insets( 0, 0, 0, 0 ), 0, 2 ) );
-
-        flasher = new ComponentFlasher( memoryLabel );
-        swingTimer = new Timer( 10000, ( e ) -> refreshStatus( false ) );
-
-        swingTimer.setRepeats( true );
-        swingTimer.start();
+        this.statusLabel = new JLabel( "" );
+        this.statusBar = createProgressBar();
+        this.memoryLabel = new JLabel( "" );
+        this.view = createView();
+        this.popup = createPopupMenu();
+        this.flasher = new ComponentFlasher( memoryLabel );
+        this.swingTimer = createTimer();
 
         refreshStatus( false );
+
+        swingTimer.start();
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public Component getView()
+    private JProgressBar createProgressBar()
     {
-        return view;
+        JProgressBar bar = new JProgressBar();
+        GridBagConstraints constraints;
+
+        bar.setLayout( new GridBagLayout() );
+
+        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
+            GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+            new Insets( 0, 4, 0, 4 ), 0, 0 );
+        bar.add( statusLabel, constraints );
+
+        // bar.setForeground( new Color( 50, 130, 180 ) );
+        bar.setOpaque( false );
+        bar.setString( "" );
+        bar.setStringPainted( true );
+        bar.setBorderPainted( false );
+        bar.setAlignmentX( Component.LEFT_ALIGNMENT );
+
+        return bar;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JPanel createView()
+    {
+        JPanel panel = new JPanel( new GridBagLayout() );
+        GridBagConstraints constraints;
+
+        memoryLabel.addMouseListener(
+            new RightClickListener( ( e ) -> handleMemoryRightClick( e ) ) );
+
+        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 4, 4, 4, 4 ), 0, 0 );
+        panel.add( statusBar, constraints );
+
+        constraints = new GridBagConstraints( 1, 0, 1, 1, 0.0, 0.0,
+            GridBagConstraints.EAST, GridBagConstraints.BOTH,
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
+        panel.add( memoryLabel, constraints );
+
+        constraints = new GridBagConstraints( 2, 0, 1, 1, 0.0, 0.0,
+            GridBagConstraints.EAST, GridBagConstraints.BOTH,
+            new Insets( 0, 0, 0, 0 ), 0, 2 );
+        panel.add( createToolbar(), constraints );
+
+        return panel;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private Timer createTimer()
+    {
+        Timer t = new Timer( 10000, ( e ) -> refreshStatus( false ) );
+
+        t.setRepeats( true );
+
+        return t;
     }
 
     /***************************************************************************
@@ -179,11 +182,20 @@ public class StatusBarPanel
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    @Override
+    public JComponent getView()
+    {
+        return view;
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     public void flashProgress()
     {
-        Thread t = new Thread( () -> runFlasher(), "ProgressFlasher" );
+        Thread t = new Thread( () -> executeFlasher(), "ProgressFlasher" );
         t.start();
     }
 
@@ -226,6 +238,22 @@ public class StatusBarPanel
     }
 
     /***************************************************************************
+     * @param text the text to show on the status bar.
+     **************************************************************************/
+    public void setStatusText( String text )
+    {
+        statusLabel.setText( text );
+    }
+
+    /***************************************************************************
+     * @param value percent to fill the status bar between 0 and 100, inclusive.
+     **************************************************************************/
+    public void setStatusValue( int value )
+    {
+        statusBar.setValue( value );
+    }
+
+    /***************************************************************************
      * @param percentUsed double
      **************************************************************************/
     private void evalMem( double percentUsed )
@@ -240,14 +268,6 @@ public class StatusBarPanel
         {
             flasher.stopFlashing();
         }
-    }
-
-    /***************************************************************************
-     * @param text String
-     **************************************************************************/
-    public void setText( String text )
-    {
-        statusLabel.setText( text );
     }
 
     /***************************************************************************
@@ -287,15 +307,16 @@ public class StatusBarPanel
     /***************************************************************************
      * 
      **************************************************************************/
-    private void runFlasher()
+    private void executeFlasher()
     {
-        for( int i = 1; i < 101; i += 5 )
+
+        for( int i = 1; i < 101; i += 10 )
         {
             int val = i;
-            SwingUtilities.invokeLater(
-                () -> statusProgressBar.setValue( val ) );
 
-            if( !Utils.sleep( 30 ) )
+            SwingUtilities.invokeLater( () -> statusBar.setValue( val ) );
+
+            if( Utils.sleep( 20 ) )
             {
                 break;
             }
@@ -303,7 +324,7 @@ public class StatusBarPanel
 
         Utils.sleep( 100 );
 
-        SwingUtilities.invokeLater( () -> statusProgressBar.setValue( 0 ) );
+        SwingUtilities.invokeLater( () -> statusBar.setValue( 0 ) );
     }
 
     /***************************************************************************

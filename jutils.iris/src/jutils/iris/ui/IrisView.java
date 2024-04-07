@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import jutils.core.OptionUtils;
 import jutils.core.io.LogUtils;
 import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
@@ -14,6 +13,7 @@ import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.model.IView;
 import jutils.iris.data.IRasterAlbum;
 import jutils.iris.io.IRasterAlbumReader;
+import jutils.iris.readers.RawImageReader;
 import jutils.iris.readers.StandardImageReader;
 
 /*******************************************************************************
@@ -45,6 +45,7 @@ public class IrisView implements IView<JComponent>
         view.setDropTarget( new FileDropTarget( ( ie ) -> fileDropped( ie ) ) );
 
         readers.add( new StandardImageReader() );
+        readers.add( new RawImageReader() );
     }
 
     /***************************************************************************
@@ -91,14 +92,15 @@ public class IrisView implements IView<JComponent>
 
         if( fileReader == null )
         {
-            OptionUtils.showErrorMessage( getView(),
-                "No reader found for file " + file.getName(), "Read Error" );
-            return;
+            fileReader = new RawImageReader();
         }
 
         IRasterAlbum album = fileReader.readFile( file, getView() );
 
-        setImages( album );
+        if( album != null )
+        {
+            setAlbum( album );
+        }
     }
 
     /***************************************************************************
@@ -110,11 +112,11 @@ public class IrisView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param images
+     * @param album
      **************************************************************************/
-    public void setImages( IRasterAlbum images )
+    public void setAlbum( IRasterAlbum album )
     {
-        imgsView.setImages( images );
+        imgsView.setAlbum( album );
     }
 
     /***************************************************************************
@@ -124,5 +126,13 @@ public class IrisView implements IView<JComponent>
     public JComponent getView()
     {
         return view;
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void resetImages()
+    {
+        imgsView.resetImages();
     }
 }

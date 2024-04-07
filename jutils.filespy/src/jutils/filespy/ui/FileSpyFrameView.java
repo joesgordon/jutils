@@ -38,9 +38,9 @@ import jutils.core.time.TimeUtils;
 import jutils.core.ui.BuildInfoView;
 import jutils.core.ui.JGoodiesToolBar;
 import jutils.core.ui.OkDialogView;
+import jutils.core.ui.OkDialogView.OkDialogButtons;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.StatusBarPanel;
-import jutils.core.ui.OkDialogView.OkDialogButtons;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.explorer.AppManagerView;
 import jutils.core.ui.model.IView;
@@ -96,7 +96,7 @@ public class FileSpyFrameView implements IView<JFrame>
         this.searcher = new AtomicReference<>();
 
         spyPanel.setData( options.getOptions().lastParams );
-        statusBar.setText( "" );
+        statusBar.setStatusText( "" );
 
         createMenuBar( view.getMenuBar(), view.getFileMenu() );
         view.setSize( 850, 800 );
@@ -537,7 +537,8 @@ public class FileSpyFrameView implements IView<JFrame>
         int rowCount = resultsView.getRecordCount();
         String elapsed = TimeUtils.durationToString( millis );
 
-        statusBar.setText( rowCount + " file(s) found in " + elapsed + "." );
+        statusBar.setStatusText(
+            rowCount + " file(s) found in " + elapsed + "." );
 
         searcher.set( null );
 

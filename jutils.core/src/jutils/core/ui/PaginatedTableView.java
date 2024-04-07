@@ -435,6 +435,7 @@ public class PaginatedTableView<T> extends PaginatedView
      * @param a the action to be added.
      * @return the button created from adding the provided action.
      **************************************************************************/
+    @Override
     public JButton addToToolbar( Action a )
     {
         return super.addToToolbar( a );
@@ -443,6 +444,7 @@ public class PaginatedTableView<T> extends PaginatedView
     /***************************************************************************
      * Adds a separator to the toolbar.
      **************************************************************************/
+    @Override
     public void addToToolbar()
     {
         super.addToToolbar();

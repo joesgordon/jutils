@@ -2,47 +2,35 @@ package jutils.iris.data;
 
 import jutils.core.INamedValue;
 
-/*******************************************************************************
+/***************************************************************************
  * 
- ******************************************************************************/
-public enum PixelFormat implements INamedValue
+ **************************************************************************/
+public enum SaveFormat implements INamedValue
 {
-    /**  */
-    MONOCHROME( 0, "Monochrome", 1 ),
-    /**  */
-    BAYER_GRBG( 1, "Bayer GRBG", 4 ),
-    /**  */
-    BAYER_GBRG( 2, "Bayer GBRG", 4 ),
-    /**  */
-    BAYER_RGGB( 3, "Bayer RGGB", 4 ),
-    /**  */
-    BAYER_BGGR( 4, "Bayer BGGR", 4 ),
-    /**  */
-    RGB( 5, "RGB", 3 ),
-    /**  */
-    ARGB( 6, "ARGB", 4 ),
-    /**  */
-    YUV( 7, "YUV", 3 ),
-    /**  */
-    YCBCR( 8, "YCbCr", 3 ),;
+    /** Raw file format */
+    RAW( 0, "Raw" ),
+    /** JPEG file format */
+    JPEG( 1, "JPEG" ),
+    /** PNG file format */
+    PNG( 2, "PNG" ),
+    /** Bitmap file format */
+    BMP( 2, "Bitmap" ),
+    /** TIFF file format */
+    TIFF( 2, "TIFF" ),;
 
     /**  */
     public final int value;
     /**  */
     public final String name;
-    /**  */
-    public final int channelCount;
 
     /***************************************************************************
      * @param value
      * @param name
-     * @param channels
      **************************************************************************/
-    private PixelFormat( int value, String name, int channels )
+    private SaveFormat( int value, String name )
     {
         this.value = value;
         this.name = name;
-        this.channelCount = channels;
     }
 
     /***************************************************************************
@@ -61,5 +49,14 @@ public enum PixelFormat implements INamedValue
     public int getValue()
     {
         return value;
+    }
+
+    /***************************************************************************
+     * @param id
+     * @return
+     **************************************************************************/
+    public static SaveFormat fromId( byte id )
+    {
+        return INamedValue.fromValue( id, values(), null );
     }
 }

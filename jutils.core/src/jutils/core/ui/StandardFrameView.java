@@ -146,7 +146,23 @@ public class StandardFrameView implements IView<JFrame>
      **************************************************************************/
     public void setStatusText( String text )
     {
-        statusBar.setText( text );
+        statusBar.setStatusText( text );
+    }
+
+    /***************************************************************************
+     * @param value
+     **************************************************************************/
+    public void setStatusValue( int value )
+    {
+        statusBar.setStatusValue( value );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void flashStatusBar()
+    {
+        statusBar.flashProgress();
     }
 
     /***************************************************************************

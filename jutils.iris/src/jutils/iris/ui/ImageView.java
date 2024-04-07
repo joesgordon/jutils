@@ -1,15 +1,17 @@
 package jutils.iris.ui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import jutils.core.ui.model.IView;
 import jutils.iris.colors.IColorizer;
-import jutils.iris.data.IRaster;
-import jutils.iris.data.RasterConfig;
+import jutils.iris.data.DirectImage;
+import jutils.iris.rasters.IRaster;
 import jutils.math.Histogram;
 import jutils.math.ui.HistogramView;
 
@@ -18,6 +20,8 @@ import jutils.math.ui.HistogramView;
  ******************************************************************************/
 public class ImageView implements IView<JComponent>
 {
+    /**  */
+    private final JPanel view;
     /**  */
     private final RasterView rasterView;
     /**  */
@@ -30,9 +34,31 @@ public class ImageView implements IView<JComponent>
     {
         this.rasterView = new RasterView();
         this.histView = new HistogramView();
+        this.view = createView();
 
         this.histView.getView().setPreferredSize( new Dimension( 150, 150 ) );
 
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private JPanel createView()
+    {
+        JPanel panel = new JPanel( new GridBagLayout() );
+        GridBagConstraints constraints;
+
+        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 4, 4, 4, 4 ), 0, 0 );
+        panel.add( rasterView.getView(), constraints );
+
+        constraints = new GridBagConstraints( 0, 1, 1, 1, 1.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 4, 4, 4, 4 ), 0, 0 );
+        panel.add( histView.getView(), constraints );
+
+        return panel;
     }
 
     /***************************************************************************
@@ -41,12 +67,15 @@ public class ImageView implements IView<JComponent>
     @Override
     public JComponent getView()
     {
-        JPanel panel = new JPanel( new BorderLayout() );
+        return view;
+    }
 
-        panel.add( rasterView.getView(), BorderLayout.CENTER );
-        panel.add( histView.getView(), BorderLayout.SOUTH );
-
-        return panel;
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void resetRaster()
+    {
+        rasterView.reset();
     }
 
     /***************************************************************************
@@ -55,8 +84,8 @@ public class ImageView implements IView<JComponent>
      **************************************************************************/
     public void setRaster( IRaster r, IColorizer c )
     {
-        RasterConfig config = r.getConfig();
-        int binCount = config.channels[0].getPixelValueCount();
+        // RasterConfig config = r.getConfig();
+        // int binCount = config.channels[0].getPixelValueCount();
         Histogram histogram = new Histogram( "Mono", 256,
             r.getConfig().getMaxPixelValue() );
 
@@ -76,5 +105,10 @@ public class ImageView implements IView<JComponent>
     public IRaster getRaster()
     {
         return rasterView.getRaster();
+    }
+
+    public DirectImage getImage()
+    {
+        return rasterView.getImage();
     }
 }

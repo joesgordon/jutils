@@ -5,6 +5,7 @@ import java.io.IOException;
 import jutils.core.ValidationException;
 import jutils.core.io.IReferenceStream;
 import jutils.iris.colors.IColorizer;
+import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
  * 
@@ -56,6 +57,13 @@ public class RastersFileAlbum implements IRasterAlbum
      **************************************************************************/
     @Override
     public IColorizer getColorizer()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getName()
     {
         // TODO Auto-generated method stub
         return null;

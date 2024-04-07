@@ -1,33 +1,37 @@
 package jutils.iris.data;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferInt;
-import java.awt.image.DirectColorModel;
-import java.awt.image.ImageObserver;
-import java.awt.image.SinglePixelPackedSampleModel;
-import java.awt.image.WritableRaster;
 
+import javax.swing.JComponent;
+
+import jutils.core.ui.IPaintable;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.colors.MonoColorizer;
+import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class RasterImage
+public class RasterImage implements IPaintable
 {
     /**  */
-    private final int [] pixels;
+    public static final int DEFAULT_SIZE = 256;
+
     /**  */
-    public final BufferedImage bufImage;
+    private IRaster raster;
     /**  */
-    public IRaster raster;
+    private IColorizer colorizer;
     /**  */
-    public IColorizer colorizer;
+    private DirectImage image;
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public RasterImage()
+    {
+        this( DEFAULT_SIZE, DEFAULT_SIZE );
+    }
 
     /***************************************************************************
      * @param width
@@ -35,48 +39,7 @@ public class RasterImage
      **************************************************************************/
     public RasterImage( int width, int height )
     {
-        int pixelCount = width * height;
-
-        int [] pixels = new int[pixelCount];
-
-        int [] masks = new int[] { 0x00FF0000, 0x00FF00, 0x00FF };
-        ColorModel mdl = new DirectColorModel( 32, masks[0], masks[1],
-            masks[2] );
-        SinglePixelPackedSampleModel sampleModel = new SinglePixelPackedSampleModel(
-            DataBuffer.TYPE_INT, width, height, masks );
-        DataBuffer dataBuf = new DataBufferInt( pixels, pixels.length );
-        WritableRaster raster = WritableRaster.createWritableRaster(
-            sampleModel, dataBuf, new Point( 0, 0 ) );
-
-        this.pixels = pixels;
-        this.bufImage = new BufferedImage( mdl, raster, false, null );
-        this.raster = new Mono8Raster( width, height );
-        this.colorizer = new MonoColorizer();
-    }
-
-    /***************************************************************************
-     * @param g the graphics on which this image is to be drawn.
-     * @param observer object to be notified as more of the image is converted.
-     **************************************************************************/
-    public void draw( Graphics2D g, ImageObserver observer )
-    {
-        draw( g, 0, 0, observer );
-    }
-
-    /***************************************************************************
-     * @param g the graphics on which this image is to be drawn.
-     * @param x the x coordinate at which the image is to be drawn.
-     * @param y the y coordinate at which the image is to be drawn.
-     * @param observer object to be notified as more of the image is converted.
-     **************************************************************************/
-    public void draw( Graphics2D g, int x, int y, ImageObserver observer )
-    {
-        double zoomScale = 1.0; // config.getZoomScale();
-        double reScale = 1.0 / zoomScale;
-
-        g.scale( zoomScale, zoomScale );
-        g.drawImage( bufImage, x, y, observer );
-        g.scale( reScale, reScale );
+        reset( width, height );
     }
 
     /***************************************************************************
@@ -104,6 +67,12 @@ public class RasterImage
         this.raster = raster;
         this.colorizer = colorizer;
 
+        if( needsResize( raster ) )
+        {
+            this.image = new DirectImage( raster.getWidth(),
+                raster.getHeight() );
+        }
+
         update();
     }
 
@@ -112,17 +81,7 @@ public class RasterImage
      **************************************************************************/
     public void update()
     {
-        colorizer.colorize( raster, pixels );
-    }
-
-    /***************************************************************************
-     * @param width
-     * @param height
-     * @return
-     **************************************************************************/
-    public boolean needsResize( int width, int height )
-    {
-        return bufImage.getWidth() != width || bufImage.getHeight() != height;
+        colorizer.colorize( raster, image.pixels );
     }
 
     /***************************************************************************
@@ -131,5 +90,77 @@ public class RasterImage
     public IRaster getRaster()
     {
         return raster;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getWidth()
+    {
+        return image.width;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getHeight()
+    {
+        return image.height;
+    }
+
+    /***************************************************************************
+     * @param raster
+     * @return
+     **************************************************************************/
+    private boolean needsResize( IRaster raster )
+    {
+        return image.width != raster.getWidth() ||
+            image.height != raster.getHeight();
+    }
+
+    /***************************************************************************
+     * @param x
+     * @param y
+     * @return
+     **************************************************************************/
+    public int getColorizedPixel( int x, int y )
+    {
+        return image.getPixel( x, y );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void paint( JComponent c, Graphics2D g )
+    {
+        image.paint( c, g );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void reset()
+    {
+        reset( image.width, image.height );
+    }
+
+    /***************************************************************************
+     * @param width
+     * @param height
+     **************************************************************************/
+    private void reset( int width, int height )
+    {
+        this.raster = new Mono8Raster( width, height );
+        this.colorizer = new MonoColorizer();
+        this.image = new DirectImage( width, height );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public DirectImage getImage()
+    {
+        return image;
     }
 }

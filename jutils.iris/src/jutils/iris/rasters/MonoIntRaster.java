@@ -1,8 +1,9 @@
 package jutils.iris.rasters;
 
+import jutils.core.Utils;
+import jutils.core.utils.ByteOrdering;
 import jutils.iris.data.ChannelPlacement;
 import jutils.iris.data.IPixelIndexer;
-import jutils.iris.data.IRaster;
 import jutils.iris.data.IndexingType;
 import jutils.iris.data.RasterConfig;
 
@@ -11,6 +12,8 @@ import jutils.iris.data.RasterConfig;
  ******************************************************************************/
 public class MonoIntRaster implements IRaster
 {
+    /**  */
+    public final byte [] pixelData;
     /**  */
     public final int [] pixels;
     /**  */
@@ -36,7 +39,8 @@ public class MonoIntRaster implements IRaster
         config.channelLoc = ChannelPlacement.INTERLEAVED;
         this.indexer = IPixelIndexer.createIndexer( config.indexing );
 
-        this.pixels = new int[config.getUnpackedSize()];
+        this.pixelData = new byte[config.getUnpackedSize()];
+        this.pixels = new int[config.getPixelCount()];
     }
 
     /***************************************************************************
@@ -83,7 +87,7 @@ public class MonoIntRaster implements IRaster
     @Override
     public long getPixel( int x, int y )
     {
-        int index = indexer.getIndex( config.width, config.height, x, y );
+        int index = indexer.getIndex( config.width, config.height, y, x );
         return getPixel( index );
     }
 
@@ -93,7 +97,7 @@ public class MonoIntRaster implements IRaster
     @Override
     public void setPixel( int x, int y, long value )
     {
-        int index = indexer.getIndex( config.width, config.height, x, y );
+        int index = indexer.getIndex( config.width, config.height, y, x );
 
         setPixel( index, value );
     }
@@ -132,5 +136,33 @@ public class MonoIntRaster implements IRaster
     public void setChannel( int x, int y, int c, int value )
     {
         setPixel( x, y, value );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public byte [] getPixelData()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setPixelData( byte [] pixelData )
+    {
+        Utils.byteArrayCopy( pixelData, 0, this.pixelData, 0,
+            this.pixelData.length );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void readPixels( ByteOrdering order )
+    {
     }
 }

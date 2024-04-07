@@ -1,31 +1,42 @@
-package jutils.iris.data;
+package jutils.iris.ui;
 
-import jutils.iris.colors.IColorizer;
-import jutils.iris.rasters.IRaster;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
+import jutils.core.ui.model.IView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public interface IRasterAlbum
+public class PlanesView implements IView<JComponent>
 {
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public int getRasterCount();
+    /**  */
+    private final JComponent view;
 
     /***************************************************************************
-     * @param index
-     * @return
+     * 
      **************************************************************************/
-    public IRaster getRaster( int index );
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public IColorizer getColorizer();
+    public PlanesView()
+    {
+        this.view = createView();
+    }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public String getName();
+    private JComponent createView()
+    {
+        JPanel panel = new JPanel();
+        // TODO Auto-generated method stub
+        return panel;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public JComponent getView()
+    {
+        return view;
+    }
 }

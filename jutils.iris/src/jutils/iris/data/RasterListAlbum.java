@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jutils.iris.colors.IColorizer;
+import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class RasterAlbumList implements IRasterAlbum
+public class RasterListAlbum implements IRasterAlbum
 {
+    /**  */
+    public String name;
     /**  */
     private final List<IRaster> rasters;
     /**  */
@@ -18,7 +21,7 @@ public class RasterAlbumList implements IRasterAlbum
     /***************************************************************************
      * 
      **************************************************************************/
-    public RasterAlbumList()
+    public RasterListAlbum()
     {
         this.rasters = new ArrayList<>();
     }
@@ -64,5 +67,14 @@ public class RasterAlbumList implements IRasterAlbum
     public IColorizer getColorizer()
     {
         return colors;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public String getName()
+    {
+        return name;
     }
 }

@@ -13,14 +13,13 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import jutils.core.OptionUtils;
-import jutils.core.Utils;
 import jutils.core.io.IOUtils;
 import jutils.core.io.LogUtils;
 import jutils.iris.colors.MonoColorizer;
-import jutils.iris.data.IRaster;
 import jutils.iris.data.IRasterAlbum;
-import jutils.iris.data.RasterAlbumList;
+import jutils.iris.data.RasterListAlbum;
 import jutils.iris.io.IRasterAlbumReader;
+import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
 import jutils.iris.rasters.MonoIntRaster;
 
@@ -59,7 +58,12 @@ public class StandardImageReader implements IRasterAlbumReader
     {
         String ext = IOUtils.getFileExtension( f );
         boolean isExt = isImageFile( ext );
-        // TODO Check for magic #s
+
+        if( isExt )
+        {
+            // TODO Check for magic #s
+        }
+
         return isExt;
     }
 
@@ -90,7 +94,7 @@ public class StandardImageReader implements IRasterAlbumReader
             return null;
         }
 
-        RasterAlbumList album = new RasterAlbumList();
+        RasterListAlbum album = new RasterListAlbum();
 
         switch( image.getType() )
         {
@@ -184,7 +188,7 @@ public class StandardImageReader implements IRasterAlbumReader
         DataBufferByte buf = ( DataBufferByte )image.getRaster().getDataBuffer();
         byte [] imgBytes = buf.getData();
 
-        Utils.byteArrayCopy( imgBytes, 0, r.pixels, 0, imgBytes.length );
+        r.setPixelData( imgBytes );
 
         return r;
     }

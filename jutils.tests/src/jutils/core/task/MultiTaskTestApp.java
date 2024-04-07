@@ -190,7 +190,7 @@ public class MultiTaskTestApp implements IFrameApp
 
                 LogUtils.printDebug( "Percent : " + percent );
 
-                if( !Utils.sleep( millis ) )
+                if( Utils.sleep( millis ) )
                 {
                     break;
                 }

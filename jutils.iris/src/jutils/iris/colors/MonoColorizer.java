@@ -1,7 +1,7 @@
 package jutils.iris.colors;
 
-import jutils.iris.data.IRaster;
 import jutils.iris.data.RasterConfig;
+import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
  * 
@@ -69,6 +69,12 @@ public class MonoColorizer implements IColorizer
         {
             long pixel = raster.getPixel( i );
             int rgb = getColorValue( pixel, pixelMax );
+
+            // int row = i % config.width;
+            // int col = i - ( row * config.width );
+            //
+            // int idx = col * config.height + row;
+
             pixels[i] = rgb;
         }
     }

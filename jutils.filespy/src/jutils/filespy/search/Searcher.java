@@ -45,13 +45,12 @@ public class Searcher
         SearchResultsHandler handler = new SearchResultsHandler( resultsView,
             statusBar );
 
-        statusBar.setText( "" );
+        statusBar.setStatusText( "" );
         resultsView.clearPanel();
 
         SearchTask searchTask = new SearchTask( handler, params, finalizer );
 
-        searchThread = new TaskThread( searchTask,
-            "FileSpy Search Thread" );
+        searchThread = new TaskThread( searchTask, "FileSpy Search Thread" );
         searchThread.start();
     }
 

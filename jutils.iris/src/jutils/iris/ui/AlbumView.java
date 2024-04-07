@@ -4,10 +4,14 @@ import java.awt.BorderLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import jutils.core.ui.PositionIndicator;
+import jutils.core.ui.hex.ByteBuffer;
+import jutils.core.ui.hex.HexPanel;
 import jutils.core.ui.model.IView;
 import jutils.iris.data.IRasterAlbum;
+import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
  * 
@@ -18,16 +22,33 @@ public class AlbumView implements IView<JComponent>
     private final JComponent view;
     /**  */
     private final PositionIndicator positionView;
+
     /**  */
     private final ImageView imgView;
+    /**  */
+    private final PixelsView pixelsView;
+    /**  */
+    private final PlanesView planesView;
+    /**  */
+    private final ChannelsView rawPixelView;
+    /**  */
+    private final HexPanel bufferView;
+
+    /**  */
+    private IRasterAlbum album;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public AlbumView()
     {
-        this.positionView = new PositionIndicator();
+        this.positionView = new PositionIndicator(
+            ( v ) -> Long.toString( v + 1 ) + "/" + album.getRasterCount() );
         this.imgView = new ImageView();
+        this.pixelsView = new PixelsView();
+        this.planesView = new PlanesView();
+        this.rawPixelView = new ChannelsView();
+        this.bufferView = new HexPanel();
 
         this.view = createView();
     }
@@ -39,8 +60,16 @@ public class AlbumView implements IView<JComponent>
     {
         JPanel panel = new JPanel( new BorderLayout() );
 
+        JTabbedPane tabs = new JTabbedPane();
+
+        tabs.addTab( "Image", imgView.getView() );
+        tabs.addTab( "Pixels", pixelsView.getView() );
+        tabs.addTab( "Planes", planesView.getView() );
+        tabs.addTab( "Raw Pixels", rawPixelView.getView() );
+        tabs.addTab( "Raw Bytes", bufferView.getView() );
+
         panel.add( positionView.getView(), BorderLayout.NORTH );
-        panel.add( imgView.getView(), BorderLayout.CENTER );
+        panel.add( tabs, BorderLayout.CENTER );
 
         return panel;
     }
@@ -55,18 +84,41 @@ public class AlbumView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param images
+     * @param album
      **************************************************************************/
-    public void setImages( IRasterAlbum images )
+    public void setAlbum( IRasterAlbum album )
     {
-        int imgCount = images.getRasterCount();
+        this.album = album;
+
+        int imgCount = album.getRasterCount();
 
         positionView.setLength( imgCount );
         positionView.setPosition( 0 );
 
         if( imgCount > 0 )
         {
-            imgView.setRaster( images.getRaster( 0 ), images.getColorizer() );
+            setRaster( 0 );
         }
+    }
+
+    /***************************************************************************
+     * @param index
+     **************************************************************************/
+    private void setRaster( int index )
+    {
+        IRaster raster = album.getRaster( index );
+
+        imgView.setRaster( raster, album.getColorizer() );
+        pixelsView.setRaster( imgView.getImage() );
+        rawPixelView.setRaster( raster );
+        bufferView.setBuffer( new ByteBuffer( raster.getPixelData() ) );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void resetImages()
+    {
+        imgView.resetRaster();
     }
 }

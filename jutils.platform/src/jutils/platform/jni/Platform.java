@@ -41,6 +41,7 @@ class Platform implements IPlatform
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
+    @Override
     public boolean isInialized()
     {
         return initialized;

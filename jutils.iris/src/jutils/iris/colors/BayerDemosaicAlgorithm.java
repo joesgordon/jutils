@@ -1,48 +1,36 @@
-package jutils.iris.data;
+package jutils.iris.colors;
 
 import jutils.core.INamedValue;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum PixelFormat implements INamedValue
+public enum BayerDemosaicAlgorithm implements INamedValue
 {
     /**  */
-    MONOCHROME( 0, "Monochrome", 1 ),
+    NEAREST( 0, "Nearest Neighbor" ),
     /**  */
-    BAYER_GRBG( 1, "Bayer GRBG", 4 ),
+    BILINEAR( 1, "Bilinear" ),
     /**  */
-    BAYER_GBRG( 2, "Bayer GBRG", 4 ),
+    BICUBIC( 2, "Bicubic" ),
     /**  */
-    BAYER_RGGB( 3, "Bayer RGGB", 4 ),
+    SPLINE( 3, "Spline" ),
     /**  */
-    BAYER_BGGR( 4, "Bayer BGGR", 4 ),
-    /**  */
-    RGB( 5, "RGB", 3 ),
-    /**  */
-    ARGB( 6, "ARGB", 4 ),
-    /**  */
-    YUV( 7, "YUV", 3 ),
-    /**  */
-    YCBCR( 8, "YCbCr", 3 ),;
+    LANCZOS( 3, "Lanczos" ),;
 
     /**  */
     public final int value;
     /**  */
     public final String name;
-    /**  */
-    public final int channelCount;
 
     /***************************************************************************
      * @param value
      * @param name
-     * @param channels
      **************************************************************************/
-    private PixelFormat( int value, String name, int channels )
+    private BayerDemosaicAlgorithm( int value, String name )
     {
         this.value = value;
         this.name = name;
-        this.channelCount = channels;
     }
 
     /***************************************************************************
