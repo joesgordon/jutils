@@ -15,6 +15,7 @@ import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
+import jutils.core.io.options.OptionsSerializer;
 import jutils.core.ui.RecentFilesViews;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.event.ActionAdapter;
@@ -24,6 +25,7 @@ import jutils.core.ui.event.FileChooserListener.ILastFile;
 import jutils.core.ui.model.IView;
 import jutils.iris.IrisIcons;
 import jutils.iris.IrisMain;
+import jutils.iris.IrisUserData;
 import jutils.iris.IrisUtils;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.colors.MonoColorizer;
@@ -249,6 +251,12 @@ public class IrisFrame implements IView<JFrame>
      **************************************************************************/
     private void handleOpenFile( File file )
     {
+        OptionsSerializer<IrisUserData> optionsSerializer = IrisMain.getOptions();
+        IrisUserData options = optionsSerializer.getOptions();
+
+        options.lastOpenedFiles.push( file );
+        optionsSerializer.write( options );
+
         viewer.openFile( file );
     }
 

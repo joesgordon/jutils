@@ -39,7 +39,25 @@ public class RasterImage implements IPaintable
      **************************************************************************/
     public RasterImage( int width, int height )
     {
+        this.image = new DirectImage( width, height );
         reset( width, height );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void reset()
+    {
+        reset( image.width, image.height );
+    }
+
+    /***************************************************************************
+     * @param width
+     * @param height
+     **************************************************************************/
+    private void reset( int width, int height )
+    {
+        set( new Mono8Raster( width, height ), new MonoColorizer() );
     }
 
     /***************************************************************************
@@ -61,19 +79,24 @@ public class RasterImage implements IPaintable
     /***************************************************************************
      * @param raster
      * @param colorizer
+     * @return
      **************************************************************************/
-    public void set( IRaster raster, IColorizer colorizer )
+    public boolean set( IRaster raster, IColorizer colorizer )
     {
+        boolean resized = needsResize( raster );
+
         this.raster = raster;
         this.colorizer = colorizer;
 
-        if( needsResize( raster ) )
+        if( resized )
         {
             this.image = new DirectImage( raster.getWidth(),
                 raster.getHeight() );
         }
 
         update();
+
+        return resized;
     }
 
     /***************************************************************************
@@ -135,25 +158,6 @@ public class RasterImage implements IPaintable
     public void paint( JComponent c, Graphics2D g )
     {
         image.paint( c, g );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public void reset()
-    {
-        reset( image.width, image.height );
-    }
-
-    /***************************************************************************
-     * @param width
-     * @param height
-     **************************************************************************/
-    private void reset( int width, int height )
-    {
-        this.raster = new Mono8Raster( width, height );
-        this.colorizer = new MonoColorizer();
-        this.image = new DirectImage( width, height );
     }
 
     /***************************************************************************

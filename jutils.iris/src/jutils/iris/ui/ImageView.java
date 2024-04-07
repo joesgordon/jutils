@@ -8,6 +8,8 @@ import java.awt.Insets;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.LineBorder;
 
 import jutils.core.ui.model.IView;
@@ -50,12 +52,19 @@ public class ImageView implements IView<JComponent>
         JPanel panel = new JPanel( new GridBagLayout() );
         GridBagConstraints constraints;
 
-        rasterView.getView().setBorder( new LineBorder( Color.GRAY ) );
+        JScrollPane pane = new JScrollPane( rasterView.getView() );
+
+        pane.setBorder( new LineBorder( Color.GRAY ) );
+        pane.getVerticalScrollBar().setUnitIncrement( 12 );
+        pane.setHorizontalScrollBarPolicy(
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS );
+        pane.setVerticalScrollBarPolicy(
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 
         constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets( 4, 4, 4, 4 ), 0, 0 );
-        panel.add( rasterView.getView(), constraints );
+        panel.add( pane, constraints );
 
         constraints = new GridBagConstraints( 0, 1, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,

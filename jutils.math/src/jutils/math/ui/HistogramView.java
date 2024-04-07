@@ -111,6 +111,8 @@ public class HistogramView implements IView<JComponent>
 
         view.addMouseListener( mve );
         view.addMouseMotionListener( mve );
+
+        view.setMinimumSize( new Dimension( 200, 200 ) );
     }
 
     /***************************************************************************

@@ -1,18 +1,20 @@
 package jutils.iris.data;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DirectColorModel;
-import java.awt.image.ImageObserver;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 
 import javax.swing.JComponent;
 
+import jutils.core.INamedValue;
 import jutils.core.ui.IPaintable;
 
 /*******************************************************************************
@@ -29,6 +31,9 @@ public class DirectImage implements IPaintable
     /**  */
     public final BufferedImage image;
 
+    /**  */
+    private ZoomLevel zoom;
+
     /***************************************************************************
      * @param width
      * @param height
@@ -39,6 +44,8 @@ public class DirectImage implements IPaintable
         this.height = height;
         this.pixels = new int[width * height];
         this.image = createImage();
+
+        this.zoom = ZoomLevel.ZOOM01;
 
     }
 
@@ -75,31 +82,25 @@ public class DirectImage implements IPaintable
     @Override
     public void paint( JComponent c, Graphics2D g )
     {
-        draw( g, 0, 0, c );
-    }
+        double scale;
 
-    /***************************************************************************
-     * @param g the graphics on which this image is to be drawn.
-     * @param observer object to be notified as more of the image is converted.
-     **************************************************************************/
-    public void draw( Graphics2D g, ImageObserver observer )
-    {
-        draw( g, 0, 0, observer );
-    }
+        if( zoom == ZoomLevel.FIT )
+        {
+            Rectangle bounds = g.getClipBounds();
+            double cd = Math.min( bounds.width, bounds.height );
+            double id = Math.min( width, height );
 
-    /***************************************************************************
-     * @param g the graphics on which this image is to be drawn.
-     * @param x the x coordinate at which the image is to be drawn.
-     * @param y the y coordinate at which the image is to be drawn.
-     * @param observer object to be notified as more of the image is converted.
-     **************************************************************************/
-    public void draw( Graphics2D g, int x, int y, ImageObserver observer )
-    {
-        double zoomScale = 1.0; // config.getZoomScale();
-        double reScale = 1.0 / zoomScale;
+            scale = cd / id;
+        }
+        else
+        {
+            scale = zoom.value;
+        }
 
-        g.scale( zoomScale, zoomScale );
-        g.drawImage( image, x, y, observer );
+        double reScale = 1.0 / scale;
+
+        g.scale( scale, scale );
+        g.drawImage( image, 0, 0, c );
         g.scale( reScale, reScale );
     }
 
@@ -121,5 +122,155 @@ public class DirectImage implements IPaintable
     public void setPixel( int x, int y, int pixel )
     {
         pixels[y * width + x] = pixel;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public Dimension getDisplaySize()
+    {
+        int width;
+        int height;
+
+        if( zoom == ZoomLevel.FIT )
+        {
+            width = 10;
+            height = 10;
+        }
+        else
+        {
+            width = this.width * zoom.value;
+            height = this.height * zoom.value;
+        }
+
+        return new Dimension( width, height );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public ZoomLevel getZoom()
+    {
+        return zoom;
+    }
+
+    /***************************************************************************
+     * @param zoom
+     **************************************************************************/
+    public void setZoom( ZoomLevel zoom )
+    {
+        this.zoom = zoom;
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static enum ZoomLevel implements INamedValue
+    {
+        /**  */
+        FIT( 0, "Fit" ),
+        /**  */
+        ZOOM01( 1, "Zoom 1x" ),
+        /**  */
+        ZOOM02( 2, "Zoom 2x" ),
+        /**  */
+        ZOOM04( 4, "Zoom 4x" ),
+        /**  */
+        ZOOM08( 8, "Zoom 8x" ),
+        /**  */
+        ZOOM16( 16, "Zoom 16x" ),;
+
+        /**  */
+        public final int value;
+        /**  */
+        public final String name;
+
+        /**
+         * @param value
+         * @param name
+         */
+        private ZoomLevel( int value, String name )
+        {
+            this.value = value;
+            this.name = name;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getValue()
+        {
+            return value;
+        }
+
+        /**
+         * @param zoom
+         * @return
+         */
+        public static ZoomLevel previousLevel( ZoomLevel zoom )
+        {
+            switch( zoom )
+            {
+                case FIT:
+                    return ZOOM16;
+
+                case ZOOM01:
+                    return FIT;
+
+                case ZOOM02:
+                    return ZOOM01;
+
+                case ZOOM04:
+                    return ZOOM02;
+
+                case ZOOM08:
+                    return ZOOM04;
+
+                case ZOOM16:
+                    return ZOOM08;
+            }
+
+            return null;
+        }
+
+        /**
+         * @param zoom
+         * @return
+         */
+        public static ZoomLevel nextLevel( ZoomLevel zoom )
+        {
+            switch( zoom )
+            {
+                case FIT:
+                    return ZOOM01;
+
+                case ZOOM01:
+                    return ZOOM02;
+
+                case ZOOM02:
+                    return ZOOM04;
+
+                case ZOOM04:
+                    return ZOOM08;
+
+                case ZOOM08:
+                    return ZOOM16;
+
+                case ZOOM16:
+                    return FIT;
+            }
+
+            return null;
+        }
     }
 }

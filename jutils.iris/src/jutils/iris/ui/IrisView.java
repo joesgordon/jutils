@@ -11,8 +11,12 @@ import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.model.IView;
+import jutils.iris.IrisUtils;
+import jutils.iris.colors.MonoColorizer;
 import jutils.iris.data.IRasterAlbum;
+import jutils.iris.data.RasterListAlbum;
 import jutils.iris.io.IRasterAlbumReader;
+import jutils.iris.rasters.Mono8Raster;
 import jutils.iris.readers.RawImageReader;
 import jutils.iris.readers.StandardImageReader;
 
@@ -46,6 +50,16 @@ public class IrisView implements IView<JComponent>
 
         readers.add( new StandardImageReader() );
         readers.add( new RawImageReader() );
+
+        RasterListAlbum album = new RasterListAlbum();
+        Mono8Raster raster = new Mono8Raster( 256, 256 );
+
+        IrisUtils.setDiagonalGradient( raster );
+
+        album.setColorizer( new MonoColorizer() );
+        album.addRaster( raster );
+
+        setAlbum( album );
     }
 
     /***************************************************************************
