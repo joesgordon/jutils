@@ -1,5 +1,7 @@
 package jutils.iris;
 
+import java.awt.Color;
+
 import jutils.core.io.BitsReader;
 import jutils.iris.data.RasterConfig;
 import jutils.iris.rasters.IRaster;
@@ -10,6 +12,13 @@ import jutils.math.MathUtils;
  ******************************************************************************/
 public final class IrisUtils
 {
+    /**  */
+    public static final Color LIGHT_CHECKER = new Color( 0xCCCCCC );
+    /**  */
+    public static final Color DARK_CHECKER = new Color( 0xBBBBBB );
+    /**  */
+    public static final Color BORDER_COLOR = new Color( 0x999999 );
+
     /***************************************************************************
      * 
      **************************************************************************/

@@ -19,6 +19,7 @@ import jutils.core.ui.PaintingComponent;
 import jutils.core.ui.event.RightClickListener;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IView;
+import jutils.iris.IrisUtils;
 import jutils.iris.data.DirectImage;
 import jutils.iris.data.RasterImage;
 
@@ -27,11 +28,6 @@ import jutils.iris.data.RasterImage;
  ******************************************************************************/
 public class HoverView implements IView<JComponent>
 {
-    /**  */
-    private final int LIGHT_CHECK = 0xAAAAAA;
-    /**  */
-    private final int DARK_CHECK = 0x666666;
-
     /**  */
     private final JPanel view;
     /**  */
@@ -56,7 +52,7 @@ public class HoverView implements IView<JComponent>
         this.hoverLabel = new JLabel( "N/A" );
         this.view = createView();
 
-        hoverView.setBorder( new LineBorder( Color.darkGray ) );
+        hoverView.setBorder( new LineBorder( IrisUtils.BORDER_COLOR ) );
 
         setHover( 9, 32 );
 
@@ -158,12 +154,13 @@ public class HoverView implements IView<JComponent>
     /***************************************************************************
      * @param x
      * @param y
-     * @param raster
+     * @param rimage
      **************************************************************************/
-    void captureHoverImage( int x, int y, RasterImage raster )
+    public void captureHoverImage( int x, int y, RasterImage rimage )
     {
-        if( x < 0 || x >= raster.getWidth() || y < 0 ||
-            y >= raster.getHeight() )
+        DirectImage image = rimage.getImage();
+
+        if( x < 0 || x >= image.width || y < 0 || y >= image.height )
         {
             resetCapture();
 
@@ -183,10 +180,10 @@ public class HoverView implements IView<JComponent>
                 int xp = xs + xi;
                 int yp = ys + yi;
 
-                if( xp > -1 && yp > -1 && xp < raster.getWidth() &&
-                    yp < raster.getHeight() )
+                if( xp > -1 && yp > -1 && xp < image.width &&
+                    yp < image.height )
                 {
-                    pixel = raster.getColorizedPixel( xp, yp );
+                    pixel = image.getPixel( xp, yp );
                 }
                 else
                 {
@@ -194,11 +191,11 @@ public class HoverView implements IView<JComponent>
                     boolean yeven = ( yp % 2 ) == 0; // like omg!
                     if( xeven != yeven )
                     {
-                        pixel = DARK_CHECK;
+                        pixel = IrisUtils.DARK_CHECKER.getRGB();
                     }
                     else
                     {
-                        pixel = LIGHT_CHECK;
+                        pixel = IrisUtils.DARK_CHECKER.getRGB();
                     }
                 }
 
@@ -206,7 +203,7 @@ public class HoverView implements IView<JComponent>
             }
         }
 
-        long px = raster.getRaster().getPixel( x, y );
+        long px = rimage.getRaster().getPixel( x, y );
         hoverLabel.setText( x + ", " + y + " = " + px );
         hoverView.repaint();
     }
@@ -222,11 +219,11 @@ public class HoverView implements IView<JComponent>
         {
             if( ( i % 2 ) == 0 )
             {
-                pixels[i] = DARK_CHECK;
+                pixels[i] = IrisUtils.DARK_CHECKER.getRGB();
             }
             else
             {
-                pixels[i] = LIGHT_CHECK;
+                pixels[i] = IrisUtils.LIGHT_CHECKER.getRGB();
             }
         }
 

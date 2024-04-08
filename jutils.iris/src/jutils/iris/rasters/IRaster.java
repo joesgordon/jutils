@@ -177,6 +177,6 @@ public interface IRaster
      **************************************************************************/
     public default int getHeight()
     {
-        return getConfig().width;
+        return getConfig().height;
     }
 }

@@ -3,16 +3,21 @@ package jutils.iris.ui;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.function.Consumer;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
-import jutils.core.ui.PaintingComponent;
+import jutils.core.ui.IPaintable;
 import jutils.core.ui.event.MouseEventsListener;
 import jutils.core.ui.event.MouseEventsListener.MouseEventType;
 import jutils.core.ui.model.IView;
+import jutils.iris.IrisUtils;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.data.DirectImage;
 import jutils.iris.data.DirectImage.ZoomLevel;
@@ -25,9 +30,14 @@ import jutils.iris.rasters.IRaster;
 public class RasterView implements IView<JComponent>
 {
     /**  */
-    private final PaintingComponent view;
+    private final PaintingComponent2 view;
     /**  */
     private final RasterImage image;
+
+    /**  */
+    private boolean hoverEnabled;
+    /**  */
+    private Consumer<Point> imageHoverCallback;
 
     /***************************************************************************
      * 
@@ -35,12 +45,17 @@ public class RasterView implements IView<JComponent>
     public RasterView()
     {
         this.image = new RasterImage( 256, 256 );
-        this.view = new PaintingComponent( ( c, g ) -> paint( c, g ) );
+        this.view = new PaintingComponent2( ( c, g ) -> paint( c, g ) );
+        this.hoverEnabled = true;
+        this.imageHoverCallback = ( p ) -> {
+        };
 
         MouseEventsListener mouseListener = new MouseEventsListener(
             ( t, e ) -> handleMouseEvent( t, e ) );
 
+        view.addMouseMotionListener( mouseListener );
         view.addMouseWheelListener( mouseListener );
+        view.setFocusable( true );
     }
 
     /***************************************************************************
@@ -55,14 +70,61 @@ public class RasterView implements IView<JComponent>
                 handleMouseWheel( ( MouseWheelEvent )e );
                 break;
 
+            case MOVED:
+                handleMouseMoved( e );
+                break;
+
             default:
                 break;
         }
     }
 
-    /**
+    /***************************************************************************
      * @param e
-     */
+     **************************************************************************/
+    private void handleMouseMoved( MouseEvent e )
+    {
+        Point p = new Point( e.getPoint() );
+        Point px = new Point( p );
+
+        ZoomLevel zoom = image.getImage().getZoom();
+
+        if( zoom == ZoomLevel.FIT )
+        {
+        }
+        else
+        {
+            px.x = p.x / zoom.value;
+            px.y = p.y / zoom.value;
+        }
+
+        if( hoverEnabled )
+        {
+            if( px.x < 0 )
+            {
+                px.x = 0;
+            }
+            else if( px.x >= image.getWidth() )
+            {
+                px.x = image.getWidth() - 1;
+            }
+
+            if( px.y < 0 )
+            {
+                px.y = 0;
+            }
+            else if( px.y >= image.getHeight() )
+            {
+                px.y = image.getHeight() - 1;
+            }
+
+            imageHoverCallback.accept( px );
+        }
+    }
+
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
     private void handleMouseWheel( MouseWheelEvent e )
     {
         int zoomAmount = e.getWheelRotation();
@@ -109,8 +171,8 @@ public class RasterView implements IView<JComponent>
     private static void drawCheckerboard( JComponent c, Graphics2D g )
     {
         int s = 32;
-        Color lcbbg = new Color( 0xBBBBBB );
-        Color dcbbg = new Color( 0xAAAAAA );
+        Color lcbbg = IrisUtils.LIGHT_CHECKER;
+        Color dcbbg = IrisUtils.DARK_CHECKER;
 
         for( int x = 0; x < c.getWidth(); x += s )
         {
@@ -208,5 +270,54 @@ public class RasterView implements IView<JComponent>
     public DirectImage getImage()
     {
         return image.getImage();
+    }
+
+    /***************************************************************************
+     * @param callback
+     **************************************************************************/
+    public void setHoverCallback( Consumer<Point> callback )
+    {
+        this.imageHoverCallback = callback != null ? callback : ( p ) -> {
+        };
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public RasterImage getRasterImage()
+    {
+        return image;
+    }
+
+    public class PaintingComponent2 extends JPanel
+    {
+        private static final long serialVersionUID = 4550342647594043307L;
+        /** The callback invoked on {@link #paintComponent(Graphics)}. */
+
+        private final IPaintable paintable;
+
+        /***************************************************************************
+         * Creates a new {@link JComponent} that will be drawn according to the
+         * provided callback.
+         * @param paintable the callback invoked on
+         * {@link #paintComponent(Graphics)}.
+         **************************************************************************/
+        public PaintingComponent2( IPaintable paintable )
+        {
+            this.paintable = paintable;
+        }
+
+        /***************************************************************************
+         * {@inheritDoc}
+         **************************************************************************/
+        @Override
+        public void paintComponent( Graphics graphics )
+        {
+            super.paintComponent( graphics );
+
+            Graphics2D g = ( Graphics2D )graphics;
+
+            paintable.paint( this, g );
+        }
     }
 }

@@ -86,7 +86,8 @@ public class RawRasterAlbum implements IRasterAlbum
             case MONOCHROME:
                 return config.bitDepth < 9
                     ? new Mono8Raster( config.width, config.height )
-                    : new MonoIntRaster( config.width, config.height );
+                    : new MonoIntRaster( config.width, config.height,
+                        config.bitDepth );
 
             case ARGB:
                 break;

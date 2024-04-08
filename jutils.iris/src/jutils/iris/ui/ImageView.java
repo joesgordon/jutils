@@ -1,6 +1,5 @@
 package jutils.iris.ui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,6 +12,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.LineBorder;
 
 import jutils.core.ui.model.IView;
+import jutils.iris.IrisUtils;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.data.DirectImage;
 import jutils.iris.rasters.IRaster;
@@ -30,6 +30,8 @@ public class ImageView implements IView<JComponent>
     private final RasterView rasterView;
     /**  */
     private final HistogramView histView;
+    /**  */
+    private final HoverView hoverView;
 
     /***************************************************************************
      * 
@@ -38,10 +40,13 @@ public class ImageView implements IView<JComponent>
     {
         this.rasterView = new RasterView();
         this.histView = new HistogramView();
+        this.hoverView = new HoverView();
         this.view = createView();
 
         this.histView.getView().setPreferredSize( new Dimension( 150, 150 ) );
 
+        rasterView.setHoverCallback( ( p ) -> hoverView.captureHoverImage( p.x,
+            p.y, rasterView.getRasterImage() ) );
     }
 
     /***************************************************************************
@@ -54,19 +59,24 @@ public class ImageView implements IView<JComponent>
 
         JScrollPane pane = new JScrollPane( rasterView.getView() );
 
-        pane.setBorder( new LineBorder( Color.GRAY ) );
+        pane.setBorder( new LineBorder( IrisUtils.BORDER_COLOR ) );
         pane.getVerticalScrollBar().setUnitIncrement( 12 );
         pane.setHorizontalScrollBarPolicy(
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS );
         pane.setVerticalScrollBarPolicy(
             ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 
-        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
+        constraints = new GridBagConstraints( 0, 0, 2, 1, 1.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets( 4, 4, 4, 4 ), 0, 0 );
         panel.add( pane, constraints );
 
-        constraints = new GridBagConstraints( 0, 1, 1, 1, 1.0, 0.0,
+        constraints = new GridBagConstraints( 0, 1, 1, 1, 0.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 4, 4, 4, 4 ), 0, 0 );
+        panel.add( hoverView.getView(), constraints );
+
+        constraints = new GridBagConstraints( 1, 1, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets( 4, 4, 4, 4 ), 0, 0 );
         panel.add( histView.getView(), constraints );

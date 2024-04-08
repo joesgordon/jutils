@@ -103,7 +103,7 @@ public class StandardImageReader implements IRasterAlbumReader
                 break;
 
             case BufferedImage.TYPE_USHORT_GRAY:
-                album.addRaster( createMonoIntRaster( image ) );
+                album.addRaster( createMonoIntRaster( image, 16 ) );
                 break;
             //
             // case BufferedImage.TYPE_3BYTE_BGR:
@@ -114,10 +114,11 @@ public class StandardImageReader implements IRasterAlbumReader
             //
             // case BufferedImage.TYPE_INT_BGR:
             // break;
-            //
-            // case BufferedImage.TYPE_4BYTE_ABGR:
-            // break;
-            //
+
+            case BufferedImage.TYPE_4BYTE_ABGR:
+                album.addRaster( createMono8Raster( convertToGray8( image ) ) );
+                break;
+
             // case BufferedImage.TYPE_INT_ARGB:
             // break;
             //
@@ -138,14 +139,15 @@ public class StandardImageReader implements IRasterAlbumReader
 
     /***************************************************************************
      * @param image
+     * @param depth
      * @return
      **************************************************************************/
-    private static IRaster createMonoIntRaster( BufferedImage image )
+    private static IRaster createMonoIntRaster( BufferedImage image, int depth )
     {
         int w = image.getWidth();
         int h = image.getHeight();
 
-        MonoIntRaster r = new MonoIntRaster( w, h );
+        MonoIntRaster r = new MonoIntRaster( w, h, depth );
 
         short [] imgBytes = null;
         DataBuffer dbuf = image.getRaster().getDataBuffer();

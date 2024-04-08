@@ -24,8 +24,9 @@ public class MonoIntRaster implements IRaster
     /***************************************************************************
      * @param width
      * @param height
+     * @param depth
      **************************************************************************/
-    public MonoIntRaster( int width, int height )
+    public MonoIntRaster( int width, int height, int depth )
     {
         this.config = new RasterConfig();
 
@@ -33,7 +34,7 @@ public class MonoIntRaster implements IRaster
         config.height = height;
         config.channelCount = 1;
         config.channels[0].name = "Mono";
-        config.channels[0].bitDepth = 16;
+        config.channels[0].bitDepth = depth;
         config.packed = false;
         config.indexing = IndexingType.ROW_MAJOR;
         config.channelLoc = ChannelPlacement.INTERLEAVED;
