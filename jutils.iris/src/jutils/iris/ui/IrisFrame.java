@@ -12,6 +12,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
@@ -214,6 +215,15 @@ public class IrisFrame implements IView<JFrame>
 
         SwingUtils.addActionToToolbar( toolbar, saveAction );
 
+        toolbar.addSeparator();
+
+        JToggleButton infoButton = new JToggleButton();
+        infoButton.setIcon( IconConstants.getIcon( IconConstants.CHECK_16 ) );
+        infoButton.setText( "Info" );
+        infoButton.addActionListener(
+            ( e ) -> handleImageInfo( infoButton.isSelected() ) );
+        toolbar.add( infoButton );
+
         return toolbar;
     }
 
@@ -302,6 +312,14 @@ public class IrisFrame implements IView<JFrame>
     private void handleCloseFile()
     {
         viewer.resetImages();
+    }
+
+    /***************************************************************************
+     * @param showInfo
+     **************************************************************************/
+    private void handleImageInfo( boolean showInfo )
+    {
+        viewer.setInfoVisible( showInfo );
     }
 
     /***************************************************************************

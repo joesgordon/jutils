@@ -125,4 +125,12 @@ public class IrisView implements IView<JComponent>
     {
         imgsView.resetImages();
     }
+
+    /***************************************************************************
+     * @param visible
+     **************************************************************************/
+    public void setInfoVisible( boolean visible )
+    {
+        imgsView.setInfoVisible( visible );
+    }
 }
