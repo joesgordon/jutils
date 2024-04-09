@@ -2,6 +2,7 @@ package jutils.iris;
 
 import java.awt.Color;
 
+import jutils.core.data.IBitField;
 import jutils.core.io.BitsReader;
 import jutils.iris.data.RasterConfig;
 import jutils.iris.rasters.IRaster;
@@ -18,6 +19,15 @@ public final class IrisUtils
     public static final Color DARK_CHECKER = new Color( 0xBBBBBB );
     /**  */
     public static final Color BORDER_COLOR = new Color( 0x999999 );
+
+    /**  */
+    public static final long BYTE0_MASK = IBitField.BYTE_MASK;
+    /**  */
+    public static final long BYTE1_MASK = IBitField.BYTE_MASK << 8;
+    /**  */
+    public static final long BYTE2_MASK = IBitField.BYTE_MASK << 16;
+    /**  */
+    public static final long BYTE3_MASK = IBitField.BYTE_MASK << 24;
 
     /***************************************************************************
      * 

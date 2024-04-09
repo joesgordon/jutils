@@ -1,6 +1,8 @@
 package jutils.iris.ui;
 
-import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -43,10 +45,18 @@ public class AlbumView implements IView<JComponent>
      **************************************************************************/
     private JComponent createView()
     {
-        JPanel panel = new JPanel( new BorderLayout() );
+        JPanel panel = new JPanel( new GridBagLayout() );
+        GridBagConstraints constraints;
 
-        panel.add( positionView.getView(), BorderLayout.NORTH );
-        panel.add( imgView.getView(), BorderLayout.CENTER );
+        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+            new Insets( 4, 4, 4, 4 ), 0, 0 );
+        panel.add( positionView.getView(), constraints );
+
+        constraints = new GridBagConstraints( 0, 1, 1, 1, 1.0, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 0, 4, 4, 4 ), 0, 0 );
+        panel.add( imgView.getView(), constraints );
 
         return panel;
     }
@@ -70,7 +80,6 @@ public class AlbumView implements IView<JComponent>
         int imgCount = album.getRasterCount();
 
         positionView.setLength( imgCount );
-        positionView.setPosition( 0 );
 
         if( imgCount > 0 )
         {
@@ -85,6 +94,7 @@ public class AlbumView implements IView<JComponent>
     {
         IRaster raster = album.getRaster( index );
 
+        positionView.setPosition( index );
         imgView.setRaster( raster, album.getColorizer() );
     }
 

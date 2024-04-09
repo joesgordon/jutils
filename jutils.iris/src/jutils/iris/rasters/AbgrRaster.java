@@ -1,16 +1,23 @@
 package jutils.iris.rasters;
 
+import java.io.IOException;
+
 import jutils.core.Utils;
+import jutils.core.io.ByteArrayStream;
+import jutils.core.io.DataStream;
 import jutils.core.utils.ByteOrdering;
 import jutils.iris.data.ChannelPlacement;
 import jutils.iris.data.IPixelIndexer;
 import jutils.iris.data.IndexingType;
 import jutils.iris.data.RasterConfig;
 
+/*******************************************************************************
+ * 
+ ******************************************************************************/
 public class AbgrRaster implements IRaster
 {
     /**  */
-    public final byte [] pixelData;
+    public final byte [] buffer;
     /**  */
     public final int [] pixels;
     /**  */
@@ -23,33 +30,35 @@ public class AbgrRaster implements IRaster
      * @param height
      * @param depth
      **************************************************************************/
-    public AbgrRaster( int width, int height, int depth )
+    public AbgrRaster( int width, int height )
     {
-        this.config = new RasterConfig();
-
-        config.width = width;
-        config.height = height;
-        config.channelCount = 1;
-        config.channels[0].name = "Mono";
-        config.channels[0].bitDepth = depth;
-        config.packed = false;
-        config.indexing = IndexingType.ROW_MAJOR;
-        config.channelLoc = ChannelPlacement.INTERLEAVED;
+        this.config = createConfig( width, height );
         this.indexer = IPixelIndexer.createIndexer( config.indexing );
-
-        this.pixelData = new byte[config.getUnpackedSize()];
+        this.buffer = new byte[config.getUnpackedSize()];
         this.pixels = new int[config.getPixelCount()];
     }
 
     /***************************************************************************
-     * @param bitDepth
+     * @param width
+     * @param height
+     * @return
      **************************************************************************/
-    public void setBitDepth( int bitDepth )
+    public static RasterConfig createConfig( int width, int height )
     {
-        if( bitDepth < 32 )
-        {
-            config.channels[0].bitDepth = bitDepth;
-        }
+        RasterConfig config = new RasterConfig();
+
+        config.width = width;
+        config.height = height;
+        config.channelCount = 4;
+        config.channels[0].set( 8, "Alpha" );
+        config.channels[1].set( 8, "Blue" );
+        config.channels[2].set( 8, "Green" );
+        config.channels[3].set( 8, "Red" );
+        config.packed = false;
+        config.indexing = IndexingType.ROW_MAJOR;
+        config.channelLoc = ChannelPlacement.INTERLEAVED;
+
+        return config;
     }
 
     /***************************************************************************
@@ -65,9 +74,18 @@ public class AbgrRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
+    public int getPixelIndex( int x, int y )
+    {
+        return indexer.getIndex( config.width, config.height, x, y );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
     public long getPixel( int p )
     {
-        return pixels[p] & 0xFFFFFFFFL;
+        return pixels[p] & 0x00000000FFFFFFFFL;
     }
 
     /***************************************************************************
@@ -76,7 +94,7 @@ public class AbgrRaster implements IRaster
     @Override
     public void setPixel( int p, long value )
     {
-        this.pixels[p] = ( byte )value;
+        this.pixels[p] = ( int )value;
     }
 
     /***************************************************************************
@@ -85,8 +103,7 @@ public class AbgrRaster implements IRaster
     @Override
     public long getPixelAt( int x, int y )
     {
-        int index = indexer.getIndex( config.width, config.height, y, x );
-        return getPixel( index );
+        return getPixel( getPixelIndex( x, y ) );
     }
 
     /***************************************************************************
@@ -95,9 +112,7 @@ public class AbgrRaster implements IRaster
     @Override
     public void setPixelAt( int x, int y, long value )
     {
-        int index = indexer.getIndex( config.width, config.height, y, x );
-
-        setPixel( index, value );
+        setPixel( getPixelIndex( x, y ), value );
     }
 
     /***************************************************************************
@@ -142,17 +157,32 @@ public class AbgrRaster implements IRaster
     @Override
     public byte [] getBufferData()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return buffer;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setBufferData( byte [] pixelData, ByteOrdering order )
+    public void setBufferData( byte [] buffer, ByteOrdering order )
     {
-        Utils.byteArrayCopy( pixelData, 0, this.pixelData, 0,
-            this.pixelData.length );
+        Utils.byteArrayCopy( buffer, 0, this.buffer, 0, this.buffer.length );
+
+        try( ByteArrayStream bas = new ByteArrayStream( buffer, buffer.length,
+            0, false ); DataStream stream = new DataStream( bas, order ) )
+        {
+            for( int i = 0; i < pixels.length; i++ )
+            {
+                pixels[i] = stream.readInt();
+            }
+        }
+        catch( IOException ex )
+        {
+            String err = String.format(
+                "Unable to read %d pixels from %d bytes", pixels.length,
+                buffer.length );
+
+            throw new RuntimeException( err, ex );
+        }
     }
 }

@@ -13,7 +13,7 @@ import jutils.iris.data.RasterConfig;
 public class Mono8Raster implements IRaster
 {
     /**  */
-    public final byte [] pixelData;
+    public final byte [] buffer;
     /**  */
     private final RasterConfig config;
     /**  */
@@ -37,7 +37,7 @@ public class Mono8Raster implements IRaster
         config.channelLoc = ChannelPlacement.INTERLEAVED;
         this.indexer = IPixelIndexer.createIndexer( config.indexing );
 
-        this.pixelData = new byte[config.getUnpackedSize()];
+        this.buffer = new byte[config.getUnpackedSize()];
     }
 
     /***************************************************************************
@@ -53,9 +53,30 @@ public class Mono8Raster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
+    public int getPixelIndex( int x, int y )
+    {
+        return indexer.getIndex( config.width, config.height, x, y );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
     public long getPixel( int p )
     {
-        return pixelData[p] & 0xFFL;
+        try
+        {
+            return buffer[p] & 0xFFL;
+        }
+        catch( ArrayIndexOutOfBoundsException ex )
+        {
+            RasterConfig c = getConfig();
+
+            String err = String.format(
+                "Unable to access pixel @ %d in image of %d x %d = %d pixels",
+                p, c.width, c.height, c.getPixelCount() );
+            throw new IllegalStateException( err, ex );
+        }
     }
 
     /***************************************************************************
@@ -64,7 +85,7 @@ public class Mono8Raster implements IRaster
     @Override
     public void setPixel( int p, long value )
     {
-        this.pixelData[p] = ( byte )value;
+        this.buffer[p] = ( byte )value;
     }
 
     /***************************************************************************
@@ -73,8 +94,19 @@ public class Mono8Raster implements IRaster
     @Override
     public long getPixelAt( int x, int y )
     {
-        int index = indexer.getIndex( config.width, config.height, y, x );
-        return getPixel( index );
+        try
+        {
+            return getPixel( getPixelIndex( x, y ) );
+        }
+        catch( IllegalStateException ex )
+        {
+            RasterConfig c = getConfig();
+
+            String err = String.format(
+                "Unable to access pixel @ %d,%d in image of %d x %d = %d pixels",
+                x, y, c.width, c.height, c.getPixelCount() );
+            throw new IllegalStateException( err, ex );
+        }
     }
 
     /***************************************************************************
@@ -83,9 +115,7 @@ public class Mono8Raster implements IRaster
     @Override
     public void setPixelAt( int x, int y, long value )
     {
-        int index = indexer.getIndex( config.width, config.height, y, x );
-
-        setPixel( index, value );
+        setPixel( getPixelIndex( x, y ), value );
     }
 
     /***************************************************************************
@@ -130,16 +160,15 @@ public class Mono8Raster implements IRaster
     @Override
     public byte [] getBufferData()
     {
-        return this.pixelData;
+        return this.buffer;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setBufferData( byte [] pixelData, ByteOrdering order )
+    public void setBufferData( byte [] buffer, ByteOrdering order )
     {
-        Utils.byteArrayCopy( pixelData, 0, this.pixelData, 0,
-            this.pixelData.length );
+        Utils.byteArrayCopy( buffer, 0, this.buffer, 0, this.buffer.length );
     }
 }

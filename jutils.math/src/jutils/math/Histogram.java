@@ -3,6 +3,8 @@ package jutils.math;
 import java.awt.Color;
 import java.util.Arrays;
 
+import jutils.core.data.IBitField;
+
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -30,7 +32,8 @@ public class Histogram
     {
         this.name = name;
         this.bins = new int[binCount];
-        this.bindexScale = ( bins.length - 1 ) / ( float )maxValue;
+        this.bindexScale = ( bins.length - 1 ) /
+            ( float )( maxValue & IBitField.INT_MASK );
         this.maxValue = maxValue;
         this.maxCount = 0;
         this.color = Color.black;
@@ -58,7 +61,8 @@ public class Histogram
      **************************************************************************/
     public void addValue( int value )
     {
-        double bin = value * bindexScale;
+        long lval = value & IBitField.INT_MASK;
+        double bin = lval * bindexScale;
         int binIndex = ( int )Math.round( bin );
 
         bins[binIndex]++;

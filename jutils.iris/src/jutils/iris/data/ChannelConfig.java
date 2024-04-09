@@ -42,17 +42,27 @@ public class ChannelConfig
     }
 
     /***************************************************************************
-     * @return
+     * @param bitDepth
+     * @param name
      **************************************************************************/
-    public int getMaxPixelValue()
+    public void set( int bitDepth, String name )
     {
-        return getPixelValueCount() - 1;
+        this.bitDepth = bitDepth;
+        this.name = name;
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public int getPixelValueCount()
+    public int getMaxChannelValue()
+    {
+        return getChannelValueCount() - 1;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getChannelValueCount()
     {
         return 1 << bitDepth;
     }

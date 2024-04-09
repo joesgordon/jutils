@@ -8,11 +8,11 @@ public interface IPixelIndexer
     /***************************************************************************
      * @param width
      * @param height
-     * @param row
-     * @param column
+     * @param x
+     * @param y
      * @return
      **************************************************************************/
-    public int getIndex( int width, int height, int row, int column );
+    public int getIndex( int width, int height, int x, int y );
 
     /***************************************************************************
      * @param t
@@ -38,7 +38,7 @@ public interface IPixelIndexer
      **************************************************************************/
     public static IPixelIndexer createRowMajorIndexer()
     {
-        return ( w, h, r, c ) -> r * w + c;
+        return ( w, h, x, y ) -> y * w + x;
     }
 
     /***************************************************************************
@@ -46,6 +46,6 @@ public interface IPixelIndexer
      **************************************************************************/
     public static IPixelIndexer createColumnMajorIndexer()
     {
-        return ( w, h, r, c ) -> c * h + r;
+        return ( w, h, x, y ) -> x * h + y;
     }
 }

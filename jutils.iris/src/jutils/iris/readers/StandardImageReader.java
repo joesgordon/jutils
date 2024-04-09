@@ -18,8 +18,16 @@ import jutils.core.io.LogUtils;
 import jutils.core.utils.ByteOrdering;
 import jutils.iris.albums.IRasterAlbum;
 import jutils.iris.albums.RasterListAlbum;
+import jutils.iris.colors.AbgrColorizer;
+import jutils.iris.colors.ArgbColorizer;
+import jutils.iris.colors.BgrColorizer;
+import jutils.iris.colors.IColorizer;
 import jutils.iris.colors.MonoColorizer;
+import jutils.iris.data.BufferedImageType;
 import jutils.iris.io.IRasterAlbumReader;
+import jutils.iris.rasters.AbgrRaster;
+import jutils.iris.rasters.ArgbRaster;
+import jutils.iris.rasters.BgrRaster;
 import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
 import jutils.iris.rasters.MonoIntRaster;
@@ -96,44 +104,86 @@ public class StandardImageReader implements IRasterAlbumReader
         }
 
         RasterListAlbum album = new RasterListAlbum();
+        IRaster raster = null;
+        IColorizer colorizer = null;
 
-        switch( image.getType() )
+        BufferedImageType imageType = BufferedImageType.fromValue(
+            image.getType() );
+
+        LogUtils.printDebug( "Reading image type %s",
+            imageType.getDescription() );
+
+        switch( imageType )
         {
-            case BufferedImage.TYPE_BYTE_GRAY:
-                album.addRaster( createMono8Raster( image ) );
-                break;
-
-            case BufferedImage.TYPE_USHORT_GRAY:
-                album.addRaster( createMonoIntRaster( image, 16 ) );
-                break;
-            //
-            // case BufferedImage.TYPE_3BYTE_BGR:
-            // break;
-            //
-            // case BufferedImage.TYPE_BYTE_INDEXED:
-            // break;
-            //
-            // case BufferedImage.TYPE_INT_BGR:
+            // case CUSTOM:
             // break;
 
-            case BufferedImage.TYPE_4BYTE_ABGR:
-                album.addRaster( createMono8Raster( convertToGray8( image ) ) );
+            // case RGB_INT:
+            // break;
+
+            case ARGB_INT:
+                raster = createArgbRaster( image );
+                colorizer = new ArgbColorizer();
                 break;
 
-            // case BufferedImage.TYPE_INT_ARGB:
+            // case ARGB_PRE_INT:
             // break;
-            //
-            // case BufferedImage.TYPE_INT_RGB:
+
+            // case BGR_INT:
+            // break;
+
+            case BGR_3BYTE:
+                raster = createBgrRaster( image );
+                colorizer = new BgrColorizer();
+                break;
+
+            case ABGR_4BYTE:
+                raster = createAbgrRaster( image );
+                colorizer = new AbgrColorizer();
+                break;
+
+            // case ABGR_PRE_4BYTE:
+            // break;
+
+            // case RGB_565_SHORT:
+            // break;
+
+            // case RGB_555_SHORT:
+            // break;
+
+            case MONO_BYTE:
+                raster = createMono8Raster( image );
+                colorizer = new MonoColorizer();
+                break;
+
+            case MONO_SHORT:
+                raster = createMono16Raster( image, 16 );
+                colorizer = new MonoColorizer();
+                break;
+
+            // case BINARY_BYTE:
+            // break;
+
+            // case INDEXED_BYTE:
             // break;
 
             default:
-                LogUtils.printWarning( "Unhandled image type %d",
-                    image.getType() );
-                album.addRaster( createMono8Raster( convertToGray8( image ) ) );
+                LogUtils.printWarning( "Unhandled image type %s",
+                    imageType.getDescription() );
+                raster = createMono8Raster( convertToGray8( image ) );
+                colorizer = new MonoColorizer();
                 break;
         }
 
-        album.setColorizer( new MonoColorizer() );
+        if( raster != null )
+        {
+            album.addRaster( raster );
+            album.setColorizer( colorizer );
+        }
+        else
+        {
+            album.setColorizer( new MonoColorizer() );
+        }
 
         return album;
     }
@@ -143,7 +193,7 @@ public class StandardImageReader implements IRasterAlbumReader
      * @param depth
      * @return
      **************************************************************************/
-    private static IRaster createMonoIntRaster( BufferedImage image, int depth )
+    private static IRaster createMono16Raster( BufferedImage image, int depth )
     {
         int w = image.getWidth();
         int h = image.getHeight();
@@ -192,6 +242,63 @@ public class StandardImageReader implements IRasterAlbumReader
         byte [] imgBytes = buf.getData();
 
         r.setBufferData( imgBytes, ByteOrdering.BIG_ENDIAN );
+
+        return r;
+    }
+
+    /***************************************************************************
+     * @param image
+     * @return
+     **************************************************************************/
+    private static AbgrRaster createAbgrRaster( BufferedImage image )
+    {
+        int w = image.getWidth();
+        int h = image.getHeight();
+
+        AbgrRaster r = new AbgrRaster( w, h );
+
+        DataBufferByte buf = ( DataBufferByte )image.getRaster().getDataBuffer();
+        byte [] buffer = buf.getData();
+
+        r.setBufferData( buffer, ByteOrdering.BIG_ENDIAN );
+
+        return r;
+    }
+
+    /***************************************************************************
+     * @param image
+     * @return
+     **************************************************************************/
+    private static BgrRaster createBgrRaster( BufferedImage image )
+    {
+        int w = image.getWidth();
+        int h = image.getHeight();
+
+        BgrRaster r = new BgrRaster( w, h );
+
+        DataBufferByte buf = ( DataBufferByte )image.getRaster().getDataBuffer();
+        byte [] buffer = buf.getData();
+
+        r.setBufferData( buffer, ByteOrdering.BIG_ENDIAN );
+
+        return r;
+    }
+
+    /***************************************************************************
+     * @param image
+     * @return
+     **************************************************************************/
+    private static ArgbRaster createArgbRaster( BufferedImage image )
+    {
+        int w = image.getWidth();
+        int h = image.getHeight();
+
+        ArgbRaster r = new ArgbRaster( w, h );
+
+        DataBufferByte buf = ( DataBufferByte )image.getRaster().getDataBuffer();
+        byte [] buffer = buf.getData();
+
+        r.setBufferData( buffer, ByteOrdering.BIG_ENDIAN );
 
         return r;
     }

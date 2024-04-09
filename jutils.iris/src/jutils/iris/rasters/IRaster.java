@@ -35,6 +35,13 @@ public interface IRaster
     public long getPixel( int index ) throws ArrayIndexOutOfBoundsException;
 
     /***************************************************************************
+     * @param x the 0-relative column of the pixel.
+     * @param y the 0-relative row of the pixel.
+     * @return
+     **************************************************************************/
+    public int getPixelIndex( int x, int y );
+
+    /***************************************************************************
      * Sets the value of the pixel at the provided index.
      * @param index the index of the pixel to be set.
      * @param value the value of the pixel to be set.

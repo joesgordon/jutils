@@ -1,5 +1,7 @@
 package jutils.iris.data;
 
+import jutils.core.io.BitsReader;
+
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -74,7 +76,14 @@ public class RasterConfig
      **************************************************************************/
     public int getBitsPerPixel()
     {
-        return channels[0].bitDepth * channelCount;
+        int bits = 0;
+
+        for( int i = 0; i < channelCount; i++ )
+        {
+            bits += channels[i].bitDepth;
+        }
+
+        return bits;
     }
 
     /***************************************************************************
@@ -82,7 +91,9 @@ public class RasterConfig
      **************************************************************************/
     public int getMaxPixelValue()
     {
-        return channels[0].getMaxPixelValue();
+        int bits = getBitsPerPixel();
+        int value = ( int )BitsReader.MASKS[bits];
+        return value;
     }
 
     /***************************************************************************

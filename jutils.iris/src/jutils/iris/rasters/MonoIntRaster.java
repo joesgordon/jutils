@@ -49,23 +49,21 @@ public class MonoIntRaster implements IRaster
     }
 
     /***************************************************************************
-     * @param bitDepth
-     **************************************************************************/
-    public void setBitDepth( int bitDepth )
-    {
-        if( bitDepth < 32 )
-        {
-            config.channels[0].bitDepth = bitDepth;
-        }
-    }
-
-    /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
     public RasterConfig getConfig()
     {
         return new RasterConfig( this.config );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getPixelIndex( int x, int y )
+    {
+        return indexer.getIndex( config.width, config.height, x, y );
     }
 
     /***************************************************************************
@@ -83,7 +81,7 @@ public class MonoIntRaster implements IRaster
     @Override
     public void setPixel( int p, long value )
     {
-        this.pixels[p] = ( byte )value;
+        this.pixels[p] = ( int )value;
     }
 
     /***************************************************************************
@@ -92,8 +90,7 @@ public class MonoIntRaster implements IRaster
     @Override
     public long getPixelAt( int x, int y )
     {
-        int index = indexer.getIndex( config.width, config.height, y, x );
-        return getPixel( index );
+        return getPixel( getPixelIndex( x, y ) );
     }
 
     /***************************************************************************
@@ -102,9 +99,7 @@ public class MonoIntRaster implements IRaster
     @Override
     public void setPixelAt( int x, int y, long value )
     {
-        int index = indexer.getIndex( config.width, config.height, y, x );
-
-        setPixel( index, value );
+        setPixel( getPixelIndex( x, y ), value );
     }
 
     /***************************************************************************
@@ -152,19 +147,49 @@ public class MonoIntRaster implements IRaster
         return buffer;
     }
 
+    private static interface IntReader
+    {
+        int read( DataStream s ) throws IOException;
+    }
+
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setBufferData( byte [] pixelData, ByteOrdering order )
+    public void setBufferData( byte [] buffer, ByteOrdering order )
     {
-        Utils.byteArrayCopy( pixelData, 0, this.buffer, 0, this.buffer.length );
+        Utils.byteArrayCopy( buffer, 0, this.buffer, 0, this.buffer.length );
+
+        IntReader reader;
+
+        int size = config.getUnpackedSize();
+
+        switch( size )
+        {
+            case 1:
+                reader = ( s ) -> s.read() & 0xFF;
+                break;
+
+            case 2:
+                reader = ( s ) -> s.readShort() & 0xFFFF;
+                break;
+
+            case 4:
+                reader = ( s ) -> s.readInt();
+                break;
+
+            default:
+                throw new IllegalStateException( String.format(
+                    "Unable to read %d-byte values into 4-byte pixels",
+                    size ) );
+        }
 
         try( ByteArrayStream bas = new ByteArrayStream( buffer, buffer.length,
             0, false ); DataStream stream = new DataStream( bas, order ) )
         {
             for( int i = 0; i < pixels.length; i++ )
             {
+                pixels[i] = reader.read( stream );
             }
         }
         catch( IOException ex )

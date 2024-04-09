@@ -68,7 +68,7 @@ public class ImageView implements IView<JComponent>
 
         constraints = new GridBagConstraints( 0, 0, 2, 1, 1.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 4, 4, 4, 4 ), 0, 0 );
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
         panel.add( pane, constraints );
 
         return panel;

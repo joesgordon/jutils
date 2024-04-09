@@ -1,7 +1,7 @@
 package jutils.iris.rasters;
 
+import jutils.core.Utils;
 import jutils.core.utils.ByteOrdering;
-import jutils.iris.data.BayerOrdering;
 import jutils.iris.data.ChannelPlacement;
 import jutils.iris.data.IPixelIndexer;
 import jutils.iris.data.IndexingType;
@@ -10,75 +10,50 @@ import jutils.iris.data.RasterConfig;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class BayerRaster implements IRaster
+public class BgrRaster implements IRaster
 {
     /**  */
-    public final byte [] pixelData;
-
+    public final byte [] buffer;
     /**  */
     public final int [] pixels;
-
     /**  */
-    private RasterConfig config;
+    private final RasterConfig config;
     /**  */
-    private BayerOrdering bayerOrder;
-    /**  */
-    private IPixelIndexer indexer;
+    public IPixelIndexer indexer;
 
     /***************************************************************************
      * @param width
      * @param height
-     * @param bitDepth
-     * @param bayerOrder
+     * @param depth
      **************************************************************************/
-    public BayerRaster( int width, int height, int bitDepth,
-        BayerOrdering bayerOrder )
+    public BgrRaster( int width, int height )
     {
-        this.config = new RasterConfig();
-        this.bayerOrder = bayerOrder;
+        this.config = createConfig( width, height );
+        this.indexer = IPixelIndexer.createIndexer( config.indexing );
+        this.buffer = new byte[config.getPackedSize()];
+        this.pixels = new int[config.getPixelCount()];
+    }
+
+    /***************************************************************************
+     * @param width
+     * @param height
+     * @return
+     **************************************************************************/
+    public static RasterConfig createConfig( int width, int height )
+    {
+        RasterConfig config = new RasterConfig();
 
         config.width = width;
         config.height = height;
-        config.channelCount = 1;
-        config.packed = false;
+        config.channelCount = 3;
+        config.channels[0].set( 8, "Blue" );
+        config.channels[1].set( 8, "Green" );
+        config.channels[2].set( 8, "Red" );
+        config.packed = true;
         config.indexing = IndexingType.ROW_MAJOR;
         config.channelLoc = ChannelPlacement.INTERLEAVED;
-        this.indexer = IPixelIndexer.createIndexer( config.indexing );
 
-        config.channels[0].bitDepth = bitDepth;
-        config.channels[1].bitDepth = bitDepth;
-        config.channels[2].bitDepth = bitDepth;
-        config.channels[3].bitDepth = bitDepth;
-
-        switch( bayerOrder )
-        {
-            case GBRG:
-                config.channels[0].name = "Green 1";
-                config.channels[1].name = "Blue";
-                config.channels[2].name = "Red";
-                config.channels[3].name = "Green 2";
-
-            case GRBG:
-                config.channels[0].name = "Green 1";
-                config.channels[1].name = "Red";
-                config.channels[2].name = "Blue";
-                config.channels[3].name = "Green 2";
-
-            case RGGB:
-                config.channels[0].name = "Red";
-                config.channels[1].name = "Green 1";
-                config.channels[2].name = "Green 2";
-                config.channels[3].name = "Blue";
-
-            case BGGR:
-                config.channels[0].name = "Blue";
-                config.channels[1].name = "Green 1";
-                config.channels[2].name = "Green 2";
-                config.channels[3].name = "Red";
-        }
-
-        this.pixelData = new byte[config.getPackedSize()];
-        this.pixels = new int[config.getPixelCount()];
+        return config;
     }
 
     /***************************************************************************
@@ -87,7 +62,7 @@ public class BayerRaster implements IRaster
     @Override
     public RasterConfig getConfig()
     {
-        return new RasterConfig( config );
+        return new RasterConfig( this.config );
     }
 
     /***************************************************************************
@@ -105,7 +80,7 @@ public class BayerRaster implements IRaster
     @Override
     public long getPixel( int p )
     {
-        return pixelData[p];
+        return pixels[p] & 0x00000000FFFFFFFFL;
     }
 
     /***************************************************************************
@@ -114,8 +89,7 @@ public class BayerRaster implements IRaster
     @Override
     public void setPixel( int p, long value )
     {
-        // TODO Auto-generated method stub
-
+        this.pixels[p] = ( int )value;
     }
 
     /***************************************************************************
@@ -124,8 +98,7 @@ public class BayerRaster implements IRaster
     @Override
     public long getPixelAt( int x, int y )
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return getPixel( getPixelIndex( x, y ) );
     }
 
     /***************************************************************************
@@ -134,8 +107,7 @@ public class BayerRaster implements IRaster
     @Override
     public void setPixelAt( int x, int y, long value )
     {
-        // TODO Auto-generated method stub
-
+        setPixel( getPixelIndex( x, y ), value );
     }
 
     /***************************************************************************
@@ -144,8 +116,7 @@ public class BayerRaster implements IRaster
     @Override
     public int getChannel( int p, int c )
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return ( int )getPixel( p );
     }
 
     /***************************************************************************
@@ -154,7 +125,7 @@ public class BayerRaster implements IRaster
     @Override
     public void setChannel( int p, int c, int value )
     {
-        // TODO Auto-generated method stub
+        setPixel( p, value );
     }
 
     /***************************************************************************
@@ -163,8 +134,7 @@ public class BayerRaster implements IRaster
     @Override
     public int getChannelAt( int x, int y, int c )
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return ( int )getPixelAt( x, y );
     }
 
     /***************************************************************************
@@ -173,7 +143,7 @@ public class BayerRaster implements IRaster
     @Override
     public void setChannelAt( int x, int y, int c, int value )
     {
-        // TODO Auto-generated method stub
+        setPixelAt( x, y, value );
     }
 
     /***************************************************************************
@@ -182,8 +152,7 @@ public class BayerRaster implements IRaster
     @Override
     public byte [] getBufferData()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return buffer;
     }
 
     /***************************************************************************
@@ -192,5 +161,17 @@ public class BayerRaster implements IRaster
     @Override
     public void setBufferData( byte [] buffer, ByteOrdering order )
     {
+        Utils.byteArrayCopy( buffer, 0, this.buffer, 0, this.buffer.length );
+
+        for( int i = 0; i < pixels.length; i++ )
+        {
+            int bi = i * 3;
+
+            int b = buffer[bi] & 0xFF;
+            int g = buffer[bi + 1] & 0xFF;
+            int r = buffer[bi + 2] & 0xFF;
+
+            pixels[i] = ( b << 16 ) | ( g << 8 ) | r;
+        }
     }
 }
