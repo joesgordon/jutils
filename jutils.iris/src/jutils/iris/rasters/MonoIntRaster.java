@@ -162,7 +162,7 @@ public class MonoIntRaster implements IRaster
 
         IntReader reader;
 
-        int size = config.getUnpackedSize();
+        int size = config.getBytesPerPixel();
 
         switch( size )
         {

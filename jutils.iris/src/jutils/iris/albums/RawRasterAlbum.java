@@ -64,7 +64,7 @@ public class RawRasterAlbum implements IRasterAlbum
         this.raster = createRaster( config );
         this.name = name;
         this.stream = stream;
-        this.rasterSize = config.width * config.height * config.bitDepth;
+        this.rasterSize = config.getImageSize();
         this.frameSize = rasterSize + config.imageHeaderLen;
 
         int frameCount = ( int )( ( stream.getLength() -

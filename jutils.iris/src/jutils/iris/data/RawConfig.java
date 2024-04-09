@@ -68,10 +68,10 @@ public class RawConfig
     {
         if( packed )
         {
-            return width * height * ( ( getPixelSize() + 7 ) / 8 );
+            return ( width * height * getPixelSize() + 7 ) / 8;
         }
 
-        return ( width * height * getPixelSize() + 7 ) / 8;
+        return width * height * ( ( getPixelSize() + 7 ) / 8 );
     }
 
     /***************************************************************************
