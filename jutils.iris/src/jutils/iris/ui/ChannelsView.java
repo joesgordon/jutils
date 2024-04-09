@@ -164,7 +164,7 @@ public class ChannelsView implements IView<JComponent>
 
             for( int c = 0; c < raster.getConfig().channelCount; c++ )
             {
-                int v = raster.getChannel( row, col, c );
+                int v = raster.getChannelAt( row, col, c );
 
                 if( c > 0 )
                 {

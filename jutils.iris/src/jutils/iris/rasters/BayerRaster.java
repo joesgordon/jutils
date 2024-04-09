@@ -113,7 +113,7 @@ public class BayerRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public long getPixel( int x, int y )
+    public long getPixelAt( int x, int y )
     {
         // TODO Auto-generated method stub
         return 0;
@@ -123,7 +123,7 @@ public class BayerRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setPixel( int x, int y, long value )
+    public void setPixelAt( int x, int y, long value )
     {
         // TODO Auto-generated method stub
 
@@ -146,14 +146,13 @@ public class BayerRaster implements IRaster
     public void setChannel( int p, int c, int value )
     {
         // TODO Auto-generated method stub
-
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int getChannel( int x, int y, int c )
+    public int getChannelAt( int x, int y, int c )
     {
         // TODO Auto-generated method stub
         return 0;
@@ -163,7 +162,7 @@ public class BayerRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setChannel( int x, int y, int c, int value )
+    public void setChannelAt( int x, int y, int c, int value )
     {
         // TODO Auto-generated method stub
     }
@@ -172,7 +171,7 @@ public class BayerRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public byte [] getPixelData()
+    public byte [] getBufferData()
     {
         // TODO Auto-generated method stub
         return null;
@@ -182,15 +181,7 @@ public class BayerRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setPixelData( byte [] pixels )
-    {
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void readPixels( ByteOrdering order )
+    public void setBufferData( byte [] pixels, ByteOrdering order )
     {
     }
 }

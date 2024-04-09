@@ -1,4 +1,4 @@
-package jutils.iris.data;
+package jutils.iris.albums;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +9,8 @@ import jutils.core.io.FileStream;
 import jutils.core.io.IDataStream;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.colors.MonoColorizer;
+import jutils.iris.data.BayerOrdering;
+import jutils.iris.data.RawConfig;
 import jutils.iris.rasters.BayerRaster;
 import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
@@ -150,8 +152,7 @@ public class RawRasterAlbum implements IRasterAlbum
             throw new RuntimeException( "Unable to read image", ex );
         }
 
-        raster.setPixelData( pixels );
-        raster.readPixels( config.endianness );
+        raster.setBufferData( pixels, config.endianness );
 
         return raster;
     }

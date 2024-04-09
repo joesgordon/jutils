@@ -1,6 +1,10 @@
 package jutils.iris.rasters;
 
+import java.io.IOException;
+
 import jutils.core.Utils;
+import jutils.core.io.ByteArrayStream;
+import jutils.core.io.DataStream;
 import jutils.core.utils.ByteOrdering;
 import jutils.iris.data.ChannelPlacement;
 import jutils.iris.data.IPixelIndexer;
@@ -13,7 +17,7 @@ import jutils.iris.data.RasterConfig;
 public class MonoIntRaster implements IRaster
 {
     /**  */
-    public final byte [] pixelData;
+    public final byte [] buffer;
     /**  */
     public final int [] pixels;
     /**  */
@@ -40,7 +44,7 @@ public class MonoIntRaster implements IRaster
         config.channelLoc = ChannelPlacement.INTERLEAVED;
         this.indexer = IPixelIndexer.createIndexer( config.indexing );
 
-        this.pixelData = new byte[config.getUnpackedSize()];
+        this.buffer = new byte[config.getUnpackedSize()];
         this.pixels = new int[config.getPixelCount()];
     }
 
@@ -86,7 +90,7 @@ public class MonoIntRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public long getPixel( int x, int y )
+    public long getPixelAt( int x, int y )
     {
         int index = indexer.getIndex( config.width, config.height, y, x );
         return getPixel( index );
@@ -96,7 +100,7 @@ public class MonoIntRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setPixel( int x, int y, long value )
+    public void setPixelAt( int x, int y, long value )
     {
         int index = indexer.getIndex( config.width, config.height, y, x );
 
@@ -125,45 +129,51 @@ public class MonoIntRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int getChannel( int x, int y, int c )
+    public int getChannelAt( int x, int y, int c )
     {
-        return ( int )getPixel( x, y );
+        return ( int )getPixelAt( x, y );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setChannel( int x, int y, int c, int value )
+    public void setChannelAt( int x, int y, int c, int value )
     {
-        setPixel( x, y, value );
+        setPixelAt( x, y, value );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public byte [] getPixelData()
+    public byte [] getBufferData()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return buffer;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setPixelData( byte [] pixelData )
+    public void setBufferData( byte [] pixelData, ByteOrdering order )
     {
-        Utils.byteArrayCopy( pixelData, 0, this.pixelData, 0,
-            this.pixelData.length );
-    }
+        Utils.byteArrayCopy( pixelData, 0, this.buffer, 0, this.buffer.length );
 
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void readPixels( ByteOrdering order )
-    {
+        try( ByteArrayStream bas = new ByteArrayStream( buffer, buffer.length,
+            0, false ); DataStream stream = new DataStream( bas, order ) )
+        {
+            for( int i = 0; i < pixels.length; i++ )
+            {
+            }
+        }
+        catch( IOException ex )
+        {
+            String err = String.format(
+                "Unable to read %d pixels from %d bytes", pixels.length,
+                buffer.length );
+
+            throw new RuntimeException( err, ex );
+        }
     }
 }

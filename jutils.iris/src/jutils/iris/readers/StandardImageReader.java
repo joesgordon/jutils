@@ -15,9 +15,10 @@ import javax.imageio.ImageIO;
 import jutils.core.OptionUtils;
 import jutils.core.io.IOUtils;
 import jutils.core.io.LogUtils;
+import jutils.core.utils.ByteOrdering;
+import jutils.iris.albums.IRasterAlbum;
+import jutils.iris.albums.RasterListAlbum;
 import jutils.iris.colors.MonoColorizer;
-import jutils.iris.data.IRasterAlbum;
-import jutils.iris.data.RasterListAlbum;
 import jutils.iris.io.IRasterAlbumReader;
 import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
@@ -190,7 +191,7 @@ public class StandardImageReader implements IRasterAlbumReader
         DataBufferByte buf = ( DataBufferByte )image.getRaster().getDataBuffer();
         byte [] imgBytes = buf.getData();
 
-        r.setPixelData( imgBytes );
+        r.setBufferData( imgBytes, ByteOrdering.BIG_ENDIAN );
 
         return r;
     }

@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.IOException;
 
 import jutils.core.OptionUtils;
-import jutils.iris.data.IRasterAlbum;
+import jutils.iris.albums.IRasterAlbum;
+import jutils.iris.albums.RawRasterAlbum;
 import jutils.iris.data.RawConfig;
-import jutils.iris.data.RawRasterAlbum;
 import jutils.iris.io.IRasterAlbumReader;
 import jutils.iris.ui.RawImportView;
 

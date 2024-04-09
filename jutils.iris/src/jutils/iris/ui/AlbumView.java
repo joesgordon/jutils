@@ -10,7 +10,7 @@ import jutils.core.ui.PositionIndicator;
 import jutils.core.ui.hex.ByteBuffer;
 import jutils.core.ui.hex.HexPanel;
 import jutils.core.ui.model.IView;
-import jutils.iris.data.IRasterAlbum;
+import jutils.iris.albums.IRasterAlbum;
 import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
@@ -111,7 +111,7 @@ public class AlbumView implements IView<JComponent>
         imgView.setRaster( raster, album.getColorizer() );
         pixelsView.setRaster( imgView.getImage() );
         rawPixelView.setRaster( raster );
-        bufferView.setBuffer( new ByteBuffer( raster.getPixelData() ) );
+        bufferView.setBuffer( new ByteBuffer( raster.getBufferData() ) );
     }
 
     /***************************************************************************

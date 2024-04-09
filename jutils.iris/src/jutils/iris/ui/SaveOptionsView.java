@@ -21,7 +21,7 @@ import jutils.core.ui.fields.FileFormField;
 import jutils.core.ui.fields.IntegerFormField;
 import jutils.core.ui.fields.NamedItemDescriptor;
 import jutils.core.ui.model.IDataView;
-import jutils.iris.data.IRasterAlbum;
+import jutils.iris.albums.IRasterAlbum;
 import jutils.iris.data.SaveFormat;
 import jutils.iris.data.SaveOptions;
 

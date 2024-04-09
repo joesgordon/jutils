@@ -73,12 +73,12 @@ public class HoverView implements IView<JComponent>
 
         constraints = new GridBagConstraints( 0, row++, 1, 1, 0.0, 0.0,
             GridBagConstraints.NORTH, GridBagConstraints.NONE,
-            new Insets( 0, 10, 0, 0 ), 0, 0 );
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
         panel.add( hoverView, constraints );
 
         constraints = new GridBagConstraints( 0, row++, 1, 1, 0.0, 0.0,
             GridBagConstraints.NORTH, GridBagConstraints.NONE,
-            new Insets( 0, 10, 0, 0 ), 0, 0 );
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
         panel.add( hoverLabel, constraints );
 
         return panel;
@@ -203,7 +203,7 @@ public class HoverView implements IView<JComponent>
             }
         }
 
-        long px = rimage.getRaster().getPixel( x, y );
+        long px = rimage.getRaster().getPixelAt( x, y );
         hoverLabel.setText( x + ", " + y + " = " + px );
         hoverView.repaint();
     }

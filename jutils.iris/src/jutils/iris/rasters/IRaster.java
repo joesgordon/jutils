@@ -19,81 +19,125 @@ public interface IRaster
     public static final long PIXEL_MISSING = CHANNEL_MISSING;
 
     /***************************************************************************
+     * Gets a copy of the configuration that this raster was created with.
      * @return a copy of the image configuration.
      **************************************************************************/
     public RasterConfig getConfig();
 
     /***************************************************************************
-     * @param p
+     * Gets the value of the pixel at the provided index.
+     * @param index the index of the pixel.
+     * @return the value of the pixel.
+     * @throws ArrayIndexOutOfBoundsException if the index < 0 or greater than
+     * the number of pixels minus 1.
+     * @see IRaster#getPixelCount()
+     **************************************************************************/
+    public long getPixel( int index ) throws ArrayIndexOutOfBoundsException;
+
+    /***************************************************************************
+     * Sets the value of the pixel at the provided index.
+     * @param index the index of the pixel to be set.
+     * @param value the value of the pixel to be set.
+     **************************************************************************/
+    public void setPixel( int index, long value );
+
+    /***************************************************************************
+     * Gets the value of the pixel at the provided coordinate
+     * @param x the 0-relative column of the pixel.
+     * @param y the 0-relative row of the pixel.
+     * @return the value of the pixel.
+     **************************************************************************/
+    public long getPixelAt( int x, int y );
+
+    /***************************************************************************
+     * Sets the value of the pixel at the provided coordinate.
+     * @param x the 0-relative column of the pixel.
+     * @param y the 0-relative row of the pixel.
+     * @param value the value of the pixel to be set.
+     **************************************************************************/
+    public void setPixelAt( int x, int y, long value );
+
+    /***************************************************************************
+     * Gets the value of the channel at the provided pixel and channel indexes.
+     * @param pixelIndex the index of the pixel.
+     * @param channelIndex the index of the channel.
+     * @return the value of the channel.
+     **************************************************************************/
+    public int getChannel( int pixelIndex, int channelIndex );
+
+    /***************************************************************************
+     * Sets the value of the channel at the provided pixel and channel indexes.
+     * @param pixelIndex the index of the pixel.
+     * @param channelIndex the index of the channel.
+     * @param value the value of the channel.
+     **************************************************************************/
+    public void setChannel( int pixelIndex, int channelIndex, int value );
+
+    /***************************************************************************
+     * Gets the value of the channel at the provided coordinates and channel
+     * index.
+     * @param x the 0-relative column of the pixel.
+     * @param y the 0-relative row of the pixel.
+     * @param channelIndex the index of the channel.
+     * @return the value of the channel.
+     **************************************************************************/
+    public int getChannelAt( int x, int y, int channelIndex );
+
+    /***************************************************************************
+     * Sets the value of the channel at the provided coordinates and channel
+     * index.
+     * @param x the 0-relative column of the pixel.
+     * @param y the 0-relative row of the pixel.
+     * @param channelIndex the index of the channel.
+     * @param value the value of the channel.
+     **************************************************************************/
+    public void setChannelAt( int x, int y, int channelIndex, int value );
+
+    /***************************************************************************
+     * Returns the raw buffer of bytes that represents this image.
+     * @return the raw image buffer.
+     **************************************************************************/
+    public byte [] getBufferData();
+
+    /***************************************************************************
+     * Sets the raw buffer of bytes that represents this image.
+     * @param buffer the raw image buffer.
+     * @param order the byte order of the pixels in the buffer.
+     **************************************************************************/
+    public void setBufferData( byte [] buffer, ByteOrdering order );
+
+    /***************************************************************************
+     * Gets the number of pixels in this image.
+     * @return the number of pixels in this image.
+     **************************************************************************/
+    public default int getPixelCount()
+    {
+        return getConfig().getPixelCount();
+    }
+
+    /***************************************************************************
      * @return
      **************************************************************************/
-    public long getPixel( int p );
-
-    /***************************************************************************
-     * @param p
-     * @param value
-     **************************************************************************/
-    public void setPixel( int p, long value );
-
-    /***************************************************************************
-     * @param x
-     * @param y
-     * @return
-     **************************************************************************/
-    public long getPixel( int x, int y );
-
-    /***************************************************************************
-     * @param x
-     * @param y
-     * @param value
-     **************************************************************************/
-    public void setPixel( int x, int y, long value );
-
-    /***************************************************************************
-     * @param p
-     * @param c
-     * @return
-     **************************************************************************/
-    public int getChannel( int p, int c );
-
-    /***************************************************************************
-     * @param p
-     * @param c
-     * @param value
-     **************************************************************************/
-    public void setChannel( int p, int c, int value );
-
-    /***************************************************************************
-     * @param x
-     * @param y
-     * @param c
-     * @return
-     **************************************************************************/
-    public int getChannel( int x, int y, int c );
-
-    /***************************************************************************
-     * @param x
-     * @param y
-     * @param c
-     * @param value
-     **************************************************************************/
-    public void setChannel( int x, int y, int c, int value );
+    public default int getChannelCount()
+    {
+        return getConfig().channelCount;
+    }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public byte [] getPixelData();
+    public default int getWidth()
+    {
+        return getConfig().width;
+    }
 
     /***************************************************************************
-     * @param pixels
+     * @return
      **************************************************************************/
-    public void setPixelData( byte [] pixels );
-
-    /***************************************************************************
-     * @param pixels
-     * @param order
-     **************************************************************************/
-    public void readPixels( ByteOrdering order );
+    public default int getHeight()
+    {
+        return getConfig().height;
+    }
 
     /***************************************************************************
      * @param pixels
@@ -162,21 +206,5 @@ public interface IRaster
             throw new IllegalArgumentException(
                 "Unable to copy bytes into raster", ex );
         }
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public default int getWidth()
-    {
-        return getConfig().width;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public default int getHeight()
-    {
-        return getConfig().height;
     }
 }

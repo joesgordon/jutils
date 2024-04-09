@@ -7,13 +7,12 @@ import jutils.iris.data.IPixelIndexer;
 import jutils.iris.data.IndexingType;
 import jutils.iris.data.RasterConfig;
 
-/*******************************************************************************
- * 
- ******************************************************************************/
-public class Mono8Raster implements IRaster
+public class AbgrRaster implements IRaster
 {
     /**  */
     public final byte [] pixelData;
+    /**  */
+    public final int [] pixels;
     /**  */
     private final RasterConfig config;
     /**  */
@@ -22,22 +21,35 @@ public class Mono8Raster implements IRaster
     /***************************************************************************
      * @param width
      * @param height
+     * @param depth
      **************************************************************************/
-    public Mono8Raster( int width, int height )
+    public AbgrRaster( int width, int height, int depth )
     {
         this.config = new RasterConfig();
 
         config.width = width;
         config.height = height;
         config.channelCount = 1;
-        config.channels[0].name = "Mono8";
-        config.channels[0].bitDepth = 8;
+        config.channels[0].name = "Mono";
+        config.channels[0].bitDepth = depth;
         config.packed = false;
         config.indexing = IndexingType.ROW_MAJOR;
         config.channelLoc = ChannelPlacement.INTERLEAVED;
         this.indexer = IPixelIndexer.createIndexer( config.indexing );
 
         this.pixelData = new byte[config.getUnpackedSize()];
+        this.pixels = new int[config.getPixelCount()];
+    }
+
+    /***************************************************************************
+     * @param bitDepth
+     **************************************************************************/
+    public void setBitDepth( int bitDepth )
+    {
+        if( bitDepth < 32 )
+        {
+            config.channels[0].bitDepth = bitDepth;
+        }
     }
 
     /***************************************************************************
@@ -55,7 +67,7 @@ public class Mono8Raster implements IRaster
     @Override
     public long getPixel( int p )
     {
-        return pixelData[p] & 0xFFL;
+        return pixels[p] & 0xFFFFFFFFL;
     }
 
     /***************************************************************************
@@ -64,7 +76,7 @@ public class Mono8Raster implements IRaster
     @Override
     public void setPixel( int p, long value )
     {
-        this.pixelData[p] = ( byte )value;
+        this.pixels[p] = ( byte )value;
     }
 
     /***************************************************************************
@@ -130,7 +142,8 @@ public class Mono8Raster implements IRaster
     @Override
     public byte [] getBufferData()
     {
-        return this.pixelData;
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /***************************************************************************

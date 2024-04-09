@@ -1,4 +1,4 @@
-package jutils.iris.data;
+package jutils.iris.albums;
 
 import java.util.ArrayList;
 import java.util.List;

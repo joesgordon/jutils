@@ -2,6 +2,7 @@ package jutils.iris.ui;
 
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -22,14 +23,17 @@ import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.event.FileChooserListener;
 import jutils.core.ui.event.FileChooserListener.IFileSelected;
 import jutils.core.ui.event.FileChooserListener.ILastFile;
+import jutils.core.ui.event.FileDropTarget;
+import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.model.IView;
 import jutils.iris.IrisIcons;
 import jutils.iris.IrisMain;
 import jutils.iris.IrisUserData;
 import jutils.iris.IrisUtils;
+import jutils.iris.albums.RasterListAlbum;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.colors.MonoColorizer;
-import jutils.iris.data.RasterListAlbum;
 import jutils.iris.io.IRasterAlbumReader;
 import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
@@ -69,6 +73,13 @@ public class IrisFrame implements IView<JFrame>
         frameView.getView().setIconImages( IrisIcons.getAppImages() );
 
         createMenus( frameView.getMenuBar(), frameView.getFileMenu() );
+
+        viewer.getView().setDropTarget(
+            new FileDropTarget( ( ie ) -> handleFileDropped( ie ) ) );
+
+        recentOpenedFiles.setListeners( ( f, c ) -> handleOpenFile( f ) );
+        recentOpenedFiles.setData(
+            IrisMain.getOptions().getOptions().lastOpenedFiles.toList() );
     }
 
     /***************************************************************************
@@ -207,6 +218,22 @@ public class IrisFrame implements IView<JFrame>
     }
 
     /***************************************************************************
+     * @param ie
+     **************************************************************************/
+    private void handleFileDropped( ItemActionEvent<IFileDropEvent> ie )
+    {
+        IFileDropEvent fde = ie.getItem();
+        List<File> files = fde.getFiles();
+
+        if( files.size() == 1 )
+        {
+            File file = files.get( 0 );
+
+            handleOpenFile( file );
+        }
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     private void handleDiagonalGradient()
@@ -256,6 +283,7 @@ public class IrisFrame implements IView<JFrame>
 
         options.lastOpenedFiles.push( file );
         optionsSerializer.write( options );
+        recentOpenedFiles.setData( options.lastOpenedFiles.toList() );
 
         viewer.openFile( file );
     }

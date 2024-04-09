@@ -60,7 +60,7 @@ public final class IrisUtils
 
                 for( int c = 0; c < cc; c++ )
                 {
-                    r.setChannel( x, y, c, v );
+                    r.setChannelAt( x, y, c, v );
                 }
             }
         }
@@ -119,7 +119,7 @@ public final class IrisUtils
 
                 maxt = Math.max( maxt, t );
 
-                raster.setPixel( c, r, t );
+                raster.setPixelAt( c, r, t );
             }
         }
 

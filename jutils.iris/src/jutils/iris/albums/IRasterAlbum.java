@@ -1,4 +1,4 @@
-package jutils.iris.data;
+package jutils.iris.albums;
 
 import jutils.iris.colors.IColorizer;
 import jutils.iris.rasters.IRaster;

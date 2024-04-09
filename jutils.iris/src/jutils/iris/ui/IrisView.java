@@ -6,15 +6,11 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import jutils.core.io.LogUtils;
-import jutils.core.ui.event.FileDropTarget;
-import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
-import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.model.IView;
 import jutils.iris.IrisUtils;
+import jutils.iris.albums.IRasterAlbum;
+import jutils.iris.albums.RasterListAlbum;
 import jutils.iris.colors.MonoColorizer;
-import jutils.iris.data.IRasterAlbum;
-import jutils.iris.data.RasterListAlbum;
 import jutils.iris.io.IRasterAlbumReader;
 import jutils.iris.rasters.Mono8Raster;
 import jutils.iris.readers.RawImageReader;
@@ -46,8 +42,6 @@ public class IrisView implements IView<JComponent>
 
         imgsView.hashCode();
 
-        view.setDropTarget( new FileDropTarget( ( ie ) -> fileDropped( ie ) ) );
-
         readers.add( new StandardImageReader() );
         readers.add( new RawImageReader() );
 
@@ -63,22 +57,6 @@ public class IrisView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param ie
-     **************************************************************************/
-    private void fileDropped( ItemActionEvent<IFileDropEvent> ie )
-    {
-        IFileDropEvent fde = ie.getItem();
-        List<File> files = fde.getFiles();
-
-        if( files.size() == 1 )
-        {
-            File file = files.get( 0 );
-
-            openFile( file );
-        }
-    }
-
-    /***************************************************************************
      * @return
      **************************************************************************/
     private JComponent createView()
@@ -91,8 +69,6 @@ public class IrisView implements IView<JComponent>
      **************************************************************************/
     public void openFile( File file )
     {
-        LogUtils.printDebug( "opening file %s", file );
-
         IRasterAlbumReader fileReader = null;
 
         for( IRasterAlbumReader reader : readers )

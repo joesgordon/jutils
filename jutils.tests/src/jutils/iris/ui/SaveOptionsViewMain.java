@@ -1,8 +1,8 @@
 package jutils.iris.ui;
 
 import jutils.core.ui.app.AppRunner;
-import jutils.iris.data.IRasterAlbum;
-import jutils.iris.data.RasterListAlbum;
+import jutils.iris.albums.IRasterAlbum;
+import jutils.iris.albums.RasterListAlbum;
 
 /*******************************************************************************
  * 

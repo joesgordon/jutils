@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.io.File;
 
 import jutils.core.INamedItem;
-import jutils.iris.data.IRasterAlbum;
+import jutils.iris.albums.IRasterAlbum;
 
 /*******************************************************************************
  * 
