@@ -17,7 +17,6 @@ import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
-import jutils.core.io.options.OptionsSerializer;
 import jutils.core.ui.RecentFilesViews;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.event.ActionAdapter;
@@ -29,8 +28,7 @@ import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.model.IView;
 import jutils.iris.IrisIcons;
-import jutils.iris.IrisMain;
-import jutils.iris.IrisUserData;
+import jutils.iris.IrisOptions;
 import jutils.iris.IrisUtils;
 import jutils.iris.albums.RasterListAlbum;
 import jutils.iris.colors.IColorizer;
@@ -80,7 +78,7 @@ public class IrisFrame implements IView<JFrame>
 
         recentOpenedFiles.setListeners( ( f, c ) -> handleOpenFile( f ) );
         recentOpenedFiles.setData(
-            IrisMain.getOptions().getOptions().lastOpenedFiles.toList() );
+            IrisOptions.getOptions().lastOpenedFiles.toList() );
     }
 
     /***************************************************************************
@@ -146,7 +144,7 @@ public class IrisFrame implements IView<JFrame>
     private ActionListener createOpenActionListener()
     {
         IFileSelected fileSelected = ( f ) -> handleOpenFile( f );
-        ILastFile lastFile = () -> IrisMain.getOptions().getOptions().getLastOpenedFile();
+        ILastFile lastFile = () -> IrisOptions.getOptions().getLastOpenedFile();
         FileChooserListener listener = new FileChooserListener(
             frameView.getView(), "Open Image", false, fileSelected, lastFile );
 
@@ -167,7 +165,7 @@ public class IrisFrame implements IView<JFrame>
     private Action createSaveAction()
     {
         IFileSelected ifs = ( f ) -> handleSaveFile( f );
-        ILastFile ilf = () -> IrisMain.getOptions().getOptions().getLastSavedFile();
+        ILastFile ilf = () -> IrisOptions.getOptions().getLastSavedFile();
         FileChooserListener chooserListener = new FileChooserListener(
             frameView.getView(), "Save Images", true, ifs, ilf );
 
@@ -288,11 +286,10 @@ public class IrisFrame implements IView<JFrame>
      **************************************************************************/
     private void handleOpenFile( File file )
     {
-        OptionsSerializer<IrisUserData> optionsSerializer = IrisMain.getOptions();
-        IrisUserData options = optionsSerializer.getOptions();
+        IrisOptions options = IrisOptions.getOptions();
 
         options.lastOpenedFiles.push( file );
-        optionsSerializer.write( options );
+        IrisOptions.setOptions( options );
         recentOpenedFiles.setData( options.lastOpenedFiles.toList() );
 
         viewer.openFile( file );

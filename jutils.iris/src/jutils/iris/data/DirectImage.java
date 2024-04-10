@@ -33,6 +33,8 @@ public class DirectImage implements IPaintable
 
     /**  */
     private ZoomLevel zoom;
+    /**  */
+    private double zoomScale;
 
     /***************************************************************************
      * @param width
@@ -45,7 +47,8 @@ public class DirectImage implements IPaintable
         this.pixels = new int[width * height];
         this.image = createImage();
 
-        this.zoom = ZoomLevel.ZOOM01;
+        this.zoom = ZoomLevel.FIT;
+        this.zoomScale = 0.0;
 
     }
 
@@ -96,6 +99,8 @@ public class DirectImage implements IPaintable
         {
             scale = zoom.value;
         }
+
+        zoomScale = scale;
 
         double reScale = 1.0 / scale;
 
@@ -152,6 +157,14 @@ public class DirectImage implements IPaintable
     public ZoomLevel getZoom()
     {
         return zoom;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public double getZoomScale()
+    {
+        return zoomScale;
     }
 
     /***************************************************************************

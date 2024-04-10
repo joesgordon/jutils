@@ -1,9 +1,11 @@
 package jutils.iris;
 
 import java.awt.Color;
+import java.io.File;
 
 import jutils.core.data.IBitField;
 import jutils.core.io.BitsReader;
+import jutils.core.io.IOUtils;
 import jutils.iris.data.RasterConfig;
 import jutils.iris.rasters.IRaster;
 import jutils.math.MathUtils;
@@ -13,6 +15,10 @@ import jutils.math.MathUtils;
  ******************************************************************************/
 public final class IrisUtils
 {
+    /**  */
+    public static final File USER_OPTIONS_FILE = IOUtils.getUsersFile(
+        ".jutils", "iris", "options.xml" );
+
     /**  */
     public static final Color LIGHT_CHECKER = new Color( 0xCCCCCC );
     /**  */

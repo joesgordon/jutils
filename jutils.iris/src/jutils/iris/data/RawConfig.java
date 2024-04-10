@@ -45,6 +45,22 @@ public class RawConfig
     }
 
     /***************************************************************************
+     * @param config
+     **************************************************************************/
+    public void set( RawConfig config )
+    {
+        this.fileHeaderLen = config.fileHeaderLen;
+        this.imageHeaderLen = config.imageHeaderLen;
+        this.endianness = config.endianness;
+        this.imageCount.set( config.imageCount );
+        this.width = config.width;
+        this.height = config.height;
+        this.bitDepth = config.bitDepth;
+        this.packed = config.packed;
+        this.format = config.format;
+    }
+
+    /***************************************************************************
      * @param index
      * @return
      **************************************************************************/

@@ -91,6 +91,10 @@ public class RasterView implements IView<JComponent>
 
         if( zoom == ZoomLevel.FIT )
         {
+            double zoomScale = image.getImage().getZoomScale();
+
+            px.x = ( int )( p.x / zoomScale );
+            px.y = ( int )( p.y / zoomScale );
         }
         else
         {
