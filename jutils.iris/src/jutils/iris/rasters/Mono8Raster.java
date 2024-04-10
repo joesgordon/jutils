@@ -70,7 +70,7 @@ public class Mono8Raster implements IRaster
         }
         catch( ArrayIndexOutOfBoundsException ex )
         {
-            RasterConfig c = getConfig();
+            RasterConfig c = config;
 
             String err = String.format(
                 "Unable to access pixel @ %d in image of %d x %d = %d pixels",
@@ -100,7 +100,7 @@ public class Mono8Raster implements IRaster
         }
         catch( IllegalStateException ex )
         {
-            RasterConfig c = getConfig();
+            RasterConfig c = config;
 
             String err = String.format(
                 "Unable to access pixel @ %d,%d in image of %d x %d = %d pixels",

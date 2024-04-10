@@ -164,7 +164,7 @@ public class ChannelsView implements IView<JComponent>
 
             for( int c = 0; c < raster.getConfig().channelCount; c++ )
             {
-                int v = raster.getChannelAt( row, col, c );
+                int v = raster.getChannelAt( col, row, c );
 
                 if( c > 0 )
                 {
@@ -177,11 +177,17 @@ public class ChannelsView implements IView<JComponent>
             return s;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void setValue( Object value, int row, int col )
         {
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean isCellEditable( int row, int col )
         {

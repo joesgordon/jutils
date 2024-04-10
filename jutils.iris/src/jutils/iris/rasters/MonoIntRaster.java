@@ -147,8 +147,16 @@ public class MonoIntRaster implements IRaster
         return buffer;
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private static interface IntReader
     {
+        /**
+         * @param s
+         * @return
+         * @throws IOException
+         */
         int read( DataStream s ) throws IOException;
     }
 

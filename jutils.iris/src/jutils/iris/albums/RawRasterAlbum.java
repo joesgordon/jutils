@@ -7,10 +7,12 @@ import java.io.IOException;
 import jutils.core.io.DataStream;
 import jutils.core.io.FileStream;
 import jutils.core.io.IDataStream;
+import jutils.iris.colors.BayerColorizer;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.colors.MonoColorizer;
 import jutils.iris.data.BayerOrdering;
 import jutils.iris.data.RawConfig;
+import jutils.iris.rasters.ArgbRaster;
 import jutils.iris.rasters.BayerRaster;
 import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
@@ -91,27 +93,27 @@ public class RawRasterAlbum implements IRasterAlbum
                     : new MonoIntRaster( config.width, config.height,
                         config.bitDepth );
 
-            case ARGB:
-                break;
-
-            case BAYER_BGGR:
+            case BAYER_GRBG:
                 return new BayerRaster( config.width, config.height,
-                    config.bitDepth, BayerOrdering.BGGR );
+                    config.bitDepth );
 
             case BAYER_GBRG:
                 return new BayerRaster( config.width, config.height,
-                    config.bitDepth, BayerOrdering.GBRG );
-
-            case BAYER_GRBG:
-                return new BayerRaster( config.width, config.height,
-                    config.bitDepth, BayerOrdering.GRBG );
+                    config.bitDepth );
 
             case BAYER_RGGB:
                 return new BayerRaster( config.width, config.height,
-                    config.bitDepth, BayerOrdering.RGGB );
+                    config.bitDepth );
+
+            case BAYER_BGGR:
+                return new BayerRaster( config.width, config.height,
+                    config.bitDepth );
 
             case RGB:
                 break;
+
+            case ARGB:
+                return new ArgbRaster( config.width, config.height );
 
             case YCBCR:
                 break;
@@ -172,16 +174,16 @@ public class RawRasterAlbum implements IRasterAlbum
                 break;
 
             case BAYER_BGGR:
-                break;
+                return new BayerColorizer( BayerOrdering.BGGR );
 
             case BAYER_GBRG:
-                break;
+                return new BayerColorizer( BayerOrdering.GBRG );
 
             case BAYER_GRBG:
-                break;
+                return new BayerColorizer( BayerOrdering.GRBG );
 
             case BAYER_RGGB:
-                break;
+                return new BayerColorizer( BayerOrdering.RGGB );
 
             case RGB:
                 break;

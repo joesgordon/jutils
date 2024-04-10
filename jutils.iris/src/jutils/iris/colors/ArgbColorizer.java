@@ -7,9 +7,9 @@ import jutils.iris.rasters.IRaster;
  ******************************************************************************/
 public class ArgbColorizer implements IColorizer
 {
-    /**
+    /***************************************************************************
      * {@inheritDoc}
-     */
+     **************************************************************************/
     @Override
     public void colorize( IRaster raster, int [] pixels )
     {

@@ -10,13 +10,13 @@ public enum PixelFormat implements INamedValue
     /**  */
     MONOCHROME( 0, "Monochrome", 1 ),
     /**  */
-    BAYER_GRBG( 1, "Bayer GRBG", 4 ),
+    BAYER_GRBG( 1, "Bayer GRBG", 1 ),
     /**  */
-    BAYER_GBRG( 2, "Bayer GBRG", 4 ),
+    BAYER_GBRG( 2, "Bayer GBRG", 1 ),
     /**  */
-    BAYER_RGGB( 3, "Bayer RGGB", 4 ),
+    BAYER_RGGB( 3, "Bayer RGGB", 1 ),
     /**  */
-    BAYER_BGGR( 4, "Bayer BGGR", 4 ),
+    BAYER_BGGR( 4, "Bayer BGGR", 1 ),
     /**  */
     RGB( 5, "RGB", 3 ),
     /**  */
