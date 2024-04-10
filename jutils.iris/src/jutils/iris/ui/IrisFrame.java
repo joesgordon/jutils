@@ -2,6 +2,7 @@ package jutils.iris.ui;
 
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.Action;
@@ -17,6 +18,8 @@ import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
+import jutils.core.io.ByteArrayStream;
+import jutils.core.io.DataStream;
 import jutils.core.ui.RecentFilesViews;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.event.ActionAdapter;
@@ -27,13 +30,17 @@ import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.model.IView;
+import jutils.core.utils.ByteOrdering;
 import jutils.iris.IrisIcons;
 import jutils.iris.IrisOptions;
 import jutils.iris.IrisUtils;
 import jutils.iris.albums.RasterListAlbum;
+import jutils.iris.colors.BayerColorizer;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.colors.MonoColorizer;
+import jutils.iris.data.BayerOrder;
 import jutils.iris.io.IRasterAlbumReader;
+import jutils.iris.rasters.BayerRaster;
 import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
 
@@ -114,6 +121,8 @@ public class IrisFrame implements IView<JFrame>
         JMenu menu = new JMenu( "Patterns" );
         JMenuItem item;
 
+        menu.setMnemonic( 'P' );
+
         item = menu.add( "Diagonal Gradients" );
         item.setMnemonic( 'D' );
         item.addActionListener( ( e ) -> handleDiagonalGradient() );
@@ -122,7 +131,9 @@ public class IrisFrame implements IView<JFrame>
         item.setMnemonic( 'J' );
         item.addActionListener( ( e ) -> handleJuliaFractal() );
 
-        menu.setMnemonic( 'P' );
+        item = menu.add( "Bayer Gray" );
+        item.setMnemonic( 'B' );
+        item.addActionListener( ( e ) -> handleBayerGray() );
 
         return menu;
     }
@@ -253,6 +264,70 @@ public class IrisFrame implements IView<JFrame>
         IrisUtils.setDiagonalGradient( r );
 
         IColorizer colorizer = new MonoColorizer();
+        RasterListAlbum rasters = new RasterListAlbum();
+
+        rasters.addRaster( r );
+        rasters.setColorizer( colorizer );
+
+        viewer.setAlbum( rasters );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void handleBayerGray()
+    {
+        int w = 512;
+        int h = 512;
+        BayerRaster r = new BayerRaster( w, h, 12 );
+
+        try( ByteArrayStream bas = new ByteArrayStream( r.buffer,
+            r.buffer.length, 0, false );
+             DataStream stream = new DataStream( bas,
+                 ByteOrdering.LITTLE_ENDIAN ) )
+        {
+            for( int i = 0; i < r.pixels.length; i++ )
+            {
+                int y = i / w;
+                int x = i - ( y * w );
+
+                boolean isEvenRow = ( y % 2 ) == 0;
+                boolean isEvenCol = ( x % 2 ) == 0;
+                boolean isG1 = isEvenRow && isEvenCol;
+                boolean isR = isEvenRow && !isEvenCol;
+                boolean isB = !isEvenRow && isEvenCol;
+                // boolean isG2 = !isEvenRow && !isEvenCol;
+
+                short s;
+
+                if( isG1 )
+                {
+                    s = 190;
+                }
+                else if( isR )
+                {
+                    s = 187;
+                }
+                else if( isB )
+                {
+                    s = 186;
+                }
+                else
+                {
+                    s = 185;
+                }
+                r.pixels[i] = s;
+            }
+        }
+        catch( IOException ex )
+        {
+            String err = String.format( "Unable to write %d pixels to %d bytes",
+                r.pixels.length, r.buffer.length );
+
+            throw new RuntimeException( err, ex );
+        }
+
+        IColorizer colorizer = new BayerColorizer( BayerOrder.GRBG );
         RasterListAlbum rasters = new RasterListAlbum();
 
         rasters.addRaster( r );

@@ -10,7 +10,7 @@ import jutils.core.io.IDataStream;
 import jutils.iris.colors.BayerColorizer;
 import jutils.iris.colors.IColorizer;
 import jutils.iris.colors.MonoColorizer;
-import jutils.iris.data.BayerOrdering;
+import jutils.iris.data.BayerOrder;
 import jutils.iris.data.RawConfig;
 import jutils.iris.rasters.ArgbRaster;
 import jutils.iris.rasters.BayerRaster;
@@ -174,16 +174,16 @@ public class RawRasterAlbum implements IRasterAlbum
                 break;
 
             case BAYER_BGGR:
-                return new BayerColorizer( BayerOrdering.BGGR );
+                return new BayerColorizer( BayerOrder.BGGR );
 
             case BAYER_GBRG:
-                return new BayerColorizer( BayerOrdering.GBRG );
+                return new BayerColorizer( BayerOrder.GBRG );
 
             case BAYER_GRBG:
-                return new BayerColorizer( BayerOrdering.GRBG );
+                return new BayerColorizer( BayerOrder.GRBG );
 
             case BAYER_RGGB:
-                return new BayerColorizer( BayerOrdering.RGGB );
+                return new BayerColorizer( BayerOrder.RGGB );
 
             case RGB:
                 break;

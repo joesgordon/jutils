@@ -1,7 +1,8 @@
 package jutils.iris.colors;
 
+import jutils.core.io.LogUtils;
 import jutils.iris.IrisUtils;
-import jutils.iris.data.BayerOrdering;
+import jutils.iris.data.BayerOrder;
 import jutils.iris.data.RasterConfig;
 import jutils.iris.rasters.IRaster;
 
@@ -11,14 +12,14 @@ import jutils.iris.rasters.IRaster;
 public class BayerColorizer implements IColorizer
 {
     /**  */
-    private final BayerOrdering order;
+    private final BayerOrder order;
     /**  */
     private final BayerDemosaicAlgorithm algorithm;
 
     /***************************************************************************
      * @param order
      **************************************************************************/
-    public BayerColorizer( BayerOrdering order )
+    public BayerColorizer( BayerOrder order )
     {
         this.order = order;
         this.algorithm = BayerDemosaicAlgorithm.NEAREST;
@@ -79,7 +80,7 @@ public class BayerColorizer implements IColorizer
                 break;
 
             case GBRG:
-                erec = new int[] { 0, -1, -1, 0, 0, 1 };
+                erec = new int[] { 0, 0, 1, 1, 0, 0 };
                 eroc = new int[] { -1, -1, 0, 1, 0, 0 };
                 orec = new int[] { 0, 1, 1, 0, 0, -1 };
                 oroc = new int[] { -1, 0, 0, 0, 0, -1 };
@@ -96,7 +97,7 @@ public class BayerColorizer implements IColorizer
                 erec = new int[] { 1, 1, 0, 1, 0, 0 };
                 eroc = new int[] { 0, 0, -1, 1, 0, 0 };
                 orec = new int[] { 1, 0, 0, 0, 0, -1 };
-                oroc = new int[] { -1, -1, 0, 0, 0, -1 };
+                oroc = new int[] { 0, -1, -1, 0, 0, -1 };
                 break;
         }
 
@@ -149,6 +150,13 @@ public class BayerColorizer implements IColorizer
 
             pixels[p] = ( int )( IrisUtils.BYTE3_MASK | ( r << 16 ) |
                 ( g << 8 ) | b );
+
+            if( p == 513 )
+            {
+                LogUtils.printDebug( "%d,%d -> %d: %02X,%02X,%02X => %04X", x,
+                    y, p, r, g, b, pixels[p] );
+                LogUtils.printDebug( "here" );
+            }
         }
     }
 
