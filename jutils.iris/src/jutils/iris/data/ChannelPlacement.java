@@ -12,7 +12,9 @@ public enum ChannelPlacement implements INamedValue
     /**  */
     PLANAR( 1, "Planar" ),
     /**  */
-    SEMI_PLANAR( 2, "Semi-Planar" );
+    SEMI_PLANAR( 2, "Semi-Planar" ),
+    /**  */
+    BAYER( 3, "Bayer" );
 
     /**  */
     public final int value;

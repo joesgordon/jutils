@@ -64,7 +64,7 @@ public class PixelsView implements IView<JComponent>
     /***************************************************************************
      * @param raster
      **************************************************************************/
-    public void setRaster( DirectImage raster )
+    public void setImage( DirectImage raster )
     {
         this.model.setRaster( raster );
     }

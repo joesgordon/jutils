@@ -130,4 +130,32 @@ public enum BayerOrder implements INamedValue
             ( isPacked ? "p" : "" );
         return str.toLowerCase();
     }
+
+    /***************************************************************************
+     * @param index
+     * @return
+     **************************************************************************/
+    public String getChannelName( int index )
+    {
+        char c = name.charAt( index );
+        String name = null;
+
+        switch( c )
+        {
+            case 'R':
+                name = "Red";
+                break;
+
+            case 'G':
+                name = "Green" + ( index < 2 ? "1" : "2" );
+                break;
+
+            case 'B':
+                name = "Blue";
+                break;
+
+        }
+
+        return name;
+    }
 }

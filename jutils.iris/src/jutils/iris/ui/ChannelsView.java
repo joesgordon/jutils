@@ -10,6 +10,8 @@ import jutils.core.ui.TabularView;
 import jutils.core.ui.TabularView.ITabularModel;
 import jutils.core.ui.TabularView.ITabularNotifier;
 import jutils.core.ui.model.IView;
+import jutils.iris.data.ChannelPlacement;
+import jutils.iris.data.RasterConfig;
 import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
 
@@ -69,22 +71,71 @@ public class ChannelsView implements IView<JComponent>
         this.model.setRaster( raster );
     }
 
+    private static interface IChannelsValue
+    {
+        public String build( int row, int col );
+    }
+
     /***************************************************************************
      * 
      **************************************************************************/
     private static final class RasterChannelsModel implements ITabularModel
     {
         /**  */
+        private final IChannelsValue singleBuilder;
+        /**  */
+        private final IChannelsValue channelsBuilder;
+
+        /**  */
         private IRaster raster;
         /**  */
         private ITabularNotifier notifier;
+        /**  */
+        private IChannelsValue valueBuilder;
 
         /**
          * 
          */
         public RasterChannelsModel()
         {
+            this.singleBuilder = ( r, c ) -> getSingleValue( r, c );
+            this.channelsBuilder = ( r, c ) -> getChannelsValue( r, c );
             this.raster = new Mono8Raster( 16, 16 );
+            this.valueBuilder = channelsBuilder;
+        }
+
+        /**
+         * @param row
+         * @param col
+         * @return
+         */
+        private String getSingleValue( int row, int col )
+        {
+            return "" + raster.getPixelAt( col, row );
+        }
+
+        /**
+         * @param row
+         * @param col
+         * @return
+         */
+        private String getChannelsValue( int row, int col )
+        {
+            String s = "";
+
+            for( int c = 0; c < raster.getConfig().channelCount; c++ )
+            {
+                int v = raster.getChannelAt( col, row, c );
+
+                if( c > 0 )
+                {
+                    s += ", ";
+                }
+
+                s = s + v;
+            }
+
+            return s;
         }
 
         /**
@@ -93,6 +144,12 @@ public class ChannelsView implements IView<JComponent>
         public void setRaster( IRaster raster )
         {
             this.raster = raster;
+
+            RasterConfig config = raster.getConfig();
+            boolean isSingle = config.channelCount == 1 ||
+                config.channelLoc == ChannelPlacement.BAYER;
+
+            this.valueBuilder = isSingle ? singleBuilder : channelsBuilder;
 
             if( notifier != null )
             {
@@ -160,21 +217,7 @@ public class ChannelsView implements IView<JComponent>
         @Override
         public Object getValue( int row, int col )
         {
-            String s = "";
-
-            for( int c = 0; c < raster.getConfig().channelCount; c++ )
-            {
-                int v = raster.getChannelAt( col, row, c );
-
-                if( c > 0 )
-                {
-                    s += ", ";
-                }
-
-                s = s + v;
-            }
-
-            return s;
+            return valueBuilder.build( row, col );
         }
 
         /**

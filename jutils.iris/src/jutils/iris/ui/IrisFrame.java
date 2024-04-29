@@ -279,7 +279,7 @@ public class IrisFrame implements IView<JFrame>
     {
         int w = 512;
         int h = 512;
-        BayerRaster r = new BayerRaster( w, h, 12 );
+        BayerRaster r = new BayerRaster( w, h, 12, BayerOrder.GRBG );
 
         try( ByteArrayStream bas = new ByteArrayStream( r.buffer,
             r.buffer.length, 0, false );

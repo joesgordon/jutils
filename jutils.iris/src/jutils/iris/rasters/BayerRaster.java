@@ -3,9 +3,11 @@ package jutils.iris.rasters;
 import java.io.IOException;
 
 import jutils.core.Utils;
+import jutils.core.io.BitsReader;
 import jutils.core.io.ByteArrayStream;
 import jutils.core.io.DataStream;
 import jutils.core.utils.ByteOrdering;
+import jutils.iris.data.BayerOrder;
 import jutils.iris.data.ChannelPlacement;
 import jutils.iris.data.IPixelIndexer;
 import jutils.iris.data.IndexingType;
@@ -31,9 +33,9 @@ public class BayerRaster implements IRaster
      * @param width
      * @param height
      * @param bitDepth
-     * @param bayerOrder
+     * @param order
      **************************************************************************/
-    public BayerRaster( int width, int height, int bitDepth )
+    public BayerRaster( int width, int height, int bitDepth, BayerOrder order )
     {
         this.config = new RasterConfig();
 
@@ -41,11 +43,14 @@ public class BayerRaster implements IRaster
         config.height = height;
         config.packed = false;
         config.indexing = IndexingType.ROW_MAJOR;
-        config.channelLoc = ChannelPlacement.INTERLEAVED;
+        config.channelLoc = ChannelPlacement.BAYER;
         this.indexer = IPixelIndexer.createIndexer( config.indexing );
 
-        config.channelCount = 1;
-        config.channels[0].set( bitDepth, "Bayer" );
+        config.channelCount = 4;
+        config.channels[0].set( bitDepth, order.getChannelName( 0 ) );
+        config.channels[1].set( bitDepth, order.getChannelName( 1 ) );
+        config.channels[2].set( bitDepth, order.getChannelName( 2 ) );
+        config.channels[3].set( bitDepth, order.getChannelName( 3 ) );
 
         this.buffer = new byte[config.getUnpackedSize()];
         this.pixels = new int[config.getPixelCount()];
@@ -200,6 +205,7 @@ public class BayerRaster implements IRaster
 
         IntReader reader;
         int size = config.getBytesPerPixel();
+        int bitDepth = config.channels[0].bitDepth;
 
         switch( size )
         {
@@ -221,12 +227,14 @@ public class BayerRaster implements IRaster
                     size ) );
         }
 
+        int mask = ( int )BitsReader.MASKS[bitDepth];
+
         try( ByteArrayStream bas = new ByteArrayStream( buffer, buffer.length,
             0, false ); DataStream stream = new DataStream( bas, order ) )
         {
             for( int i = 0; i < pixels.length; i++ )
             {
-                pixels[i] = reader.read( stream );
+                pixels[i] = reader.read( stream ) & mask;
             }
         }
         catch( IOException ex )

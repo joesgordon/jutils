@@ -95,19 +95,19 @@ public class RawRasterAlbum implements IRasterAlbum
 
             case BAYER_GRBG:
                 return new BayerRaster( config.width, config.height,
-                    config.bitDepth );
+                    config.bitDepth, BayerOrder.GRBG );
 
             case BAYER_GBRG:
                 return new BayerRaster( config.width, config.height,
-                    config.bitDepth );
+                    config.bitDepth, BayerOrder.GBRG );
 
             case BAYER_RGGB:
                 return new BayerRaster( config.width, config.height,
-                    config.bitDepth );
+                    config.bitDepth, BayerOrder.RGGB );
 
             case BAYER_BGGR:
                 return new BayerRaster( config.width, config.height,
-                    config.bitDepth );
+                    config.bitDepth, BayerOrder.BGGR );
 
             case RGB:
                 break;

@@ -3,7 +3,6 @@ package jutils.iris.ui;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -11,9 +10,9 @@ import java.awt.event.MouseWheelEvent;
 import java.util.function.Consumer;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
-import jutils.core.ui.IPaintable;
+import jutils.core.io.LogUtils;
+import jutils.core.ui.PaintingComponent;
 import jutils.core.ui.event.MouseEventsListener;
 import jutils.core.ui.event.MouseEventsListener.MouseEventType;
 import jutils.core.ui.model.IView;
@@ -30,7 +29,7 @@ import jutils.iris.rasters.IRaster;
 public class RasterView implements IView<JComponent>
 {
     /**  */
-    private final PaintingComponent2 view;
+    private final PaintingComponent view;
     /**  */
     private final RasterImage image;
 
@@ -45,7 +44,7 @@ public class RasterView implements IView<JComponent>
     public RasterView()
     {
         this.image = new RasterImage( 256, 256 );
-        this.view = new PaintingComponent2( ( c, g ) -> paint( c, g ) );
+        this.view = new PaintingComponent( ( c, g ) -> paint( c, g ), false );
         this.hoverEnabled = true;
         this.imageHoverCallback = ( p ) -> {
         };
@@ -53,9 +52,11 @@ public class RasterView implements IView<JComponent>
         MouseEventsListener mouseListener = new MouseEventsListener(
             ( t, e ) -> handleMouseEvent( t, e ) );
 
+        view.addMouseListener( mouseListener );
         view.addMouseMotionListener( mouseListener );
         view.addMouseWheelListener( mouseListener );
         view.setFocusable( true );
+        view.requestFocus();
     }
 
     /***************************************************************************
@@ -74,9 +75,21 @@ public class RasterView implements IView<JComponent>
                 handleMouseMoved( e );
                 break;
 
+            case RELEASED:
+                handleMouseReleased( e );
+
             default:
                 break;
         }
+    }
+
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    private void handleMouseReleased( MouseEvent e )
+    {
+        view.requestFocus();
+        LogUtils.printDebug( "Mouse released" );
     }
 
     /***************************************************************************
@@ -257,7 +270,10 @@ public class RasterView implements IView<JComponent>
             resetSize();
         }
 
+        view.invalidate();
+        view.validate();
         view.repaint();
+        view.requestFocus();
     }
 
     /***************************************************************************
@@ -291,37 +307,5 @@ public class RasterView implements IView<JComponent>
     public RasterImage getRasterImage()
     {
         return image;
-    }
-
-    public class PaintingComponent2 extends JPanel
-    {
-        private static final long serialVersionUID = 4550342647594043307L;
-        /** The callback invoked on {@link #paintComponent(Graphics)}. */
-
-        private final IPaintable paintable;
-
-        /***************************************************************************
-         * Creates a new {@link JComponent} that will be drawn according to the
-         * provided callback.
-         * @param paintable the callback invoked on
-         * {@link #paintComponent(Graphics)}.
-         **************************************************************************/
-        public PaintingComponent2( IPaintable paintable )
-        {
-            this.paintable = paintable;
-        }
-
-        /***************************************************************************
-         * {@inheritDoc}
-         **************************************************************************/
-        @Override
-        public void paintComponent( Graphics graphics )
-        {
-            super.paintComponent( graphics );
-
-            Graphics2D g = ( Graphics2D )graphics;
-
-            paintable.paint( this, g );
-        }
     }
 }

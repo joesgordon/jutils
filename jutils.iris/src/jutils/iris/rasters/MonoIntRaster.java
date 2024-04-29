@@ -3,6 +3,7 @@ package jutils.iris.rasters;
 import java.io.IOException;
 
 import jutils.core.Utils;
+import jutils.core.io.BitsReader;
 import jutils.core.io.ByteArrayStream;
 import jutils.core.io.DataStream;
 import jutils.core.utils.ByteOrdering;
@@ -169,8 +170,8 @@ public class MonoIntRaster implements IRaster
         Utils.byteArrayCopy( buffer, 0, this.buffer, 0, this.buffer.length );
 
         IntReader reader;
-
         int size = config.getBytesPerPixel();
+        int bitDepth = config.channels[0].bitDepth;
 
         switch( size )
         {
@@ -192,12 +193,14 @@ public class MonoIntRaster implements IRaster
                     size ) );
         }
 
+        int mask = ( int )BitsReader.MASKS[bitDepth];
+
         try( ByteArrayStream bas = new ByteArrayStream( buffer, buffer.length,
             0, false ); DataStream stream = new DataStream( bas, order ) )
         {
             for( int i = 0; i < pixels.length; i++ )
             {
-                pixels[i] = reader.read( stream );
+                pixels[i] = reader.read( stream ) & mask;
             }
         }
         catch( IOException ex )

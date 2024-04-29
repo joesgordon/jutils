@@ -1,5 +1,7 @@
 # JUtils To-Do List
 
+[Home](./README.md)
+
 ## General Issues
 
 - Add time chooser that uses Chronos
@@ -26,16 +28,30 @@
 
 ## jutils.iris
 
-- Color maps
-- Image data definitions
-- Image viewers
-- Histogram
-- X/Y Levels
-- Centroid algorithm
-- Playback
-- Open (raw, png, jpg, bmp, tiff)
-- Save (raw, png, jpg, bmp, tiff)
+- Fix scrolling
+- Add Bayer as a channel placement. Each bayer channel must be the same bit depth.
+- Add a histogram for each channel.
+- Show zoom level value.
+- Show image stats for each channel in the whole image, selection, and hover.
+  - width
+  - height
+  - min
+  - max
+  - average
+  - standard deviation
+- Add ability to Save (raw, png, jpg, bmp, tiff).
+- Finish Bayer Bilinear demosaic
+- Add ability to pan with middle-click and drag.
+- Add configuration for MonoColorizer
+  - Color map
+  - Thresholds
+  - Brightness/Contrast
+- Finish remainder of Bayer demosaic
+- X/Y Levels for a channel on top/side
+- Add ability to Playback.
+- Add preview to Raw Options on open.
 - Define the Raw Image Album format and add to open/save support. Default save to this format.
+- Centroid algorithm
 
 ## jutils.math
 
@@ -84,6 +100,11 @@
 - solataire
 - pinball
 - magic 8 ball
+
+## jutils.chio
+*PROPOSED*
+
+Chapter 10 library
 
 ## jutils.helps
 *PROPOSED*

@@ -1,6 +1,5 @@
 package jutils.iris.colors;
 
-import jutils.core.io.LogUtils;
 import jutils.iris.IrisUtils;
 import jutils.iris.data.BayerOrder;
 import jutils.iris.data.RasterConfig;
@@ -62,7 +61,6 @@ public class BayerColorizer implements IColorizer
     private void colorizeNearest( IRaster raster, int [] pixels )
     {
         RasterConfig config = raster.getConfig();
-
         float maxValue = config.getMaxPixelValue();
 
         int [] erec = { 0, 0, 0, 0, 0, 0 };
@@ -150,13 +148,6 @@ public class BayerColorizer implements IColorizer
 
             pixels[p] = ( int )( IrisUtils.BYTE3_MASK | ( r << 16 ) |
                 ( g << 8 ) | b );
-
-            if( p == 513 )
-            {
-                LogUtils.printDebug( "%d,%d -> %d: %02X,%02X,%02X => %04X", x,
-                    y, p, r, g, b, pixels[p] );
-                LogUtils.printDebug( "here" );
-            }
         }
     }
 
@@ -166,6 +157,27 @@ public class BayerColorizer implements IColorizer
      **************************************************************************/
     private void colorizeBilinear( IRaster raster, int [] pixels )
     {
+        RasterConfig config = raster.getConfig();
+        float maxValue = config.getMaxPixelValue();
+
+        final int w = config.width;
+        final int h = config.height;
+
+        int x = 0;
+        int y = 0;
+
+        for( int p = 0; p < pixels.length; p++ )
+        {
+
+            // update x/y
+            x++;
+            if( x == w )
+            {
+                x = 0;
+                y++;
+            }
+        }
+
         // TODO Auto-generated method stub
         colorizeNearest( raster, pixels );
     }

@@ -32,8 +32,8 @@ public class Histogram
     {
         this.name = name;
         this.bins = new int[binCount];
-        this.bindexScale = ( bins.length - 1 ) /
-            ( float )( maxValue & IBitField.INT_MASK );
+        this.bindexScale = ( bins.length - 1.0f ) /
+            ( maxValue & IBitField.INT_MASK );
         this.maxValue = maxValue;
         this.maxCount = 0;
         this.color = Color.black;
@@ -65,7 +65,17 @@ public class Histogram
         double bin = lval * bindexScale;
         int binIndex = ( int )Math.round( bin );
 
-        bins[binIndex]++;
+        try
+        {
+            bins[binIndex]++;
+        }
+        catch( ArrayIndexOutOfBoundsException ex )
+        {
+            String err = String.format(
+                "Unable to increment count for bin %d * %f = %f", lval,
+                bindexScale, bin );
+            throw new IllegalStateException( err, ex );
+        }
 
         maxCount = Math.max( maxCount, bins[binIndex] );
     }

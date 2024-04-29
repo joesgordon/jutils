@@ -136,7 +136,8 @@ public class ImageInfoView implements IView<JComponent>
         }
 
         histView.setData( histogram );
-        pixelsView.setRaster( image.getImage() );
+        pixelsView.setImage( image.getImage() );
+        planesView.setRaster( image.getRaster() );
         rawPixelView.setRaster( r );
         bufferView.setBuffer( new ByteBuffer( r.getBufferData() ) );
     }

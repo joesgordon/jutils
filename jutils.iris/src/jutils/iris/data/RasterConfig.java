@@ -7,22 +7,22 @@ import jutils.core.io.BitsReader;
  ******************************************************************************/
 public class RasterConfig
 {
-    /**  */
+    /** The maximum number of channels supported. */
     public static final int MAX_CHANNELS = 4;
 
-    /**  */
+    /** The number of pixels in a row of this raster. */
     public int width;
-    /**  */
+    /** The number of pixels in a column of this raster. */
     public int height;
-    /**  */
+    /** The number of channels used in this raster. */
     public int channelCount;
-    /**  */
+    /** The configuration of the channels in this raster. */
     public ChannelConfig [] channels;
-    /**  */
+    /** Indicates if the raw raster pixels are packed. */
     public boolean packed;
-    /**  */
+    /** Defines how pixels are linearly indexed. (Row- vs. col-first) */
     public IndexingType indexing;
-    /**  */
+    /** Defines where channels are placed in the raw raster. */
     public ChannelPlacement channelLoc;
 
     /***************************************************************************
@@ -64,7 +64,9 @@ public class RasterConfig
     }
 
     /***************************************************************************
-     * @return
+     * Returns the number of pixels in this raster equal to {@link #width}
+     * {@code x} {@link height}.
+     * @return the number of pixels in this raster.
      **************************************************************************/
     public int getPixelCount()
     {
@@ -78,9 +80,16 @@ public class RasterConfig
     {
         int bits = 0;
 
-        for( int i = 0; i < channelCount; i++ )
+        if( channelLoc == ChannelPlacement.BAYER )
         {
-            bits += channels[i].bitDepth;
+            bits = channels[0].bitDepth;
+        }
+        else
+        {
+            for( int i = 0; i < channelCount; i++ )
+            {
+                bits += channels[i].bitDepth;
+            }
         }
 
         return bits;
