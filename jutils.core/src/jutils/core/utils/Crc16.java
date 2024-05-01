@@ -72,7 +72,7 @@ public class Crc16 implements ITierPrinter
     public static short [] createTable( int polynomial )
     {
         short [] table = new short[TABLE_SIZE];
-        int mask = 0x8000;
+        int mask = ( int )BitMasks.getBitMask( 15 );
 
         for( int i = 0; i < table.length; i++ )
         {

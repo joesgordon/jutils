@@ -5,7 +5,6 @@ import java.io.IOException;
 import jutils.core.ValidationException;
 import jutils.core.io.IReferenceStream;
 import jutils.iris.colors.IColorizer;
-import jutils.iris.data.RasterConfig;
 import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
@@ -22,7 +21,7 @@ public class RastersFileAlbum implements IRasterAlbum
      * @param colorizer
      * @param config
      **************************************************************************/
-    public RastersFileAlbum( IColorizer colorizer, RasterConfig config )
+    public RastersFileAlbum( IColorizer colorizer )
     {
         this.colorizer = colorizer;
     }
@@ -62,6 +61,9 @@ public class RastersFileAlbum implements IRasterAlbum
         return colorizer;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName()
     {

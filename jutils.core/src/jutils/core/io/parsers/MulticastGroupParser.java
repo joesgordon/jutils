@@ -53,9 +53,6 @@ public class MulticastGroupParser implements IParser<IpAddress>
             }
             throw new ValidationException( msg );
         }
-        else
-        {
-        }
 
         return address;
     }

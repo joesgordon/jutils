@@ -1,14 +1,13 @@
 package jutils.core.io;
 
+import jutils.core.utils.BitMasks;
+
 /*******************************************************************************
  * Defines a set of methods to read/write a series of bits comprising a
  * sub-field from/to a byte, short, int, or long.
  ******************************************************************************/
 public class BitsReader
 {
-    /** Masks needed to clear a particular bit. */
-    public static final long [] MASKS = generateMasks();
-
     /** The mask for the bits of the sub-field. */
     private final long mask;
     /** The number of bytes to shift the sub-field down to bit zero. */
@@ -38,7 +37,7 @@ public class BitsReader
 
         int len = end - start + 1;
 
-        long mask = MASKS[len];
+        long mask = BitMasks.getFieldMask( len );
         int shift = start;
 
         this.mask = mask << shift;
@@ -197,23 +196,11 @@ public class BitsReader
     }
 
     /***************************************************************************
-     * Generates a mask for each number, 0 through 64 inclusive. This range is
-     * the number of bits in a sub-field regardless of its bit offset.
-     * @return the array of masks for each index into the array, 0 - 64.
+     * @return
+     * @see Long#SIZE
      **************************************************************************/
-    private static long [] generateMasks()
+    public static int getMaskCount()
     {
-        long [] masks = new long[65];
-
-        for( int m = 0; m < masks.length; m++ )
-        {
-            for( int i = 0; i < m; i++ )
-            {
-                masks[m] <<= 1;
-                masks[m] |= 1;
-            }
-        }
-
-        return masks;
+        return Long.SIZE;
     }
 }

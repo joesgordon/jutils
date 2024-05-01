@@ -221,7 +221,7 @@ public class StandardImageReader implements IRasterAlbumReader
 
         for( int i = 0; i < imgBytes.length; i++ )
         {
-            r.pixels[i] = imgBytes[i] & 0xFFFF;
+            r.setPixel( i, imgBytes[i] & 0xFFFF );
         }
 
         return r;

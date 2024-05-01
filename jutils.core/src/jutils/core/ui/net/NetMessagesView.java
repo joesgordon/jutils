@@ -323,6 +323,7 @@ public class NetMessagesView implements IView<JPanel>
         ReferenceStream<NetMessage> rs;
         try
         {
+            @SuppressWarnings( "resource")
             ReferenceStream<NetMessage> refs = new ReferenceStream<>(
                 new NetMessageSerializer(), file );
             rs = refs;

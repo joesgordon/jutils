@@ -1,7 +1,6 @@
 package jutils.core.net;
 
 import java.io.BufferedInputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,7 +19,7 @@ import jutils.core.io.IOUtils;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TcpConnection implements IConnection, Closeable
+public class TcpConnection implements IConnection
 {
     /**  */
     private final TcpInputs inputs;

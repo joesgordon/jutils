@@ -1,33 +1,29 @@
 package jutils.iris.rasters;
 
+import java.awt.Point;
 import java.io.IOException;
 
 import jutils.core.Utils;
-import jutils.core.io.BitsReader;
 import jutils.core.io.ByteArrayStream;
 import jutils.core.io.DataStream;
+import jutils.core.utils.BitMasks;
 import jutils.core.utils.ByteOrdering;
+import jutils.iris.IrisUtils;
 import jutils.iris.data.BayerOrder;
-import jutils.iris.data.ChannelPlacement;
-import jutils.iris.data.IPixelIndexer;
+import jutils.iris.data.ChannelStore;
 import jutils.iris.data.IndexingType;
-import jutils.iris.data.RasterConfig;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class BayerRaster implements IRaster
+public class BayerRaster extends AbstractRaster
 {
     /**  */
     public final byte [] buffer;
-
     /**  */
     public final int [] pixels;
 
-    /**  */
-    private RasterConfig config;
-    /**  */
-    private IPixelIndexer indexer;
+    // TODO add packing
 
     /***************************************************************************
      * @param width
@@ -37,32 +33,32 @@ public class BayerRaster implements IRaster
      **************************************************************************/
     public BayerRaster( int width, int height, int bitDepth, BayerOrder order )
     {
-        this.config = new RasterConfig();
+        super( width, height, IndexingType.ROW_MAJOR, ChannelStore.BAYER, false,
+            ( r ) -> createChannels( r, bitDepth, order ) );
 
-        config.width = width;
-        config.height = height;
-        config.packed = false;
-        config.indexing = IndexingType.ROW_MAJOR;
-        config.channelLoc = ChannelPlacement.BAYER;
-        this.indexer = IPixelIndexer.createIndexer( config.indexing );
-
-        config.channelCount = 4;
-        config.channels[0].set( bitDepth, order.getChannelName( 0 ) );
-        config.channels[1].set( bitDepth, order.getChannelName( 1 ) );
-        config.channels[2].set( bitDepth, order.getChannelName( 2 ) );
-        config.channels[3].set( bitDepth, order.getChannelName( 3 ) );
-
-        this.buffer = new byte[config.getUnpackedSize()];
-        this.pixels = new int[config.getPixelCount()];
+        this.buffer = new byte[super.unpackedSize];
+        this.pixels = new int[super.pixelCount];
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * @param r
+     * @param bitDepth
+     * @param order
+     * @return
      **************************************************************************/
-    @Override
-    public RasterConfig getConfig()
+    private static IChannel [] createChannels( IRaster r, int bitDepth,
+        BayerOrder order )
     {
-        return new RasterConfig( config );
+        IChannel bayer0 = new BayerChannel( r, bitDepth, 0,
+            order.getChannelName( 0 ), 0 );
+        IChannel bayer1 = new BayerChannel( r, bitDepth, 0,
+            order.getChannelName( 1 ), 1 );
+        IChannel bayer2 = new BayerChannel( r, bitDepth, 0,
+            order.getChannelName( 2 ), 2 );
+        IChannel bayer3 = new BayerChannel( r, bitDepth, 0,
+            order.getChannelName( 3 ), 3 );
+
+        return new IChannel[] { bayer0, bayer1, bayer2, bayer3 };
     }
 
     /***************************************************************************
@@ -71,7 +67,16 @@ public class BayerRaster implements IRaster
     @Override
     public int getPixelIndex( int x, int y )
     {
-        return indexer.getIndex( config.width, config.height, x, y );
+        return indexer.getIndex( super.width, super.height, x, y );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void getPixelLocation( int index, Point location )
+    {
+        indexer.getLocation( super.width, super.height, index, location );
     }
 
     /***************************************************************************
@@ -86,12 +91,10 @@ public class BayerRaster implements IRaster
         }
         catch( ArrayIndexOutOfBoundsException ex )
         {
-            RasterConfig c = config;
-
             String err = String.format(
                 "Unable to access pixel @ %d in image of %d x %d = %d pixels",
-                p, c.width, c.height, c.getPixelCount() );
-            throw new IllegalStateException( err, ex );
+                p, super.width, super.height, super.pixelCount );
+            throw new IllegalArgumentException( err, ex );
 
         }
     }
@@ -117,14 +120,12 @@ public class BayerRaster implements IRaster
         {
             return getPixel( p );
         }
-        catch( IllegalStateException ex )
+        catch( ArrayIndexOutOfBoundsException ex )
         {
-            RasterConfig c = config;
-
             String err = String.format(
                 "Unable to access pixel @ %d,%d = %d in image of %d x %d = %d pixels",
-                x, y, p, c.width, c.height, c.getPixelCount() );
-            throw new IllegalStateException( err, ex );
+                x, y, p, super.width, super.height, super.pixelCount );
+            throw new IllegalArgumentException( err, ex );
         }
     }
 
@@ -135,42 +136,6 @@ public class BayerRaster implements IRaster
     public void setPixelAt( int x, int y, long value )
     {
         setPixel( getPixelIndex( x, y ), value );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public int getChannel( int p, int c )
-    {
-        return ( int )getPixel( p );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setChannel( int p, int c, int value )
-    {
-        setPixel( p, value );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public int getChannelAt( int x, int y, int c )
-    {
-        return ( int )getPixelAt( x, y );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setChannelAt( int x, int y, int c, int value )
-    {
-        setPixelAt( x, y, value );
     }
 
     /***************************************************************************
@@ -204,8 +169,8 @@ public class BayerRaster implements IRaster
         Utils.byteArrayCopy( buffer, 0, this.buffer, 0, this.buffer.length );
 
         IntReader reader;
-        int size = config.getBytesPerPixel();
-        int bitDepth = config.channels[0].bitDepth;
+        int bitDepth = super.channels[0].getBitDepth();
+        int size = IrisUtils.getBytesPerPixel( bitDepth );
 
         switch( size )
         {
@@ -227,7 +192,7 @@ public class BayerRaster implements IRaster
                     size ) );
         }
 
-        int mask = ( int )BitsReader.MASKS[bitDepth];
+        int mask = ( int )BitMasks.getFieldMask( bitDepth );
 
         try( ByteArrayStream bas = new ByteArrayStream( buffer, buffer.length,
             0, false ); DataStream stream = new DataStream( bas, order ) )

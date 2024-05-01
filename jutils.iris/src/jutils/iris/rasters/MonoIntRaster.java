@@ -1,61 +1,52 @@
 package jutils.iris.rasters;
 
+import java.awt.Point;
 import java.io.IOException;
 
 import jutils.core.Utils;
-import jutils.core.io.BitsReader;
 import jutils.core.io.ByteArrayStream;
 import jutils.core.io.DataStream;
+import jutils.core.utils.BitMasks;
 import jutils.core.utils.ByteOrdering;
-import jutils.iris.data.ChannelPlacement;
-import jutils.iris.data.IPixelIndexer;
+import jutils.iris.IrisUtils;
+import jutils.iris.data.ChannelStore;
 import jutils.iris.data.IndexingType;
-import jutils.iris.data.RasterConfig;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class MonoIntRaster implements IRaster
+public class MonoIntRaster extends AbstractRaster
 {
     /**  */
-    public final byte [] buffer;
+    private final byte [] buffer;
     /**  */
-    public final int [] pixels;
-    /**  */
-    private final RasterConfig config;
-    /**  */
-    public IPixelIndexer indexer;
+    private final int [] pixels;
 
     /***************************************************************************
      * @param width
      * @param height
-     * @param depth
+     * @param bitDepth
      **************************************************************************/
-    public MonoIntRaster( int width, int height, int depth )
+    public MonoIntRaster( int width, int height, int bitDepth )
     {
-        this.config = new RasterConfig();
+        super( width, height, IndexingType.ROW_MAJOR, ChannelStore.INTERLEAVED,
+            false, ( r ) -> createChannels( r, bitDepth ) );
 
-        config.width = width;
-        config.height = height;
-        config.channelCount = 1;
-        config.channels[0].name = "Mono";
-        config.channels[0].bitDepth = depth;
-        config.packed = false;
-        config.indexing = IndexingType.ROW_MAJOR;
-        config.channelLoc = ChannelPlacement.INTERLEAVED;
-        this.indexer = IPixelIndexer.createIndexer( config.indexing );
-
-        this.buffer = new byte[config.getUnpackedSize()];
-        this.pixels = new int[config.getPixelCount()];
+        this.buffer = new byte[super.unpackedSize];
+        this.pixels = new int[super.pixelCount];
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * @param r
+     * @param bitDepth
+     * @return
      **************************************************************************/
-    @Override
-    public RasterConfig getConfig()
+    private static IChannel [] createChannels( IRaster r, int bitDepth )
     {
-        return new RasterConfig( this.config );
+        IChannel mono = new InterleavedChannel( r, bitDepth, 0,
+            "Mono" + bitDepth );
+
+        return new IChannel[] { mono };
     }
 
     /***************************************************************************
@@ -64,7 +55,16 @@ public class MonoIntRaster implements IRaster
     @Override
     public int getPixelIndex( int x, int y )
     {
-        return indexer.getIndex( config.width, config.height, x, y );
+        return indexer.getIndex( super.width, super.height, x, y );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void getPixelLocation( int index, Point location )
+    {
+        indexer.getLocation( super.width, super.height, index, location );
     }
 
     /***************************************************************************
@@ -107,42 +107,6 @@ public class MonoIntRaster implements IRaster
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int getChannel( int p, int c )
-    {
-        return ( int )getPixel( p );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setChannel( int p, int c, int value )
-    {
-        setPixel( p, value );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public int getChannelAt( int x, int y, int c )
-    {
-        return ( int )getPixelAt( x, y );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setChannelAt( int x, int y, int c, int value )
-    {
-        setPixelAt( x, y, value );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
     public byte [] getBufferData()
     {
         return buffer;
@@ -170,8 +134,9 @@ public class MonoIntRaster implements IRaster
         Utils.byteArrayCopy( buffer, 0, this.buffer, 0, this.buffer.length );
 
         IntReader reader;
-        int size = config.getBytesPerPixel();
-        int bitDepth = config.channels[0].bitDepth;
+
+        int bitDepth = super.channels[0].getBitDepth();
+        int size = IrisUtils.getBytesPerPixel( bitDepth );
 
         switch( size )
         {
@@ -193,7 +158,7 @@ public class MonoIntRaster implements IRaster
                     size ) );
         }
 
-        int mask = ( int )BitsReader.MASKS[bitDepth];
+        int mask = ( int )BitMasks.getBitMask( bitDepth );
 
         try( ByteArrayStream bas = new ByteArrayStream( buffer, buffer.length,
             0, false ); DataStream stream = new DataStream( bas, order ) )

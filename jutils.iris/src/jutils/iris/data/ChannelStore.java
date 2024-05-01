@@ -5,7 +5,7 @@ import jutils.core.INamedValue;
 /***************************************************************************
  * 
  **************************************************************************/
-public enum ChannelPlacement implements INamedValue
+public enum ChannelStore implements INamedValue
 {
     /**  */
     INTERLEAVED( 0, "Interleaved" ),
@@ -25,7 +25,7 @@ public enum ChannelPlacement implements INamedValue
      * @param value
      * @param name
      **************************************************************************/
-    private ChannelPlacement( int value, String name )
+    private ChannelStore( int value, String name )
     {
         this.value = value;
         this.name = name;

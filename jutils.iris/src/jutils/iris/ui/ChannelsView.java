@@ -10,8 +10,8 @@ import jutils.core.ui.TabularView;
 import jutils.core.ui.TabularView.ITabularModel;
 import jutils.core.ui.TabularView.ITabularNotifier;
 import jutils.core.ui.model.IView;
-import jutils.iris.data.ChannelPlacement;
-import jutils.iris.data.RasterConfig;
+import jutils.iris.data.ChannelStore;
+import jutils.iris.rasters.IChannel;
 import jutils.iris.rasters.IRaster;
 import jutils.iris.rasters.Mono8Raster;
 
@@ -123,9 +123,10 @@ public class ChannelsView implements IView<JComponent>
         {
             String s = "";
 
-            for( int c = 0; c < raster.getConfig().channelCount; c++ )
+            for( int c = 0; c < raster.getChannelCount(); c++ )
             {
-                int v = raster.getChannelAt( col, row, c );
+                IChannel channel = raster.getChannel( c );
+                int v = channel.getValueAt( col, row );
 
                 if( c > 0 )
                 {
@@ -145,9 +146,11 @@ public class ChannelsView implements IView<JComponent>
         {
             this.raster = raster;
 
-            RasterConfig config = raster.getConfig();
-            boolean isSingle = config.channelCount == 1 ||
-                config.channelLoc == ChannelPlacement.BAYER;
+            int channelCount = raster.getChannelCount();
+            ChannelStore channelPlacement = raster.getChannelPlacement();
+
+            boolean isSingle = channelCount == 1 ||
+                channelPlacement == ChannelStore.BAYER;
 
             this.valueBuilder = isSingle ? singleBuilder : channelsBuilder;
 

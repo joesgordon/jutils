@@ -1,5 +1,7 @@
 package jutils.core.data;
 
+import jutils.core.utils.BitMasks;
+
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -23,7 +25,7 @@ public class BitField implements IBitField
     {
         this.startBit = startBit;
         this.endBit = endBit;
-        this.mask = IBitField.generateMask( startBit, endBit );
+        this.mask = BitMasks.getFieldMask( startBit, endBit - startBit + 1 );
     }
 
     /***************************************************************************

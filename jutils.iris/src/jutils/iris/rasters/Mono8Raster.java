@@ -1,52 +1,41 @@
 package jutils.iris.rasters;
 
+import java.awt.Point;
+
 import jutils.core.Utils;
 import jutils.core.utils.ByteOrdering;
-import jutils.iris.data.ChannelPlacement;
-import jutils.iris.data.IPixelIndexer;
+import jutils.iris.data.ChannelStore;
 import jutils.iris.data.IndexingType;
-import jutils.iris.data.RasterConfig;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class Mono8Raster implements IRaster
+public class Mono8Raster extends AbstractRaster
 {
     /**  */
-    public final byte [] buffer;
-    /**  */
-    private final RasterConfig config;
-    /**  */
-    public IPixelIndexer indexer;
+    private final byte [] buffer;
 
     /***************************************************************************
-     * @param width
-     * @param height
+     * @param width the width of the raster in pixels.
+     * @param height the height of the raster in pixels
      **************************************************************************/
     public Mono8Raster( int width, int height )
     {
-        this.config = new RasterConfig();
+        super( width, height, IndexingType.ROW_MAJOR, ChannelStore.INTERLEAVED,
+            false, ( r ) -> createChannels( r ) );
 
-        config.width = width;
-        config.height = height;
-        config.channelCount = 1;
-        config.channels[0].name = "Mono8";
-        config.channels[0].bitDepth = 8;
-        config.packed = false;
-        config.indexing = IndexingType.ROW_MAJOR;
-        config.channelLoc = ChannelPlacement.INTERLEAVED;
-        this.indexer = IPixelIndexer.createIndexer( config.indexing );
-
-        this.buffer = new byte[config.getUnpackedSize()];
+        this.buffer = new byte[super.unpackedSize];
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * @param r
+     * @return
      **************************************************************************/
-    @Override
-    public RasterConfig getConfig()
+    private static IChannel [] createChannels( IRaster r )
     {
-        return new RasterConfig( this.config );
+        IChannel mono = new InterleavedChannel( r, 8, 0, "Mono8" );
+
+        return new IChannel[] { mono };
     }
 
     /***************************************************************************
@@ -55,7 +44,16 @@ public class Mono8Raster implements IRaster
     @Override
     public int getPixelIndex( int x, int y )
     {
-        return indexer.getIndex( config.width, config.height, x, y );
+        return indexer.getIndex( super.width, super.height, x, y );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void getPixelLocation( int index, Point location )
+    {
+        indexer.getLocation( super.width, super.height, index, location );
     }
 
     /***************************************************************************
@@ -70,11 +68,9 @@ public class Mono8Raster implements IRaster
         }
         catch( ArrayIndexOutOfBoundsException ex )
         {
-            RasterConfig c = config;
-
             String err = String.format(
                 "Unable to access pixel @ %d in image of %d x %d = %d pixels",
-                p, c.width, c.height, c.getPixelCount() );
+                p, super.width, super.height, super.pixelCount );
             throw new IllegalStateException( err, ex );
         }
     }
@@ -100,11 +96,9 @@ public class Mono8Raster implements IRaster
         }
         catch( IllegalStateException ex )
         {
-            RasterConfig c = config;
-
             String err = String.format(
                 "Unable to access pixel @ %d,%d in image of %d x %d = %d pixels",
-                x, y, c.width, c.height, c.getPixelCount() );
+                x, y, super.width, super.height, super.pixelCount );
             throw new IllegalStateException( err, ex );
         }
     }
@@ -115,43 +109,9 @@ public class Mono8Raster implements IRaster
     @Override
     public void setPixelAt( int x, int y, long value )
     {
-        setPixel( getPixelIndex( x, y ), value );
-    }
+        int index = getPixelIndex( x, y );
 
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public int getChannel( int p, int c )
-    {
-        return ( int )getPixel( p );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setChannel( int p, int c, int value )
-    {
-        setPixel( p, value );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public int getChannelAt( int x, int y, int c )
-    {
-        return ( int )getPixelAt( x, y );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setChannelAt( int x, int y, int c, int value )
-    {
-        setPixelAt( x, y, value );
+        setPixel( index, value );
     }
 
     /***************************************************************************

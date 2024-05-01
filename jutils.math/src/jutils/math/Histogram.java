@@ -3,7 +3,7 @@ package jutils.math;
 import java.awt.Color;
 import java.util.Arrays;
 
-import jutils.core.data.IBitField;
+import jutils.core.utils.BitMasks;
 
 /*******************************************************************************
  * 
@@ -33,7 +33,7 @@ public class Histogram
         this.name = name;
         this.bins = new int[binCount];
         this.bindexScale = ( bins.length - 1.0f ) /
-            ( maxValue & IBitField.INT_MASK );
+            ( maxValue & BitMasks.INT_MASK );
         this.maxValue = maxValue;
         this.maxCount = 0;
         this.color = Color.black;
@@ -61,7 +61,7 @@ public class Histogram
      **************************************************************************/
     public void addValue( int value )
     {
-        long lval = value & IBitField.INT_MASK;
+        long lval = value & BitMasks.INT_MASK;
         double bin = lval * bindexScale;
         int binIndex = ( int )Math.round( bin );
 

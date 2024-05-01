@@ -39,7 +39,7 @@ public class IBitFieldTests
         Assert.assertEquals( 26 - 14 + 1, TestBitsField.BITS14_26.size() );
 
         short expected = 0x1B95;
-        long word = expected << ( long )TestBitsField.BITS14_26.getStartBit();
+        long word = expected << TestBitsField.BITS14_26.getStartBit();
 
         Assert.assertEquals( expected,
             TestBitsField.BITS14_26.getField( word ) );

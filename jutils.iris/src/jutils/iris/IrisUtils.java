@@ -3,10 +3,9 @@ package jutils.iris;
 import java.awt.Color;
 import java.io.File;
 
-import jutils.core.data.IBitField;
-import jutils.core.io.BitsReader;
 import jutils.core.io.IOUtils;
-import jutils.iris.data.RasterConfig;
+import jutils.core.utils.BitMasks;
+import jutils.iris.rasters.IChannel;
 import jutils.iris.rasters.IRaster;
 import jutils.math.MathUtils;
 
@@ -27,13 +26,13 @@ public final class IrisUtils
     public static final Color BORDER_COLOR = new Color( 0x999999 );
 
     /**  */
-    public static final long BYTE0_MASK = IBitField.BYTE_MASK;
+    public static final long BYTE0_MASK = BitMasks.BYTE_MASK;
     /**  */
-    public static final long BYTE1_MASK = IBitField.BYTE_MASK << 8;
+    public static final long BYTE1_MASK = BitMasks.BYTE_MASK << 8;
     /**  */
-    public static final long BYTE2_MASK = IBitField.BYTE_MASK << 16;
+    public static final long BYTE2_MASK = BitMasks.BYTE_MASK << 16;
     /**  */
-    public static final long BYTE3_MASK = IBitField.BYTE_MASK << 24;
+    public static final long BYTE3_MASK = BitMasks.BYTE_MASK << 24;
 
     /***************************************************************************
      * 
@@ -43,12 +42,41 @@ public final class IrisUtils
     }
 
     /***************************************************************************
-     * @param bitCount
+     * @param bitDepth
      * @return
      **************************************************************************/
-    public static int getMaxValue( int bitCount )
+    public static int getMaxValue( int bitDepth )
     {
-        return ( int )BitsReader.MASKS[bitCount];
+        return ( int )BitMasks.getFieldMask( bitDepth );
+    }
+
+    /***************************************************************************
+     * @param bitDepth
+     * @return
+     **************************************************************************/
+    public static int getBytesPerPixel( int bitDepth )
+    {
+        return ( bitDepth + 7 ) / 8;
+    }
+
+    /***************************************************************************
+     * @param bitDepth
+     * @param count
+     * @return
+     **************************************************************************/
+    public static int getPackedSize( int bitDepth, int count )
+    {
+        return ( count * bitDepth + 7 ) / 8;
+    }
+
+    /***************************************************************************
+     * @param bitDepth
+     * @param count
+     * @return
+     **************************************************************************/
+    public static int getUnpackedSize( int bitDepth, int count )
+    {
+        return count * getBytesPerPixel( bitDepth );
     }
 
     /***************************************************************************
@@ -56,27 +84,28 @@ public final class IrisUtils
      **************************************************************************/
     public static void setDiagonalGradient( IRaster r )
     {
-        RasterConfig config = r.getConfig();
-        int max = config.getMaxPixelValue();
-        int w = config.width;
-        int h = config.height;
-        int cc = config.channelCount;
+        int w = r.getWidth();
+        int h = r.getHeight();
+        int ccount = r.getChannelCount();
 
-        float xscale = max / ( float )( w - 1 );
-        float yscale = max / ( float )( h - 1 );
-
-        for( int y = 0; y < h; y++ )
+        for( int c = 0; c < ccount; c++ )
         {
-            for( int x = 0; x < w; x++ )
+            IChannel channel = r.getChannel( c );
+            int max = getMaxValue( channel.getBitDepth() );
+
+            float xscale = max / ( float )( w - 1 );
+            float yscale = max / ( float )( h - 1 );
+
+            for( int y = 0; y < h; y++ )
             {
-                int xf = ( int )Math.round( x * xscale );
-                int yf = ( int )Math.round( y * yscale );
-
-                int v = Math.max( xf, yf );
-
-                for( int c = 0; c < cc; c++ )
+                for( int x = 0; x < w; x++ )
                 {
-                    r.setChannelAt( x, y, c, v );
+                    int xf = Math.round( x * xscale );
+                    int yf = Math.round( y * yscale );
+
+                    int v = Math.max( xf, yf );
+
+                    channel.setValueAt( x, y, v );
                 }
             }
         }
@@ -87,9 +116,8 @@ public final class IrisUtils
      **************************************************************************/
     public static void setJuliaFractal( IRaster raster )
     {
-        RasterConfig config = raster.getConfig();
-        final int w = config.width;
-        final int h = config.height;
+        final int w = raster.getWidth();
+        final int h = raster.getHeight();
         final double rad = 2.;
         final double xmin = -rad;
         final double ymin = -rad;
@@ -140,7 +168,7 @@ public final class IrisUtils
         }
 
         double s = maxItersIdx / ( double )maxt;
-        double cnt = config.getPixelCount();
+        double cnt = raster.getPixelCount();
 
         if( maxt < maxItersIdx )
         {

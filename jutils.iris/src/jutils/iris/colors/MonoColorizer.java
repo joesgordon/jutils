@@ -1,6 +1,6 @@
 package jutils.iris.colors;
 
-import jutils.iris.data.RasterConfig;
+import jutils.iris.IrisUtils;
 import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
@@ -62,8 +62,8 @@ public class MonoColorizer implements IColorizer
     @Override
     public void colorize( IRaster raster, int [] pixels )
     {
-        RasterConfig config = raster.getConfig();
-        long pixelMax = config.getMaxPixelValue();
+        int bitDepth = raster.getChannel( 0 ).getBitDepth();
+        long pixelMax = IrisUtils.getMaxValue( bitDepth );
 
         for( int i = 0; i < pixels.length; i++ )
         {

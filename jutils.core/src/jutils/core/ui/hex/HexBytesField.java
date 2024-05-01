@@ -109,7 +109,7 @@ public class HexBytesField implements IDataFormField<byte []>
     @Override
     public byte [] getValue()
     {
-        HexBytesItem item = ( HexBytesItem )comboField.getValue();
+        HexBytesItem item = comboField.getValue();
         return item == null ? new byte[] {} : item.bytes;
     }
 

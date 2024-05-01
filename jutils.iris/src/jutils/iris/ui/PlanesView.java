@@ -1,7 +1,5 @@
 package jutils.iris.ui;
 
-import java.awt.Dimension;
-
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
@@ -9,8 +7,7 @@ import jutils.core.ui.TabularView;
 import jutils.core.ui.TabularView.ITabularModel;
 import jutils.core.ui.TabularView.ITabularNotifier;
 import jutils.core.ui.model.IView;
-import jutils.iris.data.ChannelPlacement;
-import jutils.iris.data.RasterConfig;
+import jutils.iris.rasters.IChannel;
 import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
@@ -21,23 +18,19 @@ public class PlanesView implements IView<JComponent>
     /**  */
     private final JTabbedPane view;
     /**  */
-    private final ChannelTable channel0View;
-    /**  */
-    private final ChannelTable channel1View;
-    /**  */
-    private final ChannelTable channel2View;
-    /**  */
-    private final ChannelTable channel3View;
+    private final ChannelTable [] channelViews;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public PlanesView()
     {
-        this.channel0View = new ChannelTable( 0 );
-        this.channel1View = new ChannelTable( 1 );
-        this.channel2View = new ChannelTable( 2 );
-        this.channel3View = new ChannelTable( 3 );
+        this.channelViews = new ChannelTable[IRaster.MAX_CHANNELS];
+
+        for( int c = 0; c < channelViews.length; c++ )
+        {
+            channelViews[c] = new ChannelTable();
+        }
 
         this.view = createView();
     }
@@ -48,11 +41,6 @@ public class PlanesView implements IView<JComponent>
     private JTabbedPane createView()
     {
         JTabbedPane tabs = new JTabbedPane();
-
-        tabs.addTab( "0", channel0View.getView() );
-        tabs.addTab( "1", channel1View.getView() );
-        tabs.addTab( "2", channel2View.getView() );
-        tabs.addTab( "3", channel3View.getView() );
 
         return tabs;
     }
@@ -71,20 +59,15 @@ public class PlanesView implements IView<JComponent>
      **************************************************************************/
     public void setRaster( IRaster raster )
     {
-        RasterConfig c = raster.getConfig();
-
-        channel0View.setRaster( raster );
-        channel1View.setRaster( raster );
-        channel2View.setRaster( raster );
-        channel3View.setRaster( raster );
-
         view.removeAll();
 
-        ChannelTable [] views = { channel0View, channel1View, channel2View,
-            channel3View };
-        for( int i = 0; i < c.channelCount; i++ )
+        for( int c = 0; c < raster.getChannelCount(); c++ )
         {
-            view.addTab( views[i].getName(), views[i].getView() );
+            ChannelTable cv = channelViews[c];
+            IChannel channel = raster.getChannel( c );
+
+            cv.setChannel( channel );
+            view.addTab( cv.getName(), cv.getView() );
         }
     }
 
@@ -94,27 +77,19 @@ public class PlanesView implements IView<JComponent>
     private static final class ChannelTable implements IView<JComponent>
     {
         /**  */
-        private final int channelIndex;
-        /**  */
         private final ChannelModel model;
         /**  */
         private final TabularView view;
 
-        /**  */
-        private IRaster raster;
-        /**  */
-        private boolean isBayer;
         /**  */
         private String name;
 
         /**
          * @param channelIndex
          */
-        public ChannelTable( int channelIndex )
+        public ChannelTable()
         {
-            this.channelIndex = channelIndex;
-            this.model = new ChannelModel(
-                ( r, c ) -> getChannelValue( r, c ) );
+            this.model = new ChannelModel();
             this.view = new TabularView();
 
             view.setModel( model );
@@ -131,19 +106,11 @@ public class PlanesView implements IView<JComponent>
         /**
          * @param raster
          */
-        public void setRaster( IRaster raster )
+        public void setChannel( IChannel channel )
         {
-            RasterConfig c = raster.getConfig();
+            model.setChannel( channel );
 
-            this.raster = raster;
-            this.isBayer = c.channelLoc == ChannelPlacement.BAYER;
-
-            int w = isBayer ? c.width / 2 : c.width;
-            int h = isBayer ? c.height / 2 : c.height;
-
-            model.setDimension( w, h );
-
-            this.name = c.channels[channelIndex].name;
+            this.name = channel.getName();
         }
 
         /**
@@ -154,41 +121,6 @@ public class PlanesView implements IView<JComponent>
         {
             return view.getView();
         }
-
-        /**
-         * @param row
-         * @param col
-         * @return
-         */
-        private int getChannelValue( int row, int col )
-        {
-            int r = row;
-            int c = col;
-
-            if( isBayer )
-            {
-                boolean isSecPair = channelIndex < 2;
-                boolean isChOdd = ( channelIndex & 1 ) == 1;
-
-                r = row * 2 + ( isSecPair ? 0 : 1 );
-                c = col * 2 + ( isChOdd ? 1 : 0 );
-            }
-
-            return raster.getChannelAt( c, r, channelIndex );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static interface IChannelSupplier
-    {
-        /**
-         * @param row
-         * @param col
-         * @return
-         */
-        public int build( int row, int col );
     }
 
     /***************************************************************************
@@ -197,28 +129,25 @@ public class PlanesView implements IView<JComponent>
     private static final class ChannelModel implements ITabularModel
     {
         /**  */
-        private final IChannelSupplier valueBuilder;
-        /**  */
-        private final Dimension rasterDim;
-
+        private IChannel channel;
         /**  */
         private ITabularNotifier notifier;
 
         /**
          * @param valueBuilder
          */
-        public ChannelModel( IChannelSupplier valueBuilder )
+        public ChannelModel()
         {
-            this.valueBuilder = valueBuilder;
-            this.rasterDim = new Dimension( 0, 0 );
-
+            this.channel = null;
             this.notifier = null;
         }
 
-        public void setDimension( int width, int height )
+        /**
+         * @param channel
+         */
+        public void setChannel( IChannel channel )
         {
-            this.rasterDim.width = width;
-            this.rasterDim.height = height;
+            this.channel = channel;
 
             if( notifier != null )
             {
@@ -241,7 +170,7 @@ public class PlanesView implements IView<JComponent>
         @Override
         public int getRowCount()
         {
-            return rasterDim.height;
+            return channel == null ? 0 : channel.getHeight();
         }
 
         /**
@@ -259,7 +188,7 @@ public class PlanesView implements IView<JComponent>
         @Override
         public int getColCount()
         {
-            return rasterDim.width;
+            return channel == null ? 0 : channel.getWidth();
         }
 
         /**
@@ -286,7 +215,7 @@ public class PlanesView implements IView<JComponent>
         @Override
         public Object getValue( int row, int col )
         {
-            return valueBuilder.build( row, col );
+            return "" + channel.getValueAt( col, row );
         }
 
         /**

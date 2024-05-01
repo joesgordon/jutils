@@ -1,24 +1,20 @@
 package jutils.core.ui.fields;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import jutils.core.ui.event.updater.IUpdater;
-import jutils.core.ui.validation.IValidationField;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 import jutils.core.utils.Usable;
 
 /*******************************************************************************
- * 
+ * @param <T>
  ******************************************************************************/
-public class UsableFormField<T>
-    implements IDataFormField<Usable<T>>, IValidationField
+public class UsableFormField<T> implements IDataFormField<Usable<T>>
 {
     /**  */
     private final JPanel panel;
@@ -41,9 +37,19 @@ public class UsableFormField<T>
         this.usedField = new JCheckBox();
         this.panel = createView();
 
-        field.setUpdater( new DataUpdater<>( this, ( d ) -> usable.data = d ) );
+        field.setUpdater( ( d ) -> handleDataUpdated( d ) );
 
         setValue( new Usable<>() );
+    }
+
+    /***************************************************************************
+     * @param d
+     **************************************************************************/
+    private void handleDataUpdated( T d )
+    {
+        usable.data = d;
+
+        fireUpdater();
     }
 
     /***************************************************************************
@@ -53,7 +59,7 @@ public class UsableFormField<T>
     {
         JPanel panel = new JPanel( new BorderLayout() );
 
-        usedField.addActionListener( new CheckedListener<>( this ) );
+        usedField.addActionListener( ( e ) -> handleChecked() );
 
         panel.add( usedField, BorderLayout.WEST );
         panel.add( field.getView(), BorderLayout.CENTER );
@@ -64,6 +70,31 @@ public class UsableFormField<T>
     /***************************************************************************
      * 
      **************************************************************************/
+    private void handleChecked()
+    {
+        usable.isUsed = usedField.isSelected();
+        field.setEditable( usable.isUsed );
+
+        // LogUtils.printDebug( "UsableFormField: " + field.getName() +
+        // " field is " + ( field.usable.isUsed ? "" : "not " ) + "used" );
+
+        fireUpdater();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void fireUpdater()
+    {
+        if( updater != null )
+        {
+            updater.update( usable );
+        }
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public String getName()
     {
@@ -71,7 +102,7 @@ public class UsableFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Usable<T> getValue()
@@ -80,7 +111,7 @@ public class UsableFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setValue( Usable<T> value )
@@ -102,7 +133,7 @@ public class UsableFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setUpdater( IUpdater<Usable<T>> updater )
@@ -111,7 +142,7 @@ public class UsableFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public IUpdater<Usable<T>> getUpdater()
@@ -120,7 +151,7 @@ public class UsableFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setEditable( boolean editable )
@@ -130,18 +161,7 @@ public class UsableFormField<T>
     }
 
     /***************************************************************************
-     * 
-     **************************************************************************/
-    private void callUpdater()
-    {
-        if( updater != null )
-        {
-            updater.update( usable );
-        }
-    }
-
-    /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -150,7 +170,7 @@ public class UsableFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
@@ -159,7 +179,7 @@ public class UsableFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
@@ -168,59 +188,11 @@ public class UsableFormField<T>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
         return usedField.isSelected() ? field.getValidity() : new Validity();
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class CheckedListener<T> implements ActionListener
-    {
-        private final UsableFormField<T> field;
-
-        public CheckedListener( UsableFormField<T> field )
-        {
-            this.field = field;
-        }
-
-        @Override
-        public void actionPerformed( ActionEvent e )
-        {
-            field.usable.isUsed = field.usedField.isSelected();
-            // LogUtils.printDebug( "UsableFormField: " + field.getName() +
-            // " field is " + ( field.usable.isUsed ? "" : "not " ) + "used" );
-            field.field.setEditable( field.usable.isUsed );
-            // field.field.setValue( field.field.getValue() );
-
-            field.callUpdater();
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class DataUpdater<T> implements IUpdater<T>
-    {
-        private final UsableFormField<T> field;
-        private final IUpdater<T> updater;
-
-        public DataUpdater( UsableFormField<T> field, IUpdater<T> updater )
-        {
-            this.field = field;
-            this.updater = updater;
-        }
-
-        @Override
-        public void update( T data )
-        {
-            updater.update( data );
-
-            field.callUpdater();
-        }
     }
 }

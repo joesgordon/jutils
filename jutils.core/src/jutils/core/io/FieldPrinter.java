@@ -8,8 +8,8 @@ import jutils.core.INamedValue;
 import jutils.core.Iterables;
 import jutils.core.Iterables.Iteratorable;
 import jutils.core.Utils;
-import jutils.core.data.IBitField;
 import jutils.core.ui.hex.HexUtils;
+import jutils.core.utils.BitMasks;
 
 /*******************************************************************************
  * Defines the methods to print fields of a structure/section/tier.
@@ -186,7 +186,7 @@ public class FieldPrinter
      **************************************************************************/
     public void printHexField( String name, byte value )
     {
-        printFieldAsHex( name, value & IBitField.BYTE_MASK, 2 );
+        printFieldAsHex( name, value & BitMasks.BYTE_MASK, 2 );
     }
 
     /***************************************************************************
@@ -195,7 +195,7 @@ public class FieldPrinter
      **************************************************************************/
     public void printHexField( String name, short value )
     {
-        printFieldAsHex( name, value & IBitField.SHORT_MASK, 4 );
+        printFieldAsHex( name, value & BitMasks.SHORT_MASK, 4 );
     }
 
     /***************************************************************************
@@ -204,7 +204,7 @@ public class FieldPrinter
      **************************************************************************/
     public void printHexField( String name, int value )
     {
-        printFieldAsHex( name, value & IBitField.INT_MASK, 8 );
+        printFieldAsHex( name, value & BitMasks.INT_MASK, 8 );
     }
 
     /***************************************************************************

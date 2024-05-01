@@ -137,6 +137,8 @@ public class SerialConsoleView implements IView<JComponent>
      **************************************************************************/
     public boolean disconnect()
     {
+        boolean running = false;
+
         LogUtils.printDebug( "SerialConsoleView.disconnect()" );
 
         if( serialTask.isRunning() )
@@ -148,14 +150,14 @@ public class SerialConsoleView implements IView<JComponent>
         {
             LogUtils.printDebug( "Stopping display thread" );
             msgsDisplayThread.stop();
-            return true;
+            running = true;
         }
         else
         {
             LogUtils.printDebug( "Not Running" );
         }
 
-        return false;
+        return running;
     }
 
     /***************************************************************************

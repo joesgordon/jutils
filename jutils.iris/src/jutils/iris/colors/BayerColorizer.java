@@ -2,7 +2,6 @@ package jutils.iris.colors;
 
 import jutils.iris.IrisUtils;
 import jutils.iris.data.BayerOrder;
-import jutils.iris.data.RasterConfig;
 import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************
@@ -60,8 +59,10 @@ public class BayerColorizer implements IColorizer
      **************************************************************************/
     private void colorizeNearest( IRaster raster, int [] pixels )
     {
-        RasterConfig config = raster.getConfig();
-        float maxValue = config.getMaxPixelValue();
+        int width = raster.getWidth();
+
+        int bitDepth = raster.getChannel( 0 ).getBitDepth();
+        float maxValue = IrisUtils.getMaxValue( bitDepth );
 
         int [] erec = { 0, 0, 0, 0, 0, 0 };
         int [] eroc = { 0, 0, 0, 0, 0, 0 };
@@ -101,8 +102,8 @@ public class BayerColorizer implements IColorizer
 
         for( int p = 0; p < pixels.length; p++ )
         {
-            int y = p / config.width;
-            int x = p - ( y * config.width );
+            int y = p / width;
+            int x = p - ( y * width );
 
             boolean isEvenRow = ( y % 2 ) == 0;
             boolean isEvenCol = ( x % 2 ) == 0;
@@ -157,27 +158,6 @@ public class BayerColorizer implements IColorizer
      **************************************************************************/
     private void colorizeBilinear( IRaster raster, int [] pixels )
     {
-        RasterConfig config = raster.getConfig();
-        float maxValue = config.getMaxPixelValue();
-
-        final int w = config.width;
-        final int h = config.height;
-
-        int x = 0;
-        int y = 0;
-
-        for( int p = 0; p < pixels.length; p++ )
-        {
-
-            // update x/y
-            x++;
-            if( x == w )
-            {
-                x = 0;
-                y++;
-            }
-        }
-
         // TODO Auto-generated method stub
         colorizeNearest( raster, pixels );
     }
@@ -202,6 +182,10 @@ public class BayerColorizer implements IColorizer
         colorizeBilinear( raster, pixels );
     }
 
+    /***************************************************************************
+     * @param raster
+     * @param pixels
+     **************************************************************************/
     private void colorizeLanczos( IRaster raster, int [] pixels )
     {
         // TODO Auto-generated method stub

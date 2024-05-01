@@ -1,6 +1,5 @@
 package jutils.iris.colors;
 
-import jutils.iris.data.RasterConfig;
 import jutils.iris.rasters.IRaster;
 
 /*******************************************************************************

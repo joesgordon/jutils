@@ -56,6 +56,7 @@ public class PaginatedTableViewMain
             ReferenceStream<Integer> refStream;
             try
             {
+                @SuppressWarnings( "resource")
                 ReferenceStream<Integer> rs = new ReferenceStream<>(
                     new IntegerSerializer() );
                 refStream = rs;

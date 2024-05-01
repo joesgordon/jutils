@@ -233,7 +233,8 @@ public class HistogramView implements IView<JComponent>
         {
             int x = ( int )( i * xs );
             int height = ( int )( ys * v );
-            int y = ( int )( c.getHeight() - height );
+            int y = c.getHeight() - height;
+
             g.fillRect( x, y, width, height );
         }
         catch( ArrayIndexOutOfBoundsException ex )
