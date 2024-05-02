@@ -54,11 +54,11 @@ public class HistogramView implements IView<JComponent>
         this.hoverEnd = 0;
         this.hoverCount = 0;
 
+        hoverLabel.setBorder( new LineBorder( Color.yellow, 2 ) );
         hoverLabel.setHorizontalAlignment( SwingConstants.CENTER );
         hoverLabel.setVerticalAlignment( SwingConstants.CENTER );
         hoverLabel.setOpaque( true );
         hoverLabel.setBackground( UIProperty.PANEL_BACKGROUND.getColor() );
-        hoverLabel.setBorder( new LineBorder( Color.yellow, 2 ) );
 
         histogram.addValue( 2 );
 
@@ -192,8 +192,8 @@ public class HistogramView implements IView<JComponent>
         if( hp != null )
         {
             String txt = hoverStart == hoverEnd
-                ? String.format( "%d: %d", hoverStart, hoverCount )
-                : String.format( "%d - %d: %d", hoverStart, hoverEnd,
+                ? String.format( "%d: %d ", hoverStart, hoverCount )
+                : String.format( "%d - %d: %d ", hoverStart, hoverEnd,
                     hoverCount );
             Point tp = new Point( hoverPoint );
 
@@ -201,7 +201,7 @@ public class HistogramView implements IView<JComponent>
             hoverLabel.repaint();
             hoverLabel.validate();
             Dimension td = hoverLabel.getPreferredSize();
-            td.width += 6;
+            td.width += 12;
             td.height += 4;
             tp.y -= td.height;
             hoverLabel.setSize( td );
