@@ -128,10 +128,9 @@ public class InterleavedChannel implements IChannel
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int getValueAt( int row, int column )
-        throws ArrayIndexOutOfBoundsException
+    public int getValueAt( int x, int y ) throws ArrayIndexOutOfBoundsException
     {
-        long sample = raster.getPixelAt( column, row );
+        long sample = raster.getPixelAt( x, y );
 
         return sampleToChannel( sample );
     }

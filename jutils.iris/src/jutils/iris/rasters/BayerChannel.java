@@ -33,6 +33,10 @@ public class BayerChannel implements IChannel
     private final long setMask;
     /**  */
     private final long clearMask;
+    /**  */
+    private final int rowDelta;
+    /**  */
+    private final int colDelta;
 
     /***************************************************************************
      * @param raster
@@ -57,6 +61,12 @@ public class BayerChannel implements IChannel
             raster.getIndexingMethod() );
         this.setMask = BitMasks.getFieldMask( bitDepth );
         this.clearMask = ~setMask;
+
+        boolean isSecPair = channelIndex < 2;
+        boolean isChOdd = ( channelIndex & 1 ) == 1;
+
+        this.rowDelta = isSecPair ? 0 : 1;
+        this.colDelta = isChOdd ? 1 : 0;
     }
 
     /***************************************************************************
@@ -153,23 +163,20 @@ public class BayerChannel implements IChannel
     {
         Point p = getLocation( index );
 
-        return getValueAt( p.y, p.x );
+        return getValueAt( p.x, p.y );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int getValueAt( int row, int column )
+    public int getValueAt( int x, int y )
     {
-        int r = row;
-        int c = column;
+        int r = y;
+        int c = x;
 
-        boolean isSecPair = channelIndex < 2;
-        boolean isChOdd = ( channelIndex & 1 ) == 1;
-
-        r = r * 2 + ( isSecPair ? 0 : 1 );
-        c = c * 2 + ( isChOdd ? 1 : 0 );
+        r = r * 2 + rowDelta;
+        c = c * 2 + colDelta;
 
         try
         {
@@ -181,7 +188,7 @@ public class BayerChannel implements IChannel
         {
             String err = String.format(
                 "Unable to access channel %d @ channel location %d,%d = pixel location %d, %d in channel of %d x %d = %d values = image of %d x %d = %d pixels",
-                channelIndex, column, row, c, r, width, height, getSize(),
+                channelIndex, x, y, c, r, width, height, getSize(),
                 raster.getWidth(), raster.getHeight(), raster.getPixelCount() );
             throw new IllegalArgumentException( err, ex );
         }
