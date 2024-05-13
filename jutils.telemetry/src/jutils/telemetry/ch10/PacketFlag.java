@@ -1,34 +1,46 @@
-package jutils.core.data;
+package jutils.telemetry.ch10;
+
+import jutils.core.data.BitFieldInfo;
+import jutils.core.data.INamedBitField;
 
 /*******************************************************************************
- * Class for supporting {@link IBitFlag}.
+ * 
  ******************************************************************************/
-public class BitFieldInfo implements INamedBitField
+public enum PacketFlag implements INamedBitField
 {
-    /** The name of this item. */
-    public final String name;
     /**  */
-    public final BitField field;
+    CHECKSUM_PRESENT( 0, 1, "Checksum Present" ),
+    /**  */
+    SEC_HDR_TIME_FMT( 2, 3, "Secondary Header Time Format" ),
+    /**  */
+    DATA_OVERFLOW( 4, "Data Overflow" ),
+    /**  */
+    RTC_SYNC_ERROR( 5, "RTC Sync Error" ),
+    /**  */
+    IPTS_TIME_SOURCE( 6, "IPTS Time Source" ),
+    /**  */
+    SEC_HDR_PRESENT( 7, "Secondary Header Present" ),;
+
+    /**  */
+    private BitFieldInfo info;
 
     /***************************************************************************
-     * Creates a new structure for supporting {@link IBitFlag}.
-     * @param bit the bit to create a mask for.
-     * @param name the name of this field/flag.
+     * @param bit
+     * @param name
      **************************************************************************/
-    public BitFieldInfo( int bit, String name )
+    private PacketFlag( int bit, String name )
     {
         this( bit, bit, name );
     }
 
     /***************************************************************************
-     * @param startBit the first bit of this field, inclusive.
-     * @param endBit the last bit of this field, inclusive.
-     * @param name the name of this field/flag.
+     * @param startBit
+     * @param endBit
+     * @param name
      **************************************************************************/
-    public BitFieldInfo( int startBit, int endBit, String name )
+    private PacketFlag( int startBit, int endBit, String name )
     {
-        this.name = name;
-        this.field = new BitField( startBit, endBit );
+        this.info = new BitFieldInfo( startBit, endBit, name );
     }
 
     /***************************************************************************
@@ -37,7 +49,7 @@ public class BitFieldInfo implements INamedBitField
     @Override
     public String getName()
     {
-        return this.name;
+        return info.getName();
     }
 
     /***************************************************************************
@@ -46,7 +58,7 @@ public class BitFieldInfo implements INamedBitField
     @Override
     public int getStartBit()
     {
-        return field.startBit;
+        return info.getStartBit();
     }
 
     /***************************************************************************
@@ -55,7 +67,7 @@ public class BitFieldInfo implements INamedBitField
     @Override
     public int getEndBit()
     {
-        return field.endBit;
+        return info.getEndBit();
     }
 
     /***************************************************************************
@@ -64,6 +76,6 @@ public class BitFieldInfo implements INamedBitField
     @Override
     public long getMask()
     {
-        return field.mask;
+        return info.getMask();
     }
 }

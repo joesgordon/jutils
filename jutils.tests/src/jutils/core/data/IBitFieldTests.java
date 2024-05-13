@@ -131,7 +131,7 @@ public class IBitFieldTests
          */
         private TestBitsField( int b0, int b1 )
         {
-            this.info = new BitFieldInfo( "Bits " + b0 + " - " + b1, b0, b1 );
+            this.info = new BitFieldInfo( b0, b1, "Bits " + b0 + " - " + b1 );
         }
 
         /**
