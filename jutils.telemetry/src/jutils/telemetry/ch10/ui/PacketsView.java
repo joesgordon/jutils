@@ -1,4 +1,4 @@
-package jutils.ch10.ui;
+package jutils.telemetry.ch10.ui;
 
 import javax.swing.JComponent;
 

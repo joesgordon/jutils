@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import javax.swing.JComponent;
 
 import jutils.core.io.LogUtils;
+import jutils.core.ui.IPaintable;
 import jutils.core.ui.PaintingComponent;
 import jutils.core.ui.event.MouseEventsListener;
 import jutils.core.ui.event.MouseEventsListener.MouseEventType;
@@ -37,6 +38,8 @@ public class RasterView implements IView<JComponent>
     private boolean hoverEnabled;
     /**  */
     private Consumer<Point> imageHoverCallback;
+    /**  */
+    private IPaintable overlay;
 
     /***************************************************************************
      * 
@@ -47,6 +50,8 @@ public class RasterView implements IView<JComponent>
         this.view = new PaintingComponent( ( c, g ) -> paint( c, g ), false );
         this.hoverEnabled = true;
         this.imageHoverCallback = ( p ) -> {
+        };
+        this.overlay = ( c, g ) -> {
         };
 
         MouseEventsListener mouseListener = new MouseEventsListener(
@@ -179,6 +184,8 @@ public class RasterView implements IView<JComponent>
 
         // AbstractBorder bdr = new LineBorder( Color.BLACK, 2 );
         // bdr.paintBorder( c, g, 5, 5, image.width, image.height );
+
+        overlay.paint( c, g );
     }
 
     /***************************************************************************
@@ -239,6 +246,14 @@ public class RasterView implements IView<JComponent>
     public JComponent getView()
     {
         return view;
+    }
+
+    /***************************************************************************
+     * @param overlay
+     **************************************************************************/
+    public void setOverlay( IPaintable overlay )
+    {
+        this.overlay = overlay;
     }
 
     /***************************************************************************

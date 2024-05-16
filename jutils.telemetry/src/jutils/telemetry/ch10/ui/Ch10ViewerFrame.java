@@ -1,9 +1,8 @@
-package jutils.ch10.ui;
+package jutils.telemetry.ch10.ui;
 
 import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -15,11 +14,6 @@ import javax.swing.JToolBar;
 
 import jutils.core.SwingUtils;
 import jutils.core.ValidationException;
-import jutils.core.io.DataStream;
-import jutils.core.io.FieldPrinter;
-import jutils.core.io.FileStream;
-import jutils.core.io.IDataStream;
-import jutils.core.io.LogUtils;
 import jutils.core.ui.RecentFilesViews;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.event.FileChooserListener;
@@ -29,9 +23,7 @@ import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.model.IView;
-import jutils.core.utils.ByteOrdering;
-import jutils.telemetry.ch10.PacketHeader;
-import jutils.telemetry.ch10.PacketHeader.PacketHeaderSerializer;
+import jutils.telemetry.ch10.Ch10File.Ch10FileReader;
 
 /*******************************************************************************
  * 
@@ -138,47 +130,21 @@ public class Ch10ViewerFrame implements IView<JFrame>
         recentFiles.setData(
             Ch10ViewerOptions.getOptions().recentFiles.toList() );
 
-        try( FileStream fs = new FileStream( file, true );
-             IDataStream stream = new DataStream( fs,
-                 ByteOrdering.INTEL_ORDER ) )
+        Ch10FileReader reader = new Ch10FileReader();
+
+        try
         {
-            PacketHeader header = new PacketHeader();
-            PacketHeaderSerializer serializer = new PacketHeaderSerializer();
-
-            FieldPrinter fp = new FieldPrinter();
-            int i = 0;
-            while( PacketHeader.SIZE < stream.getAvailable() )
-            {
-                serializer.read( header, stream );
-
-                // LogUtils.print( "%d, %d, %d, %d, %s, %d", i,
-                // header.channelId,
-                // header.sequenceNumber & 0xFF, header.packetLength,
-                // header.dataType.name, header.relativeTimeCounter );
-                fp.printTier( "Packet " + i, header );
-
-                long skipSize = header.packetLength - PacketHeader.SIZE;
-
-                stream.skip( skipSize );
-                i++;
-            }
-
-            LogUtils.print( fp.toString() );
+            reader.read( file );
         }
-        catch( FileNotFoundException ex )
+        catch( IOException e )
         {
             // TODO Auto-generated catch block
-            ex.printStackTrace();
+            e.printStackTrace();
         }
-        catch( IOException ex )
+        catch( ValidationException e )
         {
             // TODO Auto-generated catch block
-            ex.printStackTrace();
-        }
-        catch( ValidationException ex )
-        {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            e.printStackTrace();
         }
     }
 

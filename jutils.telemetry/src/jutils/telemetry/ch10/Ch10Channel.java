@@ -1,18 +1,22 @@
 package jutils.telemetry.ch10;
 
-import java.util.List;
-
 /*******************************************************************************
  * 
  ******************************************************************************/
 public class Ch10Channel
 {
     /**  */
-    public short channelId;
+    public short id;
     /**  */
     public DataType dataType;
-    /**  */
-    public int count;
-    /**  */
-    public List<Long> positions;
+
+    /***************************************************************************
+     * @param id
+     * @param dataType
+     **************************************************************************/
+    public Ch10Channel( short id, DataType dataType )
+    {
+        this.id = id;
+        this.dataType = dataType;
+    }
 }
