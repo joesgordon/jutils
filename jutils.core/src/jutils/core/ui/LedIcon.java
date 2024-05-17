@@ -2,13 +2,13 @@ package jutils.core.ui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.RenderingHints;
 
 import javax.swing.Icon;
+import javax.swing.JComponent;
+
+import jutils.core.ui.j2d.LedPaintable;
 
 /*******************************************************************************
  * 
@@ -16,15 +16,7 @@ import javax.swing.Icon;
 public class LedIcon implements Icon
 {
     /**  */
-    private int height;
-    /**  */
-    private int width;
-    /**  */
-    private Color color;
-    /**  */
-    private boolean round;
-    /**  */
-    private final Color borderColor;
+    public final LedPaintable led;
 
     /***************************************************************************
      * @param color
@@ -74,11 +66,7 @@ public class LedIcon implements Icon
     public LedIcon( Color color, int width, int height, boolean round,
         Color borderColor )
     {
-        this.color = color;
-        this.width = width;
-        this.height = height;
-        this.round = round;
-        this.borderColor = borderColor == null ? Color.darkGray : borderColor;
+        this.led = new LedPaintable( color, width, height, round, borderColor );
     }
 
     /***************************************************************************
@@ -86,7 +74,7 @@ public class LedIcon implements Icon
      **************************************************************************/
     public void setColor( Color color )
     {
-        this.color = color;
+        led.setColor( color );
     }
 
     /***************************************************************************
@@ -94,7 +82,23 @@ public class LedIcon implements Icon
      **************************************************************************/
     public Color getColor()
     {
-        return this.color;
+        return led.getColor();
+    }
+
+    /***************************************************************************
+     * @param isOval
+     **************************************************************************/
+    public void setShape( boolean isOval )
+    {
+        led.setShape( isOval );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public boolean getShape()
+    {
+        return led.getShape();
     }
 
     /***************************************************************************
@@ -102,7 +106,7 @@ public class LedIcon implements Icon
      **************************************************************************/
     public void setIconHeight( int height )
     {
-        this.height = height;
+        led.setHeight( height );
     }
 
     /***************************************************************************
@@ -111,7 +115,7 @@ public class LedIcon implements Icon
     @Override
     public int getIconHeight()
     {
-        return height;
+        return led.getHeight();
     }
 
     /***************************************************************************
@@ -119,7 +123,16 @@ public class LedIcon implements Icon
      **************************************************************************/
     public void setIconWidth( int width )
     {
-        this.width = width;
+        led.setWidth( width );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getIconWidth()
+    {
+        return led.getWidth();
     }
 
     /***************************************************************************
@@ -127,17 +140,8 @@ public class LedIcon implements Icon
      **************************************************************************/
     public void setIconSize( int size )
     {
-        this.height = size;
-        this.width = size;
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    @Override
-    public int getIconWidth()
-    {
-        return width;
+        setIconWidth( size );
+        setIconHeight( size );
     }
 
     /***************************************************************************
@@ -146,39 +150,10 @@ public class LedIcon implements Icon
     @Override
     public void paintIcon( Component c, Graphics g, int x, int y )
     {
-        Graphics2D graphics = ( Graphics2D )g.create( x, y, width, height );
+        Graphics2D graphics = ( Graphics2D )g.create( x, y, led.getWidth(),
+            led.getHeight() );
 
-        graphics.setRenderingHint( RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON );
-        graphics.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
-
-        graphics.setColor( borderColor );
-
-        if( round )
-        {
-            graphics.fillOval( 0, 0, width, height );
-        }
-        else
-        {
-            graphics.fillRoundRect( 0, 0, width, height, 4, 4 );
-        }
-
-        Paint storedPaint = graphics.getPaint();
-        graphics.setPaint( new GradientPaint( 0, 0, this.color, width, height,
-            color.darker() ) );
-        // graphics.setColor( this.color );
-
-        if( round )
-        {
-            graphics.fillOval( 1, 1, width - 2, height - 2 );
-        }
-        else
-        {
-            graphics.fillRoundRect( 1, 1, width - 2, height - 2, 4, 4 );
-        }
-
-        graphics.setPaint( storedPaint );
+        led.paint( ( JComponent )c, graphics );
 
         graphics.dispose();
     }

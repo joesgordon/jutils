@@ -6,7 +6,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
@@ -19,6 +21,7 @@ import jutils.core.ui.ListView.IItemListModel;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
 import jutils.demo.ui.jutils.DateTimeViews;
+import jutils.demo.ui.jutils.LedViews;
 import jutils.demo.ui.jutils.MsgInputDemoView;
 import jutils.demo.ui.jutils.ScreenFormFieldView;
 import jutils.iris.demo.HistogramsDemoView;
@@ -55,7 +58,11 @@ public class JUtilsView implements IView<JComponent>
         choicesView.addSelectedListener(
             ( e ) -> handleSelction( e.getItem() ) );
 
-        choicesView.setData( new ArrayList<>( compViews.keySet() ) );
+        List<JUtilsComponent> views = new ArrayList<>( compViews.keySet() );
+        Collections.sort( views, ( this1, that1 ) -> {
+            return this1.name.compareTo( that1.name );
+        } );
+        choicesView.setData( views );
 
         if( compViews.size() != JUtilsComponent.values().length )
         {
@@ -76,6 +83,7 @@ public class JUtilsView implements IView<JComponent>
             () -> new ScreenFormFieldView() );
         views.put( JUtilsComponent.HISTOGRAMS_VIEW,
             () -> new HistogramsDemoView() );
+        views.put( JUtilsComponent.LEDS_VIEW, () -> new LedViews() );
     }
 
     /***************************************************************************
@@ -149,7 +157,9 @@ public class JUtilsView implements IView<JComponent>
         /**  */
         MESSAGE_INPUT_VIEW( "Message Input View" ),
         /**  */
-        HISTOGRAMS_VIEW( "Histograms View" ),;
+        HISTOGRAMS_VIEW( "Histograms View" ),
+        /**  */
+        LEDS_VIEW( "LEDs View" ),;
 
         /**  */
         private final String name;
