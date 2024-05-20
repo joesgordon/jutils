@@ -114,18 +114,21 @@ public class PacketHeader implements ITierPrinter
         printer.printField( "Channel ID", channelId );
         printer.printField( "Packet Length", packetLength );
         printer.printField( "Data Length", dataLength );
+
         printer.printField( "Data Version", dataVersion.getDescription() );
-        printer.printField( "Sequence #", sequenceNumber );
+        printer.printField( "Sequence #", sequenceNumber & 0xFF );
         printer.printField( "Checksum Present",
             checksumPresent.getDescription() );
         printer.printField( "Secondary Header Time Format",
             secHdrTimeFmt.getDescription() );
-        printer.printField( "Data Length", dataLength );
         printer.printField( "Data Overflow", dataOverflow );
         printer.printField( "RTC Sync Error", rtcSyncError );
+
         printer.printField( "IPTS Time Source", iptsTimeSource );
         printer.printField( "Secondary Header Present", secHdrPresent );
         printer.printField( "Data Type", dataType.getDescription() );
+        printer.printField( "Relative Time Counter", relativeTimeCounter );
+        printer.printHexField( "Checksum", checksum );
     }
 
     /***************************************************************************

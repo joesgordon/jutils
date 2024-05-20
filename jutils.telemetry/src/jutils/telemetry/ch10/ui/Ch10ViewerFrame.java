@@ -1,5 +1,6 @@
 package jutils.telemetry.ch10.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -23,6 +24,7 @@ import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.model.IView;
+import jutils.telemetry.ch10.Ch10File;
 import jutils.telemetry.ch10.Ch10File.Ch10FileReader;
 
 /*******************************************************************************
@@ -33,6 +35,8 @@ public class Ch10ViewerFrame implements IView<JFrame>
     /**  */
     private final StandardFrameView view;
     /**  */
+    private final Ch10View c10View;
+    /**  */
     private final RecentFilesViews recentFiles;
 
     /***************************************************************************
@@ -41,6 +45,7 @@ public class Ch10ViewerFrame implements IView<JFrame>
     public Ch10ViewerFrame()
     {
         this.view = new StandardFrameView();
+        this.c10View = new Ch10View();
         this.recentFiles = new RecentFilesViews();
 
         view.setTitle( "Chapter 10 Viewer" );
@@ -100,10 +105,11 @@ public class Ch10ViewerFrame implements IView<JFrame>
      **************************************************************************/
     private Container createContent()
     {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel( new BorderLayout() );
 
         panel.setDropTarget(
             new FileDropTarget( ( e ) -> handleFileDropped( e ) ) );
+        panel.add( c10View.getView(), BorderLayout.CENTER );
 
         return panel;
     }
@@ -134,17 +140,23 @@ public class Ch10ViewerFrame implements IView<JFrame>
 
         try
         {
-            reader.read( file );
+            Ch10File c10 = reader.read( file );
+
+            Ch10File oldFile = c10View.getData();
+
+            oldFile.stream.close();
+
+            c10View.setData( c10 );
         }
-        catch( IOException e )
+        catch( IOException ex )
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            ex.printStackTrace();
         }
-        catch( ValidationException e )
+        catch( ValidationException ex )
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            ex.printStackTrace();
         }
     }
 

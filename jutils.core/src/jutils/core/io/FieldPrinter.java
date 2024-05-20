@@ -413,45 +413,6 @@ public class FieldPrinter
     }
 
     /***************************************************************************
-     * @param <T>
-     **************************************************************************/
-    private static final class SubIterator<T> implements Iterator<T>
-    {
-        /**  */
-        private final Iterator<T> array;
-        /**  */
-        private final int count;
-
-        /**  */
-        private int index;
-
-        /**
-         * @param array
-         * @param count
-         */
-        public SubIterator( Iterator<T> array, int count )
-        {
-            this.array = array;
-            this.count = count;
-            this.index = 0;
-        }
-
-        @Override
-        public boolean hasNext()
-        {
-            return index < count;
-        }
-
-        @Override
-        public T next()
-        {
-            T item = array.next();
-            index++;
-            return item;
-        }
-    }
-
-    /***************************************************************************
      * @param name
      * @param values
      **************************************************************************/
@@ -773,6 +734,19 @@ public class FieldPrinter
     }
 
     /***************************************************************************
+     * @param tier
+     * @return
+     **************************************************************************/
+    public static String toString( ITierPrinter tier )
+    {
+        FieldPrinter printer = new FieldPrinter();
+
+        tier.printFields( printer );
+
+        return printer.toString();
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     public static interface ITierPrinter
@@ -781,5 +755,44 @@ public class FieldPrinter
          * @param printer
          */
         public void printFields( FieldPrinter printer );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     **************************************************************************/
+    private static final class SubIterator<T> implements Iterator<T>
+    {
+        /**  */
+        private final Iterator<T> array;
+        /**  */
+        private final int count;
+
+        /**  */
+        private int index;
+
+        /**
+         * @param array
+         * @param count
+         */
+        public SubIterator( Iterator<T> array, int count )
+        {
+            this.array = array;
+            this.count = count;
+            this.index = 0;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return index < count;
+        }
+
+        @Override
+        public T next()
+        {
+            T item = array.next();
+            index++;
+            return item;
+        }
     }
 }

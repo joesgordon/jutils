@@ -9,12 +9,10 @@ import java.util.Map;
 
 import jutils.core.ValidationException;
 import jutils.core.io.DataStream;
-import jutils.core.io.FieldPrinter;
 import jutils.core.io.FileStream;
 import jutils.core.io.IDataReader;
 import jutils.core.io.IDataStream;
 import jutils.core.io.IReader;
-import jutils.core.io.LogUtils;
 import jutils.core.utils.ByteOrdering;
 import jutils.telemetry.ch10.PacketHeader.PacketHeaderSerializer;
 
@@ -30,6 +28,9 @@ public class Ch10File
     /**  */
     public final List<Long> positions;
 
+    /**  */
+    public String name;
+
     /***************************************************************************
      * @param stream
      **************************************************************************/
@@ -38,6 +39,34 @@ public class Ch10File
         this.stream = stream;
         this.channels = new ArrayList<>();
         this.positions = new ArrayList<>();
+    }
+
+    /***************************************************************************
+     * @param index
+     * @return
+     * @throws IllegalStateException
+     **************************************************************************/
+    public Packet readPacket( int index ) throws IllegalStateException
+    {
+        long position = positions.get( index );
+        Packet p = new Packet();
+        PacketHeaderSerializer headerSerializer = new PacketHeaderSerializer();
+
+        try
+        {
+            stream.seek( position );
+            headerSerializer.read( p.header, stream );
+        }
+        catch( IOException ex )
+        {
+            throw new IllegalStateException( ex );
+        }
+        catch( ValidationException ex )
+        {
+            throw new IllegalStateException( ex );
+        }
+
+        return p;
     }
 
     /***************************************************************************
@@ -59,16 +88,18 @@ public class Ch10File
         /**
          * {@inheritDoc}
          */
+        @SuppressWarnings( "resource")
         @Override
         public Ch10File read( File file )
             throws IOException, ValidationException
         {
-            try( FileStream fs = new FileStream( file, true );
-                 IDataStream stream = new DataStream( fs,
-                     ByteOrdering.INTEL_ORDER ) )
-            {
-                return reader.read( stream );
-            }
+            FileStream fs = new FileStream( file, true );
+            IDataStream stream = new DataStream( fs, ByteOrdering.INTEL_ORDER );
+            Ch10File c10 = reader.read( stream );
+
+            c10.name = file.getName();
+
+            return c10;
         }
     }
 
@@ -89,8 +120,8 @@ public class Ch10File
 
             PacketHeaderSerializer serializer = new PacketHeaderSerializer();
 
-            FieldPrinter fp = new FieldPrinter();
-            int i = 0;
+            // FieldPrinter fp = new FieldPrinter();
+            // int i = 0;
             while( PacketHeader.SIZE < stream.getAvailable() )
             {
                 long position = stream.getPosition();
@@ -117,16 +148,12 @@ public class Ch10File
 
                 c10.positions.add( position );
 
-                // LogUtils.print( "%d, %d, %d, %d, %s, %d", i,
-                // header.channelId,
-                // header.sequenceNumber & 0xFF, header.packetLength,
-                // header.dataType.name, header.relativeTimeCounter );
-                fp.printTier( "Packet " + i, header );
+                // fp.printTier( "Packet " + i, header );
 
                 long skipSize = header.packetLength - PacketHeader.SIZE;
 
                 stream.skip( skipSize );
-                i++;
+                // i++;
             }
 
             for( Ch10Channel channel : channels.values() )
@@ -134,7 +161,7 @@ public class Ch10File
                 c10.channels.add( channel );
             }
 
-            LogUtils.print( fp.toString() );
+            // LogUtils.print( fp.toString() );
 
             return c10;
         }

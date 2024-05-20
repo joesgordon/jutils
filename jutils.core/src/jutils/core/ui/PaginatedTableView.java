@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.Border;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -71,6 +72,8 @@ public class PaginatedTableView<T> extends PaginatedView
     private int itemsPerPage;
     /** The index of the item at the top of this page. */
     private long pageStartIndex;
+    /**  */
+    private String itemName;
 
     /***************************************************************************
      * @param tableCfg the configuration of the table to be displayed.
@@ -79,7 +82,8 @@ public class PaginatedTableView<T> extends PaginatedView
     public PaginatedTableView( ITableConfig<T> tableCfg,
         IItemStream<T> itemsStream )
     {
-        this( tableCfg, itemsStream, ( IDataView<T> )null );
+        this( tableCfg, itemsStream,
+            new StringWriterView<>( ( t ) -> t.toString() ) );
     }
 
     /***************************************************************************
@@ -99,6 +103,7 @@ public class PaginatedTableView<T> extends PaginatedView
      * @param itemsStream
      * @param itemWriter the method of creating a string that represents an
      * item.
+     * @param itemsPerPage
      **************************************************************************/
     public PaginatedTableView( ITableConfig<T> tableCfg,
         IItemStream<T> itemsStream, IStringWriter<T> itemWriter,
@@ -138,6 +143,7 @@ public class PaginatedTableView<T> extends PaginatedView
 
         this.itemsPerPage = itemsPerPage;
         this.pageStartIndex = 0L;
+        this.itemName = "Item";
 
         this.itemView = new ItemNavigationView<>( this, itemView );
 
@@ -279,6 +285,22 @@ public class PaginatedTableView<T> extends PaginatedView
     }
 
     /***************************************************************************
+     * @param name
+     **************************************************************************/
+    public void setItemTypeName( String name )
+    {
+        this.itemName = name;
+    }
+
+    /***************************************************************************
+     * @param border
+     **************************************************************************/
+    public void setScrollPaneBorder( Border border )
+    {
+        tablePane.setBorder( border );
+    }
+
+    /***************************************************************************
      * @param itemIndex
      * @return
      **************************************************************************/
@@ -344,7 +366,7 @@ public class PaginatedTableView<T> extends PaginatedView
             d.setLocationRelativeTo( f );
         }
 
-        d.setTitle( String.format( "Item %d", itemIndex + 1 ) );
+        d.setTitle( String.format( "%s %d", itemName, itemIndex + 1 ) );
         d.setVisible( true );
 
         table.setRowSelectionInterval( tableIndex, tableIndex );
@@ -577,7 +599,7 @@ public class PaginatedTableView<T> extends PaginatedView
     private static final class ItemNavigationView<T> implements IDataView<T>
     {
         /**  */
-        private final PaginatedTableView<T> itemsView;
+        private final PaginatedTableView<T> table;
         /**  */
         private final IDataView<T> itemView;
 
@@ -590,14 +612,13 @@ public class PaginatedTableView<T> extends PaginatedView
         private final JButton nextButton;
 
         /**
-         * @param msgsView
-         * @param msgView
-         * @param addScrollPane
+         * @param table
+         * @param itemView
          */
-        public ItemNavigationView( PaginatedTableView<T> msgsView,
+        public ItemNavigationView( PaginatedTableView<T> table,
             IDataView<T> itemView )
         {
-            this.itemsView = msgsView;
+            this.table = table;
             this.itemView = itemView;
             this.prevButton = new JButton();
             this.nextButton = new JButton();
@@ -659,11 +680,10 @@ public class PaginatedTableView<T> extends PaginatedView
         private void navigate( boolean forward )
         {
             int inc = forward ? 1 : -1;
-            long index = itemsView.table.getSelectedRow() +
-                itemsView.pageStartIndex;
+            long index = table.table.getSelectedRow() + table.pageStartIndex;
             long nextIndex = index + inc;
 
-            itemsView.showItem( nextIndex );
+            table.showItem( nextIndex );
 
             setButtonsEnabled();
         }
@@ -673,9 +693,8 @@ public class PaginatedTableView<T> extends PaginatedView
          */
         private void setButtonsEnabled()
         {
-            long index = itemsView.table.getSelectedRow() +
-                itemsView.pageStartIndex;
-            long maxRow = itemsView.getItemCount() - 1;
+            long index = table.table.getSelectedRow() + table.pageStartIndex;
+            long maxRow = table.getItemCount() - 1;
 
             prevButton.setEnabled( index > 0 );
             nextButton.setEnabled( index > -1 && index < maxRow );
