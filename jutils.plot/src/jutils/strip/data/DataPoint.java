@@ -1,4 +1,4 @@
-package jutils.strip;
+package jutils.strip.data;
 
 public class DataPoint
 {

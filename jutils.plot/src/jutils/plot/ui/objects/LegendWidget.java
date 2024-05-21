@@ -1,10 +1,16 @@
 package jutils.plot.ui.objects;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import jutils.plot.model.*;
+import jutils.plot.model.HorizontalAlignment;
+import jutils.plot.model.Legend;
+import jutils.plot.model.TextLabel;
 import jutils.plot.ui.IChartWidget;
 import jutils.plot.ui.Layer2d;
 
@@ -113,7 +119,7 @@ public class LegendWidget implements IChartWidget
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void draw( Graphics2D graphics, Point unusedPoint,
@@ -213,11 +219,21 @@ public class LegendWidget implements IChartWidget
      **************************************************************************/
     private static class PlacementGrid
     {
+        /**  */
         public final List<KeyList> items;
+        /**  */
         public final Dimension size;
 
+        /**  */
         private final boolean isVertical;
 
+        /**
+         * @param keys
+         * @param availableSize
+         * @param isVertical
+         * @param itemSpacing
+         * @param thickness
+         */
         public PlacementGrid( List<PlotKey> keys, Dimension availableSize,
             boolean isVertical, int itemSpacing, int thickness )
         {

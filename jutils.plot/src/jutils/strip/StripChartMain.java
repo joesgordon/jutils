@@ -17,6 +17,10 @@ import jutils.core.ui.ABButton.IABCallback;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.model.IView;
+import jutils.strip.data.AxisConfig;
+import jutils.strip.data.DataBuffer;
+import jutils.strip.data.DataMetrics;
+import jutils.strip.ui.StripChartView;
 
 /*******************************************************************************
  * 
@@ -42,16 +46,16 @@ public class StripChartMain
 
         double scale = 10.0;
 
-        dm.min = -1000.3 * scale;
-        dm.max = 4.1 * scale;
+        dm.range.min = -1000.3 * scale;
+        dm.range.max = 4.1 * scale;
         dm.count = 100;
 
-        dm.min = -7.799956;
-        dm.max = 1.199603;
+        dm.range.min = -7.799956;
+        dm.range.max = 1.199603;
         dm.count = 100;
         h = 1045;
 
-        StripChartView.calcTicks( tm, dm, h );
+        StripUtils.calcTicks( tm.ticks, dm.range, h );
 
         DataBuffer db = new DataBuffer( 10 );
 

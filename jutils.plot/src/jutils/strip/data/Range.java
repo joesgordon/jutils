@@ -1,33 +1,21 @@
-package jutils.strip;
+package jutils.strip.data;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class DataMetrics
+public class Range
 {
     /**  */
     public double min;
     /**  */
     public double max;
-    /**  */
-    public int count;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public DataMetrics()
+    public Range()
     {
-        reset();
-    }
-
-    /***************************************************************************
-     * @param m the metrics to update this with.
-     **************************************************************************/
-    public void update( DataMetrics m )
-    {
-        this.min = Math.min( min, m.min );
-        this.max = Math.max( max, m.max );
-        this.count = Math.max( count, m.count );
+        this.reset();
     }
 
     /***************************************************************************
@@ -37,17 +25,15 @@ public class DataMetrics
     {
         this.min = -1;
         this.max = 1;
-        this.count = 0;
     }
 
     /***************************************************************************
-     * @param d the value to update these metrics with.
+     * @param value
      **************************************************************************/
-    public void update( double d )
+    public void update( double value )
     {
-        min = Math.min( min, d );
-        max = Math.max( max, d );
-        count++;
+        min = Math.min( min, value );
+        max = Math.max( max, value );
     }
 
     /***************************************************************************
@@ -64,6 +50,6 @@ public class DataMetrics
     @Override
     public String toString()
     {
-        return String.format( "%f to %f with %d points", min, max, count );
+        return String.format( "%f to %f", min, max );
     }
 }

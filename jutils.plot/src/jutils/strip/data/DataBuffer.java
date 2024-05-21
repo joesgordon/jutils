@@ -1,6 +1,8 @@
-package jutils.strip;
+package jutils.strip.data;
 
 import java.awt.Color;
+
+import jutils.strip.StripUtils;
 
 /*******************************************************************************
  * 
@@ -29,7 +31,7 @@ public class DataBuffer
         this.ys = new double[size];
         this.startIdx = 0;
         this.size = 0;
-        this.c = new Color( ChartUtils.FG_DEFAULT );
+        this.c = new Color( StripUtils.FG_DEFAULT );
     }
 
     /***************************************************************************
@@ -121,8 +123,8 @@ public class DataBuffer
                 throw new IllegalStateException();
             }
 
-            metrics.min = vals[0] - w;
-            metrics.max = vals[0] + w;
+            metrics.range.min = vals[0] - w;
+            metrics.range.max = vals[0] + w;
             metrics.count = 1;
 
             return;
@@ -139,8 +141,8 @@ public class DataBuffer
         ei1 = overlapped ? vals.length : ei1;
         ei2 = overlapped ? size - ( vals.length - si1 ) : 0;
 
-        metrics.min = vals[si1];
-        metrics.max = vals[si1];
+        metrics.range.min = vals[si1];
+        metrics.range.max = vals[si1];
 
         for( int i = ( si1 + 1 ); i < ei1; i++ )
         {
@@ -173,7 +175,7 @@ public class DataBuffer
     {
         if( c == null )
         {
-            c = new Color( ChartUtils.FG_DEFAULT );
+            c = new Color( StripUtils.FG_DEFAULT );
         }
 
         this.c = c;

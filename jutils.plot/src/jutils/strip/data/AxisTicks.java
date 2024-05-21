@@ -1,28 +1,25 @@
-package jutils.strip;
+package jutils.strip.data;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class AxisConfig
+public class AxisTicks
 {
-    /**  */
-    public boolean autoBounds;
     /**  */
     public double minValue;
     /**  */
     public double tickWidth;
-    /** Really the number of tick sections. The number of ticks is one more. */
-    public int tickCount;
+    /** The number of tick sections. The number of ticks is one more. */
+    public int sectionCount;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public AxisConfig()
+    public AxisTicks()
     {
-        this.autoBounds = true;
         this.minValue = -1;
         this.tickWidth = 0.5;
-        this.tickCount = 4;
+        this.sectionCount = 4;
     }
 
     /***************************************************************************
@@ -30,7 +27,7 @@ public class AxisConfig
      **************************************************************************/
     public double getRange()
     {
-        return tickWidth * tickCount;
+        return tickWidth * sectionCount;
     }
 
     /***************************************************************************

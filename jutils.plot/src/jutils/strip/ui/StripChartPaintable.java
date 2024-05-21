@@ -1,11 +1,11 @@
-package jutils.strip;
+package jutils.strip.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
@@ -16,19 +16,20 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import jutils.core.ui.IPaintable;
-import jutils.core.ui.PaintingComponent;
-import jutils.core.ui.model.IView;
+import jutils.strip.StripUtils;
+import jutils.strip.data.AxisConfig;
+import jutils.strip.data.DataBuffer;
+import jutils.strip.data.DataMetrics;
+import jutils.strip.data.DataPoint;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class StripChartView implements IView<JComponent>
+public class StripChartPaintable implements IPaintable
 {
     /**  */
     public static final int INNER = 6;
 
-    /**  */
-    private final PaintingComponent view;
     /**  */
     private final AxisConfig xAxis;
     /**  */
@@ -36,53 +37,27 @@ public class StripChartView implements IView<JComponent>
     /**  */
     private final List<DataBuffer> buffers;
 
+    /**  */
+    private Color background;
+    /**  */
+    private Color foreground;
+
     /***************************************************************************
      * 
      **************************************************************************/
-    public StripChartView()
+    public StripChartPaintable()
     {
-        this.view = new PaintingComponent( ( c, g ) -> paintChart( c, g ) );
         this.xAxis = new AxisConfig();
         this.yAxis = new AxisConfig();
         this.buffers = new ArrayList<>( 5 );
 
-        view.setBackground( new Color( ChartUtils.BG_DEFAULT ) );
-        view.setForeground( new Color( ChartUtils.FG_DEFAULT ) );
-
-        view.setMinimumSize( new Dimension( 20, 20 ) );
+        this.background = new Color( StripUtils.BG_DEFAULT );
+        this.foreground = new Color( StripUtils.FG_DEFAULT );
 
         xAxis.autoBounds = false;
-        xAxis.minValue = -30;
-        xAxis.tickCount = 6;
-        xAxis.tickWidth = 5;
-    }
-
-    /***************************************************************************
-     * @param rate
-     * @param seriesCount
-     **************************************************************************/
-    public StripChartView( double rate )
-    {
-        this();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public JComponent getView()
-    {
-        return view;
-    }
-
-    /***************************************************************************
-     * @param index the index of the buffer (series).
-     * @param x the x-value.
-     * @param y the y-value.
-     **************************************************************************/
-    public void add( int index, double x, double y )
-    {
-        buffers.get( index ).add( x, y );
+        xAxis.ticks.minValue = -30;
+        xAxis.ticks.sectionCount = 6;
+        xAxis.ticks.tickWidth = 5;
     }
 
     /***************************************************************************
@@ -110,11 +85,22 @@ public class StripChartView implements IView<JComponent>
     }
 
     /***************************************************************************
+     * @param index the index of the buffer (series).
+     * @param x the x-value.
+     * @param y the y-value.
+     **************************************************************************/
+    public void add( int index, double x, double y )
+    {
+        buffers.get( index ).add( x, y );
+    }
+
+    /***************************************************************************
      * @param c the component to be painted.
      * @param g the graphics used for painting.
-     * @see IPaintable#paint(JComponent, Graphics2D)
+     * @see ICompaintable#paint(JComponent, Graphics2D)
      **************************************************************************/
-    private void paintChart( JComponent c, Graphics2D g )
+    @Override
+    public void paint( JComponent c, Graphics2D g )
     {
         g.setRenderingHint( RenderingHints.KEY_ALPHA_INTERPOLATION,
             RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY );
@@ -136,11 +122,13 @@ public class StripChartView implements IView<JComponent>
             RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
 
         FontMetrics fm = g.getFontMetrics();
+        Rectangle bounds = g.getClipBounds();
         Insets margin = new Insets( INNER, INNER, INNER, INNER );
 
-        int w = c.getWidth();
-        int h = c.getHeight();
+        int w = bounds.width - 8;
+        int h = bounds.height - 2;
 
+        margin.top += 4;
         margin.bottom = 2 * INNER + ( int )( fm.getHeight() * 1.2 );
 
         int ch = h - margin.bottom - margin.top;
@@ -168,22 +156,22 @@ public class StripChartView implements IView<JComponent>
         {
             DataMetrics m = new DataMetrics();
 
-            m.max = 0;
-            m.min = -xMets.getRange();
+            m.range.max = 0;
+            m.range.min = -xMets.getRange();
             m.count = xMets.count;
 
-            calcTicks( xAxis, m, ch );
+            StripUtils.calcTicks( xAxis.ticks, m.range, ch );
         }
 
         if( yAxis.autoBounds )
         {
-            calcTicks( yAxis, yMets, ch );
+            StripUtils.calcTicks( yAxis.ticks, yMets.range, ch );
         }
 
         // LogUtils.printDebug( "Metrics: %s", metrics );
 
-        margin.left = ( int )( fm.stringWidth( "" + yAxis.minValue ) * 1.15 ) +
-            2 * INNER;
+        margin.left = ( int )( fm.stringWidth( "" + yAxis.ticks.minValue ) *
+            1.15 ) + 2 * INNER;
 
         int cw = w - margin.left - margin.right;
         cw = cw < 50 ? 50 : cw;
@@ -191,29 +179,29 @@ public class StripChartView implements IView<JComponent>
         Rectangle2D chartOutline = new Rectangle2D.Float( margin.left,
             margin.top, cw, ch );
 
-        g.setColor( c.getBackground() );
+        g.setColor( background );
         g.fillRect( 0, 0, w, h );
 
-        g.setColor( c.getForeground() );
+        g.setColor( foreground );
         g.draw( chartOutline );
 
         // g.drawLine( margin.left - 5, margin.top, margin.left, margin.top );
 
         // LogUtils.printDebug( "Tick count %d", tm.count );
-        for( int i = 0; i < xAxis.tickCount; i++ )
+        for( int i = 0; i < xAxis.ticks.sectionCount; i++ )
         {
             paintxTick( i, chartOutline, fm, g );
         }
 
-        paintxTick( xAxis.tickCount, chartOutline, fm, g );
+        paintxTick( xAxis.ticks.sectionCount, chartOutline, fm, g );
 
-        for( int i = 0; i < yAxis.tickCount; i++ )
+        for( int i = 0; i < yAxis.ticks.sectionCount; i++ )
         {
             boolean drawMajor = i != 0;
             paintyTick( i, chartOutline, fm, g, drawMajor );
         }
 
-        paintyTick( yAxis.tickCount, chartOutline, fm, g, false );
+        paintyTick( yAxis.ticks.sectionCount, chartOutline, fm, g, false );
 
         for( int b = 0; b < buffers.size(); b++ )
         {
@@ -224,29 +212,29 @@ public class StripChartView implements IView<JComponent>
                 continue;
             }
 
-            paintBuffer( buffer, chartOutline, g, xMets.max );
+            paintBuffer( buffer, chartOutline, g, xMets.range.max );
         }
     }
 
     /***************************************************************************
      * @param buffer the buffer to be painted.
-     * @param c the border dimensions of the chart.
+     * @param chart the border dimensions of the chart.
      * @param g the graphics used for painting.
      * @param xmax the maximum x-value from all buffers.
      **************************************************************************/
-    private void paintBuffer( DataBuffer buffer, Rectangle2D c, Graphics2D g,
-        double xmax )
+    private void paintBuffer( DataBuffer buffer, Rectangle2D chart,
+        Graphics2D g, double xmax )
     {
-        double sx = c.getWidth() / xAxis.getRange();
-        double sy = c.getHeight() / yAxis.getRange();
+        double sx = chart.getWidth() / xAxis.getRange();
+        double sy = chart.getHeight() / yAxis.getRange();
         DataPoint p1 = new DataPoint();
         DataPoint p2 = new DataPoint();
 
         // LogUtils.printDebug( "Chart Right is %f",
         // chartOutline.getX() + chartOutline.getWidth() );
 
-        double chartright = c.getX() + c.getWidth();
-        double chartbtm = c.getY() + c.getHeight();
+        double chartright = chart.getX() + chart.getWidth();
+        double chartbtm = chart.getY() + chart.getHeight();
 
         Stroke solid = new BasicStroke( 2, BasicStroke.CAP_BUTT,
             BasicStroke.JOIN_MITER );
@@ -282,12 +270,12 @@ public class StripChartView implements IView<JComponent>
             // chartbtm - ( p2.y - yAxis.minValue ) * sy );
 
             line.x1 = chartright + p1.x * sx;
-            line.y1 = chartbtm - ( p1.y - yAxis.minValue ) * sy;
+            line.y1 = chartbtm - ( p1.y - yAxis.ticks.minValue ) * sy;
 
             line.x2 = chartright + p2.x * sx;
-            line.y2 = chartbtm - ( p2.y - yAxis.minValue ) * sy;
+            line.y2 = chartbtm - ( p2.y - yAxis.ticks.minValue ) * sy;
 
-            if( line.x2 < c.getX() )
+            if( line.x2 < chart.getX() )
             {
                 break;
             }
@@ -318,7 +306,7 @@ public class StripChartView implements IView<JComponent>
     private void paintyTick( int i, Rectangle2D c, FontMetrics fm, Graphics2D g,
         boolean drawMajor )
     {
-        double tw = c.getHeight() / ( yAxis.tickCount );
+        double tw = c.getHeight() / ( yAxis.ticks.sectionCount );
         int x1 = ( int )( c.getX() - 5 );
         int x2 = ( int )c.getX();
         int y = ( int )( c.getY() + c.getHeight() - i * tw );
@@ -329,17 +317,17 @@ public class StripChartView implements IView<JComponent>
         // );
 
         String txt = String.format( "%.1f",
-            ( yAxis.minValue + i * yAxis.tickWidth ) );
+            ( yAxis.ticks.minValue + i * yAxis.ticks.tickWidth ) );
         int txtw = fm.stringWidth( txt );
         int txth = fm.getAscent() / 2 - 1;
 
         g.drawLine( x1, y, x2, y );
-        g.drawString( txt, x1 - txtw, y + txth );
+        g.drawString( txt, x1 - txtw - 2, y + txth );
 
         if( drawMajor )
         {
             Color pc = g.getColor();
-            Color clr = new Color( ChartUtils.TICK_DEFAULT );
+            Color clr = new Color( StripUtils.TICK_DEFAULT );
 
             Stroke s = g.getStroke();
 
@@ -365,123 +353,19 @@ public class StripChartView implements IView<JComponent>
     private void paintxTick( int i, Rectangle2D c, FontMetrics fm,
         Graphics2D g )
     {
-        double tw = c.getWidth() / ( xAxis.tickCount );
-        int txth = fm.getAscent();
+        double tw = c.getWidth() / ( xAxis.ticks.sectionCount );
         int y1 = ( int )( c.getY() + c.getHeight() );
         int y2 = ( int )( c.getY() + c.getHeight() + 5 );
         int x = ( int )( c.getX() + i * tw );
-        String txt = String.format( "%.1f",
-            ( xAxis.minValue + i * xAxis.tickWidth ) );
-        int txtw = fm.stringWidth( txt ) / 2;
 
         g.drawLine( x, y1, x, y2 );
+
+        String txt = String.format( "%.1f",
+            ( xAxis.ticks.minValue + i * xAxis.ticks.tickWidth ) );
+
+        int txth = fm.getAscent();
+        int txtw = fm.stringWidth( txt ) / 2;
+
         g.drawString( txt, x - txtw, y2 + txth + 2 );
-    }
-
-    /***************************************************************************
-     * @param axis the axis for which ticks and bounds will be calculated.
-     * @param metrics the metrics of the data for this axis.
-     * @param length the size of this axis in pixels.
-     **************************************************************************/
-    public static void calcTicks( AxisConfig axis, DataMetrics metrics,
-        int length )
-    {
-        int maxTicks = ( int )Math.ceil(
-            length / ( double )ChartUtils.TICK_MIN );
-        int minTicks = ( int )Math.floor(
-            length / ( double )ChartUtils.TICK_MAX );
-        double range = metrics.getRange();
-
-        double rlog = Math.log10( range );
-        int order = ( int )Math.floor( rlog );
-
-        // LogUtils.printDebug( "%s, %d", metrics, length, rlog, order );
-        // LogUtils.printDebug(
-        // "=> minTicks: %d, maxTicks: %d rlog: %f, order: %d", minTicks,
-        // maxTicks, rlog, order );
-
-        double div = calcTicksDivisor( range, order, minTicks, maxTicks );
-
-        if( div < 0 )
-        {
-            order += 1;
-            div = calcTicksDivisor( range, order, minTicks, maxTicks );
-
-            if( div < 0 )
-            {
-                String msg = String.format(
-                    "The maths have failed me!!: %s, over %d pixels", metrics,
-                    length );
-                throw new IllegalStateException( msg );
-            }
-        }
-
-        int startTc = ( int )Math.floor( metrics.min * div );
-        int endTc = ( int )Math.ceil( metrics.max * div );
-
-        // LogUtils.printDebug( "=> startTc: %d, endTc: %d", startTc, endTc
-        // );
-
-        double start = startTc / div;
-        double end = endTc / div;
-        int count = endTc - startTc;
-        double width = ( end - start ) / ( count );
-
-        axis.minValue = start;
-        axis.tickWidth = width;
-        axis.tickCount = count;
-
-        // LogUtils.printDebug(
-        // "=> start: %f, end: %f, range: %f, count: %d, width: %f", start,
-        // end, end - start, count, width );
-        //
-        // double twpx = length / ( double )( count - 1 );
-        //
-        // LogUtils.printDebug( "=> twpx: %f px", twpx );
-    }
-
-    /***************************************************************************
-     * @param range the range of this axis.
-     * @param order the order of the range of this axis.
-     * @param minTicks the minimum number of ticks for this axis.
-     * @param maxTicks the maximum number of ticks for this axis.
-     * @return the divisor calculated or {@code -1} if none valid.
-     **************************************************************************/
-    private static double calcTicksDivisor( double range, int order,
-        int minTicks, int maxTicks )
-    {
-        double powder = range / Math.pow( 10, order );
-
-        int tc01 = ( int )Math.ceil( powder );
-        int tc02 = ( int )Math.ceil( 2.0 * powder );
-        int tc05 = ( int )Math.ceil( 5.0 * powder );
-        int tc10 = ( int )Math.ceil( 10.0 * powder );
-
-        // LogUtils.printDebug( "=> tc01: %d, tc02: %d, tc05: %d, tc10: %d",
-        // tc01, tc02, tc05, tc10 );
-
-        double div = Math.pow( 10, -order );
-        if( minTicks <= tc10 && tc10 <= maxTicks )
-        {
-            div *= 10.0;
-        }
-        else if( minTicks <= tc05 && tc05 <= maxTicks )
-        {
-            div *= 5.0;
-        }
-        else if( minTicks <= tc02 && tc02 <= maxTicks )
-        {
-            div *= 2.0;
-        }
-        else if( minTicks <= tc01 && tc01 <= maxTicks )
-        {
-            div *= 1.0;
-        }
-        else
-        {
-            div = -1;
-        }
-
-        return div;
     }
 }
