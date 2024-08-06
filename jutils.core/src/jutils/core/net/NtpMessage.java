@@ -346,12 +346,18 @@ public class NtpMessage
         /** LSB = 232e-12 seconds */
         public int fraction;
 
+        /**
+         * 
+         */
         public NtpTimestamp()
         {
             this.seconds = 0;
             this.fraction = 0;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String toString()
         {

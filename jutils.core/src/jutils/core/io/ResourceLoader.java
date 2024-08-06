@@ -1,7 +1,10 @@
 package jutils.core.io;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import jutils.core.Utils;
@@ -65,10 +68,13 @@ public class ResourceLoader
 
         try
         {
-            url = new URL( baseUrl.toString() + name );
+            url = baseUrl.toURI().resolve( "./" + name ).toURL();
         }
-        catch( MalformedURLException ex )
+        catch( URISyntaxException | MalformedURLException ex )
         {
+            String err = String.format( "Unable to create URL using \"%s\"",
+                name );
+            throw new RuntimeException( err, ex );
         }
 
         return url;
