@@ -2,6 +2,8 @@ package jutils.telemetry.ui.ch10;
 
 import java.awt.Component;
 
+import javax.swing.JPanel;
+
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.data.ch09.Tmats;
 
@@ -10,6 +12,16 @@ import jutils.telemetry.data.ch09.Tmats;
  ******************************************************************************/
 public class TmatsView implements IDataView<Tmats>
 {
+    /**  */
+    private final JPanel view;
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public TmatsView()
+    {
+        this.view = new JPanel();
+    }
 
     /***************************************************************************
      * {@inheritDoc}
@@ -17,8 +29,7 @@ public class TmatsView implements IDataView<Tmats>
     @Override
     public Component getView()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return view;
     }
 
     /***************************************************************************

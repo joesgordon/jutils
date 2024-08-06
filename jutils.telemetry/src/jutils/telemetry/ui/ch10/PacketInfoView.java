@@ -11,30 +11,36 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import jutils.core.io.FieldPrinter;
+import jutils.core.ui.hex.ByteBuffer;
+import jutils.core.ui.hex.HexPanel;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.net.StringWriterView;
 import jutils.telemetry.data.ch10.Packet;
+import jutils.telemetry.data.ch10.PacketInfo;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PacketView implements IDataView<Packet>
+public class PacketInfoView implements IDataView<PacketInfo>
 {
     /**  */
     private final JComponent view;
     /**  */
     private final StringWriterView<Packet> packetView;
+    /**  */
+    private final HexPanel dataView;
 
     /**  */
-    private Packet packet;
+    private PacketInfo packet;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public PacketView()
+    public PacketInfoView()
     {
         this.packetView = new StringWriterView<>(
             ( h ) -> FieldPrinter.toString( h ) );
+        this.dataView = new HexPanel();
 
         this.view = createView();
     }
@@ -51,6 +57,7 @@ public class PacketView implements IDataView<Packet>
         JTabbedPane tabs = new JTabbedPane();
 
         tabs.addTab( "Packet", pane );
+        tabs.addTab( "Data", dataView.getView() );
 
         GridBagConstraints constraints;
 
@@ -75,7 +82,7 @@ public class PacketView implements IDataView<Packet>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Packet getData()
+    public PacketInfo getData()
     {
         return this.packet;
     }
@@ -84,11 +91,11 @@ public class PacketView implements IDataView<Packet>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( Packet data )
+    public void setData( PacketInfo data )
     {
         this.packet = data;
 
-        packetView.setData( packet );
-        // TODO Auto-generated method stub
+        packetView.setData( packet.packet );
+        dataView.setBuffer( new ByteBuffer( packet.data ) );
     }
 }

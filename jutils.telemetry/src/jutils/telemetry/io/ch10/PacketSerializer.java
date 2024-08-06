@@ -66,7 +66,7 @@ public class PacketSerializer implements IDataSerializer<Packet>
                     break;
 
                 case CS_32:
-                    p.trailer.checksum = 0xFFFFFF & stream.readInt();
+                    p.trailer.checksum = 0xFFFFFFFFL & stream.readInt();
                     break;
 
                 case NO_CHECKSUM:

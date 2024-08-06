@@ -23,7 +23,7 @@ public class Ch10View implements IDataView<Ch10File>
     /**  */
     private final Ch10InfoView infoView;
     /**  */
-    private final PacketsView packetsView;
+    private final PacketInfosView packetsView;
     /**  */
     private final TmatsView tmatsView;
 
@@ -32,7 +32,7 @@ public class Ch10View implements IDataView<Ch10File>
      **************************************************************************/
     public Ch10View()
     {
-        this.packetsView = new PacketsView();
+        this.packetsView = new PacketInfosView();
         this.infoView = new Ch10InfoView();
         this.tmatsView = new TmatsView();
         this.tabs = new JTabbedPane();
@@ -41,6 +41,7 @@ public class Ch10View implements IDataView<Ch10File>
 
         tabs.addTab( "Info", infoView.getView() );
         tabs.addTab( "Packets", packetsView.getView() );
+        tabs.addTab( "TMATS", tmatsView.getView() );
     }
 
     /***************************************************************************

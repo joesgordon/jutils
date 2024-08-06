@@ -15,16 +15,15 @@ import jutils.core.ui.model.DefaultTableItemsConfig;
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.data.ch10.Ch10File;
 import jutils.telemetry.data.ch10.Ch10Utils;
-import jutils.telemetry.data.ch10.Packet;
 import jutils.telemetry.data.ch10.PacketInfo;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PacketsView implements IDataView<Ch10File>
+public class PacketInfosView implements IDataView<Ch10File>
 {
     /**  */
-    private final PaginatedTableView<Packet> table;
+    private final PaginatedTableView<PacketInfo> table;
     /**  */
     private final PacketTableConfig config;
     /**  */
@@ -33,12 +32,12 @@ public class PacketsView implements IDataView<Ch10File>
     /***************************************************************************
      * 
      **************************************************************************/
-    public PacketsView()
+    public PacketInfosView()
     {
         this.packetsStream = new PacketStream();
         this.config = new PacketTableConfig();
         this.table = new PaginatedTableView<>( config, packetsStream,
-            new PacketView() );
+            new PacketInfoView() );
 
         table.setItemTypeName( "Packet" );
 
@@ -78,7 +77,7 @@ public class PacketsView implements IDataView<Ch10File>
      * 
      **************************************************************************/
     private static final class PacketTableConfig
-        extends DefaultTableItemsConfig<Packet>
+        extends DefaultTableItemsConfig<PacketInfo>
     {
         /**  */
         private long initTime;
@@ -89,19 +88,19 @@ public class PacketsView implements IDataView<Ch10File>
         public PacketTableConfig()
         {
             super.addCol( "Channel ID", Short.class,
-                ( d ) -> d.header.channelId );
+                ( d ) -> d.packet.header.channelId );
             super.addCol( "Data Type", String.class,
-                ( d ) -> d.header.dataType.name );
+                ( d ) -> d.packet.header.dataType.name );
             super.addCol( "Seq #", Integer.class,
-                ( d ) -> d.header.sequenceNumber & 0xFF );
+                ( d ) -> d.packet.header.sequenceNumber & 0xFF );
             super.addCol( "Time", String.class,
                 ( d ) -> Ch10Utils.reltimeToSecondsString(
-                    d.header.relativeTimeCounter ) );
+                    d.packet.header.relativeTimeCounter ) );
             super.addCol( "RelTime", String.class,
                 ( d ) -> Ch10Utils.reltimeToSecondsString(
-                    d.header.relativeTimeCounter - initTime ) );
+                    d.packet.header.relativeTimeCounter - initTime ) );
             super.addCol( "Data Length", Integer.class,
-                ( d ) -> d.header.dataLength );
+                ( d ) -> d.packet.header.dataLength );
         }
 
         /**
@@ -116,7 +115,7 @@ public class PacketsView implements IDataView<Ch10File>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class PacketStream implements IItemStream<Packet>
+    private static final class PacketStream implements IItemStream<PacketInfo>
     {
         /**  */
         private Ch10File c10;
@@ -153,16 +152,15 @@ public class PacketsView implements IDataView<Ch10File>
          * {@inheritDoc}
          */
         @Override
-        public List<Packet> get( long index, int count )
+        public List<PacketInfo> get( long index, int count )
         {
-            List<Packet> packets = new ArrayList<>( count );
+            List<PacketInfo> packets = new ArrayList<>( count );
             int p = ( int )index;
 
             for( int i = 0; i < count; i++, p++ )
             {
                 PacketInfo info = c10.readPacket( p );
-                Packet packet = info.packet;
-                packets.add( packet );
+                packets.add( info );
             }
 
             return packets;
@@ -172,7 +170,7 @@ public class PacketsView implements IDataView<Ch10File>
          * {@inheritDoc}
          */
         @Override
-        public void add( Packet item )
+        public void add( PacketInfo item )
         {
             throw new IllegalStateException( "Unimplemented" );
         }
@@ -189,17 +187,17 @@ public class PacketsView implements IDataView<Ch10File>
          * {@inheritDoc}
          */
         @Override
-        public Iterator<Packet> iterator()
+        public Iterator<PacketInfo> iterator()
         {
-            return new Iterator<Packet>()
+            return new Iterator<PacketInfo>()
             {
                 int i = 0;
 
                 @Override
-                public Packet next()
+                public PacketInfo next()
                 {
                     PacketInfo info = c10.readPacket( i++ );
-                    return info.packet;
+                    return info;
                 }
 
                 @Override
