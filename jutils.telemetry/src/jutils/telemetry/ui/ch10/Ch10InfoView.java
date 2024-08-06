@@ -16,6 +16,7 @@ import jutils.core.ui.StandardFormView;
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.data.ch10.Ch10Channel;
 import jutils.telemetry.data.ch10.Ch10File;
+import jutils.telemetry.data.ch10.Ch10Utils;
 
 /*******************************************************************************
  * 
@@ -178,12 +179,18 @@ public class Ch10InfoView implements IDataView<Ch10File>
         {
             int col = 0;
 
+            String startTime = Ch10Utils.reltimeToSecondsString(
+                channel.startTime );
+            String endTime = Ch10Utils.reltimeToSecondsString(
+                channel.startTime );
+            String duration = Ch10Utils.reltimeToSecondsString(
+                channel.endTime - channel.startTime );
+
             addField( panel, row, col++, "" + channel.id );
             addField( panel, row, col++, channel.dataType.family.getName() );
-            addField( panel, row, col++, "" + channel.startTime );
-            addField( panel, row, col++, "" + channel.endTime );
-            addField( panel, row, col++,
-                "" + ( channel.startTime - channel.endTime ) );
+            addField( panel, row, col++, startTime );
+            addField( panel, row, col++, endTime );
+            addField( panel, row, col++, duration );
             addField( panel, row, col++, "" + channel.packetCount );
         }
 

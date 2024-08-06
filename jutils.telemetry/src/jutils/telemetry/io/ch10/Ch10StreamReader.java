@@ -40,10 +40,13 @@ public class Ch10StreamReader implements IDataReader<Ch10File>
             {
                 channel = new Ch10Channel( header.channelId, header.dataType );
 
+                channel.startTime = header.relativeTimeCounter;
+
                 channels.put( header.channelId, channel );
             }
             else
             {
+                channel.endTime = header.relativeTimeCounter;
                 channel.packetCount++;
             }
 
@@ -59,10 +62,17 @@ public class Ch10StreamReader implements IDataReader<Ch10File>
 
             c10.packets.add( position );
 
-            if( header.channelId != 0 && c10.initRelTime == 0 )
+            if( c10.initRelTime == 0 )
             {
-                c10.initRelTime = header.relativeTimeCounter;
+                if( header.channelId != 0 )
+                {
+                    c10.initRelTime = header.relativeTimeCounter;
+                }
             }
+            // else
+            // {
+            // channel.
+            // }
 
             // LogUtils.printDebug( "%d) %s %d %d", i, header.dataType.name,
             // header.relativeTimeCounter, c10.initRelTime );
