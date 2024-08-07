@@ -1,65 +1,68 @@
 package jutils.telemetry.data.ch10;
 
-import jutils.core.INamedValue;
+import jutils.core.data.BitFieldInfo;
+import jutils.core.data.IBitField;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum TmatsFormat implements INamedValue
+public enum CompGen1Word implements IBitField
 {
     /**  */
-    ASCII( 0, "ASCII" ),
+    RCC_VERSION( 0, 7, "RCC Version" ),
     /**  */
-    XML( 1, "XML" ),;
+    SETUP_RECORD_CONFIG_CHANGE( 8, "Setup Record Configuration Change" ),
+    /**  */
+    FORMAT( 9, "Format" ),
+    /**  */
+    RESERVED( 10, 31, "Reserved" ),;
 
     /**  */
-    public final int value;
-    /**  */
-    public final String name;
+    private final BitFieldInfo info;
 
     /***************************************************************************
-     * @param value
+     * @param bit
      * @param name
      **************************************************************************/
-    private TmatsFormat( int value, String name )
+    private CompGen1Word( int bit, String name )
     {
-        this.value = value;
-        this.name = name;
+        this( bit, bit, name );
+    }
+
+    /***************************************************************************
+     * @param startBit
+     * @param endBit
+     * @param name
+     **************************************************************************/
+    private CompGen1Word( int startBit, int endBit, String name )
+    {
+        this.info = new BitFieldInfo( startBit, endBit, name );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public String getName()
+    public int getStartBit()
     {
-        return name;
+        return info.getStartBit();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int getValue()
+    public int getEndBit()
     {
-        return value;
+        return info.getEndBit();
     }
 
     /***************************************************************************
-     * @param field
-     * @return
+     * {@inheritDoc}
      **************************************************************************/
-    public static TmatsFormat fromValue( int field )
+    @Override
+    public long getMask()
     {
-        switch( field )
-        {
-            case 0:
-                return ASCII;
-
-            case 1:
-                return XML;
-        }
-
-        return null;
+        return info.getMask();
     }
 }

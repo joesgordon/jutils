@@ -39,10 +39,10 @@ public class Packet implements ITierPrinter
         {
             printer.printTier( "Secondary Header", secondary );
         }
+        printer.printTier( "Trailer", trailer );
         if( body != null )
         {
             printer.printTier( "Body", body );
         }
-        printer.printTier( "Trailer", trailer );
     }
 }

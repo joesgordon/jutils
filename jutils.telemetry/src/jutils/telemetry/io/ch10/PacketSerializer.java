@@ -18,6 +18,8 @@ public class PacketSerializer implements IDataSerializer<Packet>
     private final SecondaryHeaderSerializer secondarySerializer;
     /**  */
     private final PacketBodySerializer bodySerializer;
+    /**  */
+    private final PacketTrailerSerializer trailerSerializer;
 
     /***************************************************************************
      * 
@@ -27,6 +29,7 @@ public class PacketSerializer implements IDataSerializer<Packet>
         this.headerSerializer = new PacketHeaderSerializer();
         this.secondarySerializer = new SecondaryHeaderSerializer();
         this.bodySerializer = new PacketBodySerializer();
+        this.trailerSerializer = new PacketTrailerSerializer();
     }
 
     /***************************************************************************
@@ -40,8 +43,6 @@ public class PacketSerializer implements IDataSerializer<Packet>
 
         headerSerializer.read( p.header, stream );
 
-        int trailerLen = p.header.getTrailerLength();
-
         if( p.header.secHdrPresent )
         {
             secondarySerializer.read( p.secondary, stream );
@@ -49,30 +50,7 @@ public class PacketSerializer implements IDataSerializer<Packet>
 
         p.body = bodySerializer.read( stream, p.header );
 
-        if( trailerLen > 0 )
-        {
-            int fillerLen = trailerLen - p.header.checksumPresent.size;
-
-            stream.skip( fillerLen );
-
-            switch( p.header.checksumPresent )
-            {
-                case CS_8:
-                    p.trailer.checksum = 0xFF & stream.read();
-                    break;
-
-                case CS_16:
-                    p.trailer.checksum = 0xFFFF & stream.readShort();
-                    break;
-
-                case CS_32:
-                    p.trailer.checksum = 0xFFFFFFFFL & stream.readInt();
-                    break;
-
-                case NO_CHECKSUM:
-                    break;
-            }
-        }
+        trailerSerializer.read( p.trailer, stream, p.header );
 
         return p;
     }

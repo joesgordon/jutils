@@ -9,6 +9,8 @@ import jutils.core.io.FieldPrinter.ITierPrinter;
 public class PacketTrailer implements ITierPrinter
 {
     /**  */
+    public byte [] filler;
+    /**  */
     public long checksum;
 
     /***************************************************************************
@@ -16,7 +18,8 @@ public class PacketTrailer implements ITierPrinter
      **************************************************************************/
     public PacketTrailer()
     {
-        this.checksum = 0;
+        this.filler = new byte[0];
+        this.checksum = 0L;
     }
 
     /***************************************************************************
@@ -25,6 +28,7 @@ public class PacketTrailer implements ITierPrinter
     @Override
     public void printFields( FieldPrinter printer )
     {
+        printer.printFieldValues( "Filler", filler );
         printer.printHexField( "Checksum", checksum );
     }
 }

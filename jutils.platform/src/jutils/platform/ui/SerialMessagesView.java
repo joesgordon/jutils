@@ -33,8 +33,7 @@ public class SerialMessagesView implements IView<JComponent>
      **************************************************************************/
     public SerialMessagesView()
     {
-        this.msgsModel = new ItemsTableModel<SerialMessage>(
-            new SerialMsgsConfig() );
+        this.msgsModel = new ItemsTableModel<>( new SerialMsgsConfig() );
         this.msgsTable = new JTable( msgsModel );
 
         this.view = createView();

@@ -27,6 +27,9 @@ public class PacketBodySerializer implements IBodySerializer<IPacketBody>
     {
         this.serializers = new HashMap<>();
         this.defaultSerializer = new DataBodySerializer();
+
+        serializers.put( DataType.COMPUTER_GENERATED_1,
+            new CompGen1BodySerializer() );
     }
 
     /***************************************************************************
@@ -87,6 +90,6 @@ public class PacketBodySerializer implements IBodySerializer<IPacketBody>
             serializer = defaultSerializer;
         }
 
-        return defaultSerializer;
+        return serializer;
     }
 }

@@ -1,65 +1,65 @@
-package jutils.telemetry.data.ch10;
+package jutils.telemetry.ui.ch10;
 
-import jutils.core.INamedValue;
+import java.awt.Component;
+
+import jutils.core.ui.hex.ByteBuffer;
+import jutils.core.ui.hex.HexPanel;
+import jutils.telemetry.data.ch10.DataBody;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum TmatsFormat implements INamedValue
+public class DataBodyView implements IPacketBodyView<DataBody>
 {
     /**  */
-    ASCII( 0, "ASCII" ),
+    private final HexPanel panel;
     /**  */
-    XML( 1, "XML" ),;
-
-    /**  */
-    public final int value;
-    /**  */
-    public final String name;
+    private DataBody body;
 
     /***************************************************************************
-     * @param value
-     * @param name
+     * 
      **************************************************************************/
-    private TmatsFormat( int value, String name )
+    public DataBodyView()
     {
-        this.value = value;
-        this.name = name;
+        this.panel = new HexPanel();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public String getName()
+    public DataBody getData()
     {
-        return name;
+        return this.body;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public int getValue()
+    public void setData( DataBody data )
     {
-        return value;
+        this.body = data;
+
+        panel.setBuffer( new ByteBuffer( body.data ) );
     }
 
     /***************************************************************************
-     * @param field
-     * @return
+     * {@inheritDoc}
      **************************************************************************/
-    public static TmatsFormat fromValue( int field )
+    @Override
+    public Component getView()
     {
-        switch( field )
-        {
-            case 0:
-                return ASCII;
-
-            case 1:
-                return XML;
-        }
-
-        return null;
+        return panel.getView();
     }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public boolean hasScrollbar()
+    {
+        return true;
+    }
+
 }

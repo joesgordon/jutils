@@ -89,6 +89,6 @@ public class KeyedSerializer<K, T> implements IKeyedSerializer<K, T>
             serializer = defaultSerializer;
         }
 
-        return defaultSerializer;
+        return serializer;
     }
 }

@@ -50,4 +50,13 @@ public enum Rcc106Version implements INamedValue
     {
         return value;
     }
+
+    /***************************************************************************
+     * @param field
+     * @return
+     **************************************************************************/
+    public static Rcc106Version fromValue( int field )
+    {
+        return INamedValue.fromValue( field, values(), null );
+    }
 }

@@ -30,6 +30,14 @@ public interface IBitField
     public long getMask();
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    public default long getMax()
+    {
+        return getMask() >>> getStartBit();
+    }
+
+    /***************************************************************************
      * @param word the field that contains this flag.
      * @return {@code true} if this flag is set.
      **************************************************************************/

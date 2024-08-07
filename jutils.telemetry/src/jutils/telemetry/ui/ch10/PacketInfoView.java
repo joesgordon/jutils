@@ -28,6 +28,8 @@ public class PacketInfoView implements IDataView<PacketInfo>
     /**  */
     private final StringWriterView<Packet> packetView;
     /**  */
+    private final PacketBodyView bodyView;
+    /**  */
     private final HexPanel dataView;
 
     /**  */
@@ -40,6 +42,7 @@ public class PacketInfoView implements IDataView<PacketInfo>
     {
         this.packetView = new StringWriterView<>(
             ( h ) -> FieldPrinter.toString( h ) );
+        this.bodyView = new PacketBodyView();
         this.dataView = new HexPanel();
 
         this.view = createView();
@@ -57,6 +60,7 @@ public class PacketInfoView implements IDataView<PacketInfo>
         JTabbedPane tabs = new JTabbedPane();
 
         tabs.addTab( "Packet", pane );
+        tabs.addTab( "Body", bodyView.getView() );
         tabs.addTab( "Data", dataView.getView() );
 
         GridBagConstraints constraints;
@@ -96,6 +100,7 @@ public class PacketInfoView implements IDataView<PacketInfo>
         this.packet = data;
 
         packetView.setData( packet.packet );
+        bodyView.setData( data.packet.body );
         dataView.setBuffer( new ByteBuffer( packet.data ) );
     }
 }

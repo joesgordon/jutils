@@ -14,6 +14,8 @@ public class CompGen1Body implements IPacketBody
     /**  */
     public Rcc106Version rccVersion;
     /**  */
+    public int reserved;
+    /**  */
     public String tmats;
 
     /***************************************************************************
@@ -24,6 +26,7 @@ public class CompGen1Body implements IPacketBody
         this.format = TmatsFormat.ASCII;
         this.setupRecordConfigChanged = false;
         this.rccVersion = Rcc106Version.RCC_106_07;
+        this.reserved = 0;
         this.tmats = "";
     }
 
@@ -37,6 +40,7 @@ public class CompGen1Body implements IPacketBody
         printer.printField( "Setup Record Config Changed",
             setupRecordConfigChanged );
         printer.printField( "RCC Version", rccVersion );
+        printer.printHexField( "Reserved", reserved );
         printer.printField( "Setup Record", tmats );
     }
 }
