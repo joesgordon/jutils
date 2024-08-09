@@ -1,63 +1,70 @@
-package jutils.telemetry.ui.ch10;
+package jutils.telemetry.data.ch10;
 
-import java.awt.Component;
-
-import jutils.core.ui.hex.ByteBuffer;
-import jutils.core.ui.hex.HexPanel;
-import jutils.telemetry.data.ch10.DataBody;
+import jutils.core.data.BitFieldInfo;
+import jutils.core.data.IBitField;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class DataBodyView implements IPacketBodyView<DataBody>
+public enum Time1Word implements IBitField
 {
     /**  */
-    private final HexPanel panel;
+    SOURCE( 0, 3, "Time Source" ),
     /**  */
-    private DataBody body;
+    FORMAT( 4, 7, "Time Format" ),
+    /**  */
+    DATE( 8, 11, "Date Format" ),
+    /**  */
+    ITS( 12, 15, "IRIG Time Source" ),
+    /**  */
+    RESERVED( 16, 31, "Reserved" ),;
+
+    /**  */
+    private final BitFieldInfo info;
 
     /***************************************************************************
-     * 
+     * @param bit
+     * @param name
      **************************************************************************/
-    public DataBodyView()
+    private Time1Word( int bit, String name )
     {
-        this.panel = new HexPanel();
+        this( bit, bit, name );
+    }
+
+    /***************************************************************************
+     * @param startBit
+     * @param endBit
+     * @param name
+     **************************************************************************/
+    private Time1Word( int startBit, int endBit, String name )
+    {
+        this.info = new BitFieldInfo( startBit, endBit, name );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public DataBody getData()
+    public int getStartBit()
     {
-        return this.body;
+        return info.getStartBit();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( DataBody data )
+    public int getEndBit()
     {
-        this.body = data;
-
-        panel.setBuffer( new ByteBuffer( body.data ) );
+        return info.getEndBit();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Component getView()
+    public long getMask()
     {
-        return panel.getView();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setEditable( boolean editable )
-    {
+        return info.getMask();
     }
 }

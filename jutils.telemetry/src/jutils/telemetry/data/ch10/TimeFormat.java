@@ -1,58 +1,68 @@
-package jutils.telemetry.ui.ch10;
+package jutils.telemetry.data.ch10;
 
-import java.awt.Component;
-
-import jutils.core.ui.ClassedView;
-import jutils.core.ui.model.IDataView;
-import jutils.telemetry.data.ch10.CompGen1Body;
-import jutils.telemetry.data.ch10.DataBody;
-import jutils.telemetry.data.ch10.IPacketBody;
-import jutils.telemetry.data.ch10.Time1Body;
+import jutils.core.INamedValue;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PacketBodyView implements IDataView<IPacketBody>
+public enum TimeFormat implements INamedValue
 {
     /**  */
-    private final ClassedView<IPacketBody> view;
+    IRIG_B( 0, "IRIG-B" ),
+    /**  */
+    IRIG_A( 1, "IRIG-A" ),
+    /**  */
+    IRIG_G( 2, "IRIG-G" ),
+    /**  */
+    REAL_TIME_CLOCK( 3, "Real-Time Clock" ),
+    /**  */
+    UTC_GPS( 4, "UTC from GPS" ),
+    /**  */
+    GPS( 5, "GPS" ),
+    /**  */
+    PTP( 6, "PTP" ),
+    /**  */
+    NONE( 15, "None" ),;
+
+    /**  */
+    public final int value;
+    /**  */
+    public final String name;
 
     /***************************************************************************
-     * 
+     * @param value
+     * @param name
      **************************************************************************/
-    public PacketBodyView()
+    private TimeFormat( int value, String name )
     {
-        this.view = new ClassedView<>();
-
-        view.put( DataBody.class, new DataBodyView(), false );
-        view.put( CompGen1Body.class, new CompGen1BodyView(), false );
-        view.put( Time1Body.class, new Time1BodyView(), true );
+        this.value = value;
+        this.name = name;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Component getView()
+    public String getName()
     {
-        return view.getView();
+        return name;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IPacketBody getData()
+    public int getValue()
     {
-        return view.getData();
+        return value;
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * @param field
+     * @return
      **************************************************************************/
-    @Override
-    public void setData( IPacketBody data )
+    public static TimeFormat fromValue( int field )
     {
-        view.setData( data );
+        return INamedValue.fromValue( field, values(), null );
     }
 }

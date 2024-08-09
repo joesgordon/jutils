@@ -5,74 +5,56 @@ import java.awt.Component;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import jutils.core.ui.StandardFormView;
-import jutils.core.ui.fields.BooleanFormField;
 import jutils.core.ui.fields.ComboFormField;
 import jutils.core.ui.fields.IntegerFormField;
 import jutils.core.ui.fields.NamedItemDescriptor;
-import jutils.core.ui.fields.StringAreaFormField;
-import jutils.telemetry.data.ch10.CompGen1Body;
-import jutils.telemetry.data.ch10.CompGen1Word;
-import jutils.telemetry.data.ch10.Rcc106Version;
-import jutils.telemetry.data.ch10.TmatsFormat;
+import jutils.telemetry.data.ch10.DateFormat;
+import jutils.telemetry.data.ch10.IrigTimeSource;
+import jutils.telemetry.data.ch10.Time1Body;
+import jutils.telemetry.data.ch10.Time1Word;
+import jutils.telemetry.data.ch10.TimeSource;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
+public class Time1BodyView implements IPacketBodyView<Time1Body>
 {
     /**  */
     private final JComponent view;
-
     /**  */
-    private final ComboFormField<TmatsFormat> formatField;
+    private final ComboFormField<TimeSource> sourceField;
     /**  */
-    private final BooleanFormField srccField;
+    private final ComboFormField<DateFormat> formatField;
     /**  */
-    private final ComboFormField<Rcc106Version> rccVerField;
+    private final ComboFormField<IrigTimeSource> irigSourceField;
     /**  */
     private final IntegerFormField reservedField;
     /**  */
-    private final StringAreaFormField tmatsField;
+    private final Time1View timeView;
 
     /**  */
-    private CompGen1Body body;
+    private Time1Body body;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public CompGen1BodyView()
+    public Time1BodyView()
     {
-        this.formatField = new ComboFormField<>( "Format", TmatsFormat.values(),
-            new NamedItemDescriptor<>() );
-        this.srccField = new BooleanFormField( "Setup Record Config Changed" );
-        this.rccVerField = new ComboFormField<>( "RCC-106 Version",
-            Rcc106Version.values(), new NamedItemDescriptor<>() );
+        this.sourceField = new ComboFormField<>( "Time Source",
+            TimeSource.values(), new NamedItemDescriptor<>() );
+        this.formatField = new ComboFormField<>( "Date Format",
+            DateFormat.values(), new NamedItemDescriptor<>() );
+        this.irigSourceField = new ComboFormField<>( "Irig Time Source",
+            IrigTimeSource.values(), new NamedItemDescriptor<>() );
         this.reservedField = new IntegerFormField( "Reserved", 0,
-            ( int )CompGen1Word.RESERVED.getMax() );
-        this.tmatsField = new StringAreaFormField( "TMATS" );
+            ( int )Time1Word.RESERVED.getMax() );
+        this.timeView = new Time1View();
 
         this.view = createView();
 
-        reservedField.setEditable( false );
-
         this.setEditable( false );
-    }
-
-    /***************************************************************************
-     * @param editable
-     **************************************************************************/
-    @Override
-    public void setEditable( boolean editable )
-    {
-        formatField.setEditable( editable );
-        srccField.setEditable( editable );
-        rccVerField.setEditable( editable );
-        reservedField.setEditable( editable );
-        tmatsField.setEditable( editable );
     }
 
     /***************************************************************************
@@ -83,7 +65,7 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
         JPanel panel = new JPanel( new BorderLayout() );
 
         panel.add( createForm(), BorderLayout.NORTH );
-        panel.add( createText(), BorderLayout.CENTER );
+        panel.add( timeView.getView(), BorderLayout.CENTER );
 
         return panel;
     }
@@ -95,34 +77,19 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
     {
         StandardFormView form = new StandardFormView();
 
+        form.addField( sourceField );
         form.addField( formatField );
-        form.addField( srccField );
-        form.addField( rccVerField );
+        form.addField( irigSourceField );
         form.addField( reservedField );
 
         return form.getView();
     }
 
     /***************************************************************************
-     * @return
-     **************************************************************************/
-    private Component createText()
-    {
-        JTextArea area = tmatsField.getTextArea();
-        JScrollPane pane = new JScrollPane( area );
-
-        area.setFont( area.getFont().deriveFont( 14.f ) );
-
-        pane.getVerticalScrollBar().setUnitIncrement( 12 );
-
-        return pane;
-    }
-
-    /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public CompGen1Body getData()
+    public Time1Body getData()
     {
         return this.body;
     }
@@ -131,15 +98,15 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( CompGen1Body data )
+    public void setData( Time1Body data )
     {
         this.body = data;
 
+        sourceField.setValue( body.source );
         formatField.setValue( body.format );
-        srccField.setValue( body.setupRecordConfigChanged );
-        rccVerField.setValue( body.rccVersion );
+        irigSourceField.setValue( body.irigSource );
         reservedField.setValue( body.reserved );
-        tmatsField.setValue( body.tmats );
+        timeView.setData( body.time );
     }
 
     /***************************************************************************
@@ -149,5 +116,18 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
     public Component getView()
     {
         return view;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setEditable( boolean editable )
+    {
+        sourceField.setEditable( editable );
+        formatField.setEditable( editable );
+        irigSourceField.setEditable( editable );
+        reservedField.setEditable( editable );
+        timeView.setEditable( editable );
     }
 }

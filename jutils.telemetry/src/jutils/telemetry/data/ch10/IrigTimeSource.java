@@ -1,63 +1,68 @@
-package jutils.telemetry.ui.ch10;
+package jutils.telemetry.data.ch10;
 
-import java.awt.Component;
-
-import jutils.core.ui.hex.ByteBuffer;
-import jutils.core.ui.hex.HexPanel;
-import jutils.telemetry.data.ch10.DataBody;
+import jutils.core.INamedValue;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class DataBodyView implements IPacketBodyView<DataBody>
+public enum IrigTimeSource implements INamedValue
 {
     /**  */
-    private final HexPanel panel;
+    NO_SOURCE( 0, "No time Source" ),
     /**  */
-    private DataBody body;
+    TIME_CMD( 1, "Time Command" ),
+    /**  */
+    RMM_TIME( 2, "RMM Time" ),
+    /**  */
+    IRIG_SIGNAL( 3, "IRIG Signal" ),
+    /**  */
+    EXTERNAL_GPS( 4, "External GPS" ),
+    /**  */
+    NTP( 5, "NTP" ),
+    /**  */
+    PTP( 6, "PTP" ),
+    /**  */
+    EXTERNAL_EMBEDDED( 7, "External Embedded" ),;
+
+    /**  */
+    public final int value;
+    /**  */
+    public final String name;
 
     /***************************************************************************
-     * 
+     * @param value
+     * @param name
      **************************************************************************/
-    public DataBodyView()
+    private IrigTimeSource( int value, String name )
     {
-        this.panel = new HexPanel();
+        this.value = value;
+        this.name = name;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public DataBody getData()
+    public String getName()
     {
-        return this.body;
+        return name;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( DataBody data )
+    public int getValue()
     {
-        this.body = data;
-
-        panel.setBuffer( new ByteBuffer( body.data ) );
+        return value;
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * @param field
+     * @return
      **************************************************************************/
-    @Override
-    public Component getView()
+    public static IrigTimeSource fromValue( int field )
     {
-        return panel.getView();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setEditable( boolean editable )
-    {
+        return INamedValue.fromValue( field, values(), null );
     }
 }

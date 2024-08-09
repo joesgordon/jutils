@@ -4,29 +4,27 @@ import java.awt.Component;
 
 import jutils.core.ui.ClassedView;
 import jutils.core.ui.model.IDataView;
-import jutils.telemetry.data.ch10.CompGen1Body;
-import jutils.telemetry.data.ch10.DataBody;
-import jutils.telemetry.data.ch10.IPacketBody;
-import jutils.telemetry.data.ch10.Time1Body;
+import jutils.telemetry.data.ch10.ITime1;
+import jutils.telemetry.data.ch10.IrigDayTime;
+import jutils.telemetry.data.ch10.MonthDayTime;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PacketBodyView implements IDataView<IPacketBody>
+public class Time1View implements IDataView<ITime1>
 {
     /**  */
-    private final ClassedView<IPacketBody> view;
+    private final ClassedView<ITime1> view;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public PacketBodyView()
+    public Time1View()
     {
         this.view = new ClassedView<>();
 
-        view.put( DataBody.class, new DataBodyView(), false );
-        view.put( CompGen1Body.class, new CompGen1BodyView(), false );
-        view.put( Time1Body.class, new Time1BodyView(), true );
+        view.put( MonthDayTime.class, new MonthDayTimeView(), false );
+        view.put( IrigDayTime.class, new IrigDayTimeView(), false );
     }
 
     /***************************************************************************
@@ -42,7 +40,7 @@ public class PacketBodyView implements IDataView<IPacketBody>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IPacketBody getData()
+    public ITime1 getData()
     {
         return view.getData();
     }
@@ -51,8 +49,16 @@ public class PacketBodyView implements IDataView<IPacketBody>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( IPacketBody data )
+    public void setData( ITime1 data )
     {
         view.setData( data );
+    }
+
+    /***************************************************************************
+     * @param editable
+     **************************************************************************/
+    public void setEditable( boolean editable )
+    {
+        view.setEditable( editable );
     }
 }
