@@ -6,8 +6,10 @@ import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
+import jutils.core.io.FieldPrinter;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.fields.BooleanFormField;
 import jutils.core.ui.fields.ComboFormField;
@@ -36,6 +38,8 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
     /**  */
     private final IntegerFormField reservedField;
     /**  */
+    private final StringAreaFormField setupField;
+    /**  */
     private final StringAreaFormField tmatsField;
 
     /**  */
@@ -53,6 +57,7 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
             Rcc106Version.values(), new NamedItemDescriptor<>() );
         this.reservedField = new IntegerFormField( "Reserved", 0,
             ( int )CompGen1Word.RESERVED.getMax() );
+        this.setupField = new StringAreaFormField( "Setup" );
         this.tmatsField = new StringAreaFormField( "TMATS" );
 
         this.view = createView();
@@ -72,6 +77,7 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
         srccField.setEditable( editable );
         rccVerField.setEditable( editable );
         reservedField.setEditable( editable );
+        setupField.setEditable( editable );
         tmatsField.setEditable( editable );
     }
 
@@ -83,7 +89,7 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
         JPanel panel = new JPanel( new BorderLayout() );
 
         panel.add( createForm(), BorderLayout.NORTH );
-        panel.add( createText(), BorderLayout.CENTER );
+        panel.add( createTabs(), BorderLayout.CENTER );
 
         return panel;
     }
@@ -106,16 +112,31 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
     /***************************************************************************
      * @return
      **************************************************************************/
-    private Component createText()
+    private Component createTabs()
     {
-        JTextArea area = tmatsField.getTextArea();
+        JTabbedPane tabs = new JTabbedPane();
+
+        addTab( tabs, setupField );
+        addTab( tabs, tmatsField );
+
+        return tabs;
+    }
+
+    /***************************************************************************
+     * @param tabs
+     * @param field
+     * @return
+     **************************************************************************/
+    private void addTab( JTabbedPane tabs, StringAreaFormField field )
+    {
+        JTextArea area = field.getTextArea();
         JScrollPane pane = new JScrollPane( area );
 
         area.setFont( area.getFont().deriveFont( 14.f ) );
 
         pane.getVerticalScrollBar().setUnitIncrement( 12 );
 
-        return pane;
+        tabs.addTab( field.getName(), pane );
     }
 
     /***************************************************************************
@@ -139,7 +160,8 @@ public class CompGen1BodyView implements IPacketBodyView<CompGen1Body>
         srccField.setValue( body.setupRecordConfigChanged );
         rccVerField.setValue( body.rccVersion );
         reservedField.setValue( body.reserved );
-        tmatsField.setValue( body.tmats );
+        setupField.setValue( body.setup );
+        tmatsField.setValue( FieldPrinter.toString( body.tmats ) );
     }
 
     /***************************************************************************

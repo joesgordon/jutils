@@ -1,6 +1,12 @@
 package jutils.telemetry.data.ch09;
 
-public class TestInformation
+import jutils.core.io.FieldPrinter;
+import jutils.core.io.FieldPrinter.ITierPrinter;
+
+/*******************************************************************************
+ * 
+ ******************************************************************************/
+public class TestInformation implements ITierPrinter
 {
     /**  */
     public String testDuration;
@@ -11,11 +17,26 @@ public class TestInformation
     /**  */
     public String classification;
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     public TestInformation()
     {
         this.testDuration = "";
         this.preTestRequirement = "";
         this.postTestRequirement = "";
         this.classification = "";
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void printFields( FieldPrinter printer )
+    {
+        printer.printField( "Test Duration", testDuration );
+        printer.printField( "Pre-Test Requirement", preTestRequirement );
+        printer.printField( "Post-Test Requirement", postTestRequirement );
+        printer.printField( "Classification", classification );
     }
 }

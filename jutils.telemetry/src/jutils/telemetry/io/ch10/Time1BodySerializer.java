@@ -23,7 +23,7 @@ import jutils.telemetry.data.ch10.TimeSource;
 public class Time1BodySerializer implements IBodySerializer<Time1Body>
 {
     /**  */
-    private KeyedSerializer<DateFormat, ITime1> time1Serializers;
+    private final KeyedSerializer<DateFormat, ITime1> time1Serializers;
 
     /***************************************************************************
      * 

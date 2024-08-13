@@ -15,7 +15,7 @@ public class TelemetryMain
 {
     /**  */
     public static final File USER_OPTIONS_FILE = IOUtils.getUsersFile(
-        ".jutils", "tm", "options.xml" );;
+        ".jutils", "tm", "options.xml" );
 
     /***************************************************************************
      * Declare the default and only constructor private to prevent instances.
@@ -37,7 +37,7 @@ public class TelemetryMain
     /***************************************************************************
      * @return
      **************************************************************************/
-    private static JFrame createFrame()
+    public static JFrame createFrame()
     {
         TelemetryFrame view = new TelemetryFrame();
         JFrame frame = view.getView();

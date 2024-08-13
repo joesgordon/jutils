@@ -2,33 +2,47 @@ package jutils.telemetry.ui.ch10;
 
 import java.awt.Component;
 
-import jutils.core.ui.ClassedView;
-import jutils.core.ui.model.IDataView;
-import jutils.telemetry.data.ch10.CompGen1Body;
-import jutils.telemetry.data.ch10.DataBody;
-import jutils.telemetry.data.ch10.IPacketBody;
-import jutils.telemetry.data.ch10.Pcm1Body;
-import jutils.telemetry.data.ch10.Time1Body;
+import jutils.core.ui.ClassedView.IClassedView;
+import jutils.core.ui.hex.ShiftHexView;
+import jutils.telemetry.data.ch10.PcmThroughputData;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PacketBodyView implements IDataView<IPacketBody>
+public class PcmThroughputDataView implements IClassedView<PcmThroughputData>
 {
     /**  */
-    private final ClassedView<IPacketBody> view;
+    private final ShiftHexView dataView;
+
+    /**  */
+    private PcmThroughputData pcmData;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public PacketBodyView()
+    public PcmThroughputDataView()
     {
-        this.view = new ClassedView<>();
+        this.dataView = new ShiftHexView();
+    }
 
-        view.put( DataBody.class, new DataBodyView(), false );
-        view.put( CompGen1Body.class, new CompGen1BodyView(), false );
-        view.put( Time1Body.class, new Time1BodyView(), true );
-        view.put( Pcm1Body.class, new Pcm1BodyView(), false );
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public PcmThroughputData getData()
+    {
+        return this.pcmData;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setData( PcmThroughputData data )
+    {
+        this.pcmData = data;
+
+        dataView.setData( pcmData.data );
     }
 
     /***************************************************************************
@@ -37,24 +51,15 @@ public class PacketBodyView implements IDataView<IPacketBody>
     @Override
     public Component getView()
     {
-        return view.getView();
+        return dataView.getView();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IPacketBody getData()
+    public void setEditable( boolean editable )
     {
-        return view.getData();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setData( IPacketBody data )
-    {
-        view.setData( data );
+        dataView.setEditable( editable );
     }
 }

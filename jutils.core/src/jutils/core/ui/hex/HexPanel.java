@@ -196,6 +196,14 @@ public class HexPanel implements IView<JComponent>
     }
 
     /***************************************************************************
+     * @param editable
+     **************************************************************************/
+    public void setEditable( boolean editable )
+    {
+        table.setEnabled( false );
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     private static class HexRowListModel extends AbstractListModel<String>

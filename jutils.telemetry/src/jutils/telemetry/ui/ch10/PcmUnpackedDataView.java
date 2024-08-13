@@ -2,33 +2,48 @@ package jutils.telemetry.ui.ch10;
 
 import java.awt.Component;
 
-import jutils.core.ui.ClassedView;
-import jutils.core.ui.model.IDataView;
-import jutils.telemetry.data.ch10.CompGen1Body;
-import jutils.telemetry.data.ch10.DataBody;
-import jutils.telemetry.data.ch10.IPacketBody;
-import jutils.telemetry.data.ch10.Pcm1Body;
-import jutils.telemetry.data.ch10.Time1Body;
+import javax.swing.JPanel;
+
+import jutils.core.ui.ClassedView.IClassedView;
+import jutils.telemetry.data.ch10.PcmUnpackedData;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PacketBodyView implements IDataView<IPacketBody>
+public class PcmUnpackedDataView implements IClassedView<PcmUnpackedData>
 {
     /**  */
-    private final ClassedView<IPacketBody> view;
+    private final JPanel view;
+
+    /**  */
+    private PcmUnpackedData pcmData;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public PacketBodyView()
+    public PcmUnpackedDataView()
     {
-        this.view = new ClassedView<>();
+        this.view = new JPanel();
+    }
 
-        view.put( DataBody.class, new DataBodyView(), false );
-        view.put( CompGen1Body.class, new CompGen1BodyView(), false );
-        view.put( Time1Body.class, new Time1BodyView(), true );
-        view.put( Pcm1Body.class, new Pcm1BodyView(), false );
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public PcmUnpackedData getData()
+    {
+        return pcmData;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setData( PcmUnpackedData data )
+    {
+        this.pcmData = data;
+
+        // TODO Auto-generated method stub
     }
 
     /***************************************************************************
@@ -37,24 +52,15 @@ public class PacketBodyView implements IDataView<IPacketBody>
     @Override
     public Component getView()
     {
-        return view.getView();
+        return view;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IPacketBody getData()
+    public void setEditable( boolean editable )
     {
-        return view.getData();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setData( IPacketBody data )
-    {
-        view.setData( data );
+        // TODO Auto-generated method stub
     }
 }

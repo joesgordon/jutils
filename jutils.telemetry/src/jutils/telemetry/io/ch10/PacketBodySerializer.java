@@ -31,6 +31,7 @@ public class PacketBodySerializer implements IBodySerializer<IPacketBody>
         serializers.put( DataType.COMPUTER_GENERATED_1,
             new CompGen1BodySerializer() );
         serializers.put( DataType.TIME_1, new Time1BodySerializer() );
+        serializers.put( DataType.PCM_1, new Pcm1BodySerializer() );
     }
 
     /***************************************************************************

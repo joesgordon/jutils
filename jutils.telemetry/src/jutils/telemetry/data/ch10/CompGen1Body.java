@@ -1,6 +1,7 @@
 package jutils.telemetry.data.ch10;
 
 import jutils.core.io.FieldPrinter;
+import jutils.telemetry.data.ch09.Tmats;
 
 /*******************************************************************************
  * 
@@ -16,7 +17,9 @@ public class CompGen1Body implements IPacketBody
     /**  */
     public int reserved;
     /**  */
-    public String tmats;
+    public String setup;
+    /**  */
+    public Tmats tmats;
 
     /***************************************************************************
      * 
@@ -27,7 +30,7 @@ public class CompGen1Body implements IPacketBody
         this.setupRecordConfigChanged = false;
         this.rccVersion = Rcc106Version.RCC_106_07;
         this.reserved = 0;
-        this.tmats = "";
+        this.setup = "";
     }
 
     /***************************************************************************
@@ -41,6 +44,6 @@ public class CompGen1Body implements IPacketBody
             setupRecordConfigChanged );
         printer.printField( "RCC Version", rccVersion );
         printer.printHexField( "Reserved", reserved );
-        printer.printField( "Setup Record", tmats );
+        printer.printField( "Setup Record", setup );
     }
 }

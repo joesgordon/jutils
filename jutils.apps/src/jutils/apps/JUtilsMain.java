@@ -20,6 +20,7 @@ import jutils.platform.PlatformUtils;
 import jutils.platform.SerialConsoleTool;
 import jutils.plot.app.PlotTool;
 import jutils.summer.SummerTool;
+import jutils.telemetry.TelemetryTool;
 
 /*******************************************************************************
  * This class defines the application that will display the main applications
@@ -70,6 +71,7 @@ public class JUtilsMain
         apps.add( new PcapTool() );
         apps.add( new InsomniaTool() );
         apps.add( new IrisTool() );
+        apps.add( new TelemetryTool() );
 
         return apps;
     }

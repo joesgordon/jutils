@@ -45,4 +45,15 @@ public class Packet implements ITierPrinter
             printer.printTier( "Body", body );
         }
     }
+
+    /***************************************************************************
+     * @param <T>
+     * @return
+     **************************************************************************/
+    public <T extends IPacketBody> T getBody()
+    {
+        @SuppressWarnings( "unchecked")
+        T t = ( T )body;
+        return t;
+    }
 }

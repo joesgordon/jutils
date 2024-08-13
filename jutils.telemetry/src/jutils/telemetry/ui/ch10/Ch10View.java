@@ -10,6 +10,8 @@ import javax.swing.JTabbedPane;
 
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.data.ch10.Ch10File;
+import jutils.telemetry.data.ch10.CompGen1Body;
+import jutils.telemetry.data.ch10.PacketInfo;
 
 /*******************************************************************************
  * 
@@ -55,7 +57,7 @@ public class Ch10View implements IDataView<Ch10File>
 
         constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 10, 10, 10, 10 ), 0, 0 );
+            new Insets( 0, 10, 10, 10 ), 0, 0 );
         panel.add( tabs, constraints );
 
         return panel;
@@ -87,5 +89,11 @@ public class Ch10View implements IDataView<Ch10File>
     {
         infoView.setData( data );
         packetsView.setData( data );
+
+        PacketInfo info = data.readPacket( 0 );
+
+        CompGen1Body cg1 = info.packet.getBody();
+
+        tmatsView.setData( cg1.tmats );
     }
 }

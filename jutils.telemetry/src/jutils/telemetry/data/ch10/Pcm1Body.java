@@ -1,31 +1,25 @@
-package jutils.telemetry.data.ch09;
+package jutils.telemetry.data.ch10;
 
 import jutils.core.io.FieldPrinter;
-import jutils.core.io.FieldPrinter.ITierPrinter;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PointOfContact implements ITierPrinter
+public class Pcm1Body implements IPacketBody
 {
-    /** G\POC1-n */
-    public String name;
-    /** G\POC2-n */
-    public String agency;
-    /** G\POC3-n */
-    public String address;
-    /** G\POC4-n */
-    public String telephone;
+    /**  */
+    public final Pcm1SpecificData specificData;
+
+    /**  */
+    public IPcmData data;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public PointOfContact()
+    public Pcm1Body()
     {
-        this.name = "";
-        this.agency = "";
-        this.address = "";
-        this.telephone = "";
+        this.specificData = new Pcm1SpecificData();
+        this.data = new PcmThroughputData();
     }
 
     /***************************************************************************
@@ -34,9 +28,7 @@ public class PointOfContact implements ITierPrinter
     @Override
     public void printFields( FieldPrinter printer )
     {
-        printer.printField( "Name", name );
-        printer.printField( "Agency", agency );
-        printer.printField( "Address", address );
-        printer.printField( "Telephone", telephone );
+        printer.printTier( "Specific Data", specificData );
+        printer.printTier( "Data", data );
     }
 }

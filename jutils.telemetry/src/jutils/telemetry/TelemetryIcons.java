@@ -14,6 +14,9 @@ public class TelemetryIcons
     public static final IconLoader loader = new IconLoader(
         TelemetryIcons.class, "resources" );
 
+    /**  */
+    public static final String APP_024 = "tm_024.png";
+
     /***************************************************************************
      * @return
      **************************************************************************/

@@ -1,28 +1,18 @@
-package jutils.telemetry.data.ch09;
+package jutils.telemetry.data.ch10;
 
 import jutils.core.io.FieldPrinter;
-import jutils.core.io.FieldPrinter.ITierPrinter;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class DataSource implements ITierPrinter
+public class PcmUnpackedData implements IPcmData
 {
-    /**  */
-    public String id;
-    /**  */
-    public String type;
-    /**  */
-    public String classification;
-
     /***************************************************************************
      * 
      **************************************************************************/
-    public DataSource()
+    public PcmUnpackedData()
     {
-        this.id = "";
-        this.type = "";
-        this.classification = "";
+        // TODO Auto-generated constructor stub
     }
 
     /***************************************************************************
@@ -31,8 +21,6 @@ public class DataSource implements ITierPrinter
     @Override
     public void printFields( FieldPrinter printer )
     {
-        printer.printField( "ID", id );
-        printer.printField( "Type", type );
-        printer.printField( "Classification", classification );
+        // TODO Auto-generated method stub
     }
 }
