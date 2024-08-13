@@ -8,6 +8,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import jutils.core.ui.StringView;
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.data.ch10.Ch10File;
 import jutils.telemetry.data.ch10.CompGen1Body;
@@ -28,6 +29,8 @@ public class Ch10View implements IDataView<Ch10File>
     private final PacketInfosView packetsView;
     /**  */
     private final TmatsView tmatsView;
+    /**  */
+    private final StringView setupView;
 
     /***************************************************************************
      * 
@@ -38,12 +41,14 @@ public class Ch10View implements IDataView<Ch10File>
         this.infoView = new Ch10InfoView();
         this.tmatsView = new TmatsView();
         this.tabs = new JTabbedPane();
+        this.setupView = new StringView();
 
         this.view = createView();
 
         tabs.addTab( "Info", infoView.getView() );
         tabs.addTab( "Packets", packetsView.getView() );
         tabs.addTab( "TMATS", tmatsView.getView() );
+        tabs.addTab( "Setup", setupView.getView() );
     }
 
     /***************************************************************************
@@ -95,5 +100,6 @@ public class Ch10View implements IDataView<Ch10File>
         CompGen1Body cg1 = info.packet.getBody();
 
         tmatsView.setData( cg1.tmats );
+        setupView.setData( cg1.setup );
     }
 }

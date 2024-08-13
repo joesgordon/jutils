@@ -1,47 +1,39 @@
-package jutils.telemetry.ui.ch10;
+package jutils.core.ui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 
-import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
-import jutils.core.io.FieldPrinter;
-import jutils.core.ui.StringView;
+import jutils.core.ui.fields.StringAreaFormField;
 import jutils.core.ui.model.IDataView;
-import jutils.telemetry.data.ch09.Tmats;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TmatsView implements IDataView<Tmats>
+public class StringView implements IDataView<String>
 {
     /**  */
-    private final JPanel view;
+    private final JScrollPane pane;
     /**  */
-    private final StringView tmatsField;
+    private final StringAreaFormField field;
 
     /**  */
-    private Tmats tmats;
+    private String text;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public TmatsView()
+    public StringView()
     {
-        this.tmatsField = new StringView();
-        this.view = createView();
-    }
+        this.field = new StringAreaFormField( "" );
 
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private JPanel createView()
-    {
-        JPanel panel = new JPanel( new BorderLayout() );
+        JTextArea area = field.getTextArea();
+        this.pane = new JScrollPane( area );
 
-        panel.add( tmatsField.getView(), BorderLayout.CENTER );
+        area.setFont( area.getFont().deriveFont( 14.f ) );
 
-        return panel;
+        pane.getVerticalScrollBar().setUnitIncrement( 12 );
     }
 
     /***************************************************************************
@@ -50,26 +42,36 @@ public class TmatsView implements IDataView<Tmats>
     @Override
     public Component getView()
     {
-        return view;
+        return pane;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Tmats getData()
+    public String getData()
     {
-        return this.tmats;
+        return this.text;
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( Tmats data )
+    public void setData( String data )
     {
-        this.tmats = data;
+        this.text = data;
 
-        tmatsField.setData( FieldPrinter.toString( tmats ) );
+        field.setValue( text );
+
+        field.getTextArea().setCaretPosition( 0 );
+    }
+
+    /***************************************************************************
+     * @param editable
+     **************************************************************************/
+    public void setEditable( boolean editable )
+    {
+        field.setEditable( editable );
     }
 }
