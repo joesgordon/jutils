@@ -200,6 +200,15 @@ public class FieldPrinter
      * @param name
      * @param value
      **************************************************************************/
+    public void printField( String name, Integer value )
+    {
+        printField( name, value == null ? "null" : value.toString() );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
     public void printField( String name, long value )
     {
         printField( name, "" + value );

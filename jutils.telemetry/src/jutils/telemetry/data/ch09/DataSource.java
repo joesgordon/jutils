@@ -11,7 +11,7 @@ public class DataSource implements ITierPrinter
     /**  */
     public String id;
     /**  */
-    public String type;
+    public DataSourceType type;
     /**  */
     public String classification;
 
@@ -21,7 +21,7 @@ public class DataSource implements ITierPrinter
     public DataSource()
     {
         this.id = "";
-        this.type = "";
+        this.type = null;
         this.classification = "";
     }
 

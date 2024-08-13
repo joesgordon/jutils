@@ -41,6 +41,8 @@ public class Information implements ITierPrinter
     /** Test identification. Always allowed. Max 16 characters. */
     public String testNumber;
     /**  */
+    public Integer pocCount;
+    /**  */
     public final List<PointOfContact> pocs;
 
     /***************************************************************************
@@ -56,6 +58,7 @@ public class Information implements ITierPrinter
         this.updateNumber = "";
         this.updateDate = "";
         this.testNumber = "";
+        this.pocCount = null;
         this.pocs = new ArrayList<>();
     }
 
@@ -73,6 +76,7 @@ public class Information implements ITierPrinter
         printer.printField( "Update Number", updateNumber );
         printer.printField( "Update Date", updateDate );
         printer.printField( "Test Number", testNumber );
+        printer.printField( "POC Count", pocCount );
         printer.printTiers( "POCs", pocs );
     }
 }

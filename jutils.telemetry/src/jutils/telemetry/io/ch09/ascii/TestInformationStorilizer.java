@@ -1,11 +1,11 @@
-package jutils.telemetry.io.ch09;
+package jutils.telemetry.io.ch09.ascii;
 
 import jutils.telemetry.data.ch09.TestInformation;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TestInformationAsciiReader
+public class TestInformationStorilizer
 {
     /***************************************************************************
      * @param info
@@ -13,9 +13,9 @@ public class TestInformationAsciiReader
      **************************************************************************/
     public void read( TestInformation info, AsciiStore store )
     {
-        info.testDuration = store.getString( "G\\TI1" );
-        info.preTestRequirement = store.getString( "G\\TI2" );
-        info.postTestRequirement = store.getString( "G\\TI3" );
-        info.classification = store.getString( "G\\SC" );
+        info.testDuration = store.getString( "TI1" );
+        info.preTestRequirement = store.getString( "TI2" );
+        info.postTestRequirement = store.getString( "TI3" );
+        info.classification = store.getString( "SC" );
     }
 }

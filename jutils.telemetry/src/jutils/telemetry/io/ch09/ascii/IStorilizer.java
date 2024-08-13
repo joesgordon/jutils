@@ -1,13 +1,14 @@
-package jutils.telemetry.io.ch09;
+package jutils.telemetry.io.ch09.ascii;
 
 /*******************************************************************************
+ * Defines a Store Reader.
  * @param <T>
  ******************************************************************************/
-public interface IAsciiReader<T>
+public interface IStorilizer<T>
 {
     /***************************************************************************
      * @param item
-     * @param fields
+     * @param store
      * @return
      **************************************************************************/
     public void read( T item, AsciiStore store );

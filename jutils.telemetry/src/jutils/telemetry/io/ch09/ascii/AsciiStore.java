@@ -1,4 +1,4 @@
-package jutils.telemetry.io.ch09;
+package jutils.telemetry.io.ch09.ascii;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,14 +17,31 @@ public class AsciiStore implements ITierPrinter
     private final Map<String, String> fields;
     /**  */
     private final IntegerParser intParser;
+    /**  */
+    private final String prefix;
+    /**  */
+    private final String suffix;
 
     /***************************************************************************
      * @param fields
      **************************************************************************/
     public AsciiStore( Map<String, String> fields )
     {
+        this( fields, "", "" );
+    }
+
+    /***************************************************************************
+     * @param fields
+     * @param prefix
+     * @param suffix
+     **************************************************************************/
+    private AsciiStore( Map<String, String> fields, String prefix,
+        String suffix )
+    {
         this.fields = fields;
         this.intParser = new IntegerParser();
+        this.prefix = prefix;
+        this.suffix = suffix;
     }
 
     /***************************************************************************
@@ -33,7 +50,7 @@ public class AsciiStore implements ITierPrinter
      **************************************************************************/
     public String getString( String key )
     {
-        return fields.get( key );
+        return fields.get( prefix + key + suffix );
     }
 
     /***************************************************************************
@@ -71,5 +88,25 @@ public class AsciiStore implements ITierPrinter
         {
             printer.printField( entry.getKey(), entry.getValue() );
         }
+    }
+
+    /***************************************************************************
+     * @param prefix
+     * @return
+     **************************************************************************/
+    public AsciiStore createSubstore( String prefix )
+    {
+        return createSubstore( prefix, "" );
+    }
+
+    /***************************************************************************
+     * @param prefix
+     * @param suffix
+     * @return
+     **************************************************************************/
+    public AsciiStore createSubstore( String prefix, String suffix )
+    {
+        return new AsciiStore( fields, this.prefix + prefix,
+            this.suffix + suffix );
     }
 }

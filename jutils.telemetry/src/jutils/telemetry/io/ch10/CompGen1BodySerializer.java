@@ -11,7 +11,7 @@ import jutils.telemetry.data.ch10.CompGen1Word;
 import jutils.telemetry.data.ch10.PacketHeader;
 import jutils.telemetry.data.ch10.Rcc106Version;
 import jutils.telemetry.data.ch10.TmatsFormat;
-import jutils.telemetry.io.ch09.TmatsAsciiParser;
+import jutils.telemetry.io.ch09.ascii.TmatsParser;
 
 /*******************************************************************************
  * 
@@ -22,14 +22,14 @@ public class CompGen1BodySerializer implements IBodySerializer<CompGen1Body>
     private static final Charset ASCII = IOUtils.getAsciiEncoding();
 
     /**  */
-    private final TmatsAsciiParser tmatsParser;
+    private final TmatsParser tmatsParser;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public CompGen1BodySerializer()
     {
-        this.tmatsParser = new TmatsAsciiParser();
+        this.tmatsParser = new TmatsParser();
     }
 
     /***************************************************************************

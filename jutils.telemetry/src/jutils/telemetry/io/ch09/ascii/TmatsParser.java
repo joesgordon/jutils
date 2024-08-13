@@ -1,4 +1,4 @@
-package jutils.telemetry.io.ch09;
+package jutils.telemetry.io.ch09.ascii;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,17 +13,17 @@ import jutils.telemetry.data.ch09.Tmats;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TmatsAsciiParser implements IParser<Tmats>, IAsciiReader<Tmats>
+public class TmatsParser implements IParser<Tmats>
 {
-    /**  */
-    private final GeneralInfoAsciiReader generalReader;
+    /** */
+    private final TmatsStorilizer reader;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public TmatsAsciiParser()
+    public TmatsParser()
     {
-        this.generalReader = new GeneralInfoAsciiReader();
+        this.reader = new TmatsStorilizer();
     }
 
     /***************************************************************************
@@ -36,19 +36,9 @@ public class TmatsAsciiParser implements IParser<Tmats>, IAsciiReader<Tmats>
 
         Tmats setup = new Tmats();
 
-        read( setup, new AsciiStore( fields ) );
+        reader.read( setup, new AsciiStore( fields ) );
 
         return setup;
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void read( Tmats setup, AsciiStore store )
-    {
-        // LogUtils.printDebug( "%s", FieldPrinter.toString( store ) );
-        generalReader.read( setup.general, store );
     }
 
     /***************************************************************************

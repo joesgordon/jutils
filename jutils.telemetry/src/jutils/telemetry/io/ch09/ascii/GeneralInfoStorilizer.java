@@ -1,4 +1,4 @@
-package jutils.telemetry.io.ch09;
+package jutils.telemetry.io.ch09.ascii;
 
 import jutils.telemetry.data.ch09.DataSource;
 import jutils.telemetry.data.ch09.GeneralInformation;
@@ -6,23 +6,23 @@ import jutils.telemetry.data.ch09.GeneralInformation;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class GeneralInfoAsciiReader implements IAsciiReader<GeneralInformation>
+public class GeneralInfoStorilizer implements IStorilizer<GeneralInformation>
 {
     /**  */
-    private final InformationAsciiReader informationReader;
+    private final InformationStorilizer informationReader;
     /**  */
-    private final DataSourceAsciiReader dsReader;
+    private final DataSourceStorilizer dsReader;
     /**  */
-    private final TestInformationAsciiReader testInfoReader;
+    private final TestInformationStorilizer testInfoReader;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public GeneralInfoAsciiReader()
+    public GeneralInfoStorilizer()
     {
-        this.informationReader = new InformationAsciiReader();
-        this.dsReader = new DataSourceAsciiReader();
-        this.testInfoReader = new TestInformationAsciiReader();
+        this.informationReader = new InformationStorilizer();
+        this.dsReader = new DataSourceStorilizer();
+        this.testInfoReader = new TestInformationStorilizer();
     }
 
     /***************************************************************************
@@ -31,23 +31,23 @@ public class GeneralInfoAsciiReader implements IAsciiReader<GeneralInformation>
     @Override
     public void read( GeneralInformation info, AsciiStore store )
     {
-        Integer x;
-
-        info.programName = store.getString( "G\\PN" );
-        info.testItem = store.getString( "G\\TA" );
+        info.programName = store.getString( "PN" );
+        info.testItem = store.getString( "TA" );
 
         informationReader.read( info.information, store );
 
         info.dataSources.clear();
-        x = store.getInteger( "G\\DSI\\N" );
+        info.dataSourceCount = store.getInteger( "DSI\\N" );
 
-        if( x != null )
+        if( info.dataSourceCount != null )
         {
-            for( int i = 0; i < x; i++ )
+            for( int i = 0; i < info.dataSourceCount; i++ )
             {
+                int dsNum = i + 1;
+                AsciiStore dsStore = store.createSubstore( "", "-" + dsNum );
                 DataSource ds = new DataSource();
 
-                dsReader.read( ds, store, i + 1 );
+                dsReader.read( ds, dsStore );
 
                 info.dataSources.add( ds );
             }
@@ -55,7 +55,7 @@ public class GeneralInfoAsciiReader implements IAsciiReader<GeneralInformation>
 
         testInfoReader.read( info.testInfo, store );
 
-        info.checksum = store.getString( "G\\SHA" );
-        info.comments = store.getString( "G\\COM" );
+        info.checksum = store.getString( "SHA" );
+        info.comments = store.getString( "COM" );
     }
 }

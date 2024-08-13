@@ -21,6 +21,8 @@ public class GeneralInformation implements ITierPrinter
     /**  */
     public final Information information;
     /**  */
+    public Integer dataSourceCount;
+    /**  */
     public final List<DataSource> dataSources;
     /**  */
     public final TestInformation testInfo;
@@ -37,6 +39,7 @@ public class GeneralInformation implements ITierPrinter
         this.programName = "";
         this.testItem = "";
         this.information = new Information();
+        this.dataSourceCount = null;
         this.dataSources = new ArrayList<>();
         this.testInfo = new TestInformation();
         this.checksum = "";
@@ -52,6 +55,7 @@ public class GeneralInformation implements ITierPrinter
         printer.printField( "Program Name", programName );
         printer.printField( "Test Item", testItem );
         printer.printTier( "Information", information );
+        printer.printField( "Data Source Count", dataSourceCount );
         printer.printTiers( "Data Sources", dataSources );
         printer.printTier( "Test Information", testInfo );
         printer.printField( "Checksum", checksum );
