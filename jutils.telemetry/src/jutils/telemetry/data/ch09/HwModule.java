@@ -6,26 +6,23 @@ import jutils.core.io.FieldPrinter.ITierPrinter;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PointOfContact implements ITierPrinter
+public class HwModule implements ITierPrinter
 {
-    /** G\POC1-n */
-    public String name;
-    /** G\POC2-n */
-    public String agency;
-    /** G\POC3-n */
-    public String address;
-    /** G\POC4-n */
-    public String telephone;
+    /**  */
+    public String id;
+    /**  */
+    public String serialNumber;
+    /**  */
+    public String firmwareRevision;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public PointOfContact()
+    public HwModule()
     {
-        this.name = null;
-        this.agency = null;
-        this.address = null;
-        this.telephone = null;
+        this.id = null;
+        this.serialNumber = null;
+        this.firmwareRevision = null;
     }
 
     /***************************************************************************
@@ -34,9 +31,8 @@ public class PointOfContact implements ITierPrinter
     @Override
     public void printFields( FieldPrinter printer )
     {
-        printer.printField( "Name", name );
-        printer.printField( "Agency", agency );
-        printer.printField( "Address", address );
-        printer.printField( "Telephone", telephone );
+        printer.printField( "ID", id );
+        printer.printField( "Serial Number", serialNumber );
+        printer.printField( "Firmware Revision", firmwareRevision );
     }
 }

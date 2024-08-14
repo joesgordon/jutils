@@ -16,6 +16,8 @@ public class Recorder implements ITierPrinter
     public String description;
     /**  */
     public final RecorderMedia media;
+    /**  */
+    public final RecorderInfo info;
 
     /***************************************************************************
      * 
@@ -26,6 +28,7 @@ public class Recorder implements ITierPrinter
         this.id = null;
         this.description = null;
         this.media = new RecorderMedia();
+        this.info = new RecorderInfo();
     }
 
     /***************************************************************************
@@ -38,5 +41,6 @@ public class Recorder implements ITierPrinter
         printer.printField( "Recorder/Reproducer ID", id );
         printer.printField( "Recorder/Reproducer Description", description );
         printer.printTier( "Recorder-Reproducer Media Characteristics", media );
+        printer.printTier( "Recorder-Reproducer Information", info );
     }
 }

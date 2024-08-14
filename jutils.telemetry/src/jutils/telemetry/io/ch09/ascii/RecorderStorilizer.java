@@ -9,6 +9,8 @@ public class RecorderStorilizer implements IStorilizer<Recorder>
 {
     /**  */
     private final RecorderMediaStorilizer mediaStorilizer;
+    /**  */
+    private final RecorderInfoStorilizer infoStorilizer;
 
     /***************************************************************************
      * 
@@ -16,6 +18,7 @@ public class RecorderStorilizer implements IStorilizer<Recorder>
     public RecorderStorilizer()
     {
         this.mediaStorilizer = new RecorderMediaStorilizer();
+        this.infoStorilizer = new RecorderInfoStorilizer();
     }
 
     /***************************************************************************
@@ -29,5 +32,6 @@ public class RecorderStorilizer implements IStorilizer<Recorder>
         r.description = store.getString( "R1" );
 
         mediaStorilizer.read( r.media, store );
+        infoStorilizer.read( r.info, store );
     }
 }

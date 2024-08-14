@@ -34,21 +34,7 @@ public class InformationStorilizer implements IStorilizer<Information>
         info.updateDate = store.getString( "UD" );
         info.testNumber = store.getString( "TN" );
 
-        info.pocCount = store.getInteger( "POC\\N" );
-        info.pocs.clear();
-
-        if( info.pocCount != null )
-        {
-            for( int i = 0; i < info.pocCount; i++ )
-            {
-                int pocNum = i + 1;
-                AsciiStore pocStore = store.createSubstore( "", "-" + pocNum );
-                PointOfContact poc = new PointOfContact();
-
-                pocReader.read( poc, pocStore );
-
-                info.pocs.add( poc );
-            }
-        }
+        info.pocCount = store.readItems( "POC\\N", info.pocs, pocReader,
+            () -> new PointOfContact() );
     }
 }

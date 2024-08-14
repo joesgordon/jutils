@@ -6,26 +6,20 @@ import jutils.core.io.FieldPrinter.ITierPrinter;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class PointOfContact implements ITierPrinter
+public class EthernetPort implements ITierPrinter
 {
-    /** G\POC1-n */
-    public String name;
-    /** G\POC2-n */
-    public String agency;
-    /** G\POC3-n */
+    /**  */
     public String address;
-    /** G\POC4-n */
-    public String telephone;
+    /**  */
+    public String type;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public PointOfContact()
+    public EthernetPort()
     {
-        this.name = null;
-        this.agency = null;
         this.address = null;
-        this.telephone = null;
+        this.type = null;
     }
 
     /***************************************************************************
@@ -34,9 +28,7 @@ public class PointOfContact implements ITierPrinter
     @Override
     public void printFields( FieldPrinter printer )
     {
-        printer.printField( "Name", name );
-        printer.printField( "Agency", agency );
         printer.printField( "Address", address );
-        printer.printField( "Telephone", telephone );
+        printer.printField( "Type", type );
     }
 }

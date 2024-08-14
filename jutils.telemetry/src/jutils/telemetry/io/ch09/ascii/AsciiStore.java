@@ -1,7 +1,9 @@
 package jutils.telemetry.io.ch09.ascii;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 import jutils.core.ValidationException;
 import jutils.core.io.FieldPrinter;
@@ -108,5 +110,36 @@ public class AsciiStore implements ITierPrinter
     {
         return new AsciiStore( fields, this.prefix + prefix,
             this.suffix + suffix );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     * @param countKey
+     * @param items
+     * @param storilizer
+     * @param itemCreator
+     * @return
+     **************************************************************************/
+    public <T> Integer readItems( String countKey, List<T> items,
+        IStorilizer<T> storilizer, Supplier<T> itemCreator )
+    {
+        Integer count = getInteger( countKey );
+
+        items.clear();
+        if( count != null )
+        {
+            for( int i = 0; i < count; i++ )
+            {
+                int num = i + 1;
+                String suffix = "-" + num;
+                T item = itemCreator.get();
+
+                storilizer.read( item, createSubstore( "", suffix ) );
+
+                items.add( item );
+            }
+        }
+
+        return count;
     }
 }

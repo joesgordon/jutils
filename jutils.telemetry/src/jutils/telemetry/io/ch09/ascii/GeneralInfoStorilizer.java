@@ -37,21 +37,9 @@ public class GeneralInfoStorilizer implements IStorilizer<GeneralInformation>
         informationReader.read( info.information, store );
 
         info.dataSources.clear();
-        info.dataSourceCount = store.getInteger( "DSI\\N" );
 
-        if( info.dataSourceCount != null )
-        {
-            for( int i = 0; i < info.dataSourceCount; i++ )
-            {
-                int dsNum = i + 1;
-                AsciiStore dsStore = store.createSubstore( "", "-" + dsNum );
-                DataSource ds = new DataSource();
-
-                dsReader.read( ds, dsStore );
-
-                info.dataSources.add( ds );
-            }
-        }
+        info.dataSourceCount = store.readItems( "POC\\N", info.dataSources,
+            dsReader, () -> new DataSource() );
 
         testInfoReader.read( info.testInfo, store );
 
