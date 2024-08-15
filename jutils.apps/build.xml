@@ -21,7 +21,8 @@
 		<fileset file="${juprops.releaseindv}/jutils.multicon.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.plot.jar" />
 		<fileset file="${juprops.releaseindv}/jutils.platform.jar" />
-		<fileset file="${juprops.releaseindv}/jutils.summer.jar" />
+        <fileset file="${juprops.releaseindv}/jutils.summer.jar" />
+        <fileset file="${juprops.releaseindv}/jutils.telemetry.jar" />
 	</path>
 
 	<import file="${proj.projdir}/../ant/jutilsbuild.xml" />

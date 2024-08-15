@@ -12,6 +12,13 @@ import jutils.core.io.FieldPrinter.ITierPrinter;
 public class Tmats implements ITierPrinter
 {
     /**  */
+    public static final String EXT_TMT = "tmt";
+    /**  */
+    public static final String EXT_TMA = "tma";
+    /**  */
+    public static final String [] EXTENSIONS = { EXT_TMT, EXT_TMA };
+
+    /**  */
     public final GeneralInformation general;
     /**  */
     public final List<Transmission> transmissions;

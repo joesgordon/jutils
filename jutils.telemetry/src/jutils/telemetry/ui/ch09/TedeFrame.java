@@ -1,53 +1,59 @@
-package jutils.telemetry.ui;
+package jutils.telemetry.ui.ch09;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
-import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 
+import jutils.core.OptionUtils;
 import jutils.core.SwingUtils;
 import jutils.core.ValidationException;
+import jutils.core.io.FieldPrinter;
+import jutils.core.io.IOUtils;
 import jutils.core.ui.RecentFilesViews;
 import jutils.core.ui.StandardFrameView;
+import jutils.core.ui.StringView;
 import jutils.core.ui.event.FileChooserListener;
 import jutils.core.ui.event.FileChooserListener.IFileSelected;
 import jutils.core.ui.event.FileChooserListener.ILastFile;
 import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.model.IView;
+import jutils.telemetry.TedeOptions;
 import jutils.telemetry.TelemetryIcons;
-import jutils.telemetry.TelemetryOptions;
-import jutils.telemetry.data.ch10.Ch10File;
-import jutils.telemetry.io.ch10.Ch10FileReader;
-import jutils.telemetry.ui.ch10.Ch10View;
+import jutils.telemetry.data.ch09.Tmats;
+import jutils.telemetry.io.ch09.ascii.TmatsParser;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TelemetryFrame implements IView<JFrame>
+public class TedeFrame implements IView<JFrame>
 {
     /**  */
     private final StandardFrameView view;
     /**  */
-    private final Ch10View c10View;
+    private final StringView setupView;
+    /**  */
+    private final StringView tmatsView;
     /**  */
     private final RecentFilesViews recentFiles;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public TelemetryFrame()
+    public TedeFrame()
     {
         this.view = new StandardFrameView();
-        this.c10View = new Ch10View();
+        this.setupView = new StringView();
+        this.tmatsView = new StringView();
         this.recentFiles = new RecentFilesViews();
 
         view.setTitle( "Telemetry Viewer" );
@@ -58,9 +64,66 @@ public class TelemetryFrame implements IView<JFrame>
         view.setContent( createContent() );
         view.getView().setIconImages( TelemetryIcons.getAppImages() );
 
+        view.getContent().setDropTarget(
+            new FileDropTarget( ( e ) -> handleFileDropped( e.getItem() ) ) );
+
         recentFiles.setListeners( ( f, c ) -> openFile( f ) );
-        recentFiles.setData(
-            TelemetryOptions.getOptions().recentFiles.toList() );
+        recentFiles.setData( TedeOptions.getOptions().recentFiles.toList() );
+
+        setupView.setEditable( false );
+        tmatsView.setEditable( false );
+    }
+
+    /***************************************************************************
+     * @param f
+     **************************************************************************/
+    public void openFile( File f )
+    {
+        TmatsParser parser = new TmatsParser();
+        String setup;
+        Tmats tmats;
+
+        try
+        {
+            setup = IOUtils.readAll( f );
+        }
+        catch( FileNotFoundException ex )
+        {
+            OptionUtils.showErrorMessage( getView(),
+                "Unable to open " + f.getName(), "File Not Found" );
+            return;
+        }
+        catch( IOException ex )
+        {
+            OptionUtils.showErrorMessage( getView(),
+                "Unable to open " + f.getName(), "I/O Error" );
+            return;
+        }
+
+        try
+        {
+            tmats = parser.parse( setup );
+        }
+        catch( ValidationException ex )
+        {
+            OptionUtils.showErrorMessage( getView(),
+                "Unable to open " + f.getName(), "Parsing Error" );
+            return;
+        }
+
+        setupView.setData( setup );
+        tmatsView.setData( FieldPrinter.toString( tmats ) );
+    }
+
+    /***************************************************************************
+     * @param evt
+     **************************************************************************/
+    private void handleFileDropped( IFileDropEvent evt )
+    {
+        List<File> files = evt.getFiles();
+        File file = files.get( 0 );
+
+        openFile( file );
     }
 
     /***************************************************************************
@@ -94,11 +157,11 @@ public class TelemetryFrame implements IView<JFrame>
     private ActionListener createOpenListener()
     {
         IFileSelected ifs = ( f ) -> openFile( f );
-        ILastFile ilf = () -> TelemetryOptions.getOptions().recentFiles.first();
+        ILastFile ilf = () -> TedeOptions.getOptions().recentFiles.first();
         FileChooserListener fcl = new FileChooserListener( getView(),
             "Open File", false, ifs, ilf );
 
-        fcl.addExtension( "IRIG-106 Chapter 10 File", "ch10", "c10" );
+        fcl.addExtension( "IRIG-106 Chapter 09 TMATS File", Tmats.EXTENSIONS );
 
         return fcl;
     }
@@ -108,60 +171,12 @@ public class TelemetryFrame implements IView<JFrame>
      **************************************************************************/
     private Container createContent()
     {
-        JPanel panel = new JPanel( new BorderLayout() );
+        JTabbedPane tabs = new JTabbedPane();
 
-        panel.setDropTarget(
-            new FileDropTarget( ( e ) -> handleFileDropped( e.getItem() ) ) );
-        panel.add( c10View.getView(), BorderLayout.CENTER );
+        tabs.addTab( "TMATS", tmatsView.getView() );
+        tabs.addTab( "Setup", setupView.getView() );
 
-        return panel;
-    }
-
-    /***************************************************************************
-     * @param event
-     **************************************************************************/
-    private void handleFileDropped( IFileDropEvent event )
-    {
-        List<File> files = event.getFiles();
-
-        openFile( files.get( 0 ) );
-    }
-
-    /***************************************************************************
-     * @param file
-     **************************************************************************/
-    private void openFile( File file )
-    {
-        TelemetryOptions options = TelemetryOptions.getOptions();
-        options.recentFiles.push( file );
-        TelemetryOptions.setOptions( options );
-        recentFiles.setData(
-            TelemetryOptions.getOptions().recentFiles.toList() );
-
-        Ch10FileReader reader = new Ch10FileReader();
-
-        try
-        {
-            Ch10File c10 = reader.read( file );
-
-            // c10.printInfo();
-
-            Ch10File oldFile = c10View.getData();
-
-            oldFile.stream.close();
-
-            c10View.setData( c10 );
-        }
-        catch( IOException ex )
-        {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
-        }
-        catch( ValidationException ex )
-        {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
-        }
+        return tabs;
     }
 
     /***************************************************************************
