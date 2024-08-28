@@ -30,6 +30,7 @@ import jutils.core.ui.model.IView;
 import jutils.telemetry.TedeOptions;
 import jutils.telemetry.TelemetryIcons;
 import jutils.telemetry.data.ch09.Tmats;
+import jutils.telemetry.data.ch09.TmatsFile;
 import jutils.telemetry.io.ch09.ascii.TmatsParser;
 
 /*******************************************************************************
@@ -42,7 +43,9 @@ public class TedeFrame implements IView<JFrame>
     /**  */
     private final StringView setupView;
     /**  */
-    private final StringView tmatsView;
+    private final StringView printView;
+    /**  */
+    private final TmatsTreeView tmatsView;
     /**  */
     private final RecentFilesViews recentFiles;
 
@@ -53,7 +56,8 @@ public class TedeFrame implements IView<JFrame>
     {
         this.view = new StandardFrameView();
         this.setupView = new StringView();
-        this.tmatsView = new StringView();
+        this.printView = new StringView();
+        this.tmatsView = new TmatsTreeView();
         this.recentFiles = new RecentFilesViews();
 
         view.setTitle( "Telemetry Viewer" );
@@ -71,7 +75,9 @@ public class TedeFrame implements IView<JFrame>
         recentFiles.setData( TedeOptions.getOptions().recentFiles.toList() );
 
         setupView.setEditable( false );
-        tmatsView.setEditable( false );
+        printView.setEditable( false );
+
+        setData( tmatsView.getData(), "" );
     }
 
     /***************************************************************************
@@ -103,6 +109,9 @@ public class TedeFrame implements IView<JFrame>
         try
         {
             tmats = parser.parse( setup );
+
+            TmatsFile file = new TmatsFile( f, tmats );
+            setData( file, setup );
         }
         catch( ValidationException ex )
         {
@@ -111,8 +120,17 @@ public class TedeFrame implements IView<JFrame>
             return;
         }
 
+    }
+
+    /***************************************************************************
+     * @param file
+     * @param setup
+     **************************************************************************/
+    private void setData( TmatsFile file, String setup )
+    {
+        tmatsView.setData( file );
         setupView.setData( setup );
-        tmatsView.setData( FieldPrinter.toString( tmats ) );
+        printView.setData( FieldPrinter.toString( file.tmats ) );
     }
 
     /***************************************************************************
@@ -174,6 +192,7 @@ public class TedeFrame implements IView<JFrame>
         JTabbedPane tabs = new JTabbedPane();
 
         tabs.addTab( "TMATS", tmatsView.getView() );
+        tabs.addTab( "Print", printView.getView() );
         tabs.addTab( "Setup", setupView.getView() );
 
         return tabs;

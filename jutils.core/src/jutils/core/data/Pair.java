@@ -7,9 +7,9 @@ package jutils.core.data;
 public class Pair<A, B>
 {
     /**  */
-    public A a;
+    public final A a;
     /**  */
-    public B b;
+    public final B b;
 
     /***************************************************************************
      * 

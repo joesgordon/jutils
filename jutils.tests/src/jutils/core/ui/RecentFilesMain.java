@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 
+import jutils.core.data.SystemProperty;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.model.IView;
 
@@ -71,7 +72,7 @@ public class RecentFilesMain
         {
             List<File> files = new ArrayList<>();
 
-            File homeDir = new File( System.getProperty( "user.home" ) );
+            File homeDir = new File( SystemProperty.USER_HOME.getProperty() );
             File rootDir = homeDir;
 
             File f;
