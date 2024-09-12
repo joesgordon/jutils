@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.JOptionPane;
 
 import org.jutils.core.ArrayPrinter;
 import org.jutils.core.Utils;
@@ -42,6 +43,7 @@ public class ChecksumFileSerializer implements IReader<ChecksumResult, File>
         try
         {
             input.type = ChecksumType.valueOf( ext );
+			//JOptionPane.showMessageDialog(null, "Woot", "InfoBox: " + ext, JOptionPane.INFORMATION_MESSAGE);
         }
         catch( IllegalArgumentException ex )
         {
@@ -92,9 +94,29 @@ public class ChecksumFileSerializer implements IReader<ChecksumResult, File>
     public static String write( ChecksumResult results )
     {
         StringBuilder str = new StringBuilder();
-
-        str.append(
+		
+		if (results.type.name == "SHA-256")
+		{
+			str.append( "# SHA-256 compliant checksum(s) " );
+		}
+		else if (results.type.name == "SHA-1")
+		{
+			str.append( "# SHA-1 compliant checksum(s) " );
+		}
+		else if (results.type.name == "CRC-32")
+		{
+			str.append( "# CRC-32 compliant checksum(s) " );
+		}
+		else if (results.type.name == "MD5")
+		{
+			str.append(
             "# MD5 checksums compatible with MD5summer (http://www.md5summer.org)" );
+		}
+		else
+		{
+			throw new IllegalStateException(
+                    "checksum null for type " + results.type.name );
+		}			
         str.append( Utils.NEW_LINE );
         str.append( "# Generated " );
         str.append( DATE_FMT.format( new Date() ) );
@@ -132,8 +154,28 @@ public class ChecksumFileSerializer implements IReader<ChecksumResult, File>
     {
         try( PrintStream stream = new PrintStream( outputFile ) )
         {
-            stream.println(
-                "# MD5 checksums compatible with MD5summer (http://www.md5summer.org)" );
+			if (input.type.name == "SHA-256")
+			{
+				stream.println( "# SHA-256 compliant checksum(s) " );
+			}
+			else if (input.type.name == "SHA-1")
+			{
+				stream.println( "# SHA-1 compliant checksum(s) " );
+			}
+			else if (input.type.name == "CRC-32")
+			{
+				stream.println( "# CRC-32 compliant checksum(s) " );
+			}
+			else if (input.type.name == "MD5")
+			{
+				stream.println(
+				"# MD5 checksums compatible with MD5summer (http://www.md5summer.org)" );
+			}
+			else
+			{
+				throw new IllegalStateException(
+						"checksum null for type " + input.type.name );
+			}			
 
             stream.print( "# Generated " );
             stream.println( DATE_FMT.format( new Date() ) );
