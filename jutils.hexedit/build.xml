@@ -6,7 +6,7 @@
 	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
 	<property name="jutilsbuild.name" value="jutils.hexedit" />
-	<property name="jutilsbuild.main" value="org.jutils.hexedit.HexeditMain" />
+	<property name="jutilsbuild.main" value="jutils.hexedit.HexeditMain" />
 
 	<path id="jutilsbuild.jars">
 		<fileset file="${juprops.releaseindv}/jutils.core.jar" />

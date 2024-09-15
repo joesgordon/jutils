@@ -6,7 +6,7 @@
 	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
 	<property name="jutilsbuild.name" value="jutils.multicon" />
-	<property name="jutilsbuild.main" value="org.jutils.multicon.MulticonMain" />
+	<property name="jutilsbuild.main" value="jutils.multicon.MulticonMain" />
 
 	<path id="jutilsbuild.jars">
 		<fileset file="${juprops.releaseindv}/jutils.core.jar" />
