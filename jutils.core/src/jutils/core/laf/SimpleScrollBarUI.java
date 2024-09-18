@@ -71,7 +71,7 @@ public class SimpleScrollBarUI extends BasicScrollBarUI
     /**
      * 
      */
-    private class BasicArrowButton2 extends BasicArrowButton
+    private static class BasicArrowButton2 extends BasicArrowButton
     {
         /**  */
         private static final long serialVersionUID = 895998808619413255L;

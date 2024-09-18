@@ -74,7 +74,7 @@ public class SummerView implements IView<JFrame>
 
         verifyView.setData( new ChecksumResult( input ) );
 
-        input.type = ChecksumType.MD5;
+        input.type = ChecksumType.SHA_256;
 
         createView.setData( input );
     }
