@@ -1,8 +1,10 @@
-package jutils.core.utils;
+package jutils.core.io.cksum;
 
+import jutils.core.INamedItem;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.FieldPrinter.ITierPrinter;
 import jutils.core.io.LogUtils;
+import jutils.core.utils.BitMasks;
 
 /*******************************************************************************
  *
@@ -15,15 +17,7 @@ public class Crc16 implements ITierPrinter
     /**  */
     public final short [] table;
     /**  */
-    public final short polynomial;
-    /**  */
-    public final short initial;
-    /**  */
-    public final boolean reflectIn;
-    /**  */
-    public final boolean reflectOut;
-    /**  */
-    public final short xorout;
+    private final Crc16Config config;
 
     /**  */
     private short value;
@@ -38,14 +32,20 @@ public class Crc16 implements ITierPrinter
     public Crc16( short polynomial, short initial, boolean reflectIn,
         boolean reflectOut, short xorout )
     {
-        this.table = createTable( polynomial );
-        this.polynomial = polynomial;
-        this.initial = initial;
-        this.reflectIn = reflectIn;
-        this.reflectOut = reflectOut;
-        this.xorout = xorout;
+        this( new Crc16Config( polynomial, initial, reflectIn, reflectOut,
+            xorout ) );
 
         this.value = initial;
+    }
+
+    /***************************************************************************
+     * @param config
+     **************************************************************************/
+    public Crc16( Crc16Config config )
+    {
+        this.table = createTable( config.polynomial );
+        this.config = new Crc16Config( config );
+        this.value = config.initial;
     }
 
     /***************************************************************************
@@ -56,7 +56,7 @@ public class Crc16 implements ITierPrinter
      * @param xorout
      * @return
      **************************************************************************/
-    public static Crc16 create( int polynomial, int initial, boolean reflectIn,
+    private static Crc16 create( int polynomial, int initial, boolean reflectIn,
         boolean reflectOut, int xorout )
     {
         return new Crc16( ( short )polynomial, ( short )initial, reflectIn,
@@ -149,7 +149,8 @@ public class Crc16 implements ITierPrinter
             int dataIndex = i + start;
             int dataValue = data[dataIndex];
 
-            dataValue = reflectIn ? reverseBits8( dataValue ) : dataValue;
+            dataValue = config.reflectIn ? reverseBits8( dataValue )
+                : dataValue;
 
             int crcHigh = crc >>> 8;
             int crcLow = crc & 0xFF;
@@ -169,8 +170,8 @@ public class Crc16 implements ITierPrinter
             // dataValue, tableIndex, tableValue, crc );
         }
 
-        crc = reflectOut ? reverseBits16( crc ) : crc;
-        crc ^= xorout;
+        crc = config.reflectOut ? reverseBits16( crc ) : crc;
+        crc ^= config.xorout;
 
         value = ( short )( crc );
 
@@ -202,7 +203,8 @@ public class Crc16 implements ITierPrinter
             int dataIndex = i + start;
             int dataValue = data[dataIndex] & 0xFF;
 
-            dataValue = reflectIn ? reverseBits8( dataValue ) : dataValue;
+            dataValue = config.reflectIn ? reverseBits8( dataValue )
+                : dataValue;
 
             crc = crc ^ ( dataValue << 8 );
 
@@ -211,7 +213,7 @@ public class Crc16 implements ITierPrinter
                 boolean isHighBitSet = ( crc & 0x8000 ) != 0;
                 if( isHighBitSet )
                 {
-                    crc = ( crc << 1 ) ^ polynomial;
+                    crc = ( crc << 1 ) ^ config.polynomial;
                 }
                 else
                 {
@@ -220,8 +222,8 @@ public class Crc16 implements ITierPrinter
             }
         }
 
-        crc = reflectOut ? reverseBits16( crc ) : crc;
-        crc ^= xorout;
+        crc = config.reflectOut ? reverseBits16( crc ) : crc;
+        crc ^= config.xorout;
 
         value = ( short )( crc );
 
@@ -233,7 +235,7 @@ public class Crc16 implements ITierPrinter
      **************************************************************************/
     public void reset()
     {
-        this.value = initial;
+        this.value = config.initial;
     }
 
     /***************************************************************************
@@ -242,18 +244,14 @@ public class Crc16 implements ITierPrinter
     @Override
     public void printFields( FieldPrinter printer )
     {
-        printer.printFieldValuesHex( "Table", 8, table );
-        printer.printHexField( "Polynomial", polynomial );
-        printer.printHexField( "Initial", initial );
-        printer.printField( "Reflect In", reflectIn );
-        printer.printField( "Reflect Out", reflectOut );
-        printer.printHexField( "XOR Out", xorout );
         printer.printHexField( "Checksum", value );
+        printer.printTier( "Configuration", config );
+        printer.printFieldValuesHex( "Table", 8, table );
     }
 
-    /**
+    /***************************************************************************
      * @param args
-     */
+     **************************************************************************/
     public static void main( String [] args )
     {
         byte [] data = "123456789".getBytes();
@@ -300,5 +298,142 @@ public class Crc16 implements ITierPrinter
         }
 
         LogUtils.print( p.toString() );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static class Crc16Config implements ITierPrinter
+    {
+        /**  */
+        public short polynomial;
+        /**  */
+        public short initial;
+        /**  */
+        public boolean reflectIn;
+        /**  */
+        public boolean reflectOut;
+        /**  */
+        public short xorout;
+
+        /**
+         * 
+         */
+        public Crc16Config()
+        {
+            this( ( short )0, ( short )0, false, false, ( short )0 );
+        }
+
+        /**
+         * @param polynomial
+         * @param initial
+         * @param reflectIn
+         * @param reflectOut
+         * @param xorout
+         */
+        public Crc16Config( short polynomial, short initial, boolean reflectIn,
+            boolean reflectOut, short xorout )
+        {
+            this.polynomial = polynomial;
+            this.initial = initial;
+            this.reflectIn = reflectIn;
+            this.reflectOut = reflectOut;
+            this.xorout = xorout;
+        }
+
+        /**
+         * @param polynomial
+         * @param initial
+         * @param reflectIn
+         * @param reflectOut
+         * @param xorout
+         */
+        public Crc16Config( int polynomial, int initial, boolean reflectIn,
+            boolean reflectOut, int xorout )
+        {
+            this( ( short )polynomial, ( short )initial, reflectIn, reflectOut,
+                ( short )xorout );
+        }
+
+        /**
+         * @param config
+         */
+        public Crc16Config( Crc16Config config )
+        {
+            this.polynomial = config.polynomial;
+            this.initial = config.initial;
+            this.reflectIn = config.reflectIn;
+            this.reflectOut = config.reflectOut;
+            this.xorout = config.xorout;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void printFields( FieldPrinter printer )
+        {
+            printer.printHexField( "Polynomial", polynomial );
+            printer.printHexField( "Initial", initial );
+            printer.printField( "Reflect In", reflectIn );
+            printer.printField( "Reflect Out", reflectOut );
+            printer.printHexField( "XOR Out", xorout );
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static enum Crc16Algorithm implements INamedItem
+    {
+        /**  */
+        ARC( "ARC" ),
+        /**  */
+        CCITT_FALSE( "CCITT-FALSE" ),
+        /**  */
+        MODBUS( "MODBUS" ),;
+
+        /**  */
+        public final String name;
+
+        /**
+         * @param name
+         */
+        private Crc16Algorithm( String name )
+        {
+            this.name = name;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        /**
+         * @return
+         */
+        public Crc16Config getConfig()
+        {
+            switch( this )
+            {
+                case ARC:
+                    return new Crc16Config( 0x8005, 0x0000, true, true,
+                        0x0000 );
+
+                case CCITT_FALSE:
+                    return new Crc16Config( 0x1021, 0xFFFF, false, false,
+                        0x0000 );
+
+                case MODBUS:
+                    return new Crc16Config( 0x8005, 0xffff, true, true,
+                        0xffff );
+            }
+
+            throw new IllegalStateException( "Not implemented: " + name );
+        }
     }
 }

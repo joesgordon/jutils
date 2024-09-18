@@ -8,11 +8,12 @@ import jutils.core.INamedItem;
 public enum ChecksumType implements INamedItem
 {
     /**  */
-    MD5( "MD5" ),
+    SHA_256( "SHA-256" ),
+	MD5( "MD5" ),
     /**  */
     CRC32( "CRC-32" ),
     /**  */
-    SHA_256( "SHA-256" ),
+    
     /**  */
     SHA_1( "SHA-1" );
 

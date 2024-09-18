@@ -1,4 +1,4 @@
-package jutils.core.utils;
+package jutils.core.io.cksum;
 
 /*******************************************************************************
  *
