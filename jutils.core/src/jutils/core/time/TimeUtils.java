@@ -20,6 +20,11 @@ public final class TimeUtils
     public static final long SECONDS_IN_DAY = 60 * MINUTES_IN_DAY;
 
     /**  */
+    public static final long NANOS_IN_SEC = 1000L * 1000L * 1000L;
+    /** The number of nanoseconds in a day. */
+    public static final long NANOS_PER_DAY = NANOS_IN_SEC * 60 * 60 * 24;
+
+    /**  */
     public static final long MILLIS_IN_MIN = 1000 * 60;
     /**  */
     public static final long MILLIS_IN_HOUR = 60 * MILLIS_IN_MIN;
@@ -260,6 +265,22 @@ public final class TimeUtils
         long duration = Duration.between( start, end ).toMillis();
 
         return duration;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static LocalDate utcDateNow()
+    {
+        return LocalDate.now( ZoneOffset.UTC );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static LocalTime utcTimeNow()
+    {
+        return LocalTime.now( ZoneOffset.UTC );
     }
 
     /***************************************************************************

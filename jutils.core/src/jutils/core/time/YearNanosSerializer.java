@@ -9,19 +9,19 @@ import jutils.core.io.IDataStream;
 /*******************************************************************************
  *
  ******************************************************************************/
-public class NanoTimeSerializer implements IDataSerializer<NanoTime>
+public class YearNanosSerializer implements IDataSerializer<YearNanos>
 {
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public NanoTime read( IDataStream stream )
+    public YearNanos read( IDataStream stream )
         throws IOException, ValidationException
     {
-        NanoTime time = new NanoTime();
+        YearNanos time = new YearNanos();
 
         time.year = stream.readShort();
-        time.nanoseconds = stream.readLong();
+        time.nanos = stream.readLong();
 
         return time;
     }
@@ -30,9 +30,9 @@ public class NanoTimeSerializer implements IDataSerializer<NanoTime>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void write( NanoTime time, IDataStream stream ) throws IOException
+    public void write( YearNanos time, IDataStream stream ) throws IOException
     {
         stream.writeShort( time.year );
-        stream.writeLong( time.nanoseconds );
+        stream.writeLong( time.nanos );
     }
 }

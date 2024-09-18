@@ -1,10 +1,15 @@
-package jutils.core.ui.calendar;
+package jutils.core.ui.time;
 
-import java.awt.*;
-import java.time.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.swing.JPanel;
 
+import jutils.core.ui.calendar.DateField;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.validation.IValidityChangedListener;
@@ -13,7 +18,7 @@ import jutils.core.ui.validation.Validity;
 /*******************************************************************************
  * Shows a time field and a date field next to one another.
  ******************************************************************************/
-public class DateTimeField implements IDataFormField<LocalDateTime>
+public class DateAndTimeField implements IDataFormField<LocalDateTime>
 {
     /**  */
     private final TimeField timeField;
@@ -28,7 +33,7 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
     /***************************************************************************
      * @param name
      **************************************************************************/
-    public DateTimeField( String name )
+    public DateAndTimeField( String name )
     {
         this.timeField = new TimeField( name );
         this.dateField = new DateField( "" );
@@ -41,7 +46,7 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
     private JPanel createView()
     {
@@ -62,7 +67,7 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JPanel getView()
@@ -70,12 +75,18 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
         return view;
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public String getName()
     {
         return timeField.getName();
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
@@ -83,6 +94,9 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
         dateField.addValidityChanged( l );
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
@@ -90,6 +104,9 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
         dateField.removeValidityChanged( l );
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public Validity getValidity()
     {
@@ -108,12 +125,18 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
         return tv;
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public LocalDateTime getValue()
     {
         return LocalDateTime.of( dateField.getValue(), timeField.getValue() );
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public void setValue( LocalDateTime value )
     {
@@ -121,18 +144,27 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
         dateField.setValue( value.toLocalDate() );
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public void setUpdater( IUpdater<LocalDateTime> updater )
     {
         this.updater = updater;
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public IUpdater<LocalDateTime> getUpdater()
     {
         return updater;
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public void setEditable( boolean editable )
     {
@@ -140,6 +172,9 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
         dateField.setEditable( editable );
     }
 
+    /***************************************************************************
+     * @param date
+     **************************************************************************/
     private void fireUpdater( LocalDate date )
     {
         if( updater != null )
@@ -150,6 +185,9 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
         }
     }
 
+    /***************************************************************************
+     * @param time
+     **************************************************************************/
     private void fireUpdater( LocalTime time )
     {
         if( updater != null )

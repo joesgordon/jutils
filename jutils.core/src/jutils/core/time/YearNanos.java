@@ -13,26 +13,23 @@ import jutils.core.INamedItem;
  * range of years are between {@link Short#MIN_VALUE} and
  * {@link Short#MAX_VALUE}.
  ******************************************************************************/
-public class NanoTime
+public class YearNanos
 {
-    /** The number of nanoseconds in a day. */
-    public static final long NANOS_PER_DAY = 1000000000L * 60 * 60 * 24;
-
     /** The year of the instant. */
     public short year;
     /**
      * The number of nanoseconds into year. A long will hold up to attoseconds
      * (10<sup>-18</sup>) for 366 days.
      */
-    public long nanoseconds;
+    public long nanos;
 
     /***************************************************************************
      * Creates a new instant set to midnight January 1 1970.
      **************************************************************************/
-    public NanoTime()
+    public YearNanos()
     {
         this.year = 1970;
-        this.nanoseconds = 0L;
+        this.nanos = 0L;
     }
 
     /***************************************************************************
@@ -41,27 +38,27 @@ public class NanoTime
      * @param year the year of the instant.
      * @param nanos the nanoseconds into the year of the instant.
      **************************************************************************/
-    public NanoTime( short year, long nanos )
+    public YearNanos( short year, long nanos )
     {
         this.year = year;
-        this.nanoseconds = nanos;
+        this.nanos = nanos;
     }
 
     /***************************************************************************
      * Creates a new instant with the provided time.
      * @param time the instant to be copied.
      **************************************************************************/
-    public NanoTime( NanoTime time )
+    public YearNanos( YearNanos time )
     {
         this.year = time.year;
-        this.nanoseconds = time.nanoseconds;
+        this.nanos = time.nanos;
     }
 
     /***************************************************************************
      * Creates a new instant with the provided date/time.
      * @param time the date/time used to set this instant.
      **************************************************************************/
-    public NanoTime( LocalDateTime time )
+    public YearNanos( LocalDateTime time )
     {
         setDateTime( time );
     }
@@ -72,8 +69,8 @@ public class NanoTime
      **************************************************************************/
     public LocalDateTime toDateTime()
     {
-        int doy = ( int )( nanoseconds / NANOS_PER_DAY );
-        long nod = nanoseconds - ( doy * NANOS_PER_DAY );
+        int doy = ( int )( nanos / TimeUtils.NANOS_PER_DAY );
+        long nod = nanos - ( doy * TimeUtils.NANOS_PER_DAY );
 
         doy++;
 
@@ -88,7 +85,7 @@ public class NanoTime
         {
             String msg = String.format(
                 "Unable to convert year:nanos (doy:nod) into date/time: %d : %d ( %d : %d )",
-                year, nanoseconds, doy, nod );
+                year, nanos, doy, nod );
             throw new DateTimeException( msg, ex );
         }
     }
@@ -101,7 +98,7 @@ public class NanoTime
     {
         this.year = ( short )time.getYear();
         int doy = time.getDayOfYear() - 1;
-        this.nanoseconds = doy * NANOS_PER_DAY +
+        this.nanos = doy * TimeUtils.NANOS_PER_DAY +
             time.toLocalTime().toNanoOfDay();
     }
 
@@ -192,18 +189,18 @@ public class NanoTime
      **************************************************************************/
     public void setTime( NanoTimeUnit unit, long time, boolean retainFraction )
     {
-        long fraction = retainFraction ? nanoseconds % unit.nanosPerUnit : 0L;
+        long fraction = retainFraction ? nanos % unit.nanosPerUnit : 0L;
 
-        nanoseconds = time * unit.nanosPerUnit + fraction;
+        nanos = time * unit.nanosPerUnit + fraction;
     }
 
     /***************************************************************************
      * Creates a new instant that represents the current system time.
      * @return the instant that represents the current system time.
      **************************************************************************/
-    public static NanoTime now()
+    public static YearNanos now()
     {
-        NanoTime time = new NanoTime();
+        YearNanos time = new YearNanos();
 
         time.setNow();
 
@@ -214,13 +211,25 @@ public class NanoTime
      * Creates a new instant that represents the current UTC time.
      * @return the instant that represents the current UTC time.
      **************************************************************************/
-    public static NanoTime nowUtc()
+    public static YearNanos nowUtc()
     {
-        NanoTime time = new NanoTime();
+        YearNanos time = new YearNanos();
 
         time.setNowUtc();
 
         return time;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public String toString()
+    {
+        long secs = nanos / TimeUtils.NANOS_IN_SEC;
+        long frac = nanos - ( secs * TimeUtils.NANOS_IN_SEC );
+
+        return String.format( "%04d %d.%09d", year, secs, frac );
     }
 
     /***************************************************************************

@@ -3,7 +3,7 @@ package jutils.core.io;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import jutils.core.time.NanoTime;
+import jutils.core.time.YearNanos;
 
 /*******************************************************************************
  * Defines an {@link IDataSerializer} that reads/writes {@link LocalDateTime}s.
@@ -19,10 +19,10 @@ public class LocalDateTimeSerializer implements IDataSerializer<LocalDateTime>
     @Override
     public LocalDateTime read( IDataStream stream ) throws IOException
     {
-        NanoTime nt = new NanoTime();
+        YearNanos nt = new YearNanos();
 
         nt.year = stream.readShort();
-        nt.nanoseconds = stream.readLong();
+        nt.nanos = stream.readLong();
 
         return nt.toDateTime();
     }
@@ -34,9 +34,9 @@ public class LocalDateTimeSerializer implements IDataSerializer<LocalDateTime>
     public void write( LocalDateTime time, IDataStream stream )
         throws IOException
     {
-        NanoTime nt = new NanoTime( time );
+        YearNanos nt = new YearNanos( time );
 
         stream.writeShort( nt.year );
-        stream.writeLong( nt.nanoseconds );
+        stream.writeLong( nt.nanos );
     }
 }

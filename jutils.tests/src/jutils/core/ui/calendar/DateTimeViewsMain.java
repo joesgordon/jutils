@@ -10,6 +10,8 @@ import jutils.core.ui.StandardFormView;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
+import jutils.core.ui.time.DateAndTimeField;
+import jutils.core.ui.time.TimeField;
 import jutils.demo.ui.jutils.DateTimeViews;
 
 /*******************************************************************************
@@ -88,7 +90,7 @@ public class DateTimeViewsMain
         form.addField( "Date View", new DateView().getView() );
         form.addField( new DateField( "Date Field" ) );
         form.addField( new TimeField( "Time Field" ) );
-        form.addField( new DateTimeField( "Date/Time Field" ) );
+        form.addField( new DateAndTimeField( "Date/Time Field" ) );
 
         return form.getView();
     }
