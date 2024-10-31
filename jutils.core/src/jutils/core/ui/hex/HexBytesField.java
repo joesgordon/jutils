@@ -205,26 +205,29 @@ public class HexBytesField implements IDataFormField<byte []>
             {
                 return false;
             }
-
-            if( obj instanceof HexBytesItem )
+            else if( this == obj )
             {
-                HexBytesItem item = ( HexBytesItem )obj;
+                return true;
+            }
+            else if( obj instanceof HexBytesItem )
+            {
+                HexBytesItem that = ( HexBytesItem )obj;
 
-                if( item.bytes.length != bytes.length )
+                if( that.bytes.length != bytes.length )
                 {
                     return false;
                 }
 
                 for( int i = 0; i < bytes.length; i++ )
                 {
-                    if( bytes[i] != item.bytes[i] )
+                    if( bytes[i] != that.bytes[i] )
                     {
                         return false;
                     }
                 }
             }
 
-            return true;
+            return false;
         }
 
         /**
