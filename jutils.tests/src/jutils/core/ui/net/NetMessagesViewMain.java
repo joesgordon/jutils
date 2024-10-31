@@ -1,22 +1,33 @@
 package jutils.core.ui.net;
 
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 import jutils.core.IconConstants;
+import jutils.core.OptionUtils;
+import jutils.core.OptionUtils.YncAnswer;
 import jutils.core.io.IStringWriter;
 import jutils.core.io.StringPrintStream;
+import jutils.core.io.parsers.IntegerParser;
 import jutils.core.net.EndPoint;
 import jutils.core.net.NetMessage;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
 import jutils.core.ui.event.ActionAdapter;
+import jutils.core.ui.event.FileDropTarget;
+import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.net.NetMessagesView.IMessageFields;
 
 /*******************************************************************************
@@ -29,6 +40,8 @@ public class NetMessagesViewMain
      **************************************************************************/
     public static void main( String [] args )
     {
+        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
+
         AppRunner.invokeLater( new HexMessageApp() );
     }
 
@@ -47,24 +60,25 @@ public class NetMessagesViewMain
         public JFrame createFrame()
         {
             StandardFrameView frameView = new StandardFrameView();
+            JFrame frame = frameView.getView();
 
             // HexMessagePanel panel = new HexMessagePanel();
             NetMessagesView view = new NetMessagesView( new MessageFields(),
                 new MsgWriter() );
 
             view.setMsgsPerPage( 5 );
-
-            frameView.setContent( view.getView() );
+            view.setOpenVisible( true );
+            view.getView().setDropTarget(
+                new FileDropTarget( ( e ) -> handleFileDropped( view, e ) ) );
 
             frameView.setTitle( "Net Messages View Test" );
             frameView.setSize( 680, 400 );
             frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            frameView.setContent( view.getView() );
 
-            JFrame frame = frameView.getView();
+            createMenus( frameView.getMenuBar(), view );
 
             frame.setIconImages( IconConstants.getPageMagImages() );
-
-            view.setOpenVisible( true );
 
             ActionListener listener = ( e ) -> view.addMessage(
                 buildMessage() );
@@ -74,6 +88,72 @@ public class NetMessagesViewMain
             view.addToToolbar( action );
 
             return frame;
+        }
+
+        /**
+         * @param view
+         * @param e
+         */
+        private void handleFileDropped( NetMessagesView view,
+            ItemActionEvent<IFileDropEvent> evt )
+        {
+            List<File> files = evt.getItem().getFiles();
+
+            if( files.isEmpty() )
+            {
+                return;
+            }
+
+            File file = files.get( 0 );
+
+            if( files.size() > 1 )
+            {
+                YncAnswer ans = OptionUtils.showQuestionMessage( view.getView(),
+                    "Only 1 file may be loaded. Do you want to load\n" +
+                        file.getAbsolutePath(),
+                    "WARNING", "Load", "Cancel" );
+
+                if( ans != YncAnswer.YES )
+                {
+                    return;
+                }
+            }
+
+            view.openNetMsgsFile( file );
+        }
+
+        /**
+         * @param menubar
+         * @param view
+         */
+        private void createMenus( JMenuBar menubar, NetMessagesView view )
+        {
+            JMenu menu = new JMenu( "Options" );
+
+            menu.setMnemonic( 'O' );
+
+            JMenuItem item = new JMenuItem( "Set Row Count" );
+
+            item.addActionListener( ( e ) -> handleSetRowCount( view ) );
+
+            menu.add( item );
+
+            menubar.add( menu );
+        }
+
+        /**
+         * @param view
+         */
+        private void handleSetRowCount( NetMessagesView view )
+        {
+            IntegerParser parser = new IntegerParser( 1, null );
+            Integer ans = OptionUtils.promptForValue( view.getView(),
+                "Row Count", parser, "Enter the number of messages per page" );
+
+            if( ans != null )
+            {
+                view.setMsgsPerPage( ans.intValue() );
+            }
         }
 
         /**

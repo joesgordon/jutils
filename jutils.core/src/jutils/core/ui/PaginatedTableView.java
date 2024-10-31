@@ -513,7 +513,8 @@ public class PaginatedTableView<T> extends PaginatedView
     {
         this.itemsPerPage = itemsPerPage;
 
-        updateTable();
+        long start = pageStartIndex - pageStartIndex % itemsPerPage;
+        navigatePage( start, true );
     }
 
     /***************************************************************************

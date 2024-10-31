@@ -23,6 +23,7 @@ import jutils.core.io.DataStream;
 import jutils.core.io.FileStream;
 import jutils.core.io.IDataStream;
 import jutils.core.io.IItemStream;
+import jutils.core.io.IOUtils;
 import jutils.core.io.IStringWriter;
 import jutils.core.io.ReferenceItemStream;
 import jutils.core.io.ReferenceStream;
@@ -200,7 +201,7 @@ public class NetMessagesView implements IView<JPanel>
      **************************************************************************/
     private Action createOpenAction()
     {
-        IFileSelected ifs = ( f ) -> openNetMsgsFile( f );
+        IFileSelected ifs = ( f ) -> handleOpenFile( f );
         FileChooserListener listener = new FileChooserListener( getView(),
             "Choose File", false, ifs );
         Icon icon = IconConstants.getIcon( IconConstants.OPEN_FOLDER_16 );
@@ -247,6 +248,28 @@ public class NetMessagesView implements IView<JPanel>
         tableCfg.setHexText( isHex );
 
         table.updateTable();
+    }
+
+    /***************************************************************************
+     * @param file
+     **************************************************************************/
+    private void handleOpenFile( File file )
+    {
+        String ext = IOUtils.getFileExtension( file ).toLowerCase();
+
+        switch( ext )
+        {
+            // case NetMessageSerializer.MSGS_EXT:
+            // openMsgsFile( file );
+            // break;
+
+            case NetMessageSerializer.NETMSGS_EXT:
+                openNetMsgsFile( file );
+                break;
+
+            default:
+                break;
+        }
     }
 
     /***************************************************************************
@@ -330,7 +353,8 @@ public class NetMessagesView implements IView<JPanel>
         }
         catch( IOException ex )
         {
-            throw new RuntimeException( ex );
+            throw new RuntimeException(
+                "Unable to read file " + file.getAbsolutePath(), ex );
         }
 
         refStream = new ReferenceItemStream<>( rs );

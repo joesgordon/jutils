@@ -203,6 +203,9 @@ public final class IconConstants
     public final static String STOP_16 = "stop16.png";
 
     /**  */
+    public final static String TODAY_16 = "today016.png";
+
+    /**  */
     public final static String USER_ADD_24 = "userAdd24.png";
 
     /**  */

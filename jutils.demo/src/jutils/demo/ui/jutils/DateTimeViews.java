@@ -8,10 +8,10 @@ import javax.swing.JTabbedPane;
 
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.calendar.DateField;
-import jutils.core.ui.calendar.DateTimeField;
 import jutils.core.ui.calendar.DateView;
-import jutils.core.ui.calendar.TimeField;
 import jutils.core.ui.model.IView;
+import jutils.core.ui.time.DateAndTimeField;
+import jutils.core.ui.time.TimeField;
 
 /*******************************************************************************
  * 
@@ -80,7 +80,7 @@ public class DateTimeViews implements IView<JComponent>
     {
         StandardFormView form = new StandardFormView();
 
-        form.addField( new DateTimeField( "Date/Time" ) );
+        form.addField( new DateAndTimeField( "Date/Time" ) );
 
         return form.getView();
     }

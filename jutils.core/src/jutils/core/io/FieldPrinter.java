@@ -1,6 +1,7 @@
 package jutils.core.io;
 
 import java.util.Iterator;
+import java.util.List;
 
 import jutils.core.ArrayPrinter;
 import jutils.core.INamedItem;
@@ -91,12 +92,36 @@ public class FieldPrinter
     }
 
     /***************************************************************************
+     * @param <T>
      * @param tierName
      * @param tiers
      **************************************************************************/
     public <T extends ITierPrinter> void printTiers( String tierName,
         T [] tiers )
     {
+        printField( "Number of " + tierName, tiers.length );
+
+        int i = 0;
+        for( T t : tiers )
+        {
+            String tname = tierName + "[" + i + "]";
+            FieldPrinter p = createTier( tname );
+
+            t.printFields( p );
+            i++;
+        }
+    }
+
+    /***************************************************************************
+     * @param <T>
+     * @param tierName
+     * @param tiers
+     **************************************************************************/
+    public <T extends ITierPrinter> void printTiers( String tierName,
+        List<T> tiers )
+    {
+        printField( "Number of " + tierName, tiers.size() );
+
         int i = 0;
         for( T t : tiers )
         {
@@ -169,6 +194,15 @@ public class FieldPrinter
     public void printField( String name, int value )
     {
         printField( name, "" + value );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
+    public void printField( String name, Integer value )
+    {
+        printField( name, value == null ? "null" : value.toString() );
     }
 
     /***************************************************************************
