@@ -17,7 +17,7 @@ public class BitFieldInfo implements INamedBitField
      **************************************************************************/
     public BitFieldInfo( int bit, String name )
     {
-        this( name, bit, bit );
+        this( bit, bit, name );
     }
 
     /***************************************************************************
@@ -25,7 +25,7 @@ public class BitFieldInfo implements INamedBitField
      * @param endBit the last bit of this field, inclusive.
      * @param name the name of this field/flag.
      **************************************************************************/
-    public BitFieldInfo( String name, int startBit, int endBit )
+    public BitFieldInfo( int startBit, int endBit, String name )
     {
         this.name = name;
         this.field = new BitField( startBit, endBit );

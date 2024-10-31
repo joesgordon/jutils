@@ -39,29 +39,31 @@ public class HexLongParser implements IParser<Long>
     @Override
     public Long parse( String text ) throws ValidationException
     {
+        long value = 0;
+
         try
         {
-            long i = NumberParsingUtils.parseHexLong( text );
-
-            if( min != null && i < min )
-            {
-                throw new ValidationException( "Value less than minimum: " +
-                    Long.toHexString( i ).toUpperCase() + " < " +
-                    Long.toHexString( min ).toUpperCase() );
-            }
-
-            if( max != null && i > max )
-            {
-                throw new ValidationException( "Value greater than maximum: " +
-                    Long.toHexString( i ).toUpperCase() + " > " +
-                    Long.toHexString( max ).toUpperCase() );
-            }
-
-            return i;
+            value = NumberParsingUtils.parseHexLong( text );
         }
         catch( NumberFormatException ex )
         {
             throw new ValidationException( ex.getMessage() );
         }
+
+        if( min != null && value < min )
+        {
+            throw new ValidationException( "Value less than minimum: " +
+                Long.toHexString( value ).toUpperCase() + " < " +
+                Long.toHexString( min ).toUpperCase() );
+        }
+
+        if( max != null && value > max )
+        {
+            throw new ValidationException( "Value greater than maximum: " +
+                Long.toHexString( value ).toUpperCase() + " > " +
+                Long.toHexString( max ).toUpperCase() );
+        }
+
+        return value;
     }
 }

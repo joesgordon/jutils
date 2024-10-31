@@ -1,43 +1,31 @@
 package jutils.core.io;
 
+import jutils.core.utils.BitMasks;
+
 /*******************************************************************************
  * Creates a reader to return a bit flag from byte, short, int, or long values.
  ******************************************************************************/
 public class BitReader
 {
-    /** Masks needed to clear a particular bit. */
-    public static final long [] MASKS;
-
-    static
-    {
-        MASKS = new long[64];
-
-        for( int m = 0; m < MASKS.length; m++ )
-        {
-            MASKS[m] = 1;
-            for( int i = 0; i < m; i++ )
-            {
-                MASKS[m] <<= 1;
-            }
-        }
-    }
-
     /** The mask for the desired bit. */
     private final long mask;
 
     /***************************************************************************
      * Creates a new reader with the provided bit.
      * @param bit the bit to be read.
+     * @throws IllegalArgumentException - if
+     * {@code bit >= BitMasks.SET_MASKS.length}
+     * @see BitMasks#SET_MASKS
      **************************************************************************/
     public BitReader( int bit )
     {
-        if( bit >= MASKS.length )
+        if( bit >= Long.SIZE )
         {
             throw new IllegalArgumentException(
-                "BitReader can read up to only " + MASKS.length + "-bits" );
+                "BitReader can read up to only " + Long.SIZE + "-bits" );
         }
 
-        this.mask = MASKS[bit];
+        this.mask = BitMasks.getBitMask( bit );
     }
 
     /***************************************************************************

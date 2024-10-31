@@ -38,6 +38,17 @@ public class LongFormField implements IDataFormField<Long>
     /***************************************************************************
      * @param name
      * @param units
+     * @param min
+     * @param max
+     **************************************************************************/
+    public LongFormField( String name, Long min, Long max )
+    {
+        this( name, null, 20, min, max );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param units
      * @param columns
      **************************************************************************/
     public LongFormField( String name, String units, int columns )

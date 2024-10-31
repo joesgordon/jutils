@@ -98,7 +98,7 @@ public class TaskTestMain
                 handler.signalMessage( "Almost there..." );
             }
 
-            if( !Utils.sleep( 500 ) )
+            if( Utils.sleep( 500 ) )
             {
                 break;
             }

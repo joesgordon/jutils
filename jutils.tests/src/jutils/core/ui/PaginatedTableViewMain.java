@@ -8,13 +8,17 @@ import javax.swing.Icon;
 import javax.swing.JFrame;
 
 import jutils.core.IconConstants;
+import jutils.core.OptionUtils;
 import jutils.core.ValidationException;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
 import jutils.core.io.IItemStream;
+import jutils.core.io.IParser;
 import jutils.core.io.IStringWriter;
+import jutils.core.io.LogUtils;
 import jutils.core.io.ReferenceItemStream;
 import jutils.core.io.ReferenceStream;
+import jutils.core.io.parsers.LongParser;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
 import jutils.core.ui.event.ActionAdapter;
@@ -52,6 +56,7 @@ public class PaginatedTableViewMain
             ReferenceStream<Integer> refStream;
             try
             {
+                @SuppressWarnings( "resource")
                 ReferenceStream<Integer> rs = new ReferenceStream<>(
                     new IntegerSerializer() );
                 refStream = rs;
@@ -64,11 +69,11 @@ public class PaginatedTableViewMain
             IItemStream<Integer> stream = new ReferenceItemStream<>(
                 refStream );
             PaginatedTableView<Integer> view = new PaginatedTableView<>(
-                new IntTableConfig(), stream, intWriter );
+                new IntTableConfig(), stream, intWriter, 5 );
 
             frameView.setContent( view.getView() );
 
-            frameView.setTitle( "Net Messages View Test" );
+            frameView.setTitle( "PaginatedTableView Test" );
             frameView.setSize( 680, 400 );
             frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
@@ -76,11 +81,38 @@ public class PaginatedTableViewMain
 
             frame.setIconImages( IconConstants.getPageMagImages() );
 
-            ActionListener listener = ( e ) -> view.addItem( rand.nextInt() );
-            Icon icon = IconConstants.getIcon( IconConstants.EDIT_ADD_16 );
+            ActionListener listener;
+            Icon icon;
+
+            listener = ( e ) -> view.addItem( rand.nextInt() );
+            icon = IconConstants.getIcon( IconConstants.EDIT_ADD_16 );
             view.addToToolbar( new ActionAdapter( listener, "Add Row", icon ) );
 
+            listener = ( e ) -> handleSetSelected( view );
+            icon = IconConstants.getIcon( IconConstants.FIND_16 );
+            view.addToToolbar(
+                new ActionAdapter( listener, "Set Selected", icon ) );
+
             return frame;
+        }
+
+        /**
+         * @param view
+         */
+        private static void handleSetSelected(
+            PaginatedTableView<Integer> view )
+        {
+            IParser<Long> parser = new LongParser( 0L, view.getItemCount() );
+            Long index = OptionUtils.promptForValue( view.getView(), "Index",
+                parser, "Choose Index to select" );
+
+            if( index != null )
+            {
+                Integer value = view.setSelected( index );
+
+                LogUtils.printDebug( "Value %d at index %d was selected", value,
+                    index );
+            }
         }
 
         /**

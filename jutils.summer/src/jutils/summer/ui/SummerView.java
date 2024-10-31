@@ -22,13 +22,13 @@ import jutils.core.io.cksum.ChecksumType;
 import jutils.core.io.options.OptionsSerializer;
 import jutils.core.ui.JGoodiesToolBar;
 import jutils.core.ui.OkDialogView;
+import jutils.core.ui.OkDialogView.OkDialogButtons;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.StandardFrameView;
-import jutils.core.ui.OkDialogView.OkDialogButtons;
+import jutils.core.ui.cksum.Crc16View;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.fields.IntegerFormField;
 import jutils.core.ui.model.IView;
-import jutils.core.ui.validation.IValidationField;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 import jutils.core.ui.validation.ValidityUtils;
@@ -74,7 +74,7 @@ public class SummerView implements IView<JFrame>
 
         verifyView.setData( new ChecksumResult( input ) );
 
-        input.type = ChecksumType.MD5;
+        input.type = ChecksumType.SHA_256;
 
         createView.setData( input );
     }
@@ -108,10 +108,12 @@ public class SummerView implements IView<JFrame>
     private Container createContentPanel()
     {
         JPanel panel = new JPanel( new GridBagLayout() );
+        Crc16View crcView = new Crc16View();
         GridBagConstraints constraints;
 
         tabField.addTab( "Create", createView.getView() );
         tabField.addTab( "Verify", verifyView.getView() );
+        tabField.addTab( "CRC16", crcView.getView() );
 
         tabField.addChangeListener( ( e ) -> handleTabStateChanged() );
 
@@ -123,20 +125,23 @@ public class SummerView implements IView<JFrame>
         return panel;
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private void handleTabStateChanged()
     {
-        IValidationField field = null;
+        Validity v = new Validity( "Select Create/Verify to Run" );
 
         if( tabField.getSelectedIndex() == 0 )
         {
-            field = createView;
+            v = createView.getValidity();
         }
-        else
+        else if( tabField.getSelectedIndex() == 0 )
         {
-            field = verifyView;
+            v = verifyView.getValidity();
         }
 
-        if( field.getValidity().isValid )
+        if( v.isValid )
         {
             createAction.setEnabled( true );
             SwingUtils.setActionToolTip( createAction, "Create Checksums" );
@@ -144,8 +149,7 @@ public class SummerView implements IView<JFrame>
         else
         {
             createAction.setEnabled( false );
-            SwingUtils.setActionToolTip( createAction,
-                field.getValidity().reason );
+            SwingUtils.setActionToolTip( createAction, v.reason );
         }
     }
 

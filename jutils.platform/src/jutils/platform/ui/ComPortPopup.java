@@ -107,8 +107,14 @@ public class ComPortPopup implements IView<JPopupMenu>
 
         JMenuItem item = new JMenuItem( "Refresh",
             IconConstants.getIcon( IconConstants.REFRESH_16 ) );
-        item.addActionListener( ( ae ) -> buildMenu() );
+        item.addActionListener( ( ae ) -> handleRefresh() );
         menu.add( item );
+    }
+
+    private void handleRefresh()
+    {
+        menu.removeAll();
+        buildMenu();
     }
 
     /***************************************************************************

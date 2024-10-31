@@ -1,8 +1,9 @@
 # JUtils To-Do List
 
+[Home](./README.md)
+
 ## General Issues
 
-- Add JUtils license to license dialog.
 - Add time chooser that uses Chronos
 - Add cyclic buffer to NetMsgsView.
 - Add focus listeners to form fields
@@ -15,23 +16,57 @@
 - ListView:
   - add `ItemActionList<ItemChanged<T>>` change listeners.
   - make add/delete item listeners lamdas & call change listeners.
-- Add `IStringWriter` to `ParserFormField`.
 - TaskPool: Add `AtomicInteger` complete count.
 - Add `Utils.contains(items:List<T>, data:D, IBinaryComparator<T,D>)`
 - Write `InputStreamLineReader` or `InputLineStream`.
 - Move `FileField` to validation and rename.
 - Write `ComboFileFormField`.
 - Write jutils.ini.
-- Finish [jutils.maths](./jutils.math/jumath.md)
-- Finish [jutils.serial](./jutils.serial/juserial.md)
-- See [jutils.plot](./jutils.plot/juplot.md)
+- Finish [jutils.maths](./docs/math.md)
+- Finish [cutils.platform](./docs/cutils.md)
+- See [jutils.plot](./docs/plot.md)
 
-## jutils.plot
+## jutils.iris
 
-- jutils.chart.StripChart
-- Update jutils.chart widgets to support log space in both the x & y axes.
-- JPlot - add copy button
-- Move point removal to chart or appOptions.fillbetween
+- Fix scrolling
+- Add Bayer as a channel placement. Each bayer channel must be the same bit depth.
+- Add a histogram for each channel.
+- Show zoom level value.
+- Show image stats for each channel in the whole image, selection, and hover.
+  - width
+  - height
+  - min
+  - max
+  - average
+  - standard deviation
+- Add ability to Save (raw, png, jpg, bmp, tiff).
+- Finish Bayer Bilinear demosaic
+- Add ability to pan with middle-click and drag.
+- Add configuration for MonoColorizer
+  - Color map
+  - Thresholds
+  - Brightness/Contrast
+- Finish remainder of Bayer demosaic
+- X/Y Levels for a channel on top/side
+- Add ability to Playback.
+- Add preview to Raw Options on open.
+- Define the Raw Image Album format and add to open/save support. Default save to this format.
+- Centroid algorithm
+
+## jutils.math
+
+- Add units to Vector3dField
+- Add EastNorthUpView
+- Add EcefView
+- Add EciView
+- Add LatLonAltView
+- Add NorthEastDownView
+- Add RangeAzElView
+- Add MatrixEditorView
+- Add QuaternionField
+- Add Vector4dField
+- Add CoordinateTransformView
+- Add unit tests
 
 ## jutils.multicon
 
@@ -66,6 +101,11 @@
 - pinball
 - magic 8 ball
 
+## jutils.chio
+*PROPOSED*
+
+Chapter 10 library
+
 ## jutils.helps
 *PROPOSED*
 
@@ -75,21 +115,6 @@ help system
 *PROPOSED*
 
 replacement for xstream
-
-## jutils.img
-*PROPOSED*
-
-App name: Joptical
-
-- Color maps
-- Image data definitions
-- Image viewers
-- Histogram
-- X/Y Levels
-- Centroid algorithm
-- Playback
-- Open (raw, png, jpg, bmp, tiff)
-- Save (raw, png, jpg, bmp, tiff)
 
 ## Error exploration
 

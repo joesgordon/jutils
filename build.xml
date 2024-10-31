@@ -24,16 +24,19 @@
     <target name="individual" description="Builds a release jar that includes source and libs">
 
         <calldir dir="jutils.core" target="release" />
+        <calldir dir="jutils.platform" target="release" />
+        <calldir dir="jutils.math" target="release" />
         <calldir dir="jutils.plot" target="release" />
+    	
         <calldir dir="jutils.duak" target="release" />
         <calldir dir="jutils.explorer" target="release" />
         <calldir dir="jutils.filespy" target="release" />
         <calldir dir="jutils.hexedit" target="release" />
         <calldir dir="jutils.insomnia" target="release" />
+        <calldir dir="jutils.iris" target="release" />
         <calldir dir="jutils.mines" target="release" />
         <calldir dir="jutils.multicon" target="release" />
         <calldir dir="jutils.summer" target="release" />
-        <calldir dir="jutils.math" target="release" />
         <calldir dir="jutils.apps" target="release" />
 
     </target>
@@ -50,8 +53,11 @@
             <zipfileset src="${juprops.releaseindv}/jutils.filespy.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.hexedit.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.insomnia.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.iris.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.math.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.platform.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.plot.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.summer.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.core.jar" />
@@ -76,8 +82,11 @@
             <zipfileset src="${juprops.releaseindv}/jutils.filespy.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.hexedit.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.insomnia.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.iris.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.math.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.platform.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.plot.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.summer.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.math.jar" />
@@ -95,8 +104,11 @@
             <zipfileset src="${juprops.releaseindv}/jutils.filespy-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.hexedit-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.insomnia-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.iris-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.math-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.platform-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.plot-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.summer-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.math-debug.jar" />
@@ -115,8 +127,11 @@
             <fileset dir="jutils.filespy/src" />
             <fileset dir="jutils.hexedit/src" />
             <fileset dir="jutils.insomnia/src" />
+            <fileset dir="jutils.iris/src" />
+            <fileset dir="jutils.math/src" />
             <fileset dir="jutils.mines/src" />
             <fileset dir="jutils.multicon/src" />
+            <fileset dir="jutils.platform/src" />
             <fileset dir="jutils.plot/src" />
             <fileset dir="jutils.summer/src" />
             <fileset dir="jutils.math/src" />

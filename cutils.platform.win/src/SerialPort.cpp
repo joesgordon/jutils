@@ -121,13 +121,18 @@ void SerialPort::setTimeout(int32_t millis)
 void SerialPort::setConfig(const SerialParams &config)
 {
     info->setBinaryMode(config.binaryModeEnabled);
+
     info->setBaudRate(config.baudRate);
     info->setWordSize(config.size);
     info->setParity(config.parity);
     info->setStopBits(config.stopBits);
+
     info->setCtsEnabled(config.ctsEnabled);
     info->setDsrEnabled(config.dsrEnabled);
+
     info->setDtrControl(config.dtrControl);
+    info->setRtsControl(config.rtsControl);
+
     info->setSwFlowControl(true, config.swFlowOutputEnabled);
     info->setSwFlowControl(false, config.swFlowInputEnabled);
 
@@ -223,6 +228,8 @@ DWORD handlePending(HANDLE handle, OVERLAPPED &ovrlpd, int32_t timeout)
             fflush(stdout);
         }
     }
+
+    // printf("DEBUG: handlePending(%p, %d) - Exit\n", handle, timeout);
 
     // fflush(stdout);
 

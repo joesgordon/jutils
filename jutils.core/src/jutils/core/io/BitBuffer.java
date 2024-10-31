@@ -1,26 +1,27 @@
 package jutils.core.io;
 
 import jutils.core.utils.BitArray;
+import jutils.core.utils.BitMasks;
 
 /*******************************************************************************
  * Wraps a byte array and provides bit by bit access to the data.
  ******************************************************************************/
 public class BitBuffer
 {
-    /** Masks needed to set a particular bit. */
-    public static final byte [] SET_MASKS;
-    /** Masks needed to clear a particular bit. */
-    public static final byte [] CLEAR_MASKS;
+    /**  */
+    private static final byte [] SET_MASKS;
+    /**  */
+    private static final byte [] CLEAR_MASKS;
 
     static
     {
-        SET_MASKS = new byte[8];
-        CLEAR_MASKS = new byte[SET_MASKS.length];
+        SET_MASKS = new byte[Byte.SIZE];
+        CLEAR_MASKS = new byte[Byte.SIZE];
 
-        for( int i = 0; i < SET_MASKS.length; i++ )
+        for( int i = 0; i < Byte.SIZE; i++ )
         {
-            SET_MASKS[i] = ( byte )( 1 << i );
-            CLEAR_MASKS[i] = ( byte )~SET_MASKS[i];
+            SET_MASKS[i] = ( byte )BitMasks.getBitMask( i );
+            CLEAR_MASKS[i] = ( byte )BitMasks.getBitClearMask( i );
         }
     }
 

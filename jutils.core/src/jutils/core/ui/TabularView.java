@@ -511,6 +511,7 @@ public class TabularView implements IView<JComponent>
         public void fireStructureChanged()
         {
             tableModel.fireTableStructureChanged();
+            listModel.fireStructureChanged();
         }
     }
 

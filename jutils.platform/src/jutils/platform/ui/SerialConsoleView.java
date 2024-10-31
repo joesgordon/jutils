@@ -104,6 +104,7 @@ public class SerialConsoleView implements IView<JComponent>
             if( serialPort.open( config.comPort ) )
             {
                 serialPort.setConfig( config.params );
+                serialPort.setReadTimeout( config.rxTimeout );
 
                 if( serialTask.start( serialPort ) )
                 {
@@ -136,6 +137,8 @@ public class SerialConsoleView implements IView<JComponent>
      **************************************************************************/
     public boolean disconnect()
     {
+        boolean running = false;
+
         LogUtils.printDebug( "SerialConsoleView.disconnect()" );
 
         if( serialTask.isRunning() )
@@ -147,14 +150,14 @@ public class SerialConsoleView implements IView<JComponent>
         {
             LogUtils.printDebug( "Stopping display thread" );
             msgsDisplayThread.stop();
-            return true;
+            running = true;
         }
         else
         {
             LogUtils.printDebug( "Not Running" );
         }
 
-        return false;
+        return running;
     }
 
     /***************************************************************************
@@ -251,6 +254,7 @@ public class SerialConsoleView implements IView<JComponent>
         {
             if( thread == null )
             {
+                consumerTask.startAcceptingInput();
                 thread = new TaskThread( consumerTask, "DisplayThread" );
                 thread.start();
 

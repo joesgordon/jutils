@@ -3,7 +3,10 @@ package jutils.core.io;
 import java.awt.Image;
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 
@@ -151,5 +154,16 @@ public class IconLoader
         }
 
         return list;
+    }
+
+    /***************************************************************************
+     * Builds a URL using the provided name and the {@link ResourceLoader}
+     * created for this class.
+     * @param name the name/relative path to the resource.
+     * @return the URL to the resource or null if the URL cannot be built.
+     **************************************************************************/
+    public URL getUrl( String name )
+    {
+        return loader.getUrl( name );
     }
 }

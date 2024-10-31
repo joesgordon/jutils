@@ -1,6 +1,5 @@
 package jutils.demo;
 
-import jutils.core.laf.SimpleLookAndFeel;
 import jutils.core.ui.app.AppRunner;
 
 /*******************************************************************************
@@ -14,7 +13,9 @@ public class DemoMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        AppRunner.invokeLater( new DemoApp(), true,
-            SimpleLookAndFeel.class.getName() );
+        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
+        // AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
+
+        AppRunner.invokeLater( new DemoApp(), true );
     }
 }

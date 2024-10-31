@@ -6,10 +6,10 @@ import jutils.core.ArrayPrinter;
 import jutils.core.INamedItem;
 import jutils.core.INamedValue;
 import jutils.core.Iterables;
-import jutils.core.Utils;
 import jutils.core.Iterables.Iteratorable;
-import jutils.core.data.IBitField;
+import jutils.core.Utils;
 import jutils.core.ui.hex.HexUtils;
+import jutils.core.utils.BitMasks;
 
 /*******************************************************************************
  * Defines the methods to print fields of a structure/section/tier.
@@ -79,12 +79,15 @@ public class FieldPrinter
     /***************************************************************************
      * @param tierName
      * @param tier
+     * @return
      **************************************************************************/
-    public void printTier( String tierName, ITierPrinter tier )
+    public FieldPrinter printTier( String tierName, ITierPrinter tier )
     {
         FieldPrinter p = createTier( tierName );
 
         tier.printFields( p );
+
+        return p;
     }
 
     /***************************************************************************
@@ -183,7 +186,7 @@ public class FieldPrinter
      **************************************************************************/
     public void printHexField( String name, byte value )
     {
-        printFieldAsHex( name, value & IBitField.BYTE_MASK, 2 );
+        printFieldAsHex( name, value & BitMasks.BYTE_MASK, 2 );
     }
 
     /***************************************************************************
@@ -192,7 +195,7 @@ public class FieldPrinter
      **************************************************************************/
     public void printHexField( String name, short value )
     {
-        printFieldAsHex( name, value & IBitField.SHORT_MASK, 4 );
+        printFieldAsHex( name, value & BitMasks.SHORT_MASK, 4 );
     }
 
     /***************************************************************************
@@ -201,7 +204,7 @@ public class FieldPrinter
      **************************************************************************/
     public void printHexField( String name, int value )
     {
-        printFieldAsHex( name, value & IBitField.INT_MASK, 8 );
+        printFieldAsHex( name, value & BitMasks.INT_MASK, 8 );
     }
 
     /***************************************************************************
@@ -410,45 +413,6 @@ public class FieldPrinter
     }
 
     /***************************************************************************
-     * @param <T>
-     **************************************************************************/
-    private static final class SubIterator<T> implements Iterator<T>
-    {
-        /**  */
-        private final Iterator<T> array;
-        /**  */
-        private final int count;
-
-        /**  */
-        private int index;
-
-        /**
-         * @param array
-         * @param count
-         */
-        public SubIterator( Iterator<T> array, int count )
-        {
-            this.array = array;
-            this.count = count;
-            this.index = 0;
-        }
-
-        @Override
-        public boolean hasNext()
-        {
-            return index < count;
-        }
-
-        @Override
-        public T next()
-        {
-            T item = array.next();
-            index++;
-            return item;
-        }
-    }
-
-    /***************************************************************************
      * @param name
      * @param values
      **************************************************************************/
@@ -487,6 +451,18 @@ public class FieldPrinter
     {
         Iterable<Short> array = Iterables.buildIteratable( values );
         printIterableField( name, array, values.length, 0,
+            ( t ) -> HexUtils.getHexString( t ) );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param values
+     **************************************************************************/
+    public void printFieldValuesHex( String name, int itemsPerLine,
+        short... values )
+    {
+        Iterable<Short> array = Iterables.buildIteratable( values );
+        printIterableField( name, array, values.length, itemsPerLine,
             ( t ) -> HexUtils.getHexString( t ) );
     }
 
@@ -758,6 +734,19 @@ public class FieldPrinter
     }
 
     /***************************************************************************
+     * @param tier
+     * @return
+     **************************************************************************/
+    public static String toString( ITierPrinter tier )
+    {
+        FieldPrinter printer = new FieldPrinter();
+
+        tier.printFields( printer );
+
+        return printer.toString();
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     public static interface ITierPrinter
@@ -766,5 +755,44 @@ public class FieldPrinter
          * @param printer
          */
         public void printFields( FieldPrinter printer );
+    }
+
+    /***************************************************************************
+     * @param <T>
+     **************************************************************************/
+    private static final class SubIterator<T> implements Iterator<T>
+    {
+        /**  */
+        private final Iterator<T> array;
+        /**  */
+        private final int count;
+
+        /**  */
+        private int index;
+
+        /**
+         * @param array
+         * @param count
+         */
+        public SubIterator( Iterator<T> array, int count )
+        {
+            this.array = array;
+            this.count = count;
+            this.index = 0;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return index < count;
+        }
+
+        @Override
+        public T next()
+        {
+            T item = array.next();
+            index++;
+            return item;
+        }
     }
 }

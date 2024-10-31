@@ -126,7 +126,7 @@ public class SearchResultsHandler
         @Override
         public void run()
         {
-            statusBar.setText( msg );
+            statusBar.setStatusText( msg );
         }
     }
 }

@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import jutils.core.ui.StandardFormView;
+import jutils.core.ui.fields.IntegerFormField;
 import jutils.core.ui.model.IDataView;
 import jutils.platform.data.SerialConfig;
 
@@ -21,8 +22,11 @@ public class SerialConfigView implements IDataView<SerialConfig>
     /**  */
     private final ComPortField portField;
     /**  */
+    private final IntegerFormField rxTimeoutField;
+    /**  */
     private final SerialParamsView paramsView;
 
+    /**  */
     private SerialConfig config;
 
     /***************************************************************************
@@ -31,6 +35,7 @@ public class SerialConfigView implements IDataView<SerialConfig>
     public SerialConfigView()
     {
         this.portField = new ComPortField( "COM Port" );
+        this.rxTimeoutField = new IntegerFormField( "Rx Timeout" );
         this.paramsView = new SerialParamsView();
 
         this.view = createView();
@@ -38,6 +43,7 @@ public class SerialConfigView implements IDataView<SerialConfig>
         setData( new SerialConfig() );
 
         portField.setUpdater( ( d ) -> this.config.comPort = d );
+        rxTimeoutField.setUpdater( ( d ) -> this.config.rxTimeout = d );
     }
 
     /***************************************************************************
@@ -61,6 +67,7 @@ public class SerialConfigView implements IDataView<SerialConfig>
         StandardFormView form = new StandardFormView();
 
         form.addField( portField );
+        form.addField( rxTimeoutField );
 
         return form.getView();
     }
@@ -92,6 +99,7 @@ public class SerialConfigView implements IDataView<SerialConfig>
         this.config = data;
 
         portField.setValue( config.comPort );
+        rxTimeoutField.setValue( config.rxTimeout );
         paramsView.setData( config.params );
     }
 }

@@ -21,6 +21,8 @@ public class MathDemoView implements IView<JComponent>
     /**  */
     private final Vector3dField vec3dField;
     /**  */
+    private final QuaternionField quatField;
+    /**  */
     private final MatrixView matrixView;
 
     /***************************************************************************
@@ -30,6 +32,8 @@ public class MathDemoView implements IView<JComponent>
     {
         this.vec3dField = new Vector3dField(
             Vector3dField.class.getSimpleName() );
+        this.quatField = new QuaternionField(
+            QuaternionField.class.getSimpleName() );
 
         this.matrixView = new MatrixView();
 
@@ -57,6 +61,7 @@ public class MathDemoView implements IView<JComponent>
         StandardFormView form = new StandardFormView();
 
         form.addField( vec3dField );
+        form.addField( quatField );
 
         return form.getView();
     }

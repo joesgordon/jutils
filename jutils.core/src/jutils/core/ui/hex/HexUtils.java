@@ -100,8 +100,8 @@ public final class HexUtils
      **************************************************************************/
     public static String getHexString( short b )
     {
-        int b1 = ( int )( ( b >> 8 ) & 0xFF );
-        int b0 = ( int )( ( b >> 0 ) & 0xFF );
+        int b1 = ( b >> 8 ) & 0xFF;
+        int b0 = ( b >> 0 ) & 0xFF;
 
         return hexStringOfIndex( b1 ) + hexStringOfIndex( b0 );
     }
@@ -113,10 +113,10 @@ public final class HexUtils
      **************************************************************************/
     public static String getHexString( int b )
     {
-        int b3 = ( int )( ( b >> 24 ) & 0xFF );
-        int b2 = ( int )( ( b >> 16 ) & 0xFF );
-        int b1 = ( int )( ( b >> 8 ) & 0xFF );
-        int b0 = ( int )( ( b >> 0 ) & 0xFF );
+        int b3 = ( b >> 24 ) & 0xFF;
+        int b2 = ( b >> 16 ) & 0xFF;
+        int b1 = ( b >> 8 ) & 0xFF;
+        int b0 = ( b >> 0 ) & 0xFF;
 
         return hexStringOfIndex( b3 ) + hexStringOfIndex( b2 ) +
             hexStringOfIndex( b1 ) + hexStringOfIndex( b0 );
@@ -275,10 +275,13 @@ public final class HexUtils
         }
 
         int b = 0;
-        char c = text.charAt( 0 );
+        char c;
 
+        c = text.charAt( 0 );
         b = NumberParsingUtils.digitFromHex( c );
         b = b << 4;
+
+        c = text.charAt( 1 );
         b |= NumberParsingUtils.digitFromHex( c );
 
         return ( byte )b;

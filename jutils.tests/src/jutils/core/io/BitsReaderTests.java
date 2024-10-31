@@ -6,6 +6,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import jutils.core.utils.BitMasks;
+
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -25,11 +27,10 @@ public class BitsReaderTests
             vals.add( new BrTestParams( i, i, 0 ) );
         }
 
-        // for( int m = 2; m <= 2; m++ )
-        for( int m = 1; m < BitsReader.MASKS.length; m++ )
+        for( int m = 1; m < BitsReader.getMaskCount(); m++ )
         {
             int shiftCount = Long.SIZE - m;
-            long mask = BitsReader.MASKS[m];
+            long mask = BitMasks.getBitMask( m );
             long alts = mask;
 
             for( long i = 0; i < m; i++ )
@@ -76,12 +77,22 @@ public class BitsReaderTests
      **************************************************************************/
     private static final class BrTestParams
     {
+        /**  */
         public final int start;
+        /**  */
         public final int end;
+        /**  */
         public final long value;
+        /**  */
         public final long zeroShift;
+        /**  */
         public final long oneShift;
 
+        /**
+         * @param start
+         * @param end
+         * @param value
+         */
         public BrTestParams( int start, int end, long value )
         {
             this.start = start;
@@ -102,6 +113,9 @@ public class BitsReaderTests
             this.oneShift = val;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String toString()
         {

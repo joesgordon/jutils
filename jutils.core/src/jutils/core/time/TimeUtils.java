@@ -47,7 +47,7 @@ public final class TimeUtils
     /**  */
     public static final String DATE_FMT = "yyyy-MM-dd";
     /**  */
-    public static final String TIME_FMT = "HHmmss.SSSSSS";
+    public static final String TIME_FMT = "HH:mm:ss.SSSSSS";
 
     /**  */
     public static final String DATE_TS_FMT = "yyyyMMdd";

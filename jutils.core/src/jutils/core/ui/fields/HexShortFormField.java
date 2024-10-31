@@ -32,7 +32,7 @@ public class HexShortFormField implements IDataFormField<Short>
      **************************************************************************/
     public HexShortFormField( String name, String units )
     {
-        this( name, units, ( short )20, null );
+        this( name, units, 20 );
     }
 
     /***************************************************************************

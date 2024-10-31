@@ -7,8 +7,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import jutils.apps.JUtilsIcons;
-import jutils.core.JUtilsInfo;
+import jutils.core.IconConstants;
+import jutils.core.JUtilsCoreMain;
 import jutils.core.data.BuildInfo;
 import jutils.core.ui.BuildInfoView;
 import jutils.core.ui.IToolView;
@@ -39,9 +39,10 @@ public class AppsFrameView implements IView<JFrame>
         frameView.setContent( view.getView() );
         frameView.setTitle( "JUtils Apps" );
         frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        frameView.setSize( 500, 500 );
+        frameView.setSize( 500, 540 );
 
-        frameView.getView().setIconImages( JUtilsIcons.getAppImages() );
+        frameView.getView().setIconImages(
+            IconConstants.getAllImages( "jutils" ) );
     }
 
     /***************************************************************************
@@ -79,8 +80,8 @@ public class AppsFrameView implements IView<JFrame>
      **************************************************************************/
     private void showAbout()
     {
-        BuildInfo info = JUtilsInfo.load();
-        BuildInfoView.show( getView(), "About Duak", info );
+        BuildInfo info = JUtilsCoreMain.load();
+        BuildInfoView.show( getView(), "JUtils Version", info );
     }
 
     /***************************************************************************

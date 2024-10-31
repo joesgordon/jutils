@@ -536,25 +536,6 @@ public final class Utils
     }
 
     /***************************************************************************
-     * Returns the mask needed to remove the upper bits for values up to the
-     * provided maximum value.
-     * @param maxValue the value for which the mask will be generated.
-     * @return the generated mask.
-     **************************************************************************/
-    public static int getMaskForValue( int maxValue )
-    {
-        int v = maxValue--;
-        v |= v >> 1;
-        v |= v >> 2;
-        v |= v >> 4;
-        v |= v >> 8;
-        v |= v >> 16;
-        // v++;
-
-        return v;
-    }
-
-    /***************************************************************************
      * Returns a list containing the font family names of all available
      * monospaced fonts that can display the ASCII numbers, lower case, and
      * upper case values.

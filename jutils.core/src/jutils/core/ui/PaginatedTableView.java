@@ -13,13 +13,13 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.Border;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -35,7 +35,6 @@ import jutils.core.ui.event.DoubleClickListener;
 import jutils.core.ui.event.ResizingTableModelListener;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.ITableConfig;
-import jutils.core.ui.model.IView;
 import jutils.core.ui.model.ItemsTableModel;
 import jutils.core.ui.model.LabelTableCellRenderer;
 import jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
@@ -45,12 +44,11 @@ import jutils.core.ui.net.StringWriterView;
  * Defines UI that displays a paginated table of objects of a particular type.
  * @param <T> the type of item to be displayed.
  ******************************************************************************/
-public class PaginatedTableView<T> implements IView<JPanel>
+public class PaginatedTableView<T> extends PaginatedView
 {
-    /** This class's main view. */
-    private final JPanel view;
-    /** The toolbar for this view. */
-    private final JToolBar toolbar;
+    /**  */
+    public static final int DEFAULT_ITEMS_PER_PAGE = 500;
+
     /**  */
     private final ItemsTableModel<T> tableModel;
     /**  */
@@ -59,17 +57,6 @@ public class PaginatedTableView<T> implements IView<JPanel>
     private final JScrollPane tablePane;
     /**  */
     private final PaginatedNumberRowHeaderModel headerModel;
-
-    /**  */
-    private final JButton navFirstButton;
-    /**  */
-    private final JButton navPreviousButton;
-    /**  */
-    private final JButton navNextButton;
-    /**  */
-    private final JButton navLastButton;
-    /**  */
-    private final JLabel pageLabel;
 
     /**  */
     private OkDialogView dialog;
@@ -85,6 +72,8 @@ public class PaginatedTableView<T> implements IView<JPanel>
     private int itemsPerPage;
     /** The index of the item at the top of this page. */
     private long pageStartIndex;
+    /**  */
+    private String itemName;
 
     /***************************************************************************
      * @param tableCfg the configuration of the table to be displayed.
@@ -93,7 +82,8 @@ public class PaginatedTableView<T> implements IView<JPanel>
     public PaginatedTableView( ITableConfig<T> tableCfg,
         IItemStream<T> itemsStream )
     {
-        this( tableCfg, itemsStream, ( IDataView<T> )null );
+        this( tableCfg, itemsStream,
+            new StringWriterView<>( ( t ) -> t.toString() ) );
     }
 
     /***************************************************************************
@@ -105,7 +95,22 @@ public class PaginatedTableView<T> implements IView<JPanel>
     public PaginatedTableView( ITableConfig<T> tableCfg,
         IItemStream<T> itemsStream, IStringWriter<T> itemWriter )
     {
-        this( tableCfg, itemsStream, createItemWriterView( itemWriter ) );
+        this( tableCfg, itemsStream, itemWriter, DEFAULT_ITEMS_PER_PAGE );
+    }
+
+    /***************************************************************************
+     * @param tableCfg the configuration of the table to be displayed.
+     * @param itemsStream
+     * @param itemWriter the method of creating a string that represents an
+     * item.
+     * @param itemsPerPage
+     **************************************************************************/
+    public PaginatedTableView( ITableConfig<T> tableCfg,
+        IItemStream<T> itemsStream, IStringWriter<T> itemWriter,
+        int itemsPerPage )
+    {
+        this( tableCfg, itemsStream, createItemWriterView( itemWriter ),
+            itemsPerPage );
     }
 
     /***************************************************************************
@@ -116,25 +121,33 @@ public class PaginatedTableView<T> implements IView<JPanel>
     public PaginatedTableView( ITableConfig<T> tableCfg,
         IItemStream<T> itemsStream, IDataView<T> itemView )
     {
+        this( tableCfg, itemsStream, itemView, DEFAULT_ITEMS_PER_PAGE );
+    }
+
+    /***************************************************************************
+     * @param tableCfg the configuration of the table to be displayed.
+     * @param itemsStream
+     * @param itemView a view that will display an item.
+     * @param itemsPerPage
+     **************************************************************************/
+    public PaginatedTableView( ITableConfig<T> tableCfg,
+        IItemStream<T> itemsStream, IDataView<T> itemView, int itemsPerPage )
+    {
         this.tableModel = new ItemsTableModel<>( tableCfg );
         this.table = new JTable( tableModel );
         this.tablePane = new JScrollPane( table );
         this.headerModel = new PaginatedNumberRowHeaderModel();
-        this.navFirstButton = new JButton();
-        this.navPreviousButton = new JButton();
-        this.navNextButton = new JButton();
-        this.navLastButton = new JButton();
-        this.pageLabel = new JLabel( "Page 0 of 0 (0)" );
         this.dialog = null;
         this.itemsLock = new Object();
         this.itemsStream = itemsStream;
-        this.toolbar = createToolbar();
-        this.view = createView();
 
-        this.itemsPerPage = 500;
+        this.itemsPerPage = itemsPerPage;
         this.pageStartIndex = 0L;
+        this.itemName = "Item";
 
         this.itemView = new ItemNavigationView<>( this, itemView );
+
+        super.createView( this.createView() );
     }
 
     /***************************************************************************
@@ -165,7 +178,6 @@ public class PaginatedTableView<T> implements IView<JPanel>
         tablePane.setHorizontalScrollBarPolicy(
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );
 
-        panel.add( toolbar, BorderLayout.NORTH );
         panel.add( tablePane, BorderLayout.CENTER );
 
         panel.setMinimumSize( new Dimension( 625, 200 ) );
@@ -185,126 +197,6 @@ public class PaginatedTableView<T> implements IView<JPanel>
     }
 
     /***************************************************************************
-     * Creates the toolbar for this view.
-     * @return the toolbar for this view.
-     **************************************************************************/
-    private JToolBar createToolbar()
-    {
-        JToolBar toolbar = new JToolBar();
-
-        SwingUtils.setToolbarDefaults( toolbar );
-
-        SwingUtils.addActionToToolbar( toolbar, createNavAction( true, false ),
-            navFirstButton );
-        navFirstButton.setText( "" );
-
-        SwingUtils.addActionToToolbar( toolbar, createNavAction( false, false ),
-            navPreviousButton );
-        navPreviousButton.setText( "" );
-
-        SwingUtils.addActionToToolbar( toolbar, createNavAction( false, true ),
-            navNextButton );
-        navNextButton.setText( "" );
-
-        SwingUtils.addActionToToolbar( toolbar, createNavAction( true, true ),
-            navLastButton );
-        navLastButton.setText( "" );
-
-        toolbar.addSeparator();
-
-        toolbar.add( pageLabel );
-
-        toolbar.addSeparator();
-
-        SwingUtils.addActionToToolbar( toolbar, createClearAction() );
-
-        toolbar.addSeparator();
-
-        return toolbar;
-    }
-
-    /***************************************************************************
-     * @param absolute if this action navigates to an end of the pages.
-     * @param forward if this action navigates forward.
-     * @return the action that navigates.
-     **************************************************************************/
-    private Action createNavAction( boolean absolute, boolean forward )
-    {
-        ActionListener listener = ( e ) -> navigatePage( absolute, forward );
-        String iconName;
-        Icon icon;
-        String actionName;
-
-        if( absolute && !forward )
-        {
-            iconName = IconConstants.NAV_FIRST_16;
-            actionName = "First Page";
-        }
-        else if( !absolute && !forward )
-        {
-            iconName = IconConstants.NAV_PREVIOUS_16;
-            actionName = "Previous Page";
-        }
-        else if( !absolute && forward )
-        {
-            iconName = IconConstants.NAV_NEXT_16;
-            actionName = "Next Page";
-        }
-        else
-        {
-            iconName = IconConstants.NAV_LAST_16;
-            actionName = "Last Page";
-        }
-
-        icon = IconConstants.getIcon( iconName );
-
-        return new ActionAdapter( listener, actionName, icon );
-    }
-
-    /***************************************************************************
-     * @return an action that clears all items.
-     **************************************************************************/
-    private Action createClearAction()
-    {
-        ActionListener listener = ( e ) -> clearItems();
-        Icon icon = IconConstants.getIcon( IconConstants.EDIT_CLEAR_16 );
-
-        return new ActionAdapter( listener, "Clear", icon );
-    }
-
-    /***************************************************************************
-     * @param absolute if the navigation is to an end of the pages.
-     * @param forward if the navigation is forward (+1).
-     **************************************************************************/
-    private void navigatePage( boolean absolute, boolean forward )
-    {
-        long index = -1;
-
-        if( absolute && !forward )
-        {
-            index = 0;
-        }
-        else if( !absolute && !forward )
-        {
-            index = pageStartIndex - itemsPerPage;
-        }
-        else if( !absolute && forward )
-        {
-            index = pageStartIndex + itemsPerPage;
-        }
-        else
-        {
-            index = itemsStream.getCount() - 1;
-            index = index - index % itemsPerPage;
-        }
-
-        if( index > -1 && index < itemsStream.getCount() )
-        {
-            navigatePage( index );
-        }
-    }
-
-    /***************************************************************************
      * @param startIndex the item index the page will start.
      **************************************************************************/
     private void navigatePage( long startIndex )
@@ -314,12 +206,12 @@ public class PaginatedTableView<T> implements IView<JPanel>
 
     /***************************************************************************
      * @param startIndex the item index the page will start.
-     * @param ignoreIndexCheck if {@code true} reloads even if the index doesn't
+     * @param forceReload if {@code true} reloads even if the index doesn't
      * change.
      **************************************************************************/
-    private void navigatePage( long startIndex, boolean ignoreIndexCheck )
+    private void navigatePage( long startIndex, boolean forceReload )
     {
-        if( !ignoreIndexCheck && this.pageStartIndex == startIndex )
+        if( !forceReload && this.pageStartIndex == startIndex )
         {
             return;
         }
@@ -347,7 +239,7 @@ public class PaginatedTableView<T> implements IView<JPanel>
         updateRowHeader( count );
         ResizingTableModelListener.resizeTable( table );
 
-        setNavButtonsEnabled();
+        updateControls();
     }
 
     /***************************************************************************
@@ -356,58 +248,6 @@ public class PaginatedTableView<T> implements IView<JPanel>
     private void updateRowHeader( int count )
     {
         headerModel.setData( pageStartIndex + 1, count );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private void setNavButtonsEnabled()
-    {
-        boolean hasPrev = hasPrevious();
-        boolean hasNext = hasNext();
-
-        navFirstButton.setEnabled( hasPrev );
-        navPreviousButton.setEnabled( hasPrev );
-        navNextButton.setEnabled( hasNext );
-        navLastButton.setEnabled( hasNext );
-
-        int pageCount = getPageCount();
-        int pageIndex = ( int )( ( pageStartIndex + itemsPerPage - 1 ) /
-            itemsPerPage );
-        int pageNum = pageCount == 0 ? 0 : ( pageIndex + 1 );
-
-        pageLabel.setText( String.format( "Page %d of %d (%d)", pageNum,
-            pageCount, itemsStream.getCount() ) );
-    }
-
-    /***************************************************************************
-     * @return the number of pages needed to navigate the items.
-     **************************************************************************/
-    private int getPageCount()
-    {
-        long count = itemsStream.getCount();
-
-        int max = ( int )( ( count + itemsPerPage - 1 ) / itemsPerPage );
-
-        return max;
-    }
-
-    /***************************************************************************
-     * @return {@code true} if there is a previous page.
-     **************************************************************************/
-    private boolean hasPrevious()
-    {
-        return pageStartIndex > 0;
-    }
-
-    /***************************************************************************
-     * @return {@code true} if there is a next page.
-     **************************************************************************/
-    private boolean hasNext()
-    {
-        long lastItem = itemsStream.getCount() - 1;
-        long maxStartIndex = lastItem - lastItem % itemsPerPage;
-        return pageStartIndex < maxStartIndex;
     }
 
     /***************************************************************************
@@ -442,6 +282,46 @@ public class PaginatedTableView<T> implements IView<JPanel>
         IStringWriter<F> itemWriter )
     {
         return itemWriter == null ? null : new StringWriterView<>( itemWriter );
+    }
+
+    /***************************************************************************
+     * @param name
+     **************************************************************************/
+    public void setItemTypeName( String name )
+    {
+        this.itemName = name;
+    }
+
+    /***************************************************************************
+     * @param border
+     **************************************************************************/
+    public void setScrollPaneBorder( Border border )
+    {
+        tablePane.setBorder( border );
+    }
+
+    /***************************************************************************
+     * @param itemIndex
+     * @return
+     **************************************************************************/
+    public T setSelected( long itemIndex )
+    {
+        if( itemIndex < 0 || itemIndex >= itemsStream.getCount() )
+        {
+            return null;
+        }
+
+        if( !isPaged( itemIndex ) )
+        {
+            long start = itemIndex - itemIndex % itemsPerPage;
+            navigatePage( start );
+        }
+
+        int tableIndex = ( int )( itemIndex - pageStartIndex );
+
+        table.setRowSelectionInterval( tableIndex, tableIndex );
+
+        return tableModel.getItem( tableIndex );
     }
 
     /***************************************************************************
@@ -486,19 +366,10 @@ public class PaginatedTableView<T> implements IView<JPanel>
             d.setLocationRelativeTo( f );
         }
 
-        d.setTitle( String.format( "Item %d", itemIndex + 1 ) );
+        d.setTitle( String.format( "%s %d", itemName, itemIndex + 1 ) );
         d.setVisible( true );
 
         table.setRowSelectionInterval( tableIndex, tableIndex );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public JPanel getView()
-    {
-        return view;
     }
 
     /***************************************************************************
@@ -540,7 +411,7 @@ public class PaginatedTableView<T> implements IView<JPanel>
             }
         }
 
-        setNavButtonsEnabled();
+        updateControls();
     }
 
     /***************************************************************************
@@ -573,7 +444,7 @@ public class PaginatedTableView<T> implements IView<JPanel>
         }
 
         pageStartIndex = 0L;
-        setNavButtonsEnabled();
+        updateControls();
         updateRowHeader( 0 );
 
         if( dialog != null && dialog.getView().isVisible() )
@@ -586,17 +457,19 @@ public class PaginatedTableView<T> implements IView<JPanel>
      * @param a the action to be added.
      * @return the button created from adding the provided action.
      **************************************************************************/
+    @Override
     public JButton addToToolbar( Action a )
     {
-        return SwingUtils.addActionToToolbar( toolbar, a );
+        return super.addToToolbar( a );
     }
 
     /***************************************************************************
      * Adds a separator to the toolbar.
      **************************************************************************/
+    @Override
     public void addToToolbar()
     {
-        toolbar.addSeparator();
+        super.addToToolbar();
     }
 
     /***************************************************************************
@@ -667,12 +540,66 @@ public class PaginatedTableView<T> implements IView<JPanel>
     }
 
     /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    protected String getPageTitle( int pageIndex )
+    {
+        int pageNum = pageIndex < 0 ? 0 : pageIndex + 1;
+        return String.format( "Page %d of %d (%d)", pageNum, getPageCount(),
+            itemsStream.getCount() );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getPageCount()
+    {
+        long count = itemsStream.getCount();
+
+        int max = ( int )( ( count + itemsPerPage - 1 ) / itemsPerPage );
+
+        return max;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public int getCurrentPage()
+    {
+        int pageIndex = ( int )( ( pageStartIndex + itemsPerPage - 1 ) /
+            itemsPerPage );
+
+        return pageIndex;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setCurrentPage( int pageIndex )
+    {
+        navigatePage( pageIndex * itemsPerPage );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void removeAllPages()
+    {
+        clearItems();
+    }
+
+    /***************************************************************************
      * @param <T>
      **************************************************************************/
     private static final class ItemNavigationView<T> implements IDataView<T>
     {
         /**  */
-        private final PaginatedTableView<T> itemsView;
+        private final PaginatedTableView<T> table;
         /**  */
         private final IDataView<T> itemView;
 
@@ -685,14 +612,13 @@ public class PaginatedTableView<T> implements IView<JPanel>
         private final JButton nextButton;
 
         /**
-         * @param msgsView
-         * @param msgView
-         * @param addScrollPane
+         * @param table
+         * @param itemView
          */
-        public ItemNavigationView( PaginatedTableView<T> msgsView,
+        public ItemNavigationView( PaginatedTableView<T> table,
             IDataView<T> itemView )
         {
-            this.itemsView = msgsView;
+            this.table = table;
             this.itemView = itemView;
             this.prevButton = new JButton();
             this.nextButton = new JButton();
@@ -754,11 +680,10 @@ public class PaginatedTableView<T> implements IView<JPanel>
         private void navigate( boolean forward )
         {
             int inc = forward ? 1 : -1;
-            long index = itemsView.table.getSelectedRow() +
-                itemsView.pageStartIndex;
+            long index = table.table.getSelectedRow() + table.pageStartIndex;
             long nextIndex = index + inc;
 
-            itemsView.showItem( nextIndex );
+            table.showItem( nextIndex );
 
             setButtonsEnabled();
         }
@@ -768,9 +693,8 @@ public class PaginatedTableView<T> implements IView<JPanel>
          */
         private void setButtonsEnabled()
         {
-            long index = itemsView.table.getSelectedRow() +
-                itemsView.pageStartIndex;
-            long maxRow = itemsView.getItemCount() - 1;
+            long index = table.table.getSelectedRow() + table.pageStartIndex;
+            long maxRow = table.getItemCount() - 1;
 
             prevButton.setEnabled( index > 0 );
             nextButton.setEnabled( index > -1 && index < maxRow );

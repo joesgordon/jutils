@@ -2,6 +2,7 @@ package jutils.core.ui.fields;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 import jutils.core.io.parsers.HexByteParser;
 import jutils.core.ui.event.updater.IUpdater;
@@ -168,5 +169,13 @@ public class HexByteFormField implements IDataFormField<Byte>
     private static String toString( Byte value )
     {
         return value == null ? "" : HexUtils.getHexString( value );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JTextComponent getTextField()
+    {
+        return field.getTextField();
     }
 }

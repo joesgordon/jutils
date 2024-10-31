@@ -57,7 +57,7 @@ public class LedBooleanLabel implements IView<JComponent>
 
         if( size > LedLabel.DEFAULT_SIZE )
         {
-            float fontSize = ( float )size;
+            float fontSize = size;
             Font f = label.label.getFont();
 
             f = f.deriveFont( fontSize );

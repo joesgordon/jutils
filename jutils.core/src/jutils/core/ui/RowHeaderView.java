@@ -103,11 +103,28 @@ public class RowHeaderView
 
     public static interface IRowListModel
     {
+        /**
+         * @param rowStart
+         * @param rowEnd
+         */
         void fireRowsDeleted( int rowStart, int rowEnd );
 
+        /**
+         * @param rowStart
+         * @param rowEnd
+         */
         void fireRowsInserted( int rowStart, int rowEnd );
 
+        /**
+         * @param rowStart
+         * @param rowEnd
+         */
         void fireRowsUpdated( int rowStart, int rowEnd );
+
+        /**
+         * 
+         */
+        void fireStructureChanged();
     }
 
     /***************************************************************************
@@ -178,6 +195,12 @@ public class RowHeaderView
         public void fireRowsUpdated( int rowStart, int rowEnd )
         {
             super.fireContentsChanged( this, rowStart, rowEnd );
+        }
+
+        @Override
+        public void fireStructureChanged()
+        {
+            super.fireContentsChanged( this, 0, getSize() - 1 );
         }
     }
 

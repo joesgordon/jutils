@@ -1,17 +1,12 @@
 package jutils.core.data;
 
+import jutils.core.utils.BitMasks;
+
 /*******************************************************************************
  * Defines a set of functions for identifying and processing bit flags of words.
  ******************************************************************************/
 public interface IBitField
 {
-    /**  */
-    public static final long BYTE_MASK = 0xFFL;
-    /**  */
-    public static final long SHORT_MASK = 0xFFFFL;
-    /**  */
-    public static final long INT_MASK = 0xFFFFFFFFL;
-
     /***************************************************************************
      * Returns the 0-relative bit this flag refers to. Bits 0 and 3 are set in
      * the value {@code 0x09}.
@@ -40,7 +35,7 @@ public interface IBitField
      **************************************************************************/
     public default boolean getFlag( byte word )
     {
-        return getFlag( word & BYTE_MASK );
+        return getFlag( word & BitMasks.BYTE_MASK );
     }
 
     /***************************************************************************
@@ -50,7 +45,7 @@ public interface IBitField
      **************************************************************************/
     public default byte setFlag( byte word, boolean value )
     {
-        return ( byte )setFlag( word & BYTE_MASK, value );
+        return ( byte )setFlag( word & BitMasks.BYTE_MASK, value );
     }
 
     /***************************************************************************
@@ -59,7 +54,7 @@ public interface IBitField
      **************************************************************************/
     public default boolean getFlag( short word )
     {
-        return getFlag( word & SHORT_MASK );
+        return getFlag( word & BitMasks.SHORT_MASK );
     }
 
     /***************************************************************************
@@ -69,7 +64,7 @@ public interface IBitField
      **************************************************************************/
     public default short setFlag( short word, boolean value )
     {
-        return ( short )setFlag( word & SHORT_MASK, value );
+        return ( short )setFlag( word & BitMasks.SHORT_MASK, value );
     }
 
     /***************************************************************************
@@ -78,7 +73,7 @@ public interface IBitField
      **************************************************************************/
     public default boolean getFlag( int word )
     {
-        return getFlag( word & INT_MASK );
+        return getFlag( word & BitMasks.INT_MASK );
     }
 
     /***************************************************************************
@@ -89,7 +84,7 @@ public interface IBitField
      **************************************************************************/
     public default int setFlag( int word, boolean value )
     {
-        return ( int )setFlag( word & INT_MASK, value );
+        return ( int )setFlag( word & BitMasks.INT_MASK, value );
     }
 
     /***************************************************************************
@@ -136,7 +131,7 @@ public interface IBitField
      **************************************************************************/
     public default byte getField( byte word )
     {
-        return ( byte )getField( word & BYTE_MASK );
+        return ( byte )getField( word & BitMasks.BYTE_MASK );
     }
 
     /***************************************************************************
@@ -146,7 +141,7 @@ public interface IBitField
      **************************************************************************/
     public default byte setField( byte word, byte value )
     {
-        return ( byte )setField( word & BYTE_MASK, value );
+        return ( byte )setField( word & BitMasks.BYTE_MASK, value );
     }
 
     /***************************************************************************
@@ -155,7 +150,7 @@ public interface IBitField
      **************************************************************************/
     public default short getField( short word )
     {
-        return ( short )getField( word & SHORT_MASK );
+        return ( short )getField( word & BitMasks.SHORT_MASK );
     }
 
     /***************************************************************************
@@ -165,7 +160,7 @@ public interface IBitField
      **************************************************************************/
     public default short setField( short word, short value )
     {
-        return ( short )setField( word & SHORT_MASK, value );
+        return ( short )setField( word & BitMasks.SHORT_MASK, value );
     }
 
     /***************************************************************************
@@ -174,7 +169,7 @@ public interface IBitField
      **************************************************************************/
     public default int getField( int word )
     {
-        return ( int )getField( word & INT_MASK );
+        return ( int )getField( word & BitMasks.INT_MASK );
     }
 
     /***************************************************************************
@@ -184,7 +179,7 @@ public interface IBitField
      **************************************************************************/
     public default int setField( int word, int value )
     {
-        return ( int )setField( word & INT_MASK, value );
+        return ( int )setField( word & BitMasks.INT_MASK, value );
     }
 
     /***************************************************************************
@@ -216,24 +211,5 @@ public interface IBitField
         word |= value;
 
         return word;
-    }
-
-    /***************************************************************************
-     * Generates the mask by shifting 1 to the left by the provided number of
-     * bits.
-     * @param startBit the bit to create a mask for.
-     * @param endBit the bit to create a mask for.
-     * @return the mask for the provided bit.
-     **************************************************************************/
-    public static long generateMask( int startBit, int endBit )
-    {
-        int mask = 0;
-
-        for( int i = startBit; i <= endBit; i++ )
-        {
-            mask |= ( 1L << i );
-        }
-
-        return mask;
     }
 }

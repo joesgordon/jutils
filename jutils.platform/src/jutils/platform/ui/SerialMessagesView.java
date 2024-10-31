@@ -99,6 +99,7 @@ public class SerialMessagesView implements IView<JComponent>
                 ( m ) -> m.time.format( dateFmt ) );
             super.addCol( "Time", String.class,
                 ( m ) -> m.time.format( timeFmt ) );
+            super.addCol( "Size", Integer.class, ( m ) -> m.data.length );
             super.addCol( "Contents", String.class,
                 ( m ) -> HexUtils.toHexString( m.data, " ", 0,
                     Math.min( 64, m.data.length ) ) );

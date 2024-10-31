@@ -6,8 +6,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.function.Supplier;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -18,6 +20,11 @@ import jutils.core.ui.ListView;
 import jutils.core.ui.ListView.IItemListModel;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
+import jutils.demo.ui.jutils.DateTimeViews;
+import jutils.demo.ui.jutils.LedViews;
+import jutils.demo.ui.jutils.MsgInputDemoView;
+import jutils.demo.ui.jutils.ScreenFormFieldView;
+import jutils.iris.demo.HistogramsDemoView;
 
 /*******************************************************************************
  * Defines a view to display all JUtils components.
@@ -32,7 +39,7 @@ public class JUtilsView implements IView<JComponent>
     private final TitleView choiceView;
 
     /**  */
-    private final HashMap<JUtilsComponent, Supplier<IView<?>>> compViews;
+    private final HashMap<JUtilsComponent, IViewCreator> compViews;
 
     /***************************************************************************
      * 
@@ -44,20 +51,39 @@ public class JUtilsView implements IView<JComponent>
             false, false );
         this.choiceView = new TitleView( "Nothing Selected", null );
 
-        compViews.put( JUtilsComponent.MESSAGE_INPUT_VIEW,
-            () -> new MsgInputDemoView() );
+        buildViewCreators( compViews );
 
         this.view = createView();
 
         choicesView.addSelectedListener(
             ( e ) -> handleSelction( e.getItem() ) );
 
-        choicesView.setData( new ArrayList<>( compViews.keySet() ) );
+        List<JUtilsComponent> views = new ArrayList<>( compViews.keySet() );
+        Collections.sort( views, ( this1, that1 ) -> {
+            return this1.name.compareTo( that1.name );
+        } );
+        choicesView.setData( views );
 
         if( compViews.size() != JUtilsComponent.values().length )
         {
             LogUtils.printError( "Not all component types accounted for." );
         }
+    }
+
+    /***************************************************************************
+     * @param views
+     **************************************************************************/
+    private static void buildViewCreators(
+        Map<JUtilsComponent, IViewCreator> views )
+    {
+        views.put( JUtilsComponent.MESSAGE_INPUT_VIEW,
+            () -> new MsgInputDemoView() );
+        views.put( JUtilsComponent.DATETIME_VIEWS, () -> new DateTimeViews() );
+        views.put( JUtilsComponent.SCREEN_FIELD_VIEW,
+            () -> new ScreenFormFieldView() );
+        views.put( JUtilsComponent.HISTOGRAMS_VIEW,
+            () -> new HistogramsDemoView() );
+        views.put( JUtilsComponent.LEDS_VIEW, () -> new LedViews() );
     }
 
     /***************************************************************************
@@ -72,7 +98,7 @@ public class JUtilsView implements IView<JComponent>
             return;
         }
 
-        Supplier<IView<?>> supplier = compViews.get( selection );
+        IViewCreator supplier = compViews.get( selection );
         IView<?> view = supplier == null ? null : supplier.get();
         Component comp = view == null ? null : view.getView();
 
@@ -125,7 +151,15 @@ public class JUtilsView implements IView<JComponent>
     private static enum JUtilsComponent implements INamedItem
     {
         /**  */
-        MESSAGE_INPUT_VIEW( "Message Input View" );
+        DATETIME_VIEWS( "Date/Time Views" ),
+        /**  */
+        SCREEN_FIELD_VIEW( "Screen Field View" ),
+        /**  */
+        MESSAGE_INPUT_VIEW( "Message Input View" ),
+        /**  */
+        HISTOGRAMS_VIEW( "Histograms View" ),
+        /**  */
+        LEDS_VIEW( "LEDs View" ),;
 
         /**  */
         private final String name;

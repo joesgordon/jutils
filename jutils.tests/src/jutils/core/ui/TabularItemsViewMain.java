@@ -20,13 +20,22 @@ import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.model.IView;
 
+/*******************************************************************************
+ * 
+ ******************************************************************************/
 public class TabularItemsViewMain
 {
+    /***************************************************************************
+     * @param args
+     **************************************************************************/
     public static void main( String [] args )
     {
         AppRunner.invokeLater( () -> createFrame() );
     }
 
+    /***************************************************************************
+     * @return
+     **************************************************************************/
     private static JFrame createFrame()
     {
         StandardFrameView frameView = new StandardFrameView();
@@ -41,6 +50,9 @@ public class TabularItemsViewMain
         return frame;
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private static final class TivTestView implements IView<JComponent>
     {
         /**  */
@@ -113,6 +125,9 @@ public class TabularItemsViewMain
             return new ActionAdapter( listener, "Replace Items", icon );
         }
 
+        /**
+         * @return
+         */
         private Action createClearAction()
         {
             ActionListener listener = ( e ) -> handleClearItems();
@@ -120,11 +135,17 @@ public class TabularItemsViewMain
             return new ActionAdapter( listener, "Clear Items", icon );
         }
 
+        /**
+         * 
+         */
         private void handleAddItem()
         {
             model.addItem( model.items.size() );
         }
 
+        /**
+         * 
+         */
         private void handleReplaceItems()
         {
             int size = model.items.size();
@@ -139,11 +160,17 @@ public class TabularItemsViewMain
             model.setItems( items );
         }
 
+        /**
+         * 
+         */
         private void handleClearItems()
         {
             model.setItems( new ArrayList<>() );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public JComponent getView()
         {
@@ -151,6 +178,9 @@ public class TabularItemsViewMain
         }
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private static final class IntegerItemsModel
         implements ITabularItemsModel<Integer>
     {
@@ -159,11 +189,17 @@ public class TabularItemsViewMain
         /**  */
         protected ITabularNotifier notifier;
 
+        /**
+         * 
+         */
         public IntegerItemsModel()
         {
             this.items = new ArrayList<>();
         }
 
+        /**
+         * @param item
+         */
         public void addItem( Integer item )
         {
             items.add( item );
@@ -175,6 +211,9 @@ public class TabularItemsViewMain
             }
         }
 
+        /**
+         * @param items
+         */
         public void setItems( List<Integer> items )
         {
             this.items.clear();
@@ -183,36 +222,54 @@ public class TabularItemsViewMain
             notifier.fireStructureChanged();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void registerNotifier( ITabularNotifier notifier )
         {
             this.notifier = notifier;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int getCount()
         {
             return items.size();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Integer getItem( int index )
         {
             return items.get( index );
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getItemName( Integer item, int index )
         {
             return "" + index;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int getPropertyCount()
         {
             return 1;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getPropertyName( int col )
         {
@@ -228,6 +285,9 @@ public class TabularItemsViewMain
             return null;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Class<?> getPropertyClass( int col )
         {
@@ -243,6 +303,9 @@ public class TabularItemsViewMain
             return null;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Object getProperty( Integer item, int row, int col )
         {
@@ -258,11 +321,17 @@ public class TabularItemsViewMain
             return null;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void setProperty( Object value, int row, int col )
         {
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean isPropertyEditable( Integer item, int row, int col )
         {

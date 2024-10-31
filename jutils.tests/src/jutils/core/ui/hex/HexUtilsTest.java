@@ -36,6 +36,49 @@ public class HexUtilsTest
      * 
      **************************************************************************/
     @Test
+    public void testByteToBinaryX10()
+    {
+        String str = NumberParsingUtils.toBinaryString( ( byte )0x10 );
+
+        Assert.assertEquals( "10000", str );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void testByteToPadBinaryX10()
+    {
+        String str = NumberParsingUtils.toLeadingBinaryString( ( byte )0x10 );
+
+        Assert.assertEquals( "00010000", str );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void testByteToBinaryX08()
+    {
+        String str = NumberParsingUtils.toBinaryString( ( byte )0x08 );
+
+        Assert.assertEquals( "1000", str );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Test
+    public void testByteToPadBinaryX08()
+    {
+        String str = NumberParsingUtils.toLeadingBinaryString( ( byte )0x08 );
+
+        Assert.assertEquals( "00001000", str );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
     public void testStuff()
     {
         int max = 10000000;

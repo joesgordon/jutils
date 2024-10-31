@@ -359,7 +359,7 @@ public interface IMatrix
     /***************************************************************************
      * @param value
      **************************************************************************/
-    private void fill( double value )
+    public default void fill( double value )
     {
         translate( ( d ) -> value );
     }

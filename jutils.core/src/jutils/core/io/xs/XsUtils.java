@@ -278,29 +278,47 @@ public final class XsUtils
             // LogUtils.printDebug( "Adding class " + cls.getName() );
             classes.add( cls );
 
-            for( Field f : cls.getDeclaredFields() )
+            addFields( cls, classes );
+
+            Class<?> parent = cls.getSuperclass();
+
+            if( parent != null && !Object.class.equals( parent ) )
             {
-                if( Modifier.isStatic( f.getModifiers() ) )
-                {
-                    continue;
-                }
-
-                Class<?> fieldClass = f.getType();
-
-                if( f.getGenericType() != null )
-                {
-                    Type genType = f.getGenericType();
-
-                    if( genType instanceof ParameterizedType )
-                    {
-                        ParameterizedType paramType = ( ParameterizedType )f.getGenericType();
-
-                        buildClasses( paramType, classes );
-                    }
-                }
-
-                buildClasses( fieldClass, classes );
+                buildClasses( parent, classes );
             }
+        }
+    }
+
+    /**
+     * @param cls
+     * @param classes
+     */
+    private static void addFields( Class<?> cls, List<Class<?>> classes )
+    {
+        for( Field f : cls.getDeclaredFields() )
+        {
+            int modifiers = f.getModifiers();
+            if( Modifier.isStatic( modifiers ) ||
+                Modifier.isTransient( modifiers ) )
+            {
+                continue;
+            }
+
+            Class<?> fieldClass = f.getType();
+
+            if( f.getGenericType() != null )
+            {
+                Type genType = f.getGenericType();
+
+                if( genType instanceof ParameterizedType )
+                {
+                    ParameterizedType paramType = ( ParameterizedType )f.getGenericType();
+
+                    buildClasses( paramType, classes );
+                }
+            }
+
+            buildClasses( fieldClass, classes );
         }
     }
 

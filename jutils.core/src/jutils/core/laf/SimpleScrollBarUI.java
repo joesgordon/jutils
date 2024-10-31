@@ -43,6 +43,7 @@ public class SimpleScrollBarUI extends BasicScrollBarUI
      * @param orientation the orientation
      * @return a decrease button
      */
+    @Override
     protected JButton createDecreaseButton( int orientation )
     {
         return new BasicArrowButton2( orientation,
@@ -57,6 +58,7 @@ public class SimpleScrollBarUI extends BasicScrollBarUI
      * @param orientation the orientation
      * @return an increase button
      */
+    @Override
     protected JButton createIncreaseButton( int orientation )
     {
         return new BasicArrowButton2( orientation,
@@ -69,7 +71,7 @@ public class SimpleScrollBarUI extends BasicScrollBarUI
     /**
      * 
      */
-    private class BasicArrowButton2 extends BasicArrowButton
+    private static class BasicArrowButton2 extends BasicArrowButton
     {
         /**  */
         private static final long serialVersionUID = 895998808619413255L;
@@ -121,6 +123,7 @@ public class SimpleScrollBarUI extends BasicScrollBarUI
          * {@code SwingConstants.EAST} or {@code SwingConstants.WEST}
          * @param isEnabled whether or not the arrow is drawn enabled
          */
+        @Override
         public void paintTriangle( Graphics g, int x, int y, int size,
             int direction, boolean isEnabled )
         {
@@ -230,6 +233,14 @@ public class SimpleScrollBarUI extends BasicScrollBarUI
             g.setColor( oldColor );
         }
 
+        /**
+         * @param g
+         * @param x
+         * @param y
+         * @param size
+         * @param direction
+         * @param isEnabled
+         */
         private void paintScaledTriangle( Graphics g, double x, double y,
             double size, int direction, boolean isEnabled )
         {

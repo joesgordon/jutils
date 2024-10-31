@@ -97,6 +97,7 @@ public class Matrix implements IMatrix
     /***************************************************************************
      * 
      **************************************************************************/
+    @Override
     public void transpose()
     {
         indexer.transpose();
