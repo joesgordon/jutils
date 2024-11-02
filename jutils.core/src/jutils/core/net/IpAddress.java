@@ -449,6 +449,10 @@ public class IpAddress
         {
             return false;
         }
+        else if( this == obj )
+        {
+            return true;
+        }
         else if( obj instanceof IpAddress )
         {
             IpAddress that = ( IpAddress )obj;
