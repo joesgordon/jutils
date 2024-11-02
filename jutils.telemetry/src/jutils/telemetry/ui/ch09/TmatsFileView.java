@@ -3,8 +3,9 @@ package jutils.telemetry.ui.ch09;
 import java.awt.Component;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
+import jutils.core.ui.StandardFormView;
+import jutils.core.ui.fields.FileFormField;
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.data.ch09.TmatsFile;
 
@@ -15,6 +16,8 @@ public class TmatsFileView implements IDataView<TmatsFile>
 {
     /**  */
     private final JComponent view;
+    /**  */
+    private final FileFormField fileField;
 
     /**  */
     private TmatsFile file;
@@ -24,9 +27,13 @@ public class TmatsFileView implements IDataView<TmatsFile>
      **************************************************************************/
     public TmatsFileView()
     {
+        this.fileField = new FileFormField( "File" );
+
         this.view = createView();
 
         setData( new TmatsFile() );
+
+        fileField.setEditable( false );
     }
 
     /***************************************************************************
@@ -34,9 +41,11 @@ public class TmatsFileView implements IDataView<TmatsFile>
      **************************************************************************/
     private JComponent createView()
     {
-        JPanel panel = new JPanel();
-        // TODO Auto-generated method stub
-        return panel;
+        StandardFormView form = new StandardFormView();
+
+        form.addField( fileField );
+
+        return form.getView();
     }
 
     /***************************************************************************

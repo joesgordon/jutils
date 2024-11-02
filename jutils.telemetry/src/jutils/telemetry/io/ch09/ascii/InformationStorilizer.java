@@ -27,8 +27,8 @@ public class InformationStorilizer implements IStorilizer<Information>
     {
         info.filename = store.getString( "FN" );
         info.revisionLevel = store.getString( "106" );
-        info.originationDate = store.getString( "OD" );
-        info.revisionNumber = store.getString( "RN" );
+        info.originationDate = store.getDate( "OD" );
+        info.revisionNumber = store.getInteger( "RN" );
         info.revisionDate = store.getString( "RD" );
         info.updateNumber = store.getString( "UN" );
         info.updateDate = store.getString( "UD" );

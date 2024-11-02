@@ -1,5 +1,6 @@
 package jutils.telemetry.io.ch09.ascii;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -77,6 +78,16 @@ public class AsciiStore implements ITierPrinter
         }
 
         return x;
+    }
+
+    /***************************************************************************
+     * @param key
+     * @return
+     **************************************************************************/
+    public LocalDate getDate( String key )
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /***************************************************************************

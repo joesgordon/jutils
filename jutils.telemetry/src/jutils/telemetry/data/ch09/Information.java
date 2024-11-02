@@ -1,10 +1,12 @@
 package jutils.telemetry.data.ch09;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.FieldPrinter.ITierPrinter;
+import jutils.core.time.TimeUtils;
 
 /*******************************************************************************
  * 
@@ -23,12 +25,12 @@ public class Information implements ITierPrinter
      * Date of origination of this mission configuration. Always allowed. Format
      * MM-DD-YYYY.
      */
-    public String originationDate;
+    public LocalDate originationDate;
     /**
      * Revision number associated with this mission configuration. Always
      * allowed. Range 0-9999.
      */
-    public String revisionNumber;
+    public Integer revisionNumber;
     /** Date of revision. Always allowed. Format MM-DD-YYYY. */
     public String revisionDate;
     /**
@@ -40,6 +42,7 @@ public class Information implements ITierPrinter
     public String updateDate;
     /** Test identification. Always allowed. Max 16 characters. */
     public String testNumber;
+
     /**  */
     public Integer pocCount;
     /**  */
@@ -52,8 +55,8 @@ public class Information implements ITierPrinter
     {
         this.filename = "";
         this.revisionLevel = "";
-        this.originationDate = "";
-        this.revisionNumber = "";
+        this.originationDate = null;
+        this.revisionNumber = null;
         this.revisionDate = "";
         this.updateNumber = "";
         this.updateDate = "";
@@ -70,7 +73,8 @@ public class Information implements ITierPrinter
     {
         printer.printField( "File Name", filename );
         printer.printField( "Revision Level", revisionLevel );
-        printer.printField( "Origination Date", originationDate );
+        printer.printField( "Origination Date",
+            originationDate.format( TimeUtils.buildDateDisplayFormat() ) );
         printer.printField( "Revision Number", revisionNumber );
         printer.printField( "Revision Date", revisionDate );
         printer.printField( "Update Number", updateNumber );

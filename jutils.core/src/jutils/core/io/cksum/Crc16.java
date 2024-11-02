@@ -430,7 +430,7 @@ public class Crc16 implements ITierPrinter
 
                 case MODBUS:
                     return new Crc16Config( 0x8005, 0xffff, true, true,
-                        0xffff );
+                        0x0000 );
             }
 
             throw new IllegalStateException( "Not implemented: " + name );

@@ -58,7 +58,7 @@ public class Crc16ConfigView implements IDataView<Crc16Config>
         reflectOutField.setUpdater( ( d ) -> this.config.reflectOut = d );
         xoroutField.setUpdater( ( d ) -> this.config.xorout = d );
 
-        setData( new Crc16Config() );
+        setData( Crc16Algorithm.CCITT_FALSE.getConfig() );
     }
 
     /***************************************************************************

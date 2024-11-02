@@ -50,6 +50,9 @@ public class TextHexView implements IDataView<byte []>
     /**  */
     private final UpdaterList<byte []> enterListeners;
 
+    /**  */
+    private IUpdater<byte []> updater;
+
     /***************************************************************************
      * 
      **************************************************************************/
@@ -61,6 +64,8 @@ public class TextHexView implements IDataView<byte []>
         this.hexField = new HexAreaFormField( "Message Bytes" );
         this.view = new TitleView( "Hexadecimal", createMainView() );
         this.enterListeners = new UpdaterList<>();
+        this.updater = ( d ) -> {
+        };
 
         setData( HexUtils.fromHexStringToArray( "EB91" ) );
 
@@ -71,6 +76,10 @@ public class TextHexView implements IDataView<byte []>
             ( e ) -> insertText( LF ), "Shift+Enter Listener", false );
         SwingUtils.addKeyListener( textField.getTextArea(), "control ENTER",
             ( e ) -> insertText( CR ), "Control+Enter Listener", false );
+
+        textField.setUpdater(
+            ( d ) -> handleUpdate( d.getBytes( HexAreaFormField.HEXSET ) ) );
+        hexField.setUpdater( ( d ) -> handleUpdate( d ) );
     }
 
     /***************************************************************************
@@ -150,6 +159,7 @@ public class TextHexView implements IDataView<byte []>
     {
         byte [] bytes = textField.getValue().getBytes(
             HexAreaFormField.HEXSET );
+
         hexField.setValue( bytes );
         msgView.setComponent( hexField.getView() );
 
@@ -167,6 +177,14 @@ public class TextHexView implements IDataView<byte []>
         msgView.setComponent( textField.getView() );
 
         return true;
+    }
+
+    /***************************************************************************
+     * @param bytes
+     **************************************************************************/
+    private void handleUpdate( byte [] bytes )
+    {
+        updater.update( bytes );
     }
 
     /***************************************************************************
@@ -232,6 +250,22 @@ public class TextHexView implements IDataView<byte []>
     {
         textField.setValue( new String( text, HexAreaFormField.HEXSET ) );
         hexField.setValue( text );
+    }
+
+    /***************************************************************************
+     * @param updater
+     **************************************************************************/
+    public void setUpdater( IUpdater<byte []> updater )
+    {
+        if( updater == null )
+        {
+            this.updater = ( d ) -> {
+            };
+        }
+        else
+        {
+            this.updater = updater;
+        }
     }
 
     /***************************************************************************

@@ -4,10 +4,12 @@ import java.awt.Component;
 
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import jutils.core.ui.ComponentView;
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.data.ch09.TmatsFile;
 
@@ -20,6 +22,8 @@ public class TmatsTreeView implements IDataView<TmatsFile>
     private final JSplitPane splitPane;
     /**  */
     private final JTree tree;
+    /**  */
+    private final ComponentView rightView;
 
     /**  */
     private DataNode<TmatsFile> root;
@@ -33,17 +37,24 @@ public class TmatsTreeView implements IDataView<TmatsFile>
     {
         this.root = TmatsTreeBuilder.buildTree( new TmatsFile() );
         this.tree = new JTree( new DefaultTreeModel( root ) );
+        this.rightView = new ComponentView();
         this.splitPane = new JSplitPane();
 
         tree.setRootVisible( true );
         tree.addTreeSelectionListener( ( e ) -> handleNodeSelected( e ) );
 
         splitPane.setLeftComponent( tree );
+        splitPane.setRightComponent( rightView.getView() );
+
+        tree.setBorder( new EmptyBorder( 3, 3, 3, 3 ) );
 
         this.tmats = root.data;
         // TODO Auto-generated constructor stub
     }
 
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
     private void handleNodeSelected( TreeSelectionEvent e )
     {
         TreePath path = e.getPath();
@@ -55,12 +66,15 @@ public class TmatsTreeView implements IDataView<TmatsFile>
 
             handleNodeSelected( node );
         }
-        // TODO Auto-generated method stub
     }
 
+    /***************************************************************************
+     * @param <F>
+     * @param node
+     **************************************************************************/
     private <F> void handleNodeSelected( DataNode<F> node )
     {
-        splitPane.setRightComponent( node.viewCreator.get().getView() );
+        rightView.setComponent( node.viewCreator.get().getView() );
     }
 
     /***************************************************************************
@@ -89,6 +103,8 @@ public class TmatsTreeView implements IDataView<TmatsFile>
     {
         this.tmats = data;
 
-        // TODO Auto-generated method stub
+        this.root = TmatsTreeBuilder.buildTree( new TmatsFile() );
+        tree.setModel( new DefaultTreeModel( root ) );
+        tree.setSelectionPath( new TreePath( root ) );
     }
 }

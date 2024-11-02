@@ -45,7 +45,7 @@ public class Crc16View implements IView<JComponent>
 
         valueField.setEditable( false );
 
-        messageView.addEnterListener( ( m ) -> calcCrc( m ) );
+        messageView.setUpdater( ( m ) -> calcCrc( m ) );
     }
 
     /***************************************************************************
