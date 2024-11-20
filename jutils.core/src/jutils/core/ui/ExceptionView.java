@@ -1,6 +1,8 @@
 package jutils.core.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;

@@ -2,7 +2,7 @@ package jutils.core.ui.net;
 
 import javax.swing.JComponent;
 
-import jutils.core.net.NetUtils.NicInfo;
+import jutils.core.net.NicInfo;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.fields.StringFormField;

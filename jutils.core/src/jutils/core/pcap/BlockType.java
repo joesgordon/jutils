@@ -1,6 +1,15 @@
 package jutils.core.pcap;
 
 import jutils.core.INamedValue;
+import jutils.core.pcap.blocks.CustomLocked;
+import jutils.core.pcap.blocks.CustomUnlocked;
+import jutils.core.pcap.blocks.DecryptionSecrets;
+import jutils.core.pcap.blocks.EnhancedPacket;
+import jutils.core.pcap.blocks.InterfaceDescription;
+import jutils.core.pcap.blocks.InterfaceStatistics;
+import jutils.core.pcap.blocks.NameResolution;
+import jutils.core.pcap.blocks.SectionHeader;
+import jutils.core.pcap.blocks.SimplePacket;
 
 /*******************************************************************************
  * Defines the types of blocks in a PCAP Next Generation file.

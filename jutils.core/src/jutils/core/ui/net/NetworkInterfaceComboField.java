@@ -1,17 +1,23 @@
 package jutils.core.ui.net;
 
 import java.awt.event.MouseEvent;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Enumeration;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 import jutils.core.IconConstants;
 import jutils.core.net.NetUtils;
-import jutils.core.net.NetUtils.NicInfo;
+import jutils.core.net.NicInfo;
 import jutils.core.ui.event.RightClickListener;
 import jutils.core.ui.event.updater.IUpdater;
-import jutils.core.ui.fields.*;
+import jutils.core.ui.fields.ComboFormField;
+import jutils.core.ui.fields.IDataFormField;
+import jutils.core.ui.fields.IDescriptor;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 
@@ -33,7 +39,7 @@ public class NetworkInterfaceComboField implements IDataFormField<String>
     public NetworkInterfaceComboField( String name )
     {
         this.descriptor = new NicInfoDescriptor();
-        this.nicField = new ComboFormField<>( name, NetUtils.buildNicList(),
+        this.nicField = new ComboFormField<>( name, NetUtils.listUpNicsAndAny(),
             descriptor );
 
         this.updater = new NicUpdater();
@@ -54,7 +60,7 @@ public class NetworkInterfaceComboField implements IDataFormField<String>
         JMenuItem item = new JMenuItem( "Refresh",
             IconConstants.getIcon( IconConstants.REFRESH_16 ) );
         item.addActionListener(
-            ( ae ) -> nicField.setValues( NetUtils.buildNicList() ) );
+            ( ae ) -> nicField.setValues( NetUtils.listUpNicsAndAny() ) );
         menu.add( item );
 
         menu.show( e.getComponent(), e.getX(), e.getY() );

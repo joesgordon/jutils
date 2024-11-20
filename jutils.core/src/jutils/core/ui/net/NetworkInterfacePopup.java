@@ -8,7 +8,7 @@ import javax.swing.JPopupMenu;
 
 import jutils.core.IconConstants;
 import jutils.core.net.NetUtils;
-import jutils.core.net.NetUtils.NicInfo;
+import jutils.core.net.NicInfo;
 import jutils.core.ui.event.RightClickListener;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IView;
@@ -77,7 +77,7 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
      **************************************************************************/
     private void buildNicMenu( boolean ipv4Only )
     {
-        List<NicInfo> nics = NetUtils.buildNicList();
+        List<NicInfo> nics = NetUtils.listUpNicsAndAny();
 
         nicMenu.removeAll();
 

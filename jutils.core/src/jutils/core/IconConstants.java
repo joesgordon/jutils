@@ -152,6 +152,12 @@ public final class IconConstants
     public final static String LAUNCH_16 = "launch16.png";
 
     /**  */
+    public final static String NIC_16 = "nic016.png";
+
+    /**  */
+    public final static String NIC_24 = "nic024.png";
+
+    /**  */
     public final static String NEW_FILE_16 = "newFile16.png";
 
     /**  */

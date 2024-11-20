@@ -1,9 +1,5 @@
 package jutils.core.io.parsers;
 
-import java.util.List;
-
-import jutils.core.NumberParsingUtils;
-import jutils.core.Utils;
 import jutils.core.ValidationException;
 import jutils.core.io.IParser;
 import jutils.core.net.IpAddress;
@@ -14,182 +10,61 @@ import jutils.core.net.IpAddress.IpVersion;
  ******************************************************************************/
 public class IpAddressParser implements IParser<IpAddress>
 {
+    /**  */
+    private final IpVersion version;
+    /**  */
+    private final Ip4AddressParser ip4Parser;
+    /**  */
+    private final Ip6AddressParser ip6Parser;
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public IpAddressParser()
+    {
+        this( null );
+    }
+
+    /***************************************************************************
+     * @param version
+     **************************************************************************/
+    public IpAddressParser( IpVersion version )
+    {
+        this.version = version;
+        this.ip4Parser = new Ip4AddressParser();
+        this.ip6Parser = new Ip6AddressParser();
+    }
+
     /***************************************************************************
      * 
      **************************************************************************/
     @Override
     public IpAddress parse( String str ) throws ValidationException
     {
-        if( str.contains( "." ) )
+        boolean canBeAny = version == null;
+        boolean canBe4 = canBeAny || version == IpVersion.IPV4;
+        boolean canBe6 = canBeAny || version == IpVersion.IPV6;
+
+        if( canBe4 && str.contains( "." ) )
         {
-            return parseIpv4( str );
+            return ip4Parser.parse( str );
         }
-        else if( str.contains( ":" ) )
+        else if( canBe6 && str.contains( ":" ) )
         {
-            return parseIpv6( str );
+            return ip6Parser.parse( str );
         }
 
-        throw new ValidationException(
-            "An IP address must contain a period or a colon" );
-    }
-
-    /***************************************************************************
-     * @param str
-     * @return
-     * @throws ValidationException
-     **************************************************************************/
-    private static IpAddress parseIpv4( String str ) throws ValidationException
-    {
-        IpAddress address = new IpAddress( IpVersion.IPV4 );
-        IntegerParser fieldParser = new IntegerParser( 0, 255 );
-        List<String> fields = Utils.splitSkip( str, false, '.' );
-
-        if( fields.size() > 4 )
+        if( canBeAny )
         {
             throw new ValidationException(
-                "Too many fields in an IP4 address: " + fields.size() );
+                "An IP address must contain either a period or a colon" );
         }
-        else if( fields.size() < 4 )
+        else if( canBe4 )
         {
             throw new ValidationException(
-                "Too few fields in an IP4 address: " + fields.size() );
+                "An IP address must contain a period" );
         }
 
-        for( int i = 0; i < fields.size(); i++ )
-        {
-            try
-            {
-                int num = fieldParser.parse( fields.get( i ) );
-
-                address.address[i] = ( byte )num;
-            }
-            catch( ValidationException ex )
-            {
-                throw new ValidationException(
-                    "Cannot parse octect " + ( i + 1 ) + ": " + ex.getMessage(),
-                    ex );
-            }
-        }
-
-        return address;
-    }
-
-    /***************************************************************************
-     * @param str
-     * @return
-     * @throws ValidationException
-     **************************************************************************/
-    private static IpAddress parseIpv6( String str ) throws ValidationException
-    {
-        IpAddress address = new IpAddress( IpVersion.IPV6 );
-        int [] values = new int[8];
-
-        int fieldIndex = 0;
-        int nibbleCnt = 0;
-
-        int colonCount = 0;
-        int doubleIndex = -1;
-        int doubleCharIdx = -1;
-
-        for( int i = 0; i < str.length(); i++ )
-        {
-            char c = str.charAt( i );
-            int v = -1;
-
-            switch( c )
-            {
-                case ':':
-                    colonCount++;
-                    if( colonCount == 2 )
-                    {
-                        if( doubleIndex > -1 )
-                        {
-                            String msg = String.format(
-                                "Double colons found at indexes %d and %d; only 1 allowed",
-                                doubleCharIdx - 1, i - 1 );
-                            throw new ValidationException( msg );
-                        }
-                        doubleIndex = fieldIndex;
-                        doubleCharIdx = i;
-                    }
-                    else
-                    {
-                        fieldIndex++;
-                    }
-                    nibbleCnt = 0;
-                    break;
-
-                default:
-                    try
-                    {
-                        v = NumberParsingUtils.digitFromHex( c );
-                        nibbleCnt++;
-                        colonCount = 0;
-                    }
-                    catch( NumberFormatException ex )
-                    {
-                        String msg = String.format(
-                            "Unable to parse IPv6 from string at index %d: %s; %s",
-                            i, str, ex.getMessage() );
-                        throw new ValidationException( msg );
-                    }
-            }
-
-            if( fieldIndex >= values.length )
-            {
-                String msg = String.format(
-                    "Invalid address after index %d: %s", i, str );
-                throw new ValidationException( msg );
-            }
-
-            if( colonCount > 2 )
-            {
-                String msg = String.format( "Invalid colon at index %d: %s", i,
-                    str );
-                throw new ValidationException( msg );
-            }
-
-            if( nibbleCnt > 4 )
-            {
-                String msg = String.format( "Invalid character at index %d: %s",
-                    i, str );
-                throw new ValidationException( msg );
-            }
-
-            if( v > -1 )
-            {
-                values[fieldIndex] = ( values[fieldIndex] << 4 ) | ( 0xF & v );
-            }
-        }
-
-        // shift values from double colon right and assign
-
-        if( doubleIndex > -1 )
-        {
-            int count = fieldIndex - doubleIndex + 1;
-            for( int i = 0; i < count; i++ )
-            {
-                int di = 7 - i;
-                int si = doubleIndex + i;
-
-                values[di] = values[si];
-            }
-
-            count = ( 7 - doubleIndex + 1 ) - count;
-            for( int i = doubleIndex; i < count; i++ )
-            {
-                values[i] = 0;
-            }
-        }
-
-        byte [] bytes = new byte[values.length * 2];
-        for( int i = 0; i < values.length; i++ )
-        {
-            bytes[2 * i] = ( byte )( ( values[i] >> 8 ) & 0xFF );
-            bytes[2 * i + 1] = ( byte )( values[i] & 0xFF );
-        }
-        address.set( bytes );
-
-        return address;
+        throw new ValidationException( "An IP address must contain a colon" );
     }
 }

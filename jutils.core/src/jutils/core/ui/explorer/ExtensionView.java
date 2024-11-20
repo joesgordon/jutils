@@ -6,8 +6,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import jutils.core.IconConstants;
-import jutils.core.ui.*;
+import jutils.core.ui.ListView;
 import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.StandardFormView;
+import jutils.core.ui.TitleView;
 import jutils.core.ui.explorer.data.ExtensionConfig;
 import jutils.core.ui.fields.StringFormField;
 import jutils.core.ui.model.IDataView;

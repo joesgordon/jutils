@@ -1,6 +1,8 @@
 package jutils.core.ui;
 
-import javax.swing.text.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Segment;
 
 /*******************************************************************************
  *

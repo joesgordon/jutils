@@ -27,6 +27,9 @@ public class IpAddress
     /**  */
     public static final int IPV4_LOOPBACK = 0x7F000001;
     /**  */
+    public static final byte [] IPV6_ANY = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0 };
+    /**  */
     public static final byte [] IPV6_LOOPBACK = new byte[] { 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
     /**  */
@@ -173,7 +176,27 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @return
+     * Returns {@code true} if the address is the ANY address; {@code false}
+     * otherwise.
+     * @return if this address is the ANY address.
+     **************************************************************************/
+    public boolean isAny()
+    {
+        switch( version )
+        {
+            case IPV4:
+                return 0 == getValue();
+
+            case IPV6:
+                return Arrays.equals( IPV6_ANY, address );
+        }
+        return false;
+    }
+
+    /***************************************************************************
+     * Returns {@code true} if the address is a loopback address; {@code false}
+     * otherwise.
+     * @return if this address is a loopback address.
      **************************************************************************/
     public boolean isLoopback()
     {
@@ -190,6 +213,11 @@ public class IpAddress
         }
     }
 
+    /***************************************************************************
+     * Returns {@code true} if the address is a multicast address; {@code false}
+     * otherwise.
+     * @return if this address is a multicast address.
+     **************************************************************************/
     public boolean isMulticast()
     {
         switch( version )
@@ -225,6 +253,16 @@ public class IpAddress
             throw new IllegalStateException(
                 "Programming error as length has already been checked", ex );
         }
+    }
+
+    /***************************************************************************
+     * Returns the octet at the provided index.
+     * @param index the 0-relative index of the octet to be returned.
+     * @return the unsigned integer representation of the octet.
+     **************************************************************************/
+    public int getOctet( int index )
+    {
+        return Byte.toUnsignedInt( address[index] );
     }
 
     /***************************************************************************

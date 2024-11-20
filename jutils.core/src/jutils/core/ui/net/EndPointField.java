@@ -21,9 +21,9 @@ import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 import jutils.core.utils.IGetter;
 
-/***************************************************************************
+/*******************************************************************************
  *
- **************************************************************************/
+ ******************************************************************************/
 public class EndPointField implements IDataFormField<EndPoint>
 {
     /**  */
@@ -48,11 +48,11 @@ public class EndPointField implements IDataFormField<EndPoint>
         this( name, parser, null );
     }
 
-    /**
+    /***************************************************************************
      * @param name
      * @param parser
      * @param presetBuilder
-     */
+     **************************************************************************/
     public EndPointField( String name, IParser<EndPoint> parser,
         IGetter<List<IpAddress>> presetBuilder )
     {
@@ -101,6 +101,9 @@ public class EndPointField implements IDataFormField<EndPoint>
         menu.show( getView(), point.x, point.y );
     }
 
+    /***************************************************************************
+     * @param ip
+     **************************************************************************/
     private void handlePreset( IpAddress ip )
     {
         EndPoint ep = getValue();

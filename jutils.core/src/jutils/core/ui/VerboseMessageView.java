@@ -1,9 +1,17 @@
 package jutils.core.ui;
 
-import java.awt.*;
+import java.awt.Component;
 import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import jutils.core.laf.UIProperty;
 import jutils.core.ui.app.AppRunner;

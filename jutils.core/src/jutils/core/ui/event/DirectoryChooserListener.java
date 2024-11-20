@@ -9,7 +9,10 @@ import java.io.File;
 import jutils.core.SwingUtils;
 import jutils.core.io.IOUtils;
 import jutils.core.ui.DirectoryChooser;
-import jutils.core.ui.event.FileChooserListener.*;
+import jutils.core.ui.event.FileChooserListener.IFileSelected;
+import jutils.core.ui.event.FileChooserListener.IFilesSelected;
+import jutils.core.ui.event.FileChooserListener.ILastFile;
+import jutils.core.ui.event.FileChooserListener.ILastFiles;
 
 /*******************************************************************************
  * Generic {@link ActionListener} for prompting a user for a directory.

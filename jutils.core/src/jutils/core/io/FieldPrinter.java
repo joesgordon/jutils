@@ -146,6 +146,15 @@ public class FieldPrinter
      * @param name
      * @param value
      **************************************************************************/
+    public void printField( String name, Object value )
+    {
+        printField( name, value == null ? "null" : value.toString() );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
     public void printFieldAsString( String name, Object value )
     {
         printField( name, value.toString() );
@@ -463,9 +472,16 @@ public class FieldPrinter
     public void printFieldValues( String name, int itemsPerLine,
         byte... values )
     {
-        Iterable<Byte> array = Iterables.buildIteratable( values );
-        printIterableField( name, array, values.length, itemsPerLine, " ",
-            ( t ) -> HexUtils.getHexString( t ) );
+        if( values != null )
+        {
+            Iterable<Byte> array = Iterables.buildIteratable( values );
+            printIterableField( name, array, values.length, itemsPerLine, " ",
+                ( t ) -> HexUtils.getHexString( t ) );
+        }
+        else
+        {
+            printField( name, "null" );
+        }
     }
 
     /***************************************************************************

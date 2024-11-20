@@ -3,7 +3,7 @@ package jutils.core.ui.net;
 import java.awt.Point;
 
 import jutils.core.net.IpAddress;
-import jutils.core.net.NetUtils.NicInfo;
+import jutils.core.net.NicInfo;
 
 /*******************************************************************************
  * 

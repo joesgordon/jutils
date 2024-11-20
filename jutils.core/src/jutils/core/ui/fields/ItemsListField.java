@@ -1,16 +1,25 @@
 package jutils.core.ui.fields;
 
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.event.updater.ListUpdater;
 import jutils.core.ui.model.CollectionListModel;
 import jutils.core.ui.model.LabelListCellRenderer;
 import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
-import jutils.core.ui.validation.*;
+import jutils.core.ui.validation.IValidityChangedListener;
+import jutils.core.ui.validation.Validity;
+import jutils.core.ui.validation.ValidityListenerList;
 
 /*******************************************************************************
  * 

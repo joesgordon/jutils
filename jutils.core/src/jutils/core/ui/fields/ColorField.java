@@ -7,7 +7,9 @@ import javax.swing.JColorChooser;
 
 import jutils.core.ui.ColorIcon;
 import jutils.core.ui.event.updater.IUpdater;
-import jutils.core.ui.validation.*;
+import jutils.core.ui.validation.IValidityChangedListener;
+import jutils.core.ui.validation.Validity;
+import jutils.core.ui.validation.ValidityListenerList;
 
 /*******************************************************************************
  * 

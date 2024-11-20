@@ -54,7 +54,32 @@ public final class NetUtils
     /***************************************************************************
      * @return
      **************************************************************************/
-    public static List<NicInfo> buildNicList()
+    public static List<NetworkInterface> listAllNics()
+    {
+        List<NetworkInterface> nics = new ArrayList<>();
+        Enumeration<NetworkInterface> nets;
+
+        try
+        {
+            nets = NetworkInterface.getNetworkInterfaces();
+
+            for( NetworkInterface nic : Collections.list( nets ) )
+            {
+                nics.add( nic );
+            }
+        }
+        catch( SocketException ex )
+        {
+            throw new RuntimeException( ex.getMessage(), ex );
+        }
+
+        return nics;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static List<NicInfo> listUpNicsAndAny()
     {
         List<NicInfo> nics = new ArrayList<>();
         Enumeration<NetworkInterface> nets;
@@ -93,7 +118,7 @@ public final class NetUtils
     public static NicInfo lookupInfo( String nicString )
     {
         NicInfo info = null;
-        List<NicInfo> nics = buildNicList();
+        List<NicInfo> nics = listUpNicsAndAny();
         NicInfo any = getAnyInfo();
 
         if( nicString == null )
@@ -215,7 +240,7 @@ public final class NetUtils
     public static InetAddress lookupNetAddress( String nicString )
     {
         InetAddress address = null;
-        List<NicInfo> nics = buildNicList();
+        List<NicInfo> nics = listUpNicsAndAny();
 
         if( nicString == null )
         {
@@ -422,61 +447,5 @@ public final class NetUtils
         NicInfo info = lookupInfo( "google.com" );
 
         LogUtils.printDebug( "Info: %s", info );
-    }
-
-    /***************************************************************************
-     *
-     **************************************************************************/
-    public static class NicInfo
-    {
-        /**  */
-        public final NetworkInterface nic;
-        /**  */
-        public final InetAddress address;
-
-        /**  */
-        public final String name;
-        /**  */
-        public final String addressString;
-        /**  */
-        public final boolean isIpv4;
-
-        /**
-         * @param nic {@code null} indicates Any.
-         * @param address the address of the provided NIC may not be null.
-         */
-        public NicInfo( NetworkInterface nic, InetAddress address )
-        {
-            this.nic = nic;
-            this.name = nic != null ? nic.getDisplayName() : "Any";
-            this.address = address;
-            this.addressString = address.getHostAddress();
-            this.isIpv4 = address instanceof Inet4Address;
-        }
-
-        @Override
-        public String toString()
-        {
-            return name + "|" + addressString;
-        }
-
-        /**
-         * @return
-         */
-        public static NicInfo createAny()
-        {
-            try
-            {
-                byte [] bytes = new byte[] { 0, 0, 0, 0 };
-                InetAddress address = InetAddress.getByAddress( bytes );
-
-                return new NicInfo( null, address );
-            }
-            catch( UnknownHostException ex )
-            {
-                throw new RuntimeException(
-                    "0.0.0.0 was identified as a bad address" );
-            }
-        }
     }
 }

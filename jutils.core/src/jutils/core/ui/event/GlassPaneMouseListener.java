@@ -1,6 +1,8 @@
 package jutils.core.ui.event;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Vector;

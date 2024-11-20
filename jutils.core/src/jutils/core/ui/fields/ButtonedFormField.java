@@ -1,8 +1,12 @@
 package jutils.core.ui.fields;
 
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.validation.IValidityChangedListener;

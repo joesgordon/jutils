@@ -1,6 +1,8 @@
 package jutils.core.ui.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ListModel;

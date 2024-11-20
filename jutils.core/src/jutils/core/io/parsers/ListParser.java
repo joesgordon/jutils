@@ -1,6 +1,8 @@
 package jutils.core.io.parsers;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import jutils.core.Utils;
 import jutils.core.ValidationException;
