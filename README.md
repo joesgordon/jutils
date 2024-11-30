@@ -29,6 +29,7 @@ JUtils comes with no warranty of correctness though it totally is.
 | [Platform](./docs/platform.md) | Provides an library for platform specific functions including Serial UART. |
 | [Plot](./docs/plot.md) | Creates scatter plots. |
 | [Summer](./docs/summer.md) | Generates/validates checksums. |
+| [Telemetry](./docs/telemetry.md) | Displays telemetry files and parameters. |
 
 ## Supporting Projects
 
