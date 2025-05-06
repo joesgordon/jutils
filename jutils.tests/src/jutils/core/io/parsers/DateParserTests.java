@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import jutils.core.ValidationException;
+import jutils.core.time.TimeUtils;
 
 /*******************************************************************************
  * 
@@ -18,22 +19,18 @@ public class DateParserTests
     @Test
     public void test_Empty()
     {
-        LocalDate expected = LocalDate.of( 2018, 4, 27 );
         String str = "";
 
-        testParser( expected, str );
-    }
+        DateParser parser = new DateParser();
 
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    @Test
-    public void test_DayOnly()
-    {
-        LocalDate expected = LocalDate.of( 2018, 4, 27 );
-        String str = "" + expected.getDayOfMonth();
-
-        testParser( expected, str );
+        try
+        {
+            parser.parse( str );
+            Assert.fail( "Should not parse an empty string" );
+        }
+        catch( ValidationException ex )
+        {
+        }
     }
 
     /***************************************************************************
@@ -42,7 +39,8 @@ public class DateParserTests
     @Test
     public void test_DayMonth()
     {
-        LocalDate expected = LocalDate.of( 2018, 4, 27 );
+        LocalDate now = TimeUtils.utcDateNow();
+        LocalDate expected = LocalDate.of( now.getYear(), 4, 27 );
         String str = String.format( "%d/%d", expected.getMonthValue(),
             expected.getDayOfMonth() );
 
@@ -53,7 +51,7 @@ public class DateParserTests
      * 
      **************************************************************************/
     @Test
-    public void test_DayMonthYear()
+    public void test_YearMonthDay()
     {
         LocalDate expected = LocalDate.of( 2018, 4, 27 );
         String str = String.format( "%d/%d/%d", expected.getYear(),
@@ -72,7 +70,7 @@ public class DateParserTests
 
         try
         {
-            LocalDate actual = parser.parse( str, expected );
+            LocalDate actual = parser.parse( str );
             Assert.assertEquals( expected, actual );
         }
         catch( ValidationException ex )

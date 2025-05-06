@@ -3,17 +3,38 @@
 [Home](./README.md)
 
 - [jutils.core](#jutilscore)
+- [jutils.filespy](#jutilsfilespy)
+- [jutils.hexedit](#jutilshexedit)
 - [jutils.iris](#jutilsiris)
 - [jutils.math](#jutilsmath)
 - [jutils.multicon](#jutilsmulticon)
-- [jutils.filespy](#jutilsfilespy)
+- [jutils.platform](#jutilsplatform)
 - [jutils.telemetry](#jutilstelemetry)
 
 ## jutils.core
 
-- Add time chooser that uses Chronos
+- Add Checksum App
+- Add date/time chooser
+  - App/Name: Chronos, Kitsune, Momentie
+  - Create and apply Icon
+  - Add fields:
+    - `Year` / `Month` / `Day of Month`
+    - `Hour` / `Minute` / `Second` / `Microsecond`
+    - `Day Of Year` / `Seconds into Day`
+    - `Days into Year`
+    - `Week of Year` / `Day of Week`
+    - `Hours into Day`
+    - `Seconds into Week`
+    - `Seconds into Year`
+    - `GPS Week` / `GPS Time`
+    - `Microsoft Filetime`
+    - `Julian Date/Time`
+    - `Sidereal Time`
+  - Add Calendar view to right of fields.
+  - Add ability to edit GPS Leap Seconds.
+  - Add ability to change time zone.
 - Add cyclic buffer to NetMsgsView.
-- Add focus listeners to form fields
+- Add focus listeners to form fields.
 - Write 
   - `fieldHasFocus(field:IFormField):boolean` and 
   - `hasFocus(comp:JComponent):boolean` using `JFrame.getFocusOwner()` and 
@@ -41,6 +62,17 @@
 - Add generic embedded resource that can be extracted.
 - Add Matlab mat file reader/writer.
 - Add hdf5 reader/writer.
+- Replace Icons in jutils with custom icons.
+- ColorMapView fix legend.
+
+[Top](#jutils-to-do-list)
+
+## jutils.fileSpy
+
+- Add binary file detection. Skip binary files according to the users selction to be added to search parameters. Show non-printable characters around matches as spaces.
+- Capture only a few characters around a match up to the end of the line. Allow the user to edit this value in preferences. Set default to 1024 characters. Consider grabbing multiple lines up to the maximum amount.
+- Add the ability to save results to markdown or html
+- Add dropdown to patterns and directory.
 
 [Top](#jutils-to-do-list)
 
@@ -112,17 +144,17 @@
 
 [Top](#jutils-to-do-list)
 
-## jutils.fileSpy
-
-- Add binary file detection. Skip binary files according to the users selction to be added to search parameters. Show non-printable characters around matches as spaces.
-- Capture only a few characters around a match up to the end of the line. Allow the user to edit this value in preferences. Set default to 1024 characters. Consider grabbing multiple lines up to the maximum amount.
-- Add the ability to save results to markdown or html
-
-[Top](#jutils-to-do-list)
-
 ## jutils.platform
 
 - Add Linux platform or fail gracefully if not there. Add `isSupported()` function.
+
+[Top](#jutils-to-do-list)
+
+## jutils.plot
+
+- Log axes
+
+[Top](#jutils-to-do-list)
 
 ## jutils.telemetry
 

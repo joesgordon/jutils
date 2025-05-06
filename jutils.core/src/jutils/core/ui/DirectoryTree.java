@@ -756,8 +756,26 @@ public class DirectoryTree implements IView<JTree>
          */
         public FileData( File file )
         {
-            this.icon = DirectoryTree.FILE_SYSTEM.getSystemIcon( file );
-            this.name = DirectoryTree.FILE_SYSTEM.getSystemDisplayName( file );
+            Icon icon = null;
+            String name = "{null}";
+
+            if( file != null )
+            {
+                try
+                {
+                    icon = DirectoryTree.FILE_SYSTEM.getSystemIcon( file );
+                }
+                catch( NullPointerException ex )
+                {
+                    LogUtils.printWarning( "Unable to get icon for file %s",
+                        file.getAbsoluteFile() );
+                    icon = null;
+                }
+                name = DirectoryTree.FILE_SYSTEM.getSystemDisplayName( file );
+            }
+
+            this.icon = icon;
+            this.name = name;
         }
     }
 

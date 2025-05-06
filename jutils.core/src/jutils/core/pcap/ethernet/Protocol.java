@@ -43,6 +43,9 @@ public enum Protocol implements INamedValue
         return name;
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public int getValue()
     {

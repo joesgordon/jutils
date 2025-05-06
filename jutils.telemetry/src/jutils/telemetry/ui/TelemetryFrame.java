@@ -25,9 +25,9 @@ import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.model.IView;
 import jutils.telemetry.TelemetryIcons;
 import jutils.telemetry.TelemetryOptions;
-import jutils.telemetry.data.ch10.Ch10File;
-import jutils.telemetry.io.ch10.Ch10FileReader;
-import jutils.telemetry.ui.ch10.Ch10View;
+import jutils.telemetry.ch10.Ch10File;
+import jutils.telemetry.ch10.io.Ch10FileReader;
+import jutils.telemetry.ch10.ui.Ch10View;
 
 /*******************************************************************************
  * 

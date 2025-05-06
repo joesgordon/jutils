@@ -1,5 +1,6 @@
 package jutils.core.time;
 
+import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,6 +8,9 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 
 import jutils.core.INamedItem;
+import jutils.core.ValidationException;
+import jutils.core.io.IDataSerializer;
+import jutils.core.io.IDataStream;
 
 /*******************************************************************************
  * Defines an instant in time with the year and nanoseconds into the year. The
@@ -271,6 +275,38 @@ public class YearNanos
         {
             // TODO Auto-generated method stub
             return null;
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public class YearNanosSerializer implements IDataSerializer<YearNanos>
+    {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public YearNanos read( IDataStream stream )
+            throws IOException, ValidationException
+        {
+            YearNanos time = new YearNanos();
+
+            time.year = stream.readShort();
+            time.nanos = stream.readLong();
+
+            return time;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void write( YearNanos time, IDataStream stream )
+            throws IOException
+        {
+            stream.writeShort( time.year );
+            stream.writeLong( time.nanos );
         }
     }
 }
