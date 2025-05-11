@@ -15,39 +15,69 @@ import java.time.temporal.ChronoUnit;
 public final class TimeUtils
 {
     /**  */
-    public static final long MINUTES_IN_DAY = 60 * 24;
-    /**  */
-    public static final long SECONDS_IN_DAY = 60 * MINUTES_IN_DAY;
-
-    /**  */
-    public static final long NANOS_IN_SEC = 1000L * 1000L * 1000L;
-    /** The number of nanoseconds in a day. */
-    public static final long NANOS_PER_DAY = NANOS_IN_SEC * 60 * 60 * 24;
-
-    /**  */
-    public static final long MILLIS_IN_MIN = 1000 * 60;
-    /**  */
-    public static final long MILLIS_IN_HOUR = 60 * MILLIS_IN_MIN;
-    /**  */
-    public static final long MILLIS_IN_DAY = 24 * MILLIS_IN_HOUR;
-    /**  */
-    public static final long MILLIS_IN_WEEK = 7 * MILLIS_IN_DAY;
-
-    /**  */
-    public static final long MICROS_IN_DAY = 1000 * MILLIS_IN_DAY;
-
-    /**  */
     public static final long MAX_DAYS_IN_YEAR = 366;
     /**  */
-    public static final long MAX_HOURS_IN_YEAR = MAX_DAYS_IN_YEAR * 24;
+    public static final long DAYS_IN_WEEK = 7;
+
+    /**  */
+    public static final long HOURS_IN_DAY = 24;
+    /**  */
+    public static final long MAX_HOURS_IN_YEAR = HOURS_IN_DAY *
+        MAX_DAYS_IN_YEAR;
+
+    /**  */
+    public static final long MINUTES_IN_HOUR = 60;
+    /**  */
+    public static final long MINUTES_IN_DAY = MINUTES_IN_HOUR * HOURS_IN_DAY;
     /**  */
     public static final long MAX_MIN_IN_YEAR = MAX_HOURS_IN_YEAR * 60;
+
+    /**  */
+    public static final long SECONDS_IN_MINUTE = 60;
+    /**  */
+    public static final long SECONDS_IN_DAY = SECONDS_IN_MINUTE *
+        MINUTES_IN_DAY;
     /**  */
     public static final long MAX_SECONDS_IN_YEAR = MAX_MIN_IN_YEAR * 60;
+
+    /**  */
+    public static final long MILLIS_IN_SEC = 1000;
+    /**  */
+    public static final long MILLIS_IN_MIN = MILLIS_IN_SEC * SECONDS_IN_MINUTE;
+    /**  */
+    public static final long MILLIS_IN_HOUR = MILLIS_IN_MIN * MINUTES_IN_HOUR;
+    /**  */
+    public static final long MILLIS_IN_DAY = MILLIS_IN_HOUR * HOURS_IN_DAY;
+    /**  */
+    public static final long MILLIS_IN_WEEK = MILLIS_IN_DAY * DAYS_IN_WEEK;
     /**  */
     public static final long MAX_MILLIS_IN_YEAR = MAX_SECONDS_IN_YEAR * 1000;
+
     /**  */
-    public static final long MAX_MICROS_IN_YEAR = MAX_MILLIS_IN_YEAR * 1000;
+    public static final long MICROS_IN_MILLI = 1000L;
+    /**  */
+    public static final long MICROS_IN_SEC = MICROS_IN_MILLI * MILLIS_IN_SEC;
+    /**  */
+    public static final long MICROS_IN_MIN = MILLIS_IN_SEC * SECONDS_IN_MINUTE;
+    /**  */
+    public static final long MICROS_IN_HOUR = MILLIS_IN_MIN * MINUTES_IN_HOUR;
+    /**  */
+    public static final long MICROS_IN_DAY = MICROS_IN_HOUR * HOURS_IN_DAY;
+    /**  */
+    public static final long MAX_MICROS_IN_YEAR = MICROS_IN_DAY *
+        MAX_DAYS_IN_YEAR;
+
+    /**   */
+    public static final long NANOS_IN_MICRO = 1000L;
+    /**   */
+    public static final long NANOS_IN_MILLI = NANOS_IN_MICRO * MICROS_IN_MILLI;
+    /**  */
+    public static final long NANOS_IN_SEC = NANOS_IN_MILLI * MILLIS_IN_SEC;
+    /** The number of nanoseconds in a day. */
+    public static final long NANOS_PER_DAY = NANOS_IN_SEC * SECONDS_IN_DAY;
+    /** The maximum number of nanoseconds in a year (366 days). */
+    public static final long MAX_NANOS_PER_YEAR = NANOS_PER_DAY *
+        MAX_DAYS_IN_YEAR;
 
     /**  */
     public static final String DATE_FMT = "yyyy-MM-dd";

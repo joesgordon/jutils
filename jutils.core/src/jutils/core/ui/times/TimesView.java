@@ -48,13 +48,13 @@ public class TimesView implements IDataView<TimesUnion>
 
     // TODO Add GPS Week
 
+    // TODO Add GPS time
+
     // TODO Add Day of Week
 
     // TODO Add Week of Year
 
     // TODO Add Year/Day of Year/Seconds into Day
-
-    // TODO Add GPS time
 
     // TODO Add Julian time
 
