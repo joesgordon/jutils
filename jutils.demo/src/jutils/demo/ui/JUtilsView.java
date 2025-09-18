@@ -21,6 +21,7 @@ import jutils.core.ui.ListView.IItemListModel;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
 import jutils.demo.ui.jutils.DateTimeViews;
+import jutils.demo.ui.jutils.ImageFileView;
 import jutils.demo.ui.jutils.LedViews;
 import jutils.demo.ui.jutils.MsgInputDemoView;
 import jutils.demo.ui.jutils.ScreenFormFieldView;
@@ -84,6 +85,7 @@ public class JUtilsView implements IView<JComponent>
         views.put( JUtilsComponent.HISTOGRAMS_VIEW,
             () -> new HistogramsDemoView() );
         views.put( JUtilsComponent.LEDS_VIEW, () -> new LedViews() );
+        views.put( JUtilsComponent.IMAGE_VIEW, () -> new ImageFileView() );
     }
 
     /***************************************************************************
@@ -158,6 +160,8 @@ public class JUtilsView implements IView<JComponent>
         MESSAGE_INPUT_VIEW( "Message Input View" ),
         /**  */
         HISTOGRAMS_VIEW( "Histograms View" ),
+        /**  */
+        IMAGE_VIEW( "Image View" ),
         /**  */
         LEDS_VIEW( "LEDs View" ),;
 

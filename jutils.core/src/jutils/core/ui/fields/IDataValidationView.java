@@ -6,6 +6,6 @@ import jutils.core.ui.validation.IValidationField;
 /*******************************************************************************
  * @param <T>
  ******************************************************************************/
-public interface IDataValidationField<T> extends IDataView<T>, IValidationField
+public interface IDataValidationView<T> extends IDataView<T>, IValidationField
 {
 }

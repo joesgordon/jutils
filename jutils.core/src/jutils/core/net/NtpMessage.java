@@ -145,19 +145,21 @@ public class NtpMessage
 
         LogUtils.printInfo( "Request: %s", request );
 
-        UdpInputs inputs = new UdpInputs();
+        UdpConfig inputs = new UdpConfig();
 
         inputs.broadcast = false;
         inputs.localPort = 0;
         inputs.loopback = false;
         inputs.multicast.isUsed = false;
         inputs.nic = local.toString();
-        inputs.remoteAddress.set( ntpServer );
-        inputs.remotePort = 123;
         inputs.timeout = 5000;
         inputs.ttl = 1;
 
-        try( UdpConnection socket = new UdpConnection( inputs ) )
+        EndPoint remote = new EndPoint();
+
+        remote.set( ntpServer, 5000 );
+
+        try( UdpConnection socket = new UdpConnection( inputs, remote ) )
         {
             try( ByteArrayStream bs = new ByteArrayStream( 1024 );
                  DataStream s = new DataStream( bs, ByteOrdering.BIG_ENDIAN ) )
@@ -190,8 +192,7 @@ public class NtpMessage
                 }
                 else
                 {
-                    LogUtils.printWarning( "No Response from %s",
-                        inputs.remoteAddress );
+                    LogUtils.printWarning( "No Response from %s", remote );
                 }
             }
         }

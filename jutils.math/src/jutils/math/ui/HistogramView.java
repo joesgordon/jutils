@@ -17,6 +17,7 @@ import jutils.core.ui.event.MouseEventsListener;
 import jutils.core.ui.event.MouseEventsListener.MouseEventType;
 import jutils.core.ui.model.IView;
 import jutils.math.Histogram;
+import jutils.math.Histogram.HistogramCalc;
 
 /*******************************************************************************
  * 
@@ -33,6 +34,7 @@ public class HistogramView implements IView<JComponent>
     private Histogram histogram;
     /**  */
     private Point hoverPoint;
+
     /**  */
     private int hoverStart;
     /**  */
@@ -45,8 +47,10 @@ public class HistogramView implements IView<JComponent>
      **************************************************************************/
     public HistogramView()
     {
+        HistogramCalc calc = new HistogramCalc( 11, 2, 12 );
+
         this.view = new PaintingComponent( ( c, g ) -> paintHistogram( c, g ) );
-        this.histogram = new Histogram( "Dice Values", 13, 12 );
+        this.histogram = calc.histogram;
         this.hoverLabel = new JLabel();
 
         this.hoverPoint = null;
@@ -60,49 +64,49 @@ public class HistogramView implements IView<JComponent>
         hoverLabel.setOpaque( true );
         hoverLabel.setBackground( UIProperty.PANEL_BACKGROUND.getColor() );
 
-        histogram.addValue( 2 );
+        calc.addValue( 2 );
 
-        histogram.addValue( 3 );
-        histogram.addValue( 3 );
-        histogram.addValue( 11 );
-        histogram.addValue( 11 );
+        calc.addValue( 3 );
+        calc.addValue( 3 );
+        calc.addValue( 11 );
+        calc.addValue( 11 );
 
-        histogram.addValue( 4 );
-        histogram.addValue( 4 );
-        histogram.addValue( 4 );
-        histogram.addValue( 10 );
-        histogram.addValue( 10 );
-        histogram.addValue( 10 );
+        calc.addValue( 4 );
+        calc.addValue( 4 );
+        calc.addValue( 4 );
+        calc.addValue( 10 );
+        calc.addValue( 10 );
+        calc.addValue( 10 );
 
-        histogram.addValue( 5 );
-        histogram.addValue( 5 );
-        histogram.addValue( 5 );
-        histogram.addValue( 5 );
-        histogram.addValue( 9 );
-        histogram.addValue( 9 );
-        histogram.addValue( 9 );
-        histogram.addValue( 9 );
+        calc.addValue( 5 );
+        calc.addValue( 5 );
+        calc.addValue( 5 );
+        calc.addValue( 5 );
+        calc.addValue( 9 );
+        calc.addValue( 9 );
+        calc.addValue( 9 );
+        calc.addValue( 9 );
 
-        histogram.addValue( 6 );
-        histogram.addValue( 6 );
-        histogram.addValue( 6 );
-        histogram.addValue( 6 );
-        histogram.addValue( 6 );
-        histogram.addValue( 8 );
-        histogram.addValue( 8 );
-        histogram.addValue( 8 );
-        histogram.addValue( 8 );
-        histogram.addValue( 8 );
+        calc.addValue( 6 );
+        calc.addValue( 6 );
+        calc.addValue( 6 );
+        calc.addValue( 6 );
+        calc.addValue( 6 );
+        calc.addValue( 8 );
+        calc.addValue( 8 );
+        calc.addValue( 8 );
+        calc.addValue( 8 );
+        calc.addValue( 8 );
 
-        histogram.addValue( 7 );
-        histogram.addValue( 7 );
-        histogram.addValue( 7 );
-        histogram.addValue( 7 );
-        histogram.addValue( 7 );
-        histogram.addValue( 7 );
-        histogram.addValue( 7 );
+        calc.addValue( 7 );
+        calc.addValue( 7 );
+        calc.addValue( 7 );
+        calc.addValue( 7 );
+        calc.addValue( 7 );
+        calc.addValue( 7 );
+        calc.addValue( 7 );
 
-        histogram.addValue( 12 );
+        calc.addValue( 12 );
         view.setBackground( Color.gray );
 
         MouseEventsListener mve;
@@ -183,7 +187,7 @@ public class HistogramView implements IView<JComponent>
         // threshold value.
         // -----------------------------------------------------------------
 
-        g.setColor( Color.black );
+        g.setColor( histogram.color );
         for( int i = 0; i < histogram.bins.length; i++ )
         {
             paintBin( c, g, i, histogram.bins[i], xs, ys, width );
@@ -191,10 +195,12 @@ public class HistogramView implements IView<JComponent>
 
         if( hp != null )
         {
-            String txt = hoverStart == hoverEnd
-                ? String.format( "%d: %d ", hoverStart, hoverCount )
-                : String.format( "%d - %d: %d ", hoverStart, hoverEnd,
-                    hoverCount );
+            int binStart = hoverStart + histogram.minValue;
+            int binEnd = hoverEnd + histogram.maxValue;
+
+            String txt = binStart == binEnd
+                ? String.format( "%d: %d ", binStart, hoverCount )
+                : String.format( "%d - %d: %d ", binStart, binEnd, hoverCount );
             Point tp = new Point( hoverPoint );
 
             hoverLabel.setText( txt );

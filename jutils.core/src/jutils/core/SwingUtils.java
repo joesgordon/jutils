@@ -35,6 +35,7 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -167,6 +168,25 @@ public final class SwingUtils
     public static JButton addActionToToolbar( JToolBar toolbar, Action action )
     {
         JButton button = new JButton();
+
+        addActionToToolbar( toolbar, action, button );
+
+        return button;
+    }
+
+    /***************************************************************************
+     * Adds the provided action to the toolbar and returns the created button.
+     * @param toolbar the toolbar to which the action is added.
+     * @param listener the callback for the action to be performed.
+     * @param name the name of the action to be performed.
+     * @param icon the icon that represents the action to be performed
+     * @return the created button.
+     **************************************************************************/
+    public static JButton addActionToToolbar( JToolBar toolbar,
+        ActionListener listener, String name, Icon icon )
+    {
+        JButton button = new JButton();
+        ActionAdapter action = new ActionAdapter( listener, name, icon );
 
         addActionToToolbar( toolbar, action, button );
 

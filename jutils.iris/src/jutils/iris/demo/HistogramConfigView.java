@@ -1,32 +1,32 @@
 package jutils.iris.demo;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import jutils.core.ui.StandardFormView;
+import jutils.core.ui.fields.IntegerFormField;
 import jutils.core.ui.model.IView;
-import jutils.math.ui.HistogramView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class HistogramsDemoView implements IView<JComponent>
+public class HistogramConfigView implements IView<JComponent>
 {
     /**  */
     private final JComponent view;
+
     /**  */
-    private final HistogramConfigView configView;
-    /**  */
-    private final HistogramView histogramsView;
+    private final IntegerFormField binCountField;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public HistogramsDemoView()
+    public HistogramConfigView()
     {
-        this.configView = new HistogramConfigView();
-        this.histogramsView = new HistogramView();
+        this.binCountField = new IntegerFormField( "Bin Count" );
         this.view = createView();
     }
 
@@ -37,10 +37,21 @@ public class HistogramsDemoView implements IView<JComponent>
     {
         JPanel panel = new JPanel( new BorderLayout() );
 
-        panel.add( configView.getView(), BorderLayout.WEST );
-        panel.add( histogramsView.getView(), BorderLayout.CENTER );
+        panel.add( createForm(), BorderLayout.CENTER );
 
         return panel;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private Component createForm()
+    {
+        StandardFormView form = new StandardFormView();
+
+        form.addField( binCountField );
+
+        return form.getView();
     }
 
     /***************************************************************************
@@ -49,6 +60,7 @@ public class HistogramsDemoView implements IView<JComponent>
     @Override
     public JComponent getView()
     {
+        // TODO Auto-generated method stub
         return view;
     }
 }

@@ -8,15 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import jutils.core.ui.ListView.IItemListModel;
-import jutils.core.ui.ListView.ItemListCellRenderer;
+import jutils.core.ui.ListView.SelectionMode;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IDataView;
+import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
 
 /*******************************************************************************
  * Defines a view that displays a list of items to the user. The view allows for
@@ -138,7 +140,7 @@ public class ItemListView<T> implements IDataView<List<T>>
 
         constraints = new GridBagConstraints( 0, 0, 1, 1, 0.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 0, 8, 8, 8 ), 0, 0 );
+            new Insets( 8, 8, 8, 8 ), 0, 0 );
         panel.add( itemsView.getView(), constraints );
 
         constraints = new GridBagConstraints( 1, 0, 1, 1, 1.0, 1.0,
@@ -173,7 +175,7 @@ public class ItemListView<T> implements IDataView<List<T>>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Component getView()
+    public JComponent getView()
     {
         return view;
     }
@@ -203,9 +205,17 @@ public class ItemListView<T> implements IDataView<List<T>>
      * Sets the renderer for the list.
      * @param renderer the list cell renderer.
      **************************************************************************/
-    public void setItemRenderer( ItemListCellRenderer<T> renderer )
+    public void setItemDecorator( IListCellLabelDecorator<T> renderer )
     {
-        itemsView.setItemRenderer( renderer );
+        itemsView.setItemDecorator( renderer );
+    }
+
+    /***************************************************************************
+     * @param mode
+     **************************************************************************/
+    public void setSelectionMode( SelectionMode mode )
+    {
+        itemsView.setSelectionMode( mode );
     }
 
     /***************************************************************************

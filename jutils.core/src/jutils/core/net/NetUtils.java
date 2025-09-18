@@ -439,6 +439,59 @@ public final class NetUtils
         }
     }
 
+    public static UdpSocket openUdpSocket( UdpConfig inputs ) throws IOException
+    {
+        UdpSocket socket = new UdpSocket();
+
+        if( inputs.multicast.isUsed && inputs.multicast.data == null )
+        {
+            throw new IOException( "Multicast group not specified" );
+        }
+
+        // LogUtils.printDebug( "NIC: " + inputs.nic );
+        // LogUtils.printDebug( "Address: " + nicAddr );
+        // LogUtils.printDebug( "Local Port: " + inputs.localPort );
+        // LogUtils.printDebug( "Remote Port: " + inputs.remotePort );
+        // LogUtils.printDebug( "" );
+
+        NicInfo info = NetUtils.lookupInfo( inputs.nic );
+
+        if( info == null )
+        {
+            throw new IOException( "NIC not found: " + inputs.nic );
+        }
+
+        InetAddress nicAddr = info.address;
+        IpAddress localIp = new IpAddress();
+
+        localIp.setInetAddress( nicAddr );
+
+        EndPoint localPoint = new EndPoint( localIp, inputs.localPort );
+
+        if( inputs.multicast.isUsed )
+        {
+            IpAddress group = inputs.multicast.data;
+
+            socket.open();
+            socket.setReuseAddress( true );
+            socket.setTimeToLive( inputs.ttl );
+            socket.bind( localPoint );
+            socket.setLoopback( inputs.loopback );
+            socket.joinGroup( group, localIp );
+        }
+        else
+        {
+            socket.open();
+            socket.setReuseAddress( inputs.reuse );
+            socket.setBroadcast( inputs.broadcast );
+            socket.bind( localPoint );
+        }
+
+        socket.setReceiveTimeout( inputs.timeout );
+
+        return socket;
+    }
+
     /***************************************************************************
      * @param args
      **************************************************************************/

@@ -10,41 +10,26 @@ import jutils.core.utils.BitMasks;
  ******************************************************************************/
 public class Histogram
 {
-    /** Data description. */
-    public final String name;
     /**  */
     public final int [] bins;
-    /** The scale used to get the bin index for a value */
-    public final double bindexScale;
+    /**  */
+    public final int minValue;
     /**  */
     public final int maxValue;
     /**  */
     public final Color color;
-    /** The maximum value in {@link #bins}. */
-    private int maxCount;
 
     /***************************************************************************
-     * @param name
      * @param binCount The number of bins.
+     * @param minValue The minimum value to be provided for this histogram.
      * @param maxValue The maximum value to be provided for this histogram.
      **************************************************************************/
-    public Histogram( String name, int binCount, int maxValue )
+    public Histogram( int binCount, int minValue, int maxValue )
     {
-        this.name = name;
         this.bins = new int[binCount];
-        this.bindexScale = ( bins.length - 1.0f ) /
-            ( maxValue & BitMasks.INT_MASK );
+        this.minValue = minValue;
         this.maxValue = maxValue;
-        this.maxCount = 0;
         this.color = Color.black;
-    }
-
-    /***************************************************************************
-     * @return the maximum value in {@link #bins}
-     **************************************************************************/
-    public int getMaxBinCount()
-    {
-        return maxCount;
     }
 
     /***************************************************************************
@@ -52,31 +37,96 @@ public class Histogram
      **************************************************************************/
     public void reset()
     {
-        this.maxCount = 0;
         Arrays.fill( bins, 0 );
     }
 
     /***************************************************************************
-     * @param value
+     * @return
      **************************************************************************/
-    public void addValue( int value )
+    public int getMaxBinCount()
     {
-        long lval = value & BitMasks.INT_MASK;
-        double bin = lval * bindexScale;
-        int binIndex = ( int )Math.round( bin );
+        int count = 0;
 
-        try
+        for( int i = 0; i < bins.length; i++ )
         {
-            bins[binIndex]++;
-        }
-        catch( ArrayIndexOutOfBoundsException ex )
-        {
-            String err = String.format(
-                "Unable to increment count for bin %d * %f = %f", lval,
-                bindexScale, bin );
-            throw new IllegalStateException( err, ex );
+            count = Math.max( count, bins[i] );
         }
 
-        maxCount = Math.max( maxCount, bins[binIndex] );
+        return count;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public double getScale()
+    {
+        long lmax = maxValue & BitMasks.INT_MASK;
+        long lmin = minValue & BitMasks.INT_MASK;
+
+        return ( bins.length - 1.0f ) / ( lmax - lmin );
+    }
+
+    /***************************************************************************
+     * @param bin
+     * @return
+     **************************************************************************/
+    public int getBinStart( int bin )
+    {
+        int start = -1;
+
+        return start;
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static final class HistogramCalc
+    {
+        /**  */
+        public final Histogram histogram;
+        /** The scale used to get the bin index for a value */
+        public final double bindexScale;
+
+        /**
+         * @param binCount
+         * @param minValue
+         * @param maxValue
+         */
+        public HistogramCalc( int binCount, int minValue, int maxValue )
+        {
+            this.histogram = new Histogram( binCount, minValue, maxValue );
+            this.bindexScale = ( binCount - 1.0f ) /
+                ( ( maxValue & BitMasks.INT_MASK ) - minValue );
+        }
+
+        /**
+         * @param value
+         */
+        public void addValue( int value )
+        {
+            long lval = value & BitMasks.INT_MASK;
+            double bin = ( lval - histogram.minValue ) * bindexScale;
+            int binIndex = ( int )Math.round( bin );
+
+            try
+            {
+                histogram.bins[binIndex]++;
+            }
+            catch( ArrayIndexOutOfBoundsException ex )
+            {
+                String err = String.format(
+                    "Unable to increment count for bin %d * %f = %f", lval,
+                    bindexScale, bin );
+                throw new IllegalStateException( err, ex );
+            }
+        }
+
+        /**
+         * 
+         */
+        public void reset()
+        {
+            this.histogram.reset();
+        }
     }
 }

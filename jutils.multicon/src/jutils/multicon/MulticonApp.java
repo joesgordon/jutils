@@ -11,7 +11,7 @@ import jutils.multicon.ui.MulticonFrame;
 public class MulticonApp implements IFrameApp
 {
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JFrame createFrame()
@@ -22,7 +22,7 @@ public class MulticonApp implements IFrameApp
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void finalizeGui()

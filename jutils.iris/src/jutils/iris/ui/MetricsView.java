@@ -15,7 +15,7 @@ import jutils.iris.IrisUtils;
 import jutils.iris.data.RasterImage;
 import jutils.iris.rasters.IChannel;
 import jutils.iris.rasters.IRaster;
-import jutils.math.Histogram;
+import jutils.math.Histogram.HistogramCalc;
 import jutils.math.ui.HistogramView;
 
 /*******************************************************************************
@@ -142,13 +142,13 @@ public class MetricsView implements IView<JComponent>
         int maxValue = IrisUtils.getMaxValue( channel.getBitDepth() );
         int count = channel.getSize();
 
-        Histogram histogram = new Histogram( channel.getName(), 256, maxValue );
+        HistogramCalc histCalc = new HistogramCalc( 256, 0, maxValue );
 
         for( int i = 0; i < count; i++ )
         {
-            histogram.addValue( channel.getValue( i ) );
+            histCalc.addValue( channel.getValue( i ) );
         }
 
-        histViews[c].setData( histogram );
+        histViews[c].setData( histCalc.histogram );
     }
 }

@@ -40,6 +40,22 @@ JUtils comes with no warranty of correctness though it totally is.
 
 ## Screenshots
 
+- [Main Screen](#main-screen)
+- [Hexedit Screen](#hexedit-screen)
+- [Hexulator Screen](#hexulator-screen)
+
+### Main Screen
+
 ![JUtils Apps Screenshot](./docs/apps_main.png)
 
+### Hexedit Screen
+
 ![JUtils HexEdit Screenshot](./docs/hexedit_main.png)
+
+### Hexulator Screen
+
+![Hexulator Screenshot](./docs/hexulator.png)
+
+### Multicon Screen
+
+![Multicon Screen](./docs/multicon.png)

@@ -4,7 +4,7 @@ import javax.swing.JComponent;
 
 import jutils.core.io.parsers.MulticastGroupParser;
 import jutils.core.net.IpAddress;
-import jutils.core.net.UdpInputs;
+import jutils.core.net.UdpConfig;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.fields.BooleanFormField;
 import jutils.core.ui.fields.IDataFormField;
@@ -19,7 +19,7 @@ import jutils.core.ui.validation.Validity;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
+public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
 {
     /**  */
     private final StandardFormView form;
@@ -39,10 +39,6 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
     private final BooleanFormField loopbackField;
     /**  */
     private final IntegerFormField ttlField;
-    /**  */
-    private final IpAddressField remoteAddressField;
-    /**  */
-    private final IntegerFormField remotePortField;
 
     /**  */
     private final boolean advanced;
@@ -51,12 +47,12 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
     private final AggregateValidityChangedManager validityManager;
 
     /**  */
-    private UdpInputs inputs;
+    private UdpConfig inputs;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public UdpInputsView()
+    public UdpConfigView()
     {
         this( true );
     }
@@ -64,7 +60,7 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
     /***************************************************************************
      * @param advanced shows time-to-live and timeout fields.
      **************************************************************************/
-    public UdpInputsView( boolean advanced )
+    public UdpConfigView( boolean advanced )
     {
         this.advanced = advanced;
 
@@ -83,9 +79,6 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
         this.loopbackField = new BooleanFormField( "Loopback" );
         this.ttlField = new IntegerFormField( "TTL", 0, 255 );
 
-        this.remoteAddressField = new IpAddressField( "Remote Address" );
-        this.remotePortField = new IntegerFormField( "Remote Port", 0, 65535 );
-
         this.validityManager = new AggregateValidityChangedManager();
 
         form.addField( localPortField );
@@ -103,10 +96,7 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
             form.addField( ttlField );
         }
 
-        form.addField( remoteAddressField );
-        form.addField( remotePortField );
-
-        setData( new UdpInputs() );
+        setData( new UdpConfig() );
 
         validityManager.addField( localPortField );
         validityManager.addField( nicField );
@@ -120,9 +110,6 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
         validityManager.addField( loopbackField );
         validityManager.addField( ttlField );
 
-        validityManager.addField( remoteAddressField );
-        validityManager.addField( remotePortField );
-
         localPortField.setUpdater( ( d ) -> inputs.localPort = d );
         nicField.setUpdater( ( d ) -> inputs.nic = d );
 
@@ -134,9 +121,6 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
 
         loopbackField.setUpdater( ( d ) -> inputs.loopback = d );
         ttlField.setUpdater( ( d ) -> inputs.ttl = d );
-
-        remoteAddressField.setUpdater( ( d ) -> inputs.remoteAddress.set( d ) );
-        remotePortField.setUpdater( ( d ) -> inputs.remotePort = d );
     }
 
     /***************************************************************************
@@ -152,7 +136,7 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
      * 
      **************************************************************************/
     @Override
-    public UdpInputs getData()
+    public UdpConfig getData()
     {
         return inputs;
     }
@@ -161,7 +145,7 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
      * 
      **************************************************************************/
     @Override
-    public void setData( UdpInputs data )
+    public void setData( UdpConfig data )
     {
         this.inputs = data;
 
@@ -176,9 +160,6 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
 
         loopbackField.setValue( inputs.loopback );
         ttlField.setValue( inputs.ttl );
-
-        remoteAddressField.setValue( inputs.remoteAddress );
-        remotePortField.setValue( inputs.remotePort );
     }
 
     /***************************************************************************
@@ -197,9 +178,6 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
 
         loopbackField.setEditable( enabled && advanced );
         ttlField.setEditable( enabled && advanced );
-
-        // remoteAddressField.setEditable( enabled );
-        // remotePortField.setEditable( enabled );
     }
 
     /***************************************************************************

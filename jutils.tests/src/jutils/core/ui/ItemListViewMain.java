@@ -5,21 +5,21 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import jutils.core.ui.ListView.IItemListModel;
-import jutils.core.ui.ListView.ItemListCellRenderer;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.event.updater.UpdaterList;
 import jutils.core.ui.fields.StringFormField;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.IView;
+import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
 
 /***************************************************************************
  * 
@@ -87,8 +87,8 @@ public class ItemListViewMain
             ntdv.addNameUpdater( ( d ) -> normalItemList.refreshSelected() );
             rtdv.addNameUpdater( ( d ) -> rendererItemList.refreshSelected() );
 
-            rendererItemList.setItemRenderer( new TestDataRenderer() );
-            rendererList.setItemRenderer( new TestDataRenderer() );
+            rendererItemList.setItemDecorator( new TestDataRenderer() );
+            rendererList.setItemDecorator( new TestDataRenderer() );
 
             normalItemList.setData( new ArrayList<>() );
             rendererItemList.setData( new ArrayList<>() );
@@ -242,10 +242,8 @@ public class ItemListViewMain
      * 
      **************************************************************************/
     private static final class TestDataRenderer
-        implements ItemListCellRenderer<TestData>
+        implements IListCellLabelDecorator<TestData>
     {
-        /**  */
-        private final DefaultListCellRenderer renderer = new DefaultListCellRenderer();
         /**  */
         private final ColorIcon icon = new ColorIcon( Color.green );
 
@@ -253,18 +251,13 @@ public class ItemListViewMain
          * {@inheritDoc}
          */
         @Override
-        public Component getListCellRendererComponent(
-            JList<? extends TestData> list, TestData value, int index,
-            boolean isSelected, boolean cellHasFocus, String text )
+        public void decorate( JLabel label, JList<? extends TestData> list,
+            TestData value, int index, boolean isSelected,
+            boolean cellHasFocus )
         {
-            Component c = renderer.getListCellRendererComponent( list, value,
-                index, isSelected, cellHasFocus );
-
             icon.setColor( new Color( value.name.hashCode() ) );
-            renderer.setIcon( icon );
-            renderer.setText( value.name );
-
-            return c;
+            label.setIcon( icon );
+            label.setText( value.name );
         }
     }
 
