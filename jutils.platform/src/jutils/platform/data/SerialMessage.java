@@ -22,7 +22,7 @@ public class SerialMessage
      **************************************************************************/
     public SerialMessage( boolean isTransmitted, byte [] data )
     {
-        this( isTransmitted, data, TimeUtils.utcNow() );
+        this( isTransmitted, data, TimeUtils.getUtcNow() );
     }
 
     /***************************************************************************

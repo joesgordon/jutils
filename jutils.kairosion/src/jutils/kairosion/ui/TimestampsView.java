@@ -1,4 +1,4 @@
-package jutils.core.ui.times;
+package jutils.kairosion.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -16,90 +16,43 @@ import javax.swing.JToolBar;
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
 import jutils.core.time.TimeUtils;
-import jutils.core.time.ui.DateAndTimeField;
-import jutils.core.time.ui.DateTimeField;
-import jutils.core.time.ui.LinuxTimeField;
-import jutils.core.time.ui.YearNanosField;
-import jutils.core.time.ui.YmdField;
+import jutils.core.ui.ComponentView;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.event.ActionAdapter;
+import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
  * Defines a view that allows a user to define times in a variety of ways.
  ******************************************************************************/
-public class TimesView implements IDataView<TimesUnion>
+public class TimestampsView implements IDataView<LocalDateTime>
 {
     /** The view that contains all the fields in this view. */
     private final JPanel view;
+    /**  */
+    private final ComponentView formView;
+    /**  */
+    private final StandardFormView form;
 
     /**  */
-    private final YmdField yearMonthDayField;
-    /** A field that displays a date field and a time field. */
-    private final DateAndTimeField dateAndTimeField;
-    /** A date/time field. */
-    private final DateTimeField dateTimeField;
-    /** A year/nanoseconds into the year field. */
-    private final YearNanosField yearNanosField;
-    /**  */
-    private final LinuxTimeField linuxField;
-
-    // TODO Add Microsoft Filetime
-
-    // TODO Add GPS Week
-
-    // TODO Add GPS time
-
-    // TODO Add Day of Week
-
-    // TODO Add Week of Year
-
-    // TODO Add Year/Day of Year/Seconds into Day
-
-    // TODO Add Julian time
-
-    // TODO Add Sidereal time
+    private final List<ITimestampField<?>> fields;
 
     /**  */
-    private final List<TimesField<?>> fields;
-
-    /**  */
-    private TimesUnion time;
+    private LocalDateTime time;
 
     /***************************************************************************
      * Creates a new times view.
      **************************************************************************/
-    public TimesView()
+    public TimestampsView()
     {
-        this.yearMonthDayField = new YmdField( "Year/Month/Day" );
-        this.dateAndTimeField = new DateAndTimeField( "Date & Time" );
-        this.dateTimeField = new DateTimeField( "Date/Time" );
-        this.yearNanosField = new YearNanosField( "Year/Seconds" );
-        this.linuxField = new LinuxTimeField( "Linux Seconds" );
+        this.formView = new ComponentView();
+        this.form = new StandardFormView();
 
         this.fields = new ArrayList<>();
 
-        this.time = new TimesUnion();
-
-        fields.add( new TimesField<>( yearMonthDayField, time,
-            ( d ) -> d.dateTime.toLocalDate(), ( t, d ) -> t.setDate( d ) ) );
-        fields.add( new TimesField<>( dateAndTimeField, time,
-            ( t ) -> t.dateTime, ( t, d ) -> t.setDateTime( d ) ) );
-        fields.add( new TimesField<>( dateTimeField, time, ( t ) -> t.dateTime,
-            ( t, d ) -> t.setDateTime( d ) ) );
-        fields.add( new TimesField<>( yearNanosField, time,
-            ( t ) -> t.yearNanos, ( t, d ) -> t.setYearNanos( d ) ) );
-        fields.add( new TimesField<>( linuxField, time,
-            ( t ) -> t.getLinuxTime(), ( t, d ) -> t.setLinuxTime( d ) ) );
-
         this.view = createView();
 
-        setData( time.dateTime );
-
-        for( TimesField<?> f : fields )
-        {
-            f.setUpdater( ( d ) -> handleFieldUpdated( f, d ) );
-        }
+        setData( LocalDateTime.MIN );
     }
 
     /***************************************************************************
@@ -111,7 +64,7 @@ public class TimesView implements IDataView<TimesUnion>
         JPanel panel = new JPanel( new BorderLayout() );
 
         panel.add( createToolbar(), BorderLayout.NORTH );
-        panel.add( createForm(), BorderLayout.CENTER );
+        panel.add( formView.getView(), BorderLayout.CENTER );
 
         return panel;
     }
@@ -138,38 +91,41 @@ public class TimesView implements IDataView<TimesUnion>
     private Action createNowAction()
     {
         Icon icon = IconConstants.getIcon( IconConstants.TODAY_16 );
-        ActionListener listener = ( e ) -> setData( TimeUtils.utcNow() );
+        ActionListener listener = ( e ) -> setData( TimeUtils.getUtcNow() );
         return new ActionAdapter( listener, "Now", icon );
     }
 
     /***************************************************************************
+     * @param field
+     * @param <T>
      * @return
      **************************************************************************/
-    private Component createForm()
+    public <T> void addField( ITimestampField<T> field )
     {
-        StandardFormView form = new StandardFormView();
+        IUpdater<ITimestampField<?>> updater = ( f ) -> handleFieldUpdated( f );
 
-        for( TimesField<?> f : fields )
-        {
-            form.addField( f );
-        }
+        field.setUpdater( updater );
+        form.addField( field.getField() );
 
-        return form.getView();
+        formView.setComponent( form.getView() );
     }
 
     /***************************************************************************
      * @param field
      * @param times
      **************************************************************************/
-    private void handleFieldUpdated( TimesField<?> field, TimesUnion times )
+    private void handleFieldUpdated( ITimestampField<?> field )
     {
-        for( TimesField<?> f : fields )
-        {
-            if( f != field )
-            {
-                f.setValue( times );
-            }
-        }
+        // LocalDateTime time = field.updateDateTime(
+        // field.getField().getValue() );
+        //
+        // for( ITimestampField<?> f : fields )
+        // {
+        // if( f != field )
+        // {
+        // f.setDateTime( time );
+        // }
+        // }
     }
 
     /***************************************************************************
@@ -185,7 +141,7 @@ public class TimesView implements IDataView<TimesUnion>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public TimesUnion getData()
+    public LocalDateTime getData()
     {
         return time;
     }
@@ -194,23 +150,13 @@ public class TimesView implements IDataView<TimesUnion>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( TimesUnion data )
+    public void setData( LocalDateTime data )
     {
         this.time = data;
 
-        for( TimesField<?> f : fields )
+        for( ITimestampField<?> f : fields )
         {
-            f.setValue( time );
+            f.setDateTime( time );
         }
-    }
-
-    /***************************************************************************
-     * @param data
-     **************************************************************************/
-    public void setData( LocalDateTime data )
-    {
-        this.time.setDateTime( data );
-
-        setData( time );
     }
 }

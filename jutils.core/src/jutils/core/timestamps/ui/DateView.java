@@ -1,4 +1,4 @@
-package jutils.core.time.ui;
+package jutils.core.timestamps.ui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -45,7 +45,7 @@ public class DateView implements IDataView<LocalDate>
      * Week day single letter abbreviations to be used as the header in the
      * calendar.
      */
-    private static final String [] WEEK_DAYS = new String[] { "S", "M", "T",
+    private static final String [] WEEK_DAYS = new String[] { "U", "M", "T",
         "W", "R", "F", "S" };
     /** The background of the header labels. */
     private static final Color HEADER_BACKGROUND = new Color( 0x8D, 0x8D,
@@ -269,7 +269,7 @@ public class DateView implements IDataView<LocalDate>
     }
 
     /***************************************************************************
-     * @param cal Calendar
+     * @param date
      **************************************************************************/
     public void setDate( LocalDate date )
     {
@@ -307,7 +307,9 @@ public class DateView implements IDataView<LocalDate>
 
         monthSpinner.setValue( MONTHS[date.getMonthValue() - 1] );
 
-        yearSpinner.setValue(  date.getYear() );
+        LogUtils.printDebug( "Setting year field to %d", date.getYear() );
+
+        yearSpinner.setValue( date.getYear() );
     }
 
     /***************************************************************************

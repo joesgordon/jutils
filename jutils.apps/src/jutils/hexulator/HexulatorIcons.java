@@ -12,7 +12,7 @@ import jutils.core.io.IconLoader;
  ******************************************************************************/
 public final class HexulatorIcons
 {
-    /**  */
+    /** The icon loader to be used to access icons in this project. */
     public static final IconLoader loader = new IconLoader(
         HexulatorIcons.class, "icons" );
 

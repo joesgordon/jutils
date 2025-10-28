@@ -15,7 +15,7 @@ import jutils.core.ui.validation.Validity;
 public class DoubleFormField implements IDataFormField<Double>
 {
     /**  */
-    private final ParserFormField<Double> textField;
+    private final ParserFormField<Double> field;
 
     /**  */
     private String format;
@@ -81,7 +81,7 @@ public class DoubleFormField implements IDataFormField<Double>
     {
         JTextField jtf = new JTextField( columns );
 
-        this.textField = new ParserFormField<>( name,
+        this.field = new ParserFormField<>( name,
             new DoubleParser( min, max ), jtf, ( d ) -> toString( d ), jtf,
             units );
         this.format = null;
@@ -93,7 +93,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public String getName()
     {
-        return textField.getName();
+        return field.getName();
     }
 
     /***************************************************************************
@@ -102,7 +102,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public JComponent getView()
     {
-        return textField.getView();
+        return field.getView();
     }
 
     /***************************************************************************
@@ -111,7 +111,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public Double getValue()
     {
-        return textField.getValue();
+        return field.getValue();
     }
 
     /***************************************************************************
@@ -120,7 +120,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public void setValue( Double value )
     {
-        textField.setValue( value );
+        field.setValue( value );
     }
 
     /***************************************************************************
@@ -129,7 +129,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public void setEditable( boolean editable )
     {
-        textField.setEditable( editable );
+        field.setEditable( editable );
     }
 
     /***************************************************************************
@@ -138,7 +138,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public void setUpdater( IUpdater<Double> updater )
     {
-        textField.setUpdater( updater );
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
@@ -147,7 +147,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public IUpdater<Double> getUpdater()
     {
-        return textField.getUpdater();
+        return field.getUpdater();
     }
 
     /***************************************************************************
@@ -156,7 +156,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        textField.addValidityChanged( l );
+        field.addValidityChanged( l );
     }
 
     /***************************************************************************
@@ -165,7 +165,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        textField.removeValidityChanged( l );
+        field.removeValidityChanged( l );
     }
 
     /***************************************************************************
@@ -174,7 +174,7 @@ public class DoubleFormField implements IDataFormField<Double>
     @Override
     public Validity getValidity()
     {
-        return textField.getValidity();
+        return field.getValidity();
     }
 
     /***************************************************************************
@@ -190,7 +190,7 @@ public class DoubleFormField implements IDataFormField<Double>
      **************************************************************************/
     public JTextComponent getTextField()
     {
-        return this.textField.getTextField();
+        return this.field.getTextField();
     }
 
     /***************************************************************************

@@ -6,20 +6,21 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.iris"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.insomnia"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.multicon"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.plot"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.duak"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.hexedit"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.explorer"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.filespy"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.libs"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.mines"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.summer"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.math"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jutils.platform"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jutils.telemetry"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.platform"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.math"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.summer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.mines"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.libs"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.filespy"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.explorer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.hexedit"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.duak"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.plot"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.multicon"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.insomnia"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.iris"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jutils.kairosion"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

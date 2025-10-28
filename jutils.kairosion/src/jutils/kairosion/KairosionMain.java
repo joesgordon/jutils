@@ -1,4 +1,4 @@
-package jutils.core.ui.times;
+package jutils.kairosion;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -8,11 +8,12 @@ import javax.swing.JFrame;
 import jutils.core.io.LogUtils;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
+import jutils.kairosion.ui.KairosionView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class MomentyMain
+public class KairosionMain
 {
     /***************************************************************************
      * @param args
@@ -40,12 +41,14 @@ public class MomentyMain
     {
         StandardFrameView view = new StandardFrameView();
         JFrame frame = view.getView();
-        TimesView times = new TimesView();
+        KairosionView mainView = new KairosionView();
 
-        view.setTitle( "Momenty" );
+        view.setTitle( "Kairosion" );
         view.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         view.setSize( 500, 800 );
-        view.setContent( times.getView() );
+        view.setContent( mainView.getView() );
+
+        frame.setIconImages( KairosionIcons.getAppImages() );
 
         return frame;
     }

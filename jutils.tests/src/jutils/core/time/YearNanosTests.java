@@ -6,7 +6,8 @@ import java.time.Month;
 import org.junit.Assert;
 import org.junit.Test;
 
-import jutils.core.time.YearNanos.NanoTimeUnit;
+import jutils.core.timestamps.YearNanos;
+import jutils.core.timestamps.YearNanos.NanoTimeUnit;
 
 /*******************************************************************************
  * 

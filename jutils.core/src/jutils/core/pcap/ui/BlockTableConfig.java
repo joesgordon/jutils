@@ -142,7 +142,7 @@ public class BlockTableConfig
         long millis = timestamp / 1000;
         long micros = timestamp % 1000;
 
-        LocalDateTime time = TimeUtils.fromLinuxEpoch( millis );
+        LocalDateTime time = TimeUtils.fromUnixEpoch( millis );
 
         time = time.plus( micros, ChronoUnit.MICROS );
 

@@ -7,6 +7,7 @@ import jutils.core.ui.model.IDataView;
 import jutils.core.ui.net.TcpInputsView;
 import jutils.core.ui.net.UdpConfigView;
 import jutils.multicon.data.ConnectionType;
+import jutils.platform.ui.SerialConfigView;
 
 /*******************************************************************************
  * 
@@ -23,6 +24,8 @@ public class ConnectionTypeView implements IDataView<ConnectionType>
     /**  */
     private final TcpInputsView tcpListenView;
     /**  */
+    private final SerialConfigView serialView;
+    /**  */
     private final BridgeConfigView bridgeView;
 
     /**  */
@@ -37,6 +40,8 @@ public class ConnectionTypeView implements IDataView<ConnectionType>
         this.udpView = new UdpConfigView();
         this.tcpConnectView = new TcpInputsView( false, true );
         this.tcpListenView = new TcpInputsView( true, true );
+        this.serialView = new SerialConfigView();
+        this.bridgeView = new BridgeConfigView();
     }
 
     /***************************************************************************
@@ -79,8 +84,12 @@ public class ConnectionTypeView implements IDataView<ConnectionType>
                 view.setComponent( tcpListenView.getView() );
                 break;
 
+            case SERIAL:
+                view.setComponent( serialView.getView() );
+                break;
+
             case BRIDGE:
-                view.setComponent( null );
+                view.setComponent( bridgeView.getView() );
                 break;
 
             default:

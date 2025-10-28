@@ -8,25 +8,29 @@ import jutils.core.io.options.IOptionsCreator;
 import jutils.core.io.options.OptionsSerializer;
 import jutils.core.io.xs.XsOptions;
 import jutils.core.ui.app.AppRunner;
+import jutils.platform.PlatformUtils;
 
 /*******************************************************************************
- * 
+ * Defines the main entry point for the Multicon application.
  ******************************************************************************/
 public class MulticonMain
 {
-    /**  */
+    /** The path to Multicon's user's options file. */
     private static final File OPTIONS_FILE = IOUtils.getUsersFile( ".jutils",
         "multicon", "options.xml" );
 
-    /**  */
+    /** The single serializer instance for user options. */
     private static OptionsSerializer<MulticonOptions> userOptions;
 
     /***************************************************************************
+     * Main entry point for the Multicon application.
      * @param args ignored
      **************************************************************************/
     public static void main( String[] args )
     {
         AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
+
+        PlatformUtils.getPlatform().initialize();
 
         AppRunner.invokeLater( new MulticonApp(), true );
     }

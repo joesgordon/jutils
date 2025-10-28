@@ -1,97 +1,75 @@
-package jutils.core.ui.times;
+package jutils.core.timestamps.ui;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.time.LocalDateTime;
 
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 
+import jutils.core.io.parsers.DateTimeParser;
+import jutils.core.time.TimeUtils;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
+import jutils.core.ui.fields.ParserFormField;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 
 /*******************************************************************************
- * @param <T>
+ * 
  ******************************************************************************/
-public class TimesField<T> implements IDataFormField<TimesUnion>
+public class DateTimeField implements IDataFormField<LocalDateTime>
 {
     /**  */
-    private final IDataFormField<T> field;
-    /**  */
-    private final TimesUnion time;
-    /**  */
-    private Function<TimesUnion, T> getField;
-    /**  */
-    private BiConsumer<TimesUnion, T> timeSetter;
-    /**  */
-    private IUpdater<TimesUnion> updater;
+    private final ParserFormField<LocalDateTime> field;
 
     /***************************************************************************
-     * @param field
-     * @param time
-     * @param getField
-     * @param timeSetter
+     * @param name
      **************************************************************************/
-    public TimesField( IDataFormField<T> field, TimesUnion time,
-        Function<TimesUnion, T> getField, BiConsumer<TimesUnion, T> timeSetter )
+    public DateTimeField( String name )
     {
-        this.field = field;
-        this.time = time;
-        this.getField = getField;
-        this.timeSetter = timeSetter;
-        this.updater = null;
+        JTextField textField = new JTextField( 20 );
 
-        field.setUpdater( ( d ) -> handleFieldUpdated( d ) );
-    }
+        this.field = new ParserFormField<>( name, new DateTimeParser(),
+            textField, ( d ) -> DateTimeParser.toString( d ) );
 
-    /***************************************************************************
-     * @param data
-     **************************************************************************/
-    public void handleFieldUpdated( T data )
-    {
-        timeSetter.accept( time, data );
+        textField.setHorizontalAlignment( JTextField.RIGHT );
 
-        if( updater != null )
-        {
-            updater.update( time );
-        }
+        setValue( TimeUtils.getUtcNow() );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public TimesUnion getValue()
+    public LocalDateTime getValue()
     {
-        return time;
+        return field.getValue();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setValue( TimesUnion value )
+    public void setValue( LocalDateTime value )
     {
-        time.set( value );
-        field.setValue( getField.apply( time ) );
+        field.setValue( value );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setUpdater( IUpdater<TimesUnion> updater )
+    public void setUpdater( IUpdater<LocalDateTime> updater )
     {
-        this.updater = updater;
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IUpdater<TimesUnion> getUpdater()
+    public IUpdater<LocalDateTime> getUpdater()
     {
-        return updater;
+        return field.getUpdater();
     }
 
     /***************************************************************************

@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -298,27 +299,54 @@ public final class TimeUtils
     }
 
     /***************************************************************************
+     * @param zone
      * @return
      **************************************************************************/
-    public static LocalDate utcDateNow()
+    public static LocalDate getDateNow( ZoneId zone )
     {
-        return LocalDate.now( ZoneOffset.UTC );
+        return LocalDate.now( zone );
+    }
+
+    /***************************************************************************
+     * @param zone
+     * @return
+     **************************************************************************/
+    public static LocalTime getTimeNow( ZoneId zone )
+    {
+        return LocalTime.now( zone );
+    }
+
+    /***************************************************************************
+     * @param zone
+     * @return
+     **************************************************************************/
+    public static LocalDateTime getNow( ZoneId zone )
+    {
+        return LocalDateTime.now( zone );
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public static LocalTime utcTimeNow()
+    public static LocalDate getUtcDateNow()
     {
-        return LocalTime.now( ZoneOffset.UTC );
+        return getDateNow( ZoneOffset.UTC );
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public static LocalDateTime utcNow()
+    public static LocalTime getUtcTimeNow()
     {
-        return LocalDateTime.now( ZoneOffset.UTC );
+        return getTimeNow( ZoneOffset.UTC );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static LocalDateTime getUtcNow()
+    {
+        return getNow( ZoneOffset.UTC );
     }
 
     /***************************************************************************
@@ -383,9 +411,21 @@ public final class TimeUtils
      * @param millis
      * @return
      **************************************************************************/
-    public static LocalDateTime fromLinuxEpoch( long millis )
+    public static LocalDateTime fromUnixEpoch( long millis )
     {
         return LocalDateTime.ofInstant( Instant.ofEpochMilli( millis ),
             ZoneOffset.UTC );
+    }
+
+    /***************************************************************************
+     * @param time
+     * @return
+     **************************************************************************/
+    public static long toUnixEpoch( LocalDateTime time )
+    {
+        int nanos = time.getNano();
+        int millis = ( nanos + 500 ) / 1000;
+        long seconds = time.toEpochSecond( ZoneOffset.UTC );
+        return seconds * 1000L + millis;
     }
 }

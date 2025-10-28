@@ -1,4 +1,4 @@
-package jutils.core.time.ui;
+package jutils.core.timestamps.ui;
 
 import java.awt.Color;
 import java.time.LocalDate;

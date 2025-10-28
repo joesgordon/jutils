@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import jutils.core.ValidationException;
 import jutils.core.io.IParser;
 import jutils.core.time.TimeUtils;
-import jutils.core.time.YearNanos;
+import jutils.core.timestamps.YearNanos;
 
 /*******************************************************************************
  * Defines a {@link IParser} that reads <i>years</i> and <i>seconds into the

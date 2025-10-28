@@ -4,8 +4,8 @@ import java.awt.Point;
 import java.util.List;
 
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 
 import jutils.core.io.IParser;
 import jutils.core.io.parsers.EndPointParser;
@@ -16,7 +16,6 @@ import jutils.core.ui.event.RightClickListener;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.fields.ParserFormField;
-import jutils.core.ui.model.ParserTextFormatter;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 import jutils.core.utils.IGetter;
@@ -56,8 +55,9 @@ public class EndPointField implements IDataFormField<EndPoint>
     public EndPointField( String name, IParser<EndPoint> parser,
         IGetter<List<IpAddress>> presetBuilder )
     {
-        JFormattedTextField textField = new JFormattedTextField(
-            new ParserTextFormatter<>( parser ) );
+        // JFormattedTextField textField = new JFormattedTextField(
+        // new ParserTextFormatter<>( parser ) );
+        JTextField textField = new JTextField();
 
         IGetter<List<IpAddress>> presets = IpAddressField.buildStdGetter(
             presetBuilder );

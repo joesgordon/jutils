@@ -1,4 +1,4 @@
-package jutils.core.time.ui;
+package jutils.core.timestamps.ui;
 
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
@@ -113,7 +113,7 @@ public class DateField implements IDataFormField<LocalDate>
     }
 
     /***************************************************************************
-     * @param e ActionEvent
+     * @param title
      **************************************************************************/
     private void displayDialog( String title )
     {

@@ -13,6 +13,7 @@ import jutils.hexedit.HexeditTool;
 import jutils.hexulator.HexulatorTool;
 import jutils.insomnia.InsomniaTool;
 import jutils.iris.IrisTool;
+import jutils.kairosion.KairosionTool;
 import jutils.mines.MinesTool;
 import jutils.multicon.MulticonTool;
 import jutils.platform.IPlatform;
@@ -61,16 +62,17 @@ public class JUtilsMain
         apps.add( new HexeditTool() );
         apps.add( new HexulatorTool() );
         apps.add( new MulticonTool() );
+        apps.add( new KairosionTool() );
         apps.add( new SerialConsoleTool() );
         apps.add( new FileSpyTool() );
         apps.add( new PlotTool() );
         apps.add( new SummerTool() );
-        apps.add( new MinesTool() );
-        apps.add( new ExplorerTool() );
         apps.add( new DuakTool() );
+        apps.add( new ExplorerTool() );
         apps.add( new PcapTool() );
-        apps.add( new InsomniaTool() );
         apps.add( new IrisTool() );
+        apps.add( new InsomniaTool() );
+        apps.add( new MinesTool() );
         apps.add( new TelemetryTool() );
 
         return apps;

@@ -1,11 +1,12 @@
-package jutils.core.time.ui;
+package jutils.core.timestamps.ui;
+
+import java.time.LocalTime;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
-import jutils.core.io.parsers.YearSecondsParser;
-import jutils.core.time.TimeUtils;
-import jutils.core.time.YearNanos;
+import jutils.core.io.parsers.TimeParser;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.fields.ParserFormField;
@@ -13,115 +14,138 @@ import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 
 /*******************************************************************************
- * 
+ * Defines a field for displaying and editing the time of day.
  ******************************************************************************/
-public class YearNanosField implements IDataFormField<YearNanos>
+public class TimeField implements IDataFormField<LocalTime>
 {
-    /**  */
-    private final ParserFormField<YearNanos> field;
+    /** The name of this field. */
+    private final String name;
+
+    /** The base form field. */
+    private final ParserFormField<LocalTime> timeField;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
-    public YearNanosField( String name )
+    public TimeField( String name )
     {
-        JTextField textField = new JTextField( 20 );
+        this.name = name;
 
-        this.field = new ParserFormField<>( name, new YearSecondsParser(),
-            textField );
+        JTextField textField = new JTextField();
 
-        textField.setHorizontalAlignment( JTextField.RIGHT );
+        this.timeField = new ParserFormField<>( name, new TimeParser(),
+            textField, ( d ) -> TimeParser.toString( d ) );
 
-        setValue( new YearNanos( TimeUtils.utcNow() ) );
+        textField.setColumns( 10 );
+        textField.setHorizontalAlignment( SwingConstants.RIGHT );
+        textField.setMinimumSize( textField.getPreferredSize() );
+
+        setValue( LocalTime.now() );
     }
 
     /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public YearNanos getValue()
-    {
-        return field.getValue();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setValue( YearNanos value )
-    {
-        field.setValue( value );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setUpdater( IUpdater<YearNanos> updater )
-    {
-        field.setUpdater( updater );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public IUpdater<YearNanos> getUpdater()
-    {
-        return field.getUpdater();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setEditable( boolean editable )
-    {
-        field.setEditable( editable );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public String getName()
-    {
-        return field.getName();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public JComponent getView()
     {
-        return field.getView();
+        return timeField.getView();
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * @param text String
+     **************************************************************************/
+    public void setToolTipText( String text )
+    {
+        timeField.getView().setToolTipText( text );
+    }
+
+    /***************************************************************************
+     * @param text String
+     **************************************************************************/
+    public void setTextFieldToolTipText( String text )
+    {
+        timeField.getView().setToolTipText( text );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+
+    /***************************************************************************
+     * 
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )
     {
-        field.addValidityChanged( l );
+        timeField.addValidityChanged( l );
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public void removeValidityChanged( IValidityChangedListener l )
     {
-        field.removeValidityChanged( l );
+        timeField.removeValidityChanged( l );
     }
 
     /***************************************************************************
-     * {@inheritDoc}
+     * 
      **************************************************************************/
     @Override
     public Validity getValidity()
     {
-        return field.getValidity();
+        return timeField.getValidity();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Override
+    public LocalTime getValue()
+    {
+        return timeField.getValue();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Override
+    public void setValue( LocalTime value )
+    {
+        timeField.setValue( value );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Override
+    public void setUpdater( IUpdater<LocalTime> updater )
+    {
+        timeField.setUpdater( updater );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Override
+    public IUpdater<LocalTime> getUpdater()
+    {
+        return timeField.getUpdater();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Override
+    public void setEditable( boolean editable )
+    {
+        timeField.setEditable( editable );
     }
 }

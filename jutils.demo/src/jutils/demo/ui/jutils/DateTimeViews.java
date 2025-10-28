@@ -6,10 +6,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import jutils.core.time.ui.DateAndTimeField;
-import jutils.core.time.ui.DateField;
-import jutils.core.time.ui.DateView;
-import jutils.core.time.ui.TimeField;
+import jutils.core.timestamps.ui.DateAndTimeField;
+import jutils.core.timestamps.ui.DateField;
+import jutils.core.timestamps.ui.DateView;
+import jutils.core.timestamps.ui.TimeField;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.model.IView;
 

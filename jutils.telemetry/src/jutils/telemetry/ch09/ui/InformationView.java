@@ -4,7 +4,7 @@ import java.awt.Component;
 
 import javax.swing.JComponent;
 
-import jutils.core.time.ui.DateField;
+import jutils.core.timestamps.ui.DateField;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.fields.IntegerFormField;
 import jutils.core.ui.fields.StringFormField;

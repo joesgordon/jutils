@@ -46,9 +46,6 @@ public class ItemListView<T> implements IDataView<List<T>>
     /** The item selection listeners to be called when an item is selected. */
     private final List<IUpdater<T>> selectedListeners;
 
-    /** The items to be displayed. */
-    private List<T> items;
-
     /***************************************************************************
      * Creates a new view with the provided data view and model.
      * @param dataView the view that displays an individual item when selected.
@@ -92,8 +89,6 @@ public class ItemListView<T> implements IDataView<List<T>>
         this.scrollPane = useScrollPane ? new JScrollPane( dataView.getView() )
             : null;
         this.nullSelectionPanel = createNullSelectionPanel();
-
-        this.items = new ArrayList<>();
 
         this.view = createView();
 
@@ -181,23 +176,20 @@ public class ItemListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public List<T> getData()
     {
-        ArrayList<T> data = new ArrayList<>( items );
-        return data;
+        return itemsView.getData();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setData( List<T> data )
     {
-        items = data;
-
         itemsView.setData( data );
     }
 
@@ -257,6 +249,22 @@ public class ItemListView<T> implements IDataView<List<T>>
     public void setSelected( T item )
     {
         itemsView.setSelected( item );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getSelectedIndex()
+    {
+        return itemsView.getSelectedIndex();
+    }
+
+    /***************************************************************************
+     * @param index
+     **************************************************************************/
+    public void setSelectedIndex( int index )
+    {
+        itemsView.setSelectedIndex( index );
     }
 
     /***************************************************************************

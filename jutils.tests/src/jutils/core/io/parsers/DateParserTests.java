@@ -39,7 +39,7 @@ public class DateParserTests
     @Test
     public void test_DayMonth()
     {
-        LocalDate now = TimeUtils.utcDateNow();
+        LocalDate now = TimeUtils.getUtcDateNow();
         LocalDate expected = LocalDate.of( now.getYear(), 4, 27 );
         String str = String.format( "%d/%d", expected.getMonthValue(),
             expected.getDayOfMonth() );

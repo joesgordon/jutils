@@ -1,4 +1,4 @@
-package jutils.core.time;
+package jutils.core.timeparts;
 
 import java.time.Month;
 
