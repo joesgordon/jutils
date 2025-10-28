@@ -14,7 +14,9 @@ public enum ConnectionType implements INamedValue
     /**  */
     TCP_CONNECT( 2, "TCP Connect" ),
     /**  */
-    BRIDGE( 3, "Bridge" );
+    SERIAL( 3, "Serial" ),
+    /**  */
+    BRIDGE( 4, "Bridge" );
 
     /**  */
     public final int value;

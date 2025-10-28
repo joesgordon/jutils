@@ -10,17 +10,17 @@ import jutils.core.ui.model.IView;
 import jutils.multicon.MulticonIcons;
 
 /*******************************************************************************
- * 
+ * Defines the main window for Multicon.
  ******************************************************************************/
 public class MulticonFrame implements IView<JFrame>
 {
-    /**  */
+    /** The frame view. */
     private final StandardFrameView frameView;
-    /**  */
+    /** The tabs in the content view. */
     private final JTabbedPane tabs;
 
     /***************************************************************************
-     * 
+     * Creates the main window for Multicon.
      **************************************************************************/
     public MulticonFrame()
     {
@@ -40,7 +40,8 @@ public class MulticonFrame implements IView<JFrame>
     }
 
     /***************************************************************************
-     * @return
+     * Creates the toolbar for the window.
+     * @return a new toolbar for the window.
      **************************************************************************/
     private JToolBar createToolbar()
     {

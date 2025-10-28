@@ -14,7 +14,7 @@ import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
-import jutils.core.time.ui.DateView;
+import jutils.core.timestamps.ui.DateView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
 import jutils.core.ui.event.ActionAdapter;

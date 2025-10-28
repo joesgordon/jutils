@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import jutils.core.SwingUtils;
-import jutils.core.io.IOUtils;
 import jutils.core.ui.ImageView;
 import jutils.core.ui.RecentFilesViews;
 import jutils.core.ui.event.FileChooserListener;
@@ -24,13 +23,13 @@ import jutils.core.ui.model.IView;
 public class ImageFileView implements IView<JComponent>
 {
     /**  */
-    private static final File IMG_FILE_OPTIONS;
-
-    static
-    {
-        IMG_FILE_OPTIONS = IOUtils.getUsersFile( ".jutils", "images",
-            "files.cfg" );
-    }
+    // private static final File IMG_FILE_OPTIONS;
+    //
+    // static
+    // {
+    // IMG_FILE_OPTIONS = IOUtils.getUsersFile( ".jutils", "images",
+    // "files.cfg" );
+    // }
 
     /**  */
     private final JPanel view;

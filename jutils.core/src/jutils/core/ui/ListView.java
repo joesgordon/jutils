@@ -395,8 +395,7 @@ public class ListView<T> implements IDataView<List<T>>
     @Override
     public List<T> getData()
     {
-        ArrayList<T> data = new ArrayList<>( items );
-        return data;
+        return items;
     }
 
     /***************************************************************************
@@ -479,14 +478,6 @@ public class ListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * @return
-     **************************************************************************/
-    public T getSelected()
-    {
-        return itemsList.getSelectedValue();
-    }
-
-    /***************************************************************************
      * 
      **************************************************************************/
     public void clear()
@@ -507,6 +498,14 @@ public class ListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    public T getSelected()
+    {
+        return itemsList.getSelectedValue();
+    }
+
+    /***************************************************************************
      * @param item
      **************************************************************************/
     public void setSelected( T item )
@@ -519,6 +518,22 @@ public class ListView<T> implements IDataView<List<T>>
         {
             itemsList.clearSelection();
         }
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getSelectedIndex()
+    {
+        return itemsList.getSelectedIndex();
+    }
+
+    /***************************************************************************
+     * @param index
+     **************************************************************************/
+    public void setSelectedIndex( int index )
+    {
+        itemsList.setSelectedIndex( index );
     }
 
     /***************************************************************************

@@ -1,4 +1,4 @@
-package jutils.core.time.ui;
+package jutils.core.timestamps.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -55,12 +55,12 @@ public class DateAndTimeField implements IDataFormField<LocalDateTime>
         constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
             new Insets( 0, 0, 0, 4 ), 0, 0 );
-        panel.add( timeField.getView(), constraints );
+        panel.add( dateField.getView(), constraints );
 
         constraints = new GridBagConstraints( 1, 0, 1, 1, 1.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
             new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( dateField.getView(), constraints );
+        panel.add( timeField.getView(), constraints );
 
         return panel;
     }

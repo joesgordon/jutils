@@ -144,7 +144,7 @@ public class DateParser implements IParser<LocalDate>
         String monthStr = str.substring( ifrom[1], ito[1] ).trim();
         String dayStr = str.substring( ifrom[2], ito[2] ).trim();
 
-        LocalDate date = TimeUtils.utcDateNow();
+        LocalDate date = TimeUtils.getUtcDateNow();
 
         int year;
         int month;

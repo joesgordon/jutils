@@ -1,4 +1,4 @@
-package jutils.core.time.ui;
+package jutils.core.timestamps.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,7 +9,7 @@ import java.time.YearMonth;
 
 import javax.swing.JPanel;
 
-import jutils.core.time.NamedMonth;
+import jutils.core.timeparts.NamedMonth;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.ComboFormField;
 import jutils.core.ui.fields.DefaultItemDescriptor;
@@ -134,11 +134,10 @@ public class YmdField implements IDataFormField<LocalDate>
      **************************************************************************/
     private void handleMonthUpdated( NamedMonth month )
     {
-        Integer day = dayField.getValue();
-        Integer [] days = getDays( yearField.getValue(), month );
+        int year = yearField.getValue();
+        int day = dayField.getValue();
 
-        dayField.setValues( days );
-        dayField.setValue( day );
+        setDayChoices( year, month, day );
 
         this.date = date.withMonth( month.value );
 
@@ -164,6 +163,19 @@ public class YmdField implements IDataFormField<LocalDate>
         {
             updater.update( date );
         }
+    }
+
+    /***************************************************************************
+     * @param year
+     * @param month
+     * @param day
+     **************************************************************************/
+    private void setDayChoices( int year, NamedMonth month, int day )
+    {
+        Integer [] days = getDays( year, month );
+
+        dayField.setValues( days );
+        dayField.setValue( day );
     }
 
     /***************************************************************************
@@ -248,9 +260,13 @@ public class YmdField implements IDataFormField<LocalDate>
     @Override
     public void setValue( LocalDate value )
     {
-        yearField.setValue( value.getYear() );
-        monthField.setValue( NamedMonth.fromMonth( value.getMonth() ) );
-        dayField.setValue( value.getDayOfMonth() );
+        int year = value.getYear();
+        NamedMonth month = NamedMonth.fromMonth( value.getMonth() );
+        int day = value.getDayOfMonth();
+
+        yearField.setValue( year );
+        monthField.setValue( month );
+        setDayChoices( year, month, day );
     }
 
     /***************************************************************************

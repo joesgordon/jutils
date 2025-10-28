@@ -1,23 +1,24 @@
-package jutils.core.time;
+package jutils.core.timestamps;
 
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 
 import jutils.core.INamedItem;
 import jutils.core.ValidationException;
+import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
+import jutils.core.time.TimeUtils;
 
 /*******************************************************************************
  * Defines an instant in time with the year and nanoseconds into the year. The
  * range of years are between {@link Short#MIN_VALUE} and
  * {@link Short#MAX_VALUE}.
  ******************************************************************************/
-public class YearNanos
+public class YearNanos implements ITimestamp
 {
     /** The year of the instant. */
     public short year;
@@ -64,13 +65,20 @@ public class YearNanos
      **************************************************************************/
     public YearNanos( LocalDateTime time )
     {
-        setDateTime( time );
+        fromDateTime( time );
+    }
+
+    @Override
+    public void printFields( FieldPrinter printer )
+    {
+        // TODO Auto-generated method stub
+
     }
 
     /***************************************************************************
-     * Converts this instant to a date/time.
-     * @return the date/time of this instant.
+     * {@inheritDoc}
      **************************************************************************/
+    @Override
     public LocalDateTime toDateTime()
     {
         int doy = ( int )( nanos / TimeUtils.NANOS_PER_DAY );
@@ -95,10 +103,10 @@ public class YearNanos
     }
 
     /***************************************************************************
-     * Sets this instant to the provided date/time.
-     * @param time the date/time to set this instant to.
+     * {@inheritDoc}
      **************************************************************************/
-    public void setDateTime( LocalDateTime time )
+    @Override
+    public void fromDateTime( LocalDateTime time )
     {
         this.year = ( short )time.getYear();
         int doy = time.getDayOfYear() - 1;
@@ -107,19 +115,12 @@ public class YearNanos
     }
 
     /***************************************************************************
-     * Sets this instant to now (system time).
+     * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void setNow()
     {
-        setDateTime( LocalDateTime.now() );
-    }
-
-    /***************************************************************************
-     * Sets this instant to now (system time).
-     **************************************************************************/
-    public void setNowUtc()
-    {
-        setDateTime( LocalDateTime.now( ZoneOffset.UTC ) );
+        fromDateTime( TimeUtils.getUtcNow() );
     }
 
     /***************************************************************************
@@ -219,7 +220,7 @@ public class YearNanos
     {
         YearNanos time = new YearNanos();
 
-        time.setNowUtc();
+        time.setNow();
 
         return time;
     }

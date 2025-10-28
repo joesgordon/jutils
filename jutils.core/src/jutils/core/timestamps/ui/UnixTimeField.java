@@ -1,12 +1,11 @@
-package jutils.core.time.ui;
-
-import java.time.LocalDateTime;
+package jutils.core.timestamps.ui;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
-import jutils.core.io.parsers.DateTimeParser;
-import jutils.core.time.TimeUtils;
+import jutils.core.timestamps.UnixTime;
+import jutils.core.timestamps.UnixTime.UnixTimeDescriptor;
+import jutils.core.timestamps.UnixTime.UnixTimeParser;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.fields.ParserFormField;
@@ -16,31 +15,29 @@ import jutils.core.ui.validation.Validity;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class DateTimeField implements IDataFormField<LocalDateTime>
+public class UnixTimeField implements IDataFormField<UnixTime>
 {
     /**  */
-    private final ParserFormField<LocalDateTime> field;
+    private final ParserFormField<UnixTime> field;
 
     /***************************************************************************
      * @param name
      **************************************************************************/
-    public DateTimeField( String name )
+    public UnixTimeField( String name )
     {
-        JTextField textField = new JTextField( 20 );
+        JTextField jtf = new JTextField();
 
-        this.field = new ParserFormField<>( name, new DateTimeParser(),
-            textField, ( d ) -> DateTimeParser.toString( d ) );
+        this.field = new ParserFormField<UnixTime>( "Time",
+            new UnixTimeParser(), jtf, new UnixTimeDescriptor(), "seconds" );
 
-        textField.setHorizontalAlignment( JTextField.RIGHT );
-
-        setValue( TimeUtils.utcNow() );
+        jtf.setHorizontalAlignment( JTextField.RIGHT );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public LocalDateTime getValue()
+    public UnixTime getValue()
     {
         return field.getValue();
     }
@@ -49,7 +46,7 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setValue( LocalDateTime value )
+    public void setValue( UnixTime value )
     {
         field.setValue( value );
     }
@@ -58,7 +55,7 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setUpdater( IUpdater<LocalDateTime> updater )
+    public void setUpdater( IUpdater<UnixTime> updater )
     {
         field.setUpdater( updater );
     }
@@ -67,7 +64,7 @@ public class DateTimeField implements IDataFormField<LocalDateTime>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IUpdater<LocalDateTime> getUpdater()
+    public IUpdater<UnixTime> getUpdater()
     {
         return field.getUpdater();
     }

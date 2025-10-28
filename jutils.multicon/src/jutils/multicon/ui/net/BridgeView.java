@@ -6,6 +6,9 @@ import jutils.core.net.UdpConfig;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.validation.*;
 
+/*******************************************************************************
+ * 
+ ******************************************************************************/
 public class BridgeView implements IDataView<UdpConfig>, IValidationField
 {
 

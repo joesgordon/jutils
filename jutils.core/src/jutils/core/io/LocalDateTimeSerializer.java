@@ -3,7 +3,7 @@ package jutils.core.io;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import jutils.core.time.YearNanos;
+import jutils.core.timestamps.YearNanos;
 
 /*******************************************************************************
  * Defines an {@link IDataSerializer} that reads/writes {@link LocalDateTime}s.
