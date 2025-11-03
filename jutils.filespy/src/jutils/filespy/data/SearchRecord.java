@@ -4,6 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Icon;
+import javax.swing.filechooser.FileSystemView;
+
+import jutils.core.SwingUtils;
 import jutils.core.ui.explorer.DefaultExplorerItem;
 import jutils.core.ui.explorer.IExplorerItem;
 
@@ -52,7 +56,7 @@ public class SearchRecord implements IExplorerItem
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getFilename()
@@ -61,7 +65,7 @@ public class SearchRecord implements IExplorerItem
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getLastModified()
@@ -70,7 +74,7 @@ public class SearchRecord implements IExplorerItem
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getParentPath()
@@ -79,7 +83,7 @@ public class SearchRecord implements IExplorerItem
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public long getSizeInKb()
@@ -88,7 +92,7 @@ public class SearchRecord implements IExplorerItem
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getType()
@@ -97,7 +101,7 @@ public class SearchRecord implements IExplorerItem
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getSystemName()
@@ -106,11 +110,20 @@ public class SearchRecord implements IExplorerItem
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String toString()
     {
         return getSystemName();
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public Icon getIcon( FileSystemView view )
+    {
+        return SwingUtils.getFileIcon( view, getFile() );
     }
 }

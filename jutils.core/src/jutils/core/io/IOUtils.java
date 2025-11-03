@@ -1132,4 +1132,16 @@ public final class IOUtils
                 return true;
         }
     }
+
+    /***************************************************************************
+     * @param file
+     * @return
+     **************************************************************************/
+    public static boolean isUncPath( File file )
+    {
+        String path = file.getAbsolutePath();
+        path = path.replace( '\\', '/' );
+
+        return path.startsWith( "//" );
+    }
 }

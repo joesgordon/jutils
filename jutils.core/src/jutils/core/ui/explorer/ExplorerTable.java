@@ -267,23 +267,15 @@ public class ExplorerTable implements IView<JTable>
         public void decorate( JLabel label, JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int col )
         {
+            Icon icon = null;
+
             if( value instanceof IExplorerItem )
             {
-                File file = ( ( IExplorerItem )value ).getFile();
-                if( file != null && file.exists() )
-                {
-                    Icon icon = view.getSystemIcon( file );
-                    label.setIcon( icon );
-                }
-                else
-                {
-                    label.setIcon( null );
-                }
+                IExplorerItem item = ( IExplorerItem )value;
+                icon = item.getIcon( view );
             }
-            else
-            {
-                label.setIcon( null );
-            }
+
+            label.setIcon( icon );
         }
     }
 

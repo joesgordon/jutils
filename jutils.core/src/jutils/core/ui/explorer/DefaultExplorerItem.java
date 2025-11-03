@@ -4,8 +4,14 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
 
+import jutils.core.SwingUtils;
+
+/*******************************************************************************
+ * 
+ ******************************************************************************/
 public class DefaultExplorerItem implements IExplorerItem
 {
     /**  */
@@ -174,5 +180,11 @@ public class DefaultExplorerItem implements IExplorerItem
     public String toString()
     {
         return getSystemName();
+    }
+
+    @Override
+    public Icon getIcon( FileSystemView view )
+    {
+        return SwingUtils.getFileIcon( view, file );
     }
 }

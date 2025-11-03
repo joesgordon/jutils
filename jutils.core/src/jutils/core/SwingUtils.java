@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -56,6 +58,7 @@ import javax.swing.table.TableModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import jutils.core.io.IOUtils;
 import jutils.core.ui.StatusBarPanel;
 import jutils.core.ui.event.ActionAdapter;
 
@@ -1020,5 +1023,34 @@ public final class SwingUtils
 
             return srcLoc;
         }
+    }
+
+    /***************************************************************************
+     * @param view
+     * @param file
+     * @return
+     **************************************************************************/
+    public static Icon getFileIcon( FileSystemView view, File file )
+    {
+        Icon icon = null;
+
+        if( file == null )
+        {
+            icon = IconConstants.getIcon( IconConstants.STOP_16 );
+        }
+        else if( IOUtils.isUncPath( file ) )
+        {
+            icon = IconConstants.getIcon( IconConstants.OPEN_FILE_16 );
+        }
+        else if( file.exists() )
+        {
+            icon = view.getSystemIcon( file );
+        }
+        else
+        {
+            icon = IconConstants.getIcon( IconConstants.FIND_16 );
+        }
+
+        return icon;
     }
 }
