@@ -1,10 +1,14 @@
 package jutils.core.timestamps;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import jutils.core.Utils;
 import jutils.core.ValidationException;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.IParser;
+import jutils.core.io.parsers.IntegerParser;
+import jutils.core.io.parsers.LongParser;
 import jutils.core.time.TimeUtils;
 import jutils.core.ui.fields.IDescriptor;
 
@@ -72,14 +76,59 @@ public class UnixTime implements ITimestamp
      **************************************************************************/
     public static class UnixTimeParser implements IParser<UnixTime>
     {
+        /**  */
+        private final LongParser secondsParser;
+        /**  */
+        private final IntegerParser nanosParser;
+
+        /**
+         * 
+         */
+        public UnixTimeParser()
+        {
+            this.secondsParser = new LongParser();
+            this.nanosParser = new IntegerParser( 0,
+                ( int )TimeUtils.NANOS_IN_SEC );
+        }
+
         /**
          * {@inheritDoc}
          */
         @Override
-        public UnixTime parse( String str ) throws ValidationException
+        public UnixTime parse( final String str ) throws ValidationException
         {
-            // TODO Auto-generated method stub
-            return null;
+            UnixTime time = new UnixTime();
+
+            String text = str.trim();
+
+            List<String> fields = Utils.split( text, '.' );
+
+            String secStr = "";
+            String nanosStr = "";
+
+            if( fields.size() == 2 )
+            {
+                secStr = fields.get( 0 );
+                nanosStr = fields.get( 1 );
+
+                nanosStr = String.format( "%-9s", nanosStr );
+                nanosStr = nanosStr.replace( ' ', '0' );
+            }
+            else if( fields.size() == 1 )
+            {
+                secStr = fields.get( 0 );
+            }
+            else
+            {
+                throw new ValidationException(
+                    "Invalid time string. Too many decimals ('.')" );
+            }
+
+            time.seconds = secondsParser.parse( secStr );
+            time.nanoseconds = nanosStr.isEmpty() ? 0
+                : nanosParser.parse( nanosStr );
+
+            return time;
         }
     }
 
@@ -92,10 +141,9 @@ public class UnixTime implements ITimestamp
          * {@inheritDoc}
          */
         @Override
-        public String getDescription( UnixTime item )
+        public String getDescription( UnixTime time )
         {
-            // TODO Auto-generated method stub
-            return null;
+            return String.format( "%d.%09d", time.seconds, time.nanoseconds );
         }
     }
 }

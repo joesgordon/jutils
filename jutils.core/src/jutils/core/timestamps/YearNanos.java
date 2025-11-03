@@ -68,11 +68,14 @@ public class YearNanos implements ITimestamp
         fromDateTime( time );
     }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
     public void printFields( FieldPrinter printer )
     {
-        // TODO Auto-generated method stub
-
+        printer.printField( "Year", year );
+        printer.printField( "Nanoseconds", nanos );
     }
 
     /***************************************************************************
@@ -81,8 +84,8 @@ public class YearNanos implements ITimestamp
     @Override
     public LocalDateTime toDateTime()
     {
-        int doy = ( int )( nanos / TimeUtils.NANOS_PER_DAY );
-        long nod = nanos - ( doy * TimeUtils.NANOS_PER_DAY );
+        int doy = ( int )( nanos / TimeUtils.NANOS_IN_DAY );
+        long nod = nanos - ( doy * TimeUtils.NANOS_IN_DAY );
 
         doy++;
 
@@ -110,7 +113,7 @@ public class YearNanos implements ITimestamp
     {
         this.year = ( short )time.getYear();
         int doy = time.getDayOfYear() - 1;
-        this.nanos = doy * TimeUtils.NANOS_PER_DAY +
+        this.nanos = doy * TimeUtils.NANOS_IN_DAY +
             time.toLocalTime().toNanoOfDay();
     }
 
@@ -121,6 +124,18 @@ public class YearNanos implements ITimestamp
     public void setNow()
     {
         fromDateTime( TimeUtils.getUtcNow() );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public String toString()
+    {
+        long secs = nanos / TimeUtils.NANOS_IN_SEC;
+        long frac = nanos - ( secs * TimeUtils.NANOS_IN_SEC );
+
+        return String.format( "%04d %d.%09d", year, secs, frac );
     }
 
     /***************************************************************************
@@ -200,6 +215,24 @@ public class YearNanos implements ITimestamp
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static YearNanos min()
+    {
+        return new YearNanos( Short.MIN_VALUE, 0L );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static YearNanos max()
+    {
+        long nanos = TimeUtils.NANOS_IN_DAY * 365;
+
+        return new YearNanos( Short.MAX_VALUE, nanos - 1 );
+    }
+
+    /***************************************************************************
      * Creates a new instant that represents the current system time.
      * @return the instant that represents the current system time.
      **************************************************************************/
@@ -223,18 +256,6 @@ public class YearNanos implements ITimestamp
         time.setNow();
 
         return time;
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public String toString()
-    {
-        long secs = nanos / TimeUtils.NANOS_IN_SEC;
-        long frac = nanos - ( secs * TimeUtils.NANOS_IN_SEC );
-
-        return String.format( "%04d %d.%09d", year, secs, frac );
     }
 
     /***************************************************************************

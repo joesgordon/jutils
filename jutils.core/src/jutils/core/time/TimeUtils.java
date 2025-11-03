@@ -75,9 +75,9 @@ public final class TimeUtils
     /**  */
     public static final long NANOS_IN_SEC = NANOS_IN_MILLI * MILLIS_IN_SEC;
     /** The number of nanoseconds in a day. */
-    public static final long NANOS_PER_DAY = NANOS_IN_SEC * SECONDS_IN_DAY;
+    public static final long NANOS_IN_DAY = NANOS_IN_SEC * SECONDS_IN_DAY;
     /** The maximum number of nanoseconds in a year (366 days). */
-    public static final long MAX_NANOS_PER_YEAR = NANOS_PER_DAY *
+    public static final long MAX_NANOS_IN_YEAR = NANOS_IN_DAY *
         MAX_DAYS_IN_YEAR;
 
     /**  */

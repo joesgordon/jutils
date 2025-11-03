@@ -18,9 +18,18 @@ public class NicIpField extends IpAddressField
      **************************************************************************/
     public NicIpField( String name )
     {
+        this( name, false );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param ipv4Only
+     **************************************************************************/
+    public NicIpField( String name, boolean ipv4Only )
+    {
         super( name );
 
-        this.nicMenu = new NetworkInterfacePopup();
+        this.nicMenu = new NetworkInterfacePopup( ipv4Only );
 
         nicMenu.setUpdater( ( d ) -> handleNicChosen( d ) );
     }

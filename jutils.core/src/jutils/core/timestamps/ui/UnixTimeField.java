@@ -27,10 +27,12 @@ public class UnixTimeField implements IDataFormField<UnixTime>
     {
         JTextField jtf = new JTextField();
 
-        this.field = new ParserFormField<UnixTime>( "Time",
-            new UnixTimeParser(), jtf, new UnixTimeDescriptor(), "seconds" );
+        this.field = new ParserFormField<UnixTime>( name, new UnixTimeParser(),
+            jtf, new UnixTimeDescriptor(), "seconds" );
 
         jtf.setHorizontalAlignment( JTextField.RIGHT );
+
+        setValue( new UnixTime() );
     }
 
     /***************************************************************************

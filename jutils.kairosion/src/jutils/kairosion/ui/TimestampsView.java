@@ -35,7 +35,7 @@ public class TimestampsView implements IDataView<LocalDateTime>
     private final StandardFormView form;
 
     /**  */
-    private final List<ITimestampField<?>> fields;
+    private final List<ITimeField<?>> fields;
 
     /**  */
     private LocalDateTime time;
@@ -100,32 +100,34 @@ public class TimestampsView implements IDataView<LocalDateTime>
      * @param <T>
      * @return
      **************************************************************************/
-    public <T> void addField( ITimestampField<T> field )
+    public <T> void addField( ITimeField<T> field )
     {
-        IUpdater<ITimestampField<?>> updater = ( f ) -> handleFieldUpdated( f );
+        IUpdater<ITimeField<?>> updater = ( f ) -> handleFieldUpdated( f );
 
         field.setUpdater( updater );
         form.addField( field.getField() );
 
         formView.setComponent( form.getView() );
+
+        fields.add( field );
     }
 
     /***************************************************************************
      * @param field
      * @param times
+     * @param <T>
      **************************************************************************/
-    private void handleFieldUpdated( ITimestampField<?> field )
+    private <T> void handleFieldUpdated( ITimeField<T> field )
     {
-        // LocalDateTime time = field.updateDateTime(
-        // field.getField().getValue() );
-        //
-        // for( ITimestampField<?> f : fields )
-        // {
-        // if( f != field )
-        // {
-        // f.setDateTime( time );
-        // }
-        // }
+        LocalDateTime time = field.updateDateTime( this.time );
+
+        for( ITimeField<?> f : fields )
+        {
+            if( f != field )
+            {
+                f.setDateTime( time );
+            }
+        }
     }
 
     /***************************************************************************
@@ -154,7 +156,7 @@ public class TimestampsView implements IDataView<LocalDateTime>
     {
         this.time = data;
 
-        for( ITimestampField<?> f : fields )
+        for( ITimeField<?> f : fields )
         {
             f.setDateTime( time );
         }

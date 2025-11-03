@@ -2,28 +2,23 @@ package jutils.kairosion.ui;
 
 import java.time.LocalDateTime;
 
-import jutils.core.timestamps.ITimestamp;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
 
 /*******************************************************************************
- * @param <T>
+ * 
  ******************************************************************************/
-public class TimestampField<T extends ITimestamp> implements ITimeField<T>
+public class LocalDateTimeField implements ITimeField<LocalDateTime>
 {
     /**  */
-    private final IDataFormField<T> field;
-
+    private final IDataFormField<LocalDateTime> field;
     /**  */
     private IUpdater<ITimeField<?>> onUpdate;
 
     /***************************************************************************
      * @param field
-     * @param onUpdate
-     * @param toData
-     * @param toLdt
      **************************************************************************/
-    public TimestampField( IDataFormField<T> field )
+    public LocalDateTimeField( IDataFormField<LocalDateTime> field )
     {
         this.field = field;
         this.onUpdate = null;
@@ -34,7 +29,7 @@ public class TimestampField<T extends ITimestamp> implements ITimeField<T>
     /***************************************************************************
      * @param d
      **************************************************************************/
-    private void handleDataUpdated( T d )
+    private void handleDataUpdated( LocalDateTime d )
     {
         if( onUpdate != null )
         {
@@ -48,16 +43,7 @@ public class TimestampField<T extends ITimestamp> implements ITimeField<T>
     @Override
     public void setDateTime( LocalDateTime time )
     {
-        T data = field.getValue();
-
-        if( data == null )
-        {
-            throw new NullPointerException(
-                "No default value set for " + field.getClass() );
-        }
-
-        data.fromDateTime( time );
-        field.setValue( data );
+        field.setValue( time );
     }
 
     /***************************************************************************
@@ -66,14 +52,14 @@ public class TimestampField<T extends ITimestamp> implements ITimeField<T>
     @Override
     public LocalDateTime updateDateTime( LocalDateTime time )
     {
-        return field.getValue().toDateTime();
+        return field.getValue();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IDataFormField<T> getField()
+    public IDataFormField<LocalDateTime> getField()
     {
         return field;
     }

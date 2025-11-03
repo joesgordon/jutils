@@ -8,7 +8,7 @@ import jutils.core.ui.fields.IDataFormField;
 /*******************************************************************************
  * @param <T>
  ******************************************************************************/
-public interface ITimestampField<T>
+public interface ITimeField<T>
 {
     /***************************************************************************
      * @param time
@@ -16,10 +16,10 @@ public interface ITimestampField<T>
     public void setDateTime( LocalDateTime time );
 
     /***************************************************************************
-     * @param data
+     * @param time
      * @return
      **************************************************************************/
-    public LocalDateTime updateDateTime( T data );
+    public LocalDateTime updateDateTime( LocalDateTime time );
 
     /***************************************************************************
      * @return
@@ -29,5 +29,5 @@ public interface ITimestampField<T>
     /***************************************************************************
      * @param updater
      **************************************************************************/
-    public void setUpdater( IUpdater<ITimestampField<?>> updater );
+    public void setUpdater( IUpdater<ITimeField<?>> updater );
 }
