@@ -9,7 +9,7 @@ import jutils.core.utils.BitMasks;
 /*******************************************************************************
  *
  ******************************************************************************/
-public class Crc16 implements ITierPrinter
+public class Crc16 implements ITierPrinter, IChecksum
 {
     /**  */
     public static final int TABLE_SIZE = 256;
@@ -124,8 +124,7 @@ public class Crc16 implements ITierPrinter
     }
 
     /***************************************************************************
-     * @param table
-     * @param src
+     * @param data
      * @return
      **************************************************************************/
     public short calculate( byte [] data )
@@ -134,20 +133,48 @@ public class Crc16 implements ITierPrinter
     }
 
     /***************************************************************************
-     * @param table
-     * @param data
+     * @param bytes
      * @param start
      * @param length
      * @return
      **************************************************************************/
-    public short calculate( byte [] data, int start, int length )
+    public short calculate( byte [] bytes, int start, int length )
+    {
+        reset();
+
+        update( bytes, start, length );
+
+        int crc = value & 0xFFFF;
+
+        crc = config.reflectOut ? reverseBits16( crc ) : crc;
+        crc ^= config.xorout;
+
+        value = ( short )( crc );
+
+        return value;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void update( byte [] bytes )
+    {
+        update( bytes, 0, bytes.length );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void update( byte [] bytes, int start, int length )
     {
         int crc = value & 0xFFFF;
 
         for( int i = 0; i < length; i++ )
         {
             int dataIndex = i + start;
-            int dataValue = data[dataIndex];
+            int dataValue = bytes[dataIndex];
 
             dataValue = config.reflectIn ? reverseBits8( dataValue )
                 : dataValue;
@@ -170,12 +197,34 @@ public class Crc16 implements ITierPrinter
             // dataValue, tableIndex, tableValue, crc );
         }
 
-        crc = config.reflectOut ? reverseBits16( crc ) : crc;
-        crc ^= config.xorout;
+        this.value = ( short )( crc );
+    }
 
-        value = ( short )( crc );
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    @Override
+    public void reset()
+    {
+        this.value = config.initial;
+    }
 
-        return value;
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public byte [] getChecksum()
+    {
+        byte [] b = new byte[4];
+        int shift;
+
+        for( int i = 0; i < b.length; ++i )
+        {
+            shift = 8 * ( b.length - 1 - i );
+            b[i] = ( byte )( ( value >> shift ) & 0xFF );
+        }
+
+        return b;
     }
 
     /***************************************************************************
@@ -228,14 +277,6 @@ public class Crc16 implements ITierPrinter
         value = ( short )( crc );
 
         return value;
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public void reset()
-    {
-        this.value = config.initial;
     }
 
     /***************************************************************************

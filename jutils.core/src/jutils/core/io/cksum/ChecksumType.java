@@ -9,11 +9,14 @@ public enum ChecksumType implements INamedItem
 {
     /**  */
     SHA_256( "SHA-256" ),
-	MD5( "MD5" ),
+    /**  */
+    MD5( "MD5" ),
+    /**  */
+    CRC16( "CRC-16" ),
     /**  */
     CRC32( "CRC-32" ),
     /**  */
-    
+
     /**  */
     SHA_1( "SHA-1" );
 
