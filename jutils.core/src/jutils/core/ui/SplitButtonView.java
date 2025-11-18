@@ -268,6 +268,15 @@ public class SplitButtonView<T> implements IView<JComponent>
     }
 
     /***************************************************************************
+     * @param enabled
+     **************************************************************************/
+    public void setEnabled( boolean enabled )
+    {
+        button.setEnabled( enabled );
+        arrowButton.setEnabled( enabled );
+    }
+
+    /***************************************************************************
      * 
      **************************************************************************/
     private class ArrowIcon implements Icon

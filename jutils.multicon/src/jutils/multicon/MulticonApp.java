@@ -3,7 +3,8 @@ package jutils.multicon;
 import javax.swing.JFrame;
 
 import jutils.core.ui.app.IFrameApp;
-import jutils.multicon.ui.MulticonFrame;
+import jutils.core.ui.model.IView;
+import jutils.multicon.ui.MulticonOldFrame;
 
 /*******************************************************************************
  * 
@@ -16,7 +17,7 @@ public class MulticonApp implements IFrameApp
     @Override
     public JFrame createFrame()
     {
-        MulticonFrame frame = new MulticonFrame();
+        IView<JFrame> frame = new MulticonOldFrame();
 
         return frame.getView();
     }

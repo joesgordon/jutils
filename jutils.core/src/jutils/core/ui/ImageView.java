@@ -1,7 +1,11 @@
 package jutils.core.ui;
 
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,10 +28,23 @@ public class ImageView implements IView<JComponent>
     public ImageView()
     {
         this.imgLabel = new JLabel();
-        this.view = new JPanel();
+        this.view = createView();
+    }
 
-        view.setLayout( new GridBagLayout() );
-        // view.
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private JPanel createView()
+    {
+        JPanel panel = new JPanel( new GridBagLayout() );
+        GridBagConstraints constraints;
+
+        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 4, 4, 4, 4 ), 0, 0 );
+        panel.add( imgLabel, constraints );
+
+        return panel;
     }
 
     /***************************************************************************
@@ -37,5 +54,13 @@ public class ImageView implements IView<JComponent>
     public JComponent getView()
     {
         return view;
+    }
+
+    /***************************************************************************
+     * @param img
+     **************************************************************************/
+    public void setImage( Image img )
+    {
+        imgLabel.setIcon( new ImageIcon( img ) );
     }
 }
