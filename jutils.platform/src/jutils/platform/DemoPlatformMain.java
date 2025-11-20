@@ -13,7 +13,7 @@ public class DemoPlatformMain
     /***************************************************************************
      * @param args
      **************************************************************************/
-    public static void main( String [] args )
+    public static void main2( String [] args )
     {
         AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
 

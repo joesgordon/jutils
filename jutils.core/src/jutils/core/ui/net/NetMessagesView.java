@@ -41,6 +41,7 @@ import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.ITableConfig;
 import jutils.core.ui.model.IView;
 import jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
+import jutils.core.ui.net.NetMessagesTableConfig.IMessageFields;
 
 /*******************************************************************************
  * Defines UI that displays {@link NetMessage}s.
@@ -80,7 +81,7 @@ public class NetMessagesView implements IView<JPanel>
      * @param fields
      * @param msgWriter
      **************************************************************************/
-    public NetMessagesView( IMessageFields fields,
+    public NetMessagesView( IMessageFields<NetMessage> fields,
         IStringWriter<NetMessage> msgWriter )
     {
         this( fields, PaginatedTableView.createItemWriterView( msgWriter ),
@@ -92,7 +93,7 @@ public class NetMessagesView implements IView<JPanel>
      * @param msgView
      * @param addScrollPane
      **************************************************************************/
-    public NetMessagesView( IMessageFields fields,
+    public NetMessagesView( IMessageFields<NetMessage> fields,
         IDataView<NetMessage> msgView, boolean addScrollPane )
     {
         this( fields, msgView, addScrollPane, false );
@@ -104,7 +105,7 @@ public class NetMessagesView implements IView<JPanel>
      * @param addScrollPane
      * @param isStaticSize
      **************************************************************************/
-    private NetMessagesView( IMessageFields fields,
+    private NetMessagesView( IMessageFields<NetMessage> fields,
         IDataView<NetMessage> msgView, boolean addScrollPane,
         boolean isStaticSize )
     {
@@ -124,8 +125,8 @@ public class NetMessagesView implements IView<JPanel>
             try
             {
                 @SuppressWarnings( "resource")
-                ReferenceStream<NetMessage> refs = new ReferenceStream<>(
-                    nmSerializer );
+                ReferenceStream<
+                    NetMessage> refs = new ReferenceStream<>( nmSerializer );
                 rs = refs;
             }
             catch( IOException ex )
@@ -441,30 +442,6 @@ public class NetMessagesView implements IView<JPanel>
     public void setMsgsPerPage( int msgsPerPage )
     {
         table.setItemsPerPage( msgsPerPage );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static interface IMessageFields
-    {
-        /**
-         * @return
-         */
-        public int getFieldCount();
-
-        /**
-         * @param index
-         * @return
-         */
-        public String getFieldName( int index );
-
-        /**
-         * @param message
-         * @param index
-         * @return
-         */
-        public String getFieldValue( NetMessage message, int index );
     }
 
     /***************************************************************************

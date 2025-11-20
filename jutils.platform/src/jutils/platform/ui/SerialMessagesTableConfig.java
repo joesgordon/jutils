@@ -1,30 +1,31 @@
-package jutils.core.ui.net;
+package jutils.platform.ui;
 
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 
 import jutils.core.Utils;
-import jutils.core.net.NetMessage;
 import jutils.core.ui.hex.HexUtils;
 import jutils.core.ui.model.ITableConfig;
+import jutils.core.ui.net.NetMessagesTableConfig.EmptyMessageFields;
+import jutils.core.ui.net.NetMessagesTableConfig.IMessageFields;
+import jutils.platform.data.SerialMessage;
 
-/*******************************************************************************
+/***************************************************************************
  * 
- ******************************************************************************/
-public class NetMessagesTableConfig implements ITableConfig<NetMessage>
+ **************************************************************************/
+public class SerialMessagesTableConfig implements ITableConfig<SerialMessage>
 {
     /**  */
     private static final String [] MSG_NAMES = new String[] { "Tx/Rx", "Time",
-        "Local", "Remote", "Length", "Contents" };
+        "Length", "Contents" };
     /**  */
-    private static final Class<
-        ?> [] MSG_CLASSES = new Class<?>[] { String.class, LocalDateTime.class,
-            String.class, String.class, Integer.class, String.class };
+    private static final Class<?> [] MSG_CLASSES = new Class<?>[] {
+        String.class, LocalDateTime.class, Integer.class, String.class };
 
     /**  */
     private final Charset utf8;
     /**  */
-    private final IMessageFields<NetMessage> fields;
+    private final IMessageFields<SerialMessage> fields;
     /**  */
     private final String [] names;
     /**  */
@@ -36,18 +37,16 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
     /***************************************************************************
      * 
      **************************************************************************/
-    public NetMessagesTableConfig()
+    public SerialMessagesTableConfig()
     {
-        this( null );
+        this( new EmptyMessageFields<>() );
     }
 
     /***************************************************************************
-     * @param fields
+     * 
      **************************************************************************/
-    public NetMessagesTableConfig( IMessageFields<NetMessage> fields )
+    public SerialMessagesTableConfig( IMessageFields<SerialMessage> fields )
     {
-        fields = fields == null ? new EmptyMessageFields<>() : fields;
-
         this.fields = fields;
         this.utf8 = Charset.forName( "UTF-8" );
         this.names = new String[MSG_NAMES.length + this.fields.getFieldCount()];
@@ -60,7 +59,6 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
         {
             String name = null;
             Class<?> cls = null;
-
             if( i < ( MSG_NAMES.length - 1 ) )
             {
                 name = MSG_NAMES[i];
@@ -103,7 +101,7 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
      * 
      **************************************************************************/
     @Override
-    public Object getItemData( NetMessage item, int col )
+    public Object getItemData( SerialMessage item, int col )
     {
         int fieldStart = MSG_NAMES.length - 1;
         int contentsCol = names.length - 1;
@@ -113,19 +111,13 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
             switch( col )
             {
                 case 0:
-                    return item.received ? "Rx" : "Tx";
+                    return item.isTransmitted ? "Tx" : "Rx";
 
                 case 1:
                     return item.time;
 
                 case 2:
-                    return item.local.toString();
-
-                case 3:
-                    return item.remote.toString();
-
-                case 4:
-                    return item.contents.length;
+                    return item.data.length;
 
                 default:
                     throw new IllegalStateException( "Programmer error" );
@@ -137,11 +129,11 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
         }
         else if( col == contentsCol )
         {
-            int cnt = Math.min( item.contents.length, isHex ? 32 : 64 );
+            int cnt = Math.min( item.data.length, isHex ? 32 : 64 );
             byte [] buf = new byte[cnt];
-            boolean addDots = cnt != item.contents.length;
+            boolean addDots = cnt != item.data.length;
 
-            Utils.byteArrayCopy( item.contents, 0, buf, 0, buf.length );
+            Utils.byteArrayCopy( item.data, 0, buf, 0, buf.length );
 
             String str;
 
@@ -167,7 +159,7 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
      * 
      **************************************************************************/
     @Override
-    public void setItemData( NetMessage item, int col, Object data )
+    public void setItemData( SerialMessage item, int col, Object data )
     {
     }
 
@@ -175,7 +167,7 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
      * 
      **************************************************************************/
     @Override
-    public boolean isCellEditable( NetMessage item, int col )
+    public boolean isCellEditable( SerialMessage item, int col )
     {
         return false;
     }
@@ -186,62 +178,5 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
     public void setHexText( boolean isHex )
     {
         this.isHex = isHex;
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static interface IMessageFields<T>
-    {
-        /**
-         * @return
-         */
-        public int getFieldCount();
-
-        /**
-         * @param index
-         * @return
-         */
-        public String getFieldName( int index );
-
-        /**
-         * @param message
-         * @param index
-         * @return
-         */
-        public String getFieldValue( T item, int index );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static final class EmptyMessageFields<T> implements IMessageFields<T>
-    {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getFieldCount()
-        {
-            return 0;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getFieldName( int index )
-        {
-            return null;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getFieldValue( T item, int index )
-        {
-            return null;
-        }
     }
 }

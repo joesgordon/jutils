@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project name="jutilsmulticon" default="jar">
+<project name="jutilskairosion" default="jar">
 
 	<dirname property="proj.projdir" file="${ant.file}" />
 
 	<import file="${proj.projdir}/../ant/jutilsimport.xml" />
 
-	<property name="jutilsbuild.name" value="jutils.multicon" />
-	<property name="jutilsbuild.main" value="jutils.multicon.MulticonMain" />
+	<property name="jutilsbuild.name" value="jutils.kairosion" />
+	<property name="jutilsbuild.main" value="jutils.kairosion.KairosionMain" />
 
 	<path id="jutilsbuild.jars">
 		<fileset file="${juprops.releaseindv}/jutils.core.jar" />
-        <fileset file="${juprops.releaseindv}/jutils.platform.jar" />
 	</path>
 
 	<import file="${proj.projdir}/../ant/jutilsbuild.xml" />

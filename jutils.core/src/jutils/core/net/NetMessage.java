@@ -10,8 +10,6 @@ import jutils.core.ui.hex.HexUtils;
  ******************************************************************************/
 public class NetMessage
 {
-    // TODO Consider using java.time.Instant instead of LocalDateTime.
-
     /** {@code true} indicates the message was received; {@code false}, sent */
     public final boolean received;
     /** Time of transmission or reception. */

@@ -34,6 +34,7 @@
         <calldir dir="jutils.hexedit" target="release" />
         <calldir dir="jutils.insomnia" target="release" />
         <calldir dir="jutils.iris" target="release" />
+        <calldir dir="jutils.kairosion" target="release" />
         <calldir dir="jutils.mines" target="release" />
         <calldir dir="jutils.multicon" target="release" />
         <calldir dir="jutils.summer" target="release" />
@@ -56,6 +57,7 @@
             <zipfileset src="${juprops.releaseindv}/jutils.insomnia.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.iris.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.math.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.kairosion.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.platform.jar" />
@@ -86,6 +88,7 @@
             <zipfileset src="${juprops.releaseindv}/jutils.insomnia.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.iris.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.math.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.kairosion.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.platform.jar" />
@@ -109,6 +112,7 @@
             <zipfileset src="${juprops.releaseindv}/jutils.insomnia-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.iris-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.math-debug.jar" />
+            <zipfileset src="${juprops.releaseindv}/jutils.kairosion-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.mines-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.multicon-debug.jar" />
             <zipfileset src="${juprops.releaseindv}/jutils.platform-debug.jar" />
@@ -132,6 +136,7 @@
             <fileset dir="jutils.hexedit/src" />
             <fileset dir="jutils.insomnia/src" />
             <fileset dir="jutils.iris/src" />
+            <fileset dir="jutils.kairosion/src" />
             <fileset dir="jutils.math/src" />
             <fileset dir="jutils.mines/src" />
             <fileset dir="jutils.multicon/src" />

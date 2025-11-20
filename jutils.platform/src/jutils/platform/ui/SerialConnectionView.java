@@ -62,6 +62,6 @@ public class SerialConnectionView implements IView<JComponent>
      **************************************************************************/
     public void addItem( SerialMessage msg )
     {
-        msgsView.addItem( msg );
+        msgsView.addMessage( msg );
     }
 }
