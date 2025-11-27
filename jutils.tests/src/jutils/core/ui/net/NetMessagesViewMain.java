@@ -28,7 +28,7 @@ import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.event.ItemActionEvent;
-import jutils.core.ui.net.NetMessagesView.IMessageFields;
+import jutils.core.ui.net.NetMessagesTableConfig.IMessageFields;
 
 /*******************************************************************************
  * 
@@ -182,7 +182,7 @@ public class NetMessagesViewMain
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class MessageFields implements IMessageFields
+    private static class MessageFields implements IMessageFields<NetMessage>
     {
         /**
          * {@inheritDoc}
