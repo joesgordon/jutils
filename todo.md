@@ -13,10 +13,7 @@
 
 ## jutils.core
 
-- Add Checksum App
-- Add date/time chooser
-  - App/Name: Chronos, Kitsune, Momentie
-  - Create and apply Icon
+- Add date/time chooser (Kairosion)
   - Add fields:
     - `Year` / `Month` / `Day of Month`
     - `Hour` / `Minute` / `Second` / `Microsecond`
@@ -30,7 +27,7 @@
     - `Microsoft Filetime`
     - `Julian Date/Time`
     - `Sidereal Time`
-  - Add Calendar view to right of fields.
+  - Add Calendar button to the right of fields; brings up date/time chooser.
   - Add ability to edit GPS Leap Seconds.
   - Add ability to change time zone.
 - Add cyclic buffer to NetMsgsView.
@@ -39,8 +36,6 @@
   - `fieldHasFocus(field:IFormField):boolean` and 
   - `hasFocus(comp:JComponent):boolean` using `JFrame.getFocusOwner()` and 
   - `Container.isAnscestorOf()`.
-- Summer: Find files using `TaskView.startAndShow()`.
-- Summer: Multithread checksum verification.
 - ListView:
   - add `ItemActionList<ItemChanged<T>>` change listeners.
   - make add/delete item listeners lamdas & call change listeners.
@@ -66,6 +61,11 @@
 - ColorMapView fix legend.
 
 [Top](#jutils-to-do-list)
+
+## jutils.summer
+
+- Find files using `TaskView.startAndShow()`.
+- Multithread checksum verification.
 
 ## jutils.fileSpy
 

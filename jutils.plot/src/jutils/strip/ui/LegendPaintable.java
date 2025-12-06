@@ -25,8 +25,9 @@ public class LegendPaintable implements IPaintable
     /**  */
     private static final int LEGEND_PADDING = 0;
     /**  */
-    private static final int MARKER_SIZE = 10;
+    // private static final int MARKER_SIZE = 10;
 
+    /**  */
     private Border border;
 
     /**  */
@@ -111,7 +112,7 @@ public class LegendPaintable implements IPaintable
         {
             String name = legend.getName( s );
             Color clr = legend.getSeriesColor( s );
-            int txtw = fm.stringWidth( name );
+            // int txtw = fm.stringWidth( name );
 
             // LogUtils.printDebug( "drawing series keys at %d", s );
 
