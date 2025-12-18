@@ -5,10 +5,12 @@ import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
+import jutils.core.ui.PainterComponent;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.model.IView;
 import jutils.math.IMatrix;
 import jutils.math.Matrix;
+import jutils.math.charts.ChartPainter;
 
 /*******************************************************************************
  * 
@@ -24,6 +26,10 @@ public class MathDemoView implements IView<JComponent>
     private final QuaternionField quatField;
     /**  */
     private final MatrixView matrixView;
+    /**  */
+    private final HistogramsDemoView histogramView;
+    /**  */
+    private final PainterComponent distributionView;
 
     /***************************************************************************
      * 
@@ -37,6 +43,10 @@ public class MathDemoView implements IView<JComponent>
 
         this.matrixView = new MatrixView();
 
+        this.histogramView = new HistogramsDemoView();
+
+        this.distributionView = new PainterComponent( new ChartPainter() );
+
         this.view = createView();
     }
 
@@ -49,6 +59,8 @@ public class MathDemoView implements IView<JComponent>
 
         tabs.addTab( "Fields", createFieldsTab() );
         tabs.addTab( "Matrix", createMatrixTab() );
+        tabs.addTab( "Histogram", histogramView.getView() );
+        tabs.addTab( "Distributions", distributionView );
 
         return tabs;
     }

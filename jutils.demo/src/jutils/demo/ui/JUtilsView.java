@@ -25,7 +25,7 @@ import jutils.demo.ui.jutils.ImageFileView;
 import jutils.demo.ui.jutils.LedViews;
 import jutils.demo.ui.jutils.MsgInputDemoView;
 import jutils.demo.ui.jutils.ScreenFormFieldView;
-import jutils.iris.demo.HistogramsDemoView;
+import jutils.math.ui.HistogramsDemoView;
 
 /*******************************************************************************
  * Defines a view to display all JUtils components.

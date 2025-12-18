@@ -2,18 +2,14 @@ package jutils.core.ui;
 
 import java.awt.Graphics2D;
 
-import javax.swing.JComponent;
-
 /*******************************************************************************
- * Defines a callback that paints on a {@link JComponent}.
+ * Defines a callback that paints using a {@link Graphics2D}.
  ******************************************************************************/
-public interface IPaintable
+public interface IPainter
 {
     /***************************************************************************
-     * Called when the provided component is to be painted using the provided
-     * graphics.
-     * @param c the component to be painted.
+     * Called to paint using the provided graphics.
      * @param g the graphics used to paint.
      **************************************************************************/
-    void paint( JComponent c, Graphics2D g );
+    void paint( Graphics2D g );
 }

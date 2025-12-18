@@ -4,41 +4,40 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 /*******************************************************************************
- * Defines a component that will paint using an {@link IPaintable}.
+ * Defines a component that will paint using an {@link IPainter}.
  ******************************************************************************/
-public class PaintingComponent extends JPanel
+public class PainterComponent extends JPanel
 {
     /** Generated UID. */
     private static final long serialVersionUID = -4340666978067812946L;
 
     /** The callback invoked on {@link #paintComponent(Graphics)}. */
-    private final IPaintable paintable;
+    private final IPainter paintable;
 
     /***************************************************************************
      * Creates a new {@link JPanel} that will be
-     * {@link IPaintable#paint(JComponent, Graphics2D) drawn} according to the
-     * provided callback using high-quality hints.
+     * {@link IPainter#paint(Graphics2D) drawn} according to the provided
+     * callback using high-quality hints.
      * @param paintable the callback invoked on
      * @see #setHighQualityRendering(Graphics2D)
      **************************************************************************/
-    public PaintingComponent( IPaintable paintable )
+    public PainterComponent( IPainter paintable )
     {
         this( paintable, true );
     }
 
     /***************************************************************************
      * Creates a new {@link JPanel} that will be
-     * {@link IPaintable#paint(JComponent, Graphics2D) drawn} according to the
-     * provided callback using high-quality hints if specified.
+     * {@link IPainter#paint(Graphics2D) drawn} according to the provided
+     * callback using high-quality hints if specified.
      * @param paintable the callback invoked on
      * @param setHighQuality sets high-quality hints if specified.
      * @see #setHighQualityRendering(Graphics2D)
      **************************************************************************/
-    public PaintingComponent( IPaintable paintable, boolean setHighQuality )
+    public PainterComponent( IPainter paintable, boolean setHighQuality )
     {
         this.paintable = setHighQuality ? new HighQualityPaintable( paintable )
             : paintable;
@@ -56,7 +55,7 @@ public class PaintingComponent extends JPanel
 
         setHighQualityRendering( g );
 
-        paintable.paint( this, g );
+        paintable.paint( g );
     }
 
     /***************************************************************************
@@ -116,15 +115,15 @@ public class PaintingComponent extends JPanel
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class HighQualityPaintable implements IPaintable
+    private static final class HighQualityPaintable implements IPainter
     {
         /**  */
-        private final IPaintable paintable;
+        private final IPainter paintable;
 
         /**
          * @param paintable
          */
-        public HighQualityPaintable( IPaintable paintable )
+        public HighQualityPaintable( IPainter paintable )
         {
             this.paintable = paintable;
         }
@@ -133,10 +132,10 @@ public class PaintingComponent extends JPanel
          * {@inheritDoc}
          */
         @Override
-        public void paint( JComponent c, Graphics2D g )
+        public void paint( Graphics2D g )
         {
             setHighQualityRendering( g );
-            paintable.paint( c, g );
+            paintable.paint( g );
         }
     }
 }

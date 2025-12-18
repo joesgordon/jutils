@@ -1,8 +1,6 @@
-package jutils.math;
+package jutils.math.rand;
 
 import java.util.Random;
-
-import jutils.core.INamedValue;
 
 /*******************************************************************************
  * Generates random values and data points based on set of customizable
@@ -19,10 +17,6 @@ public class RandomDistribution
     private double mean = 1.0;
     /**  */
     private double standardDeviation = 1.0;
-    /**  */
-    private double value = 0.0;
-    /**  */
-    private double probability = 0.0;
     /**  */
     private DistributionType distribution = DistributionType.NORMAL;
 
@@ -42,11 +36,8 @@ public class RandomDistribution
     {
         if( copy != null )
         {
-            // TODO: need to copy the rand
             this.mean = copy.mean;
             this.standardDeviation = copy.standardDeviation;
-            this.value = copy.value;
-            this.probability = copy.probability;
             this.distribution = copy.distribution;
         }
         else
@@ -100,11 +91,14 @@ public class RandomDistribution
         double p = 0;
         if( standardDeviation > 0.0 && mean > 0.0 && x > 0.0 )
         {
-            double mu = Math.log( Math.abs( Math.tan( mean ) ) );
-            double sigma = standardDeviation / mean;
+            double normMean = Math.log( Math.abs( Math.tan( mean ) ) );
+            double normStddev = standardDeviation / mean;
 
-            p = normalDensityFunction( Math.log( Math.abs( Math.tan( x ) ) ),
-                sigma, mu ) / ( Math.cos( x ) * Math.sin( x ) );
+            double normVal = Math.log( Math.abs( Math.tan( x ) ) );
+            double normProb = normalDensityFunction( normVal, normStddev,
+                normMean );
+
+            p = normProb / ( Math.cos( x ) * Math.sin( x ) );
 
         }
         return p;
@@ -169,63 +163,40 @@ public class RandomDistribution
     }
 
     /***************************************************************************
-     * Returns the current random value.
-     * @return the current random value.
-     **************************************************************************/
-    public double getValue()
-    {
-        return value;
-    }
-
-    public void setValue( double value )
-    {
-        this.value = value;
-    }
-
-    /***************************************************************************
-     * Returns the probability of the current value.
-     * @return the probability of the current value.
-     **************************************************************************/
-    public double getProbability()
-    {
-        return probability;
-    }
-
-    /***************************************************************************
      * Returns the probability of the value x passed to the method, given the
      * current mean, standard deviation, and distribution settings of the Random
      * Distribution.
-     * @param x - the value of which the probability will be calculated.
+     * @param value - the value of which the probability will be calculated.
      * @return the probability of the passed value x.
      **************************************************************************/
-    public double getProbability( double x )
+    public double getProbability( double value )
     {
         double tempProb = Double.NaN;
         switch( distribution )
         {
             case UNIFORM:
             {
-                tempProb = uniformDensityFunction( x );
+                tempProb = uniformDensityFunction( value );
                 break;
             }
             case NORMAL:
             {
-                tempProb = normalDensityFunction( x );
+                tempProb = normalDensityFunction( value );
                 break;
             }
             case LOG_NORMAL:
             {
-                tempProb = logNormalDensityFunction( x );
+                tempProb = logNormalDensityFunction( value );
                 break;
             }
             case TANGENT_LOG_NORMAL:
             {
-                tempProb = tangentLogNormalDensityFunction( x );
+                tempProb = tangentLogNormalDensityFunction( value );
                 break;
             }
             case RAYLEIGH:
             {
-                tempProb = rayleighDensityFunction( x );
+                tempProb = rayleighDensityFunction( value );
                 break;
             }
         }
@@ -248,6 +219,8 @@ public class RandomDistribution
      **************************************************************************/
     public double nextValue()
     {
+        double value = 0.0;
+
         switch( distribution )
         {
             case UNIFORM:
@@ -294,9 +267,12 @@ public class RandomDistribution
                 value = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
                 break;
             }
+            default:
+            {
+                throw new IllegalStateException(
+                    "Distribution type not handled: " + distribution.name );
+            }
         }
-
-        probability = getProbability( value );
 
         return value;
     }
@@ -335,49 +311,5 @@ public class RandomDistribution
     public void setSeed( long seed )
     {
         rand = new Random( seed );
-    }
-
-    /***************************************************************************
-     * Distribution type enumerations.
-     **************************************************************************/
-    public static enum DistributionType implements INamedValue
-    {
-        /**  */
-        UNIFORM( 0, "Uniform" ),
-        /**  */
-        NORMAL( 1, "Normal" ),
-        /**  */
-        LOG_NORMAL( 2, "Log-Normal" ),
-        /**  */
-        TANGENT_LOG_NORMAL( 3, "Tagent Log-Normal" ),
-        /**  */
-        RAYLEIGH( 4, "Rayleigh" ),;
-
-        /**  */
-        public final int value;
-        /**  */
-        public final String name;
-
-        /**
-         * @param value
-         * @param name
-         */
-        private DistributionType( int value, String name )
-        {
-            this.value = value;
-            this.name = name;
-        }
-
-        @Override
-        public String getName()
-        {
-            return name;
-        }
-
-        @Override
-        public int getValue()
-        {
-            return value;
-        }
     }
 }

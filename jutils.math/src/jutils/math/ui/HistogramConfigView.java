@@ -1,4 +1,4 @@
-package jutils.iris.demo;
+package jutils.math.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

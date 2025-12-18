@@ -1,4 +1,4 @@
-package jutils.iris.demo;
+package jutils.math.ui;
 
 import java.awt.BorderLayout;
 
@@ -6,7 +6,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import jutils.core.ui.model.IView;
-import jutils.math.ui.HistogramView;
 
 /*******************************************************************************
  * 

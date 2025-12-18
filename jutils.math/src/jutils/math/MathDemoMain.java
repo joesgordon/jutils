@@ -16,7 +16,7 @@ public class MathDemoMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
+        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
 
         AppRunner.invokeLater( () -> createFrame() );
     }
