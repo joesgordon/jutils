@@ -2,6 +2,7 @@ package jutils.telemetry.ch09.ui;
 
 import java.util.List;
 
+import jutils.core.ui.DataNode;
 import jutils.telemetry.ch09.GeneralInformation;
 import jutils.telemetry.ch09.Information;
 import jutils.telemetry.ch09.Tmats;

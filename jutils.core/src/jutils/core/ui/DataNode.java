@@ -1,4 +1,4 @@
-package jutils.telemetry.ch09.ui;
+package jutils.core.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -128,6 +128,22 @@ public class DataNode<T> implements TreeNode
     public String toString()
     {
         return name == null ? data.toString() : name;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public T getData()
+    {
+        return data;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public IDataView<T> createView()
+    {
+        return viewCreator.get();
     }
 
     /***************************************************************************

@@ -10,6 +10,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import jutils.core.ui.ComponentView;
+import jutils.core.ui.DataNode;
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.ch09.TmatsFile;
 
@@ -48,7 +49,7 @@ public class TmatsTreeView implements IDataView<TmatsFile>
 
         tree.setBorder( new EmptyBorder( 3, 3, 3, 3 ) );
 
-        this.tmats = root.data;
+        this.tmats = root.getData();
         // TODO Auto-generated constructor stub
     }
 
@@ -74,7 +75,7 @@ public class TmatsTreeView implements IDataView<TmatsFile>
      **************************************************************************/
     private <F> void handleNodeSelected( DataNode<F> node )
     {
-        rightView.setComponent( node.viewCreator.get().getView() );
+        rightView.setComponent( node.createView().getView() );
     }
 
     /***************************************************************************
