@@ -23,9 +23,9 @@ import javax.swing.table.TableColumn;
 import jutils.core.SwingUtils;
 import jutils.core.laf.UIProperty;
 import jutils.core.ui.RowHeaderRenderer;
+import jutils.core.ui.event.MouseClickListener.MouseButton;
 import jutils.core.ui.event.ResizingTableModelListener;
 import jutils.core.ui.event.TableMouseListener;
-import jutils.core.ui.event.TableMouseListener.MouseButton;
 import jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
@@ -111,7 +111,7 @@ public class SpreadSheetView implements IDataView<ISpreadSheet>
      **************************************************************************/
     private void handleMouseRelease( MouseButton button, Point p )
     {
-        if( button == MouseButton.RIGHT )
+        if( button == MouseButton.SECONDARY )
         {
             popup.show( table, p.x, p.y );
         }

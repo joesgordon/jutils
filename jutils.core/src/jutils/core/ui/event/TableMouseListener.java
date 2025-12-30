@@ -11,6 +11,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import jutils.core.ui.event.MouseClickListener.MouseButton;
+
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -48,13 +50,14 @@ public class TableMouseListener extends MouseAdapter
         Point p = e.getPoint();
         JTable table = ( JTable )e.getSource();
         RowCol rc = fromPointToRowCol( table, p );
+        MouseButton button = MouseButton.fromEvent( e );
 
-        if( SwingUtilities.isRightMouseButton( e ) )
+        if( button == MouseButton.SECONDARY )
         {
             selectCellAt( table, rc );
         }
 
-        fireHandlers( e, rc, p );
+        fireHandlers( button, rc, p );
     }
 
     /***************************************************************************
@@ -62,10 +65,8 @@ public class TableMouseListener extends MouseAdapter
      * @param rc
      * @param p
      **************************************************************************/
-    private void fireHandlers( MouseEvent e, RowCol rc, Point p )
+    private void fireHandlers( MouseButton button, RowCol rc, Point p )
     {
-        MouseButton button = MouseButton.fromEvent( e );
-
         for( IReleasedHandler handler : handlers )
         {
             handler.released( button, rc.row, rc.col, p );
@@ -165,34 +166,5 @@ public class TableMouseListener extends MouseAdapter
          * @param p
          */
         public void released( MouseButton button, int row, int col, Point p );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static enum MouseButton
-    {
-        /**  */
-        LEFT,
-        /**  */
-        RIGHT,
-        /**  */
-        MIDDLE,
-        /**  */
-        OTHER;
-
-        /**
-         * @param e
-         * @return
-         */
-        public static MouseButton fromEvent( MouseEvent e )
-        {
-            boolean isRight = SwingUtilities.isRightMouseButton( e );
-            boolean isLeft = SwingUtilities.isLeftMouseButton( e );
-            boolean isMiddle = SwingUtilities.isMiddleMouseButton( e );
-
-            return isRight ? RIGHT
-                : ( isLeft ? LEFT : ( isMiddle ? MIDDLE : OTHER ) );
-        }
     }
 }
