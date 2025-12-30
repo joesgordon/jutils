@@ -105,7 +105,7 @@ public class TmatsTreeView implements IDataView<TmatsFile>
     {
         this.tmats = data;
 
-        this.root = new TmatsNode( new TmatsFile() );
+        this.root = new TmatsNode( data );
         tree.setModel( new DefaultTreeModel( root ) );
         tree.setSelectionPath( new TreePath( root ) );
     }

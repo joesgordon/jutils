@@ -26,7 +26,8 @@ public interface IChartPainter extends IPainter
     public void getMargin( Insets insets );
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
+    @Override
     public void paint( Graphics2D g );
 }

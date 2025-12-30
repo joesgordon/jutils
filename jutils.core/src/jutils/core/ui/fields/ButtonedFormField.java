@@ -29,8 +29,17 @@ public class ButtonedFormField<T> implements IDataFormField<T>
      **************************************************************************/
     public ButtonedFormField( IDataFormField<T> field )
     {
+        this( field, new JButton() );
+    }
+
+    /***************************************************************************
+     * @param field
+     * @param button
+     **************************************************************************/
+    public ButtonedFormField( IDataFormField<T> field, JButton button )
+    {
         this.field = field;
-        this.button = new JButton();
+        this.button = button;
         this.view = createView();
     }
 

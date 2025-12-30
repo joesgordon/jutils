@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
 
 import jutils.core.IconConstants;
@@ -71,6 +72,8 @@ public class TextHexView implements IDataView<byte []>
 
         handleHex();
         hexTextButton.setState( false );
+
+        textField.getScrollPane().setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
 
         SwingUtils.addKeyListener( textField.getTextArea(), "shift ENTER",
             ( e ) -> insertText( LF ), "Shift+Enter Listener", false );

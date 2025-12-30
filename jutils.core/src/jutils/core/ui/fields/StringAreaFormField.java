@@ -5,7 +5,6 @@ import java.awt.Font;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.border.EmptyBorder;
 
 import jutils.core.io.parsers.StringLengthParser;
 import jutils.core.ui.event.updater.IUpdater;
@@ -21,6 +20,8 @@ public class StringAreaFormField implements IDataFormField<String>
     private final JTextArea textField;
     /**  */
     private final ParserFormField<String> field;
+    /**  */
+    private final JScrollPane pane;
 
     /***************************************************************************
      * @param name
@@ -36,7 +37,7 @@ public class StringAreaFormField implements IDataFormField<String>
      **************************************************************************/
     public StringAreaFormField( String name, boolean fillBoth )
     {
-        JScrollPane pane = new JScrollPane();
+        this.pane = new JScrollPane();
         StringLengthParser parser = new StringLengthParser( 0, null );
         IDescriptor<String> descriptor = ( d ) -> d;
 
@@ -47,7 +48,6 @@ public class StringAreaFormField implements IDataFormField<String>
         pane.setViewportView( textField );
         pane.setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
-        pane.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
 
         textField.setLineWrap( true );
         textField.setColumns( 20 );
@@ -151,5 +151,13 @@ public class StringAreaFormField implements IDataFormField<String>
     public JTextArea getTextArea()
     {
         return textField;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JScrollPane getScrollPane()
+    {
+        return pane;
     }
 }
