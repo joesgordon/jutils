@@ -3,7 +3,6 @@ package jutils.core.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
@@ -13,25 +12,18 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import jutils.core.io.LogUtils;
-import jutils.core.net.EndPoint;
-import jutils.core.net.IpAddress;
 import jutils.core.ui.ListView.IItemListModel;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.event.updater.UpdaterList;
-import jutils.core.ui.event.updater.WrappedUpdater;
-import jutils.core.ui.fields.DoubleFormField;
-import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.fields.StringFormField;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.IView;
 import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
-import jutils.core.ui.net.EndPointField;
 
-/***************************************************************************
+/*******************************************************************************
  * 
- **************************************************************************/
+ ******************************************************************************/
 public class ItemListViewMain
 {
     /***************************************************************************
@@ -41,8 +33,7 @@ public class ItemListViewMain
     {
         AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
 
-        // AppRunner.invokeLater( () -> createFrame() );
-        AppRunner.invokeLater( () -> createFrame2() );
+        AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************
@@ -59,76 +50,6 @@ public class ItemListViewMain
         frameView.setTitle( "Item List View Test App" );
 
         return frameView.getView();
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private static JFrame createFrame2()
-    {
-        StandardFrameView frameView = new StandardFrameView();
-
-        frameView.setContent( createView2() );
-        frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        frameView.setSize( 800, 800 );
-        frameView.setTitle( "Item List View Test App" );
-
-        return frameView.getView();
-    }
-
-    private static <D> IUpdater<D> createUpdater( IDataFormField<D> field )
-    {
-        IUpdater<D> updater = ( d ) -> {
-            LogUtils.printDebug( "Setting %s value %s to %s ", field.getName(),
-                field.getValue(), d );
-        };
-
-        return updater;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private static Container createView2()
-    {
-        StandardFormView form = new StandardFormView();
-
-        EndPointField epff = new EndPointField( "End Point" );
-        epff.setUpdater( createUpdater( epff ) );
-
-        DoubleFormField dff = new DoubleFormField( "Anum" );
-        dff.setUpdater( createUpdater( dff ) );
-
-        EndPointField listField = new EndPointField( "List End Point" );
-        FieldView<EndPoint> dataView = new FieldView<EndPoint>( listField );
-        IItemListModel<EndPoint> itemsModel = new IItemListModel<EndPoint>()
-        {
-            int i = 0;
-
-            @Override
-            public EndPoint promptForNew( ListView<EndPoint> view )
-            {
-                return new EndPoint( new IpAddress( 0 ), i++ );
-            }
-
-            @Override
-            public String getTitle( EndPoint item )
-            {
-                return item.toString();
-            }
-        };
-
-        listField.setUpdater( new WrappedUpdater<>( createUpdater( listField ),
-            ( d ) -> dataView.getData().set( d ) ) );
-
-        ItemListView<EndPoint> view;
-        view = new ItemListView<>( dataView, itemsModel );
-
-        form.addField( epff );
-        form.addField( dff );
-        form.addComponent( view.getView() );
-
-        return form.getView();
     }
 
     /***************************************************************************

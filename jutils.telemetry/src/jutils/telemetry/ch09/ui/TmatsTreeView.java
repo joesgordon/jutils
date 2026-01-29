@@ -9,10 +9,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import jutils.core.ui.AbstractDataNode;
 import jutils.core.ui.ComponentView;
-import jutils.core.ui.DataNode;
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.ch09.TmatsFile;
+import jutils.telemetry.ch09.ui.nodes.TmatsNode;
 
 /*******************************************************************************
  * 
@@ -27,7 +28,7 @@ public class TmatsTreeView implements IDataView<TmatsFile>
     private final ComponentView rightView;
 
     /**  */
-    private DataNode<TmatsFile> root;
+    private TmatsNode root;
     /**  */
     private TmatsFile tmats;
 
@@ -36,7 +37,7 @@ public class TmatsTreeView implements IDataView<TmatsFile>
      **************************************************************************/
     public TmatsTreeView()
     {
-        this.root = TmatsTreeBuilder.buildTree( new TmatsFile() );
+        this.root = new TmatsNode( new TmatsFile() );
         this.tree = new JTree( new DefaultTreeModel( root ) );
         this.rightView = new ComponentView();
         this.splitPane = new JSplitPane();
@@ -63,7 +64,7 @@ public class TmatsTreeView implements IDataView<TmatsFile>
         if( path != null )
         {
             Object objNode = path.getLastPathComponent();
-            DataNode<?> node = ( DataNode<?> )objNode;
+            AbstractDataNode<?> node = ( AbstractDataNode<?> )objNode;
 
             handleNodeSelected( node );
         }
@@ -73,7 +74,7 @@ public class TmatsTreeView implements IDataView<TmatsFile>
      * @param <F>
      * @param node
      **************************************************************************/
-    private <F> void handleNodeSelected( DataNode<F> node )
+    private <F> void handleNodeSelected( AbstractDataNode<F> node )
     {
         rightView.setComponent( node.createView().getView() );
     }
@@ -104,7 +105,7 @@ public class TmatsTreeView implements IDataView<TmatsFile>
     {
         this.tmats = data;
 
-        this.root = TmatsTreeBuilder.buildTree( new TmatsFile() );
+        this.root = new TmatsNode( data );
         tree.setModel( new DefaultTreeModel( root ) );
         tree.setSelectionPath( new TreePath( root ) );
     }

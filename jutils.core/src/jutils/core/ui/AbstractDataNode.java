@@ -1,155 +1,139 @@
-package jutils.core.ui.fields;
+package jutils.core.ui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.Icon;
+import javax.swing.tree.TreeNode;
 
-import jutils.core.ui.event.updater.IUpdater;
-import jutils.core.ui.validation.IValidityChangedListener;
-import jutils.core.ui.validation.Validity;
+import jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
- * 
+ * Defines a {@link TreeNode} that contains a data of the specified type.
+ * Implementing classes must call {@link #createChildren()} within their
+ * constructor..
+ * @param <T> the type of data stored in this node.
  ******************************************************************************/
-public class ButtonedFormField<T> implements IDataFormField<T>
+public abstract class AbstractDataNode<T> implements TreeNode
 {
-    /**  */
-    public final IDataFormField<T> field;
-    /**  */
-    public final JButton button;
-    /**  */
-    private final JPanel view;
+    /** The parent of this node. */
+    protected final AbstractDataNode<?> parent;
+    /** The data stored in this node. */
+    protected final T data;
+    /** The children of this node. */
+    protected final List<AbstractDataNode<?>> children;
 
     /***************************************************************************
-     * @param field
+     * @param parent the parent of this node.
+     * @param data the data stored in this node.
      **************************************************************************/
-    public ButtonedFormField( IDataFormField<T> field )
+    public AbstractDataNode( AbstractDataNode<?> parent, T data )
     {
-        this( field, new JButton() );
-    }
-
-    /***************************************************************************
-     * @param field
-     * @param button
-     **************************************************************************/
-    public ButtonedFormField( IDataFormField<T> field, JButton button )
-    {
-        this.field = field;
-        this.button = button;
-        this.view = createView();
+        this.parent = parent;
+        this.data = data;
+        this.children = new ArrayList<>();
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    private JPanel createView()
-    {
-        JPanel panel = new JPanel( new GridBagLayout() );
-        GridBagConstraints constraints;
-
-        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
-            GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-            new Insets( 0, 0, 0, 6 ), 0, 0 );
-        panel.add( field.getView(), constraints );
-
-        constraints = new GridBagConstraints( 1, 0, 1, 1, 0.0, 0.0,
-            GridBagConstraints.WEST, GridBagConstraints.NONE,
-            new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( button, constraints );
-
-        return panel;
-    }
+    public abstract String getName();
 
     /***************************************************************************
      * 
      **************************************************************************/
+    public abstract void createChildren();
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public abstract Icon getIcon();
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public abstract IDataView<T> createView();
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
     @Override
-    public String getName()
+    public TreeNode getChildAt( int childIndex )
     {
-        return field.getName();
+        return children.get( childIndex );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public JComponent getView()
+    public int getChildCount()
     {
-        return view;
+        return children.size();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public T getValue()
+    public TreeNode getParent()
     {
-        return field.getValue();
+        return parent;
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setValue( T value )
+    public int getIndex( TreeNode node )
     {
-        field.setValue( value );
+        return children.indexOf( node );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setUpdater( IUpdater<T> updater )
+    public boolean getAllowsChildren()
     {
-        field.setUpdater( updater );
+        return true;
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IUpdater<T> getUpdater()
+    public boolean isLeaf()
     {
-        return field.getUpdater();
+        return children.isEmpty();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setEditable( boolean editable )
+    public Enumeration<? extends TreeNode> children()
     {
-        field.setEditable( editable );
-        button.setEnabled( editable );
+        return Collections.enumeration( children );
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void addValidityChanged( IValidityChangedListener l )
+    public String toString()
     {
+        String name = getName();
+        return name == null ? data.toString() : name;
     }
 
     /***************************************************************************
-     * 
+     * @return
      **************************************************************************/
-    @Override
-    public void removeValidityChanged( IValidityChangedListener l )
+    public T getData()
     {
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    @Override
-    public Validity getValidity()
-    {
-        return new Validity();
+        return data;
     }
 }
