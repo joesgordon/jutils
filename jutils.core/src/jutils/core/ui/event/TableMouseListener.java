@@ -50,7 +50,7 @@ public class TableMouseListener extends MouseAdapter
         Point p = e.getPoint();
         JTable table = ( JTable )e.getSource();
         RowCol rc = fromPointToRowCol( table, p );
-        MouseButton button = MouseButton.fromEvent( e );
+        MouseButton button = MouseButton.fromEvent( e, e.isPopupTrigger() );
 
         if( button == MouseButton.SECONDARY )
         {

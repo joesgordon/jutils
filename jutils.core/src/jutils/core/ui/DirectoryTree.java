@@ -451,7 +451,6 @@ public class DirectoryTree implements IView<JTree>
         try
         {
             files = node.file.listFiles();
-
         }
         catch( SecurityException ex )
         {
@@ -464,8 +463,11 @@ public class DirectoryTree implements IView<JTree>
 
         node.children.clear();
 
+        LogUtils.printDebug( "Adding children of %s",
+            node.file.getAbsolutePath() );
         for( File f : files )
         {
+            LogUtils.printDebug( "Adding child %s", f.getAbsolutePath() );
             if( f.isDirectory() )
             {
                 // LogUtils.printDebug( "Adding %s to %s", f.getName(),

@@ -21,28 +21,60 @@ public class MouseClickListener extends MouseEventsListener
      **************************************************************************/
     public MouseClickListener( IClickHandler handler )
     {
-        super( ( met, evt ) -> handleClick( handler, met, evt ) );
+        super( new ClickCallback( handler ) );
     }
 
     /***************************************************************************
-     * @param handler
-     * @param type
-     * @param event
+     * 
      **************************************************************************/
-    private static void handleClick( IClickHandler handler, MouseEventType type,
-        MouseEvent event )
+    private static final class ClickCallback implements IMouseCallback
     {
-        if( type != MouseEventType.CLICKED )
+        /**  */
+        private final IClickHandler handler;
+
+        /**  */
+        private boolean isPopup;
+
+        /**
+         * @param handler
+         */
+        public ClickCallback( IClickHandler handler )
         {
-            return;
+            this.handler = handler;
         }
 
-        MouseButton button = MouseButton.fromEvent( event );
-        int count = event.getClickCount();
-        Point point = event.getPoint();
-        int modifiers = event.getModifiersEx();
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void handleEvent( MouseEventType type, MouseEvent event )
+        {
+            if( type == MouseEventType.PRESSED )
+            {
+                this.isPopup = event.isPopupTrigger();
+            }
+            else if( type == MouseEventType.RELEASED )
+            {
+                this.isPopup = isPopup || event.isPopupTrigger();
+            }
+            else if( type == MouseEventType.CLICKED )
+            {
+                this.isPopup = isPopup || event.isPopupTrigger();
 
-        handler.handleClick( button, count, point, modifiers );
+                MouseButton button = MouseButton.fromEvent( event, isPopup );
+                int count = event.getClickCount();
+                Point point = event.getPoint();
+                int modifiers = event.getModifiersEx();
+
+                handler.handleClick( button, count, point, modifiers );
+
+                this.isPopup = false;
+            }
+            else
+            {
+                return;
+            }
+        }
     }
 
     /***************************************************************************
@@ -113,9 +145,10 @@ public class MouseClickListener extends MouseEventsListener
 
         /**
          * @param event
+         * @param isPopup
          * @return
          */
-        public static MouseButton fromEvent( MouseEvent event )
+        public static MouseButton fromEvent( MouseEvent event, boolean isPopup )
         {
             int buttonNum = event.getButton();
 
@@ -131,7 +164,7 @@ public class MouseClickListener extends MouseEventsListener
 
             if( SwingUtilities.isLeftMouseButton( event ) )
             {
-                if( event.isPopupTrigger() )
+                if( isPopup )
                 {
                     return MouseButton.SECONDARY;
                 }
@@ -140,7 +173,7 @@ public class MouseClickListener extends MouseEventsListener
 
             if( SwingUtilities.isRightMouseButton( event ) )
             {
-                if( event.isPopupTrigger() )
+                if( isPopup )
                 {
                     return MouseButton.SECONDARY;
                 }
