@@ -1044,7 +1044,15 @@ public final class SwingUtils
         }
         else if( file.exists() )
         {
-            icon = view.getSystemIcon( file );
+            try
+            {
+                icon = view.getSystemIcon( file );
+            }
+            catch( NullPointerException ex )
+            {
+                String err = "Unable to get icon for " + file.getAbsolutePath();
+                throw new RuntimeException( err, ex );
+            }
         }
         else
         {

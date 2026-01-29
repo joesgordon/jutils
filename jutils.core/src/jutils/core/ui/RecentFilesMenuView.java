@@ -10,6 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileSystemView;
 
+import jutils.core.SwingUtils;
 import jutils.core.ui.event.IRecentListener;
 import jutils.core.ui.model.IDataView;
 
@@ -94,7 +95,7 @@ public class RecentFilesMenuView implements IDataView<List<File>>
             {
                 item = new JMenuItem(
                     ( this.files.size() + 1 ) + " " + file.getName() );
-                item.setIcon( view.getSystemIcon( file ) );
+                item.setIcon( SwingUtils.getFileIcon( view, file ) );
                 item.addActionListener(
                     ( e ) -> handleFileSelected( file, e ) );
                 item.setToolTipText( file.getAbsolutePath() );

@@ -3,7 +3,7 @@ package jutils.apps;
 import java.util.ArrayList;
 import java.util.List;
 
-import jutils.core.pcap.ui.PcapTool;
+import jutils.core.pcapng.ui.PcapngTool;
 import jutils.core.ui.IToolView;
 import jutils.core.ui.app.AppRunner;
 import jutils.duak.DuakTool;
@@ -69,7 +69,7 @@ public class JUtilsMain
         apps.add( new SummerTool() );
         apps.add( new DuakTool() );
         apps.add( new ExplorerTool() );
-        apps.add( new PcapTool() );
+        apps.add( new PcapngTool() );
         apps.add( new IrisTool() );
         apps.add( new InsomniaTool() );
         apps.add( new MinesTool() );

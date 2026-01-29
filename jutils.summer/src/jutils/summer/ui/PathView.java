@@ -1,15 +1,28 @@
 package jutils.summer.ui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
+import jutils.core.SwingUtils;
 import jutils.core.io.IOUtils;
 import jutils.core.ui.event.ItemActionList;
 import jutils.core.ui.event.ItemActionListener;
@@ -198,7 +211,7 @@ public class PathView implements IDataView<File>
             if( file != null )
             {
                 name = FILE_SYSTEM.getSystemDisplayName( file );
-                setIcon( FILE_SYSTEM.getSystemIcon( file ) );
+                setIcon( SwingUtils.getFileIcon( FILE_SYSTEM, file ) );
 
                 if( name == null )
                 {

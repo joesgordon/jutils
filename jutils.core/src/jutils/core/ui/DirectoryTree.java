@@ -763,7 +763,7 @@ public class DirectoryTree implements IView<JTree>
             {
                 try
                 {
-                    icon = DirectoryTree.FILE_SYSTEM.getSystemIcon( file );
+                    icon = SwingUtils.getFileIcon( FILE_SYSTEM, file );
                 }
                 catch( NullPointerException ex )
                 {

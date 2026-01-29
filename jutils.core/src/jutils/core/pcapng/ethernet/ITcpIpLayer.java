@@ -1,33 +1,26 @@
-package jutils.math.charts;
+package jutils.core.pcapng.ethernet;
 
-import java.awt.Graphics2D;
-import java.awt.Insets;
-
-import jutils.core.ui.IPainter;
+import jutils.core.io.FieldPrinter;
+import jutils.core.io.FieldPrinter.ITierPrinter;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public interface IChartPainter extends IPainter
+public interface ITcpIpLayer extends ITierPrinter
 {
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public default Insets getMargin()
-    {
-        Insets m = new Insets( 0, 0, 0, 0 );
-        getMargin( m );
-        return m;
-    }
-
-    /***************************************************************************
-     * @param insets
-     **************************************************************************/
-    public void getMargin( Insets insets );
-
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void paint( Graphics2D g );
+    public void printFields( FieldPrinter printer );
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getName();
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public Class<? extends ITcpIpLayer> getNextLayerType();
 }

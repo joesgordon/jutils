@@ -39,11 +39,11 @@ import jutils.core.ui.StandardFormView;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.event.FileChooserListener;
+import jutils.core.ui.event.FileChooserListener.IFileSelected;
 import jutils.core.ui.event.FileDropTarget;
+import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.event.ItemActionListener;
-import jutils.core.ui.event.FileChooserListener.IFileSelected;
-import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
 import jutils.core.ui.fields.FileFormField;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.ITableConfig;
@@ -420,22 +420,33 @@ public class VerifyView implements IDataView<ChecksumResult>, IValidationField
      **************************************************************************/
     private static class ChecksumsTableModel implements ITableConfig<SumFile>
     {
+        /**  */
         private static final Class<?> [] CLASSES = { String.class,
             String.class };
+        /**  */
         private static final String [] NAMES = { "Checksum", "File" };
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String [] getColumnNames()
         {
             return NAMES;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Class<?> [] getColumnClasses()
         {
             return CLASSES;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Object getItemData( SumFile checksum, int col )
         {
@@ -453,11 +464,17 @@ public class VerifyView implements IDataView<ChecksumResult>, IValidationField
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void setItemData( SumFile item, int col, Object data )
         {
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean isCellEditable( SumFile item, int col )
         {
@@ -470,13 +487,20 @@ public class VerifyView implements IDataView<ChecksumResult>, IValidationField
      **************************************************************************/
     private static class OpenChecksumFileListener implements IFileSelected
     {
+        /**  */
         private final VerifyView view;
 
+        /**
+         * @param view
+         */
         public OpenChecksumFileListener( VerifyView view )
         {
             this.view = view;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void fileChosen( File file )
         {
@@ -496,13 +520,20 @@ public class VerifyView implements IDataView<ChecksumResult>, IValidationField
     private static class OpenChecksumFileDropTarget
         implements ItemActionListener<IFileDropEvent>
     {
+        /**  */
         private VerifyView view;
 
+        /**
+         * @param view
+         */
         public OpenChecksumFileDropTarget( VerifyView view )
         {
             this.view = view;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void actionPerformed( ItemActionEvent<IFileDropEvent> event )
         {
@@ -515,13 +546,21 @@ public class VerifyView implements IDataView<ChecksumResult>, IValidationField
      **************************************************************************/
     private static class ChecksumRenderer implements ITableCellLabelDecorator
     {
+        /**  */
         private static final FileSystemView FILE_SYSTEM = FileSystemView.getFileSystemView();
 
+        /**  */
         private final VerifyView view;
+        /**  */
         private final Font defaultFont;
+        /**  */
         private final Font fixedFont;
+        /**  */
         private final Color defaultBackground;
 
+        /**
+         * @param view
+         */
         public ChecksumRenderer( VerifyView view )
         {
             super();
@@ -533,6 +572,9 @@ public class VerifyView implements IDataView<ChecksumResult>, IValidationField
             this.defaultBackground = UIProperty.LABEL_BACKGROUND.getColor();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void decorate( JLabel label, JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int col )
@@ -549,7 +591,7 @@ public class VerifyView implements IDataView<ChecksumResult>, IValidationField
             }
             else
             {
-                icon = FILE_SYSTEM.getSystemIcon( sum.file );
+                icon = SwingUtils.getFileIcon( FILE_SYSTEM, commonPath );
                 label.setFont( defaultFont );
             }
 

@@ -175,7 +175,7 @@ public class RecentFilesViews
         @Override
         public Icon getIcon( File file )
         {
-            return fsv.getSystemIcon( file );
+            return SwingUtils.getFileIcon( fsv, file );
         }
     }
 }

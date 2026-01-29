@@ -1,19 +1,42 @@
 package jutils.duak.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import jutils.core.IconConstants;
+import jutils.core.SwingUtils;
 import jutils.core.ui.MessageExceptionView;
-import jutils.core.ui.event.*;
+import jutils.core.ui.event.ActionAdapter;
+import jutils.core.ui.event.ItemActionList;
+import jutils.core.ui.event.ItemActionListener;
+import jutils.core.ui.event.ResizingTableModelListener;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.ItemsTableModel;
 import jutils.duak.data.FileInfo;
@@ -107,16 +130,67 @@ public class DuakPanel implements IDataView<FileInfo>
         JPopupMenu menu = new JPopupMenu();
         Action action;
 
-        action = new ActionAdapter( new OpenFileListener( this ), "Open File",
+        action = new ActionAdapter( ( e ) -> handleOpenFile(), "Open File",
             IconConstants.getIcon( IconConstants.OPEN_FILE_16 ) );
         menu.add( action );
 
-        action = new ActionAdapter( new OpenLocationListener( this ),
+        action = new ActionAdapter( ( e ) -> handleOpenLocation(),
             "Open Location",
             IconConstants.getIcon( IconConstants.OPEN_FOLDER_16 ) );
         menu.add( action );
 
         return menu;
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void handleOpenFile()
+    {
+        int row = table.getSelectedRow();
+
+        if( row > -1 )
+        {
+            FileInfo fi = tableModel.getItem( row );
+
+            try
+            {
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open( fi.getFile() );
+            }
+            catch( IOException ex )
+            {
+                MessageExceptionView.showExceptionDialog( getView(),
+                    "Cannot open file " + fi.getFile().getName(), "I/O Error",
+                    ex );
+            }
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void handleOpenLocation()
+    {
+        int row = table.getSelectedRow();
+
+        if( row > -1 )
+        {
+            FileInfo fi = tableModel.getItem( row );
+
+            try
+            {
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open( fi.getFile().getAbsoluteFile().getParentFile() );
+            }
+            catch( IOException ex )
+            {
+                MessageExceptionView.showExceptionDialog( getView(),
+                    "Cannot open file " + fi.getFile().getName(), "I/O Error",
+                    ex );
+            }
+        }
+
     }
 
     /***************************************************************************
@@ -128,7 +202,7 @@ public class DuakPanel implements IDataView<FileInfo>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JPanel getView()
@@ -137,7 +211,7 @@ public class DuakPanel implements IDataView<FileInfo>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public FileInfo getData()
@@ -146,7 +220,7 @@ public class DuakPanel implements IDataView<FileInfo>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setData( FileInfo results )
@@ -165,8 +239,12 @@ public class DuakPanel implements IDataView<FileInfo>
      **************************************************************************/
     private class FolderOpenedListener extends MouseAdapter
     {
+        /**  */
         private final JPopupMenu menu;
 
+        /**
+         * 
+         */
         public FolderOpenedListener()
         {
             JPopupMenu popup = null;
@@ -177,6 +255,9 @@ public class DuakPanel implements IDataView<FileInfo>
             this.menu = popup;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void mousePressed( MouseEvent e )
         {
@@ -186,6 +267,9 @@ public class DuakPanel implements IDataView<FileInfo>
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void mouseReleased( MouseEvent e )
         {
@@ -195,6 +279,9 @@ public class DuakPanel implements IDataView<FileInfo>
             }
         }
 
+        /**
+         * @param p
+         */
         private void selectRowAt( Point p )
         {
             int row = table.rowAtPoint( p );
@@ -210,6 +297,9 @@ public class DuakPanel implements IDataView<FileInfo>
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void mouseClicked( MouseEvent e )
         {
@@ -249,92 +339,26 @@ public class DuakPanel implements IDataView<FileInfo>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class OpenFileListener implements ActionListener
-    {
-        private final DuakPanel view;
-        private final Desktop desktop;
-
-        public OpenFileListener( DuakPanel panel )
-        {
-            this.view = panel;
-            this.desktop = Desktop.getDesktop();
-        }
-
-        @Override
-        public void actionPerformed( ActionEvent event )
-        {
-            int row = view.table.getSelectedRow();
-
-            if( row > -1 )
-            {
-                FileInfo fi = view.tableModel.getItem( row );
-
-                try
-                {
-                    desktop.open( fi.getFile() );
-                }
-                catch( IOException ex )
-                {
-                    MessageExceptionView.showExceptionDialog( view.getView(),
-                        "Cannot open file " + fi.getFile().getName(),
-                        "I/O Error", ex );
-                }
-            }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class OpenLocationListener implements ActionListener
-    {
-        private final DuakPanel panel;
-        private final Desktop desktop;
-
-        public OpenLocationListener( DuakPanel panel )
-        {
-            this.panel = panel;
-            this.desktop = Desktop.getDesktop();
-        }
-
-        @Override
-        public void actionPerformed( ActionEvent event )
-        {
-            int row = panel.table.getSelectedRow();
-
-            if( row > -1 )
-            {
-                FileInfo fi = panel.tableModel.getItem( row );
-
-                try
-                {
-                    desktop.open(
-                        fi.getFile().getAbsoluteFile().getParentFile() );
-                }
-                catch( IOException ex )
-                {
-                    MessageExceptionView.showExceptionDialog( panel.getView(),
-                        "Cannot open file " + fi.getFile().getName(),
-                        "I/O Error", ex );
-                }
-            }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
     private static class FileResultTableCellRenderer
         extends DefaultTableCellRenderer
     {
+        /**  */
         private static final long serialVersionUID = 1L;
+
+        /**  */
         private final FileIconLoader iconLoader;
 
+        /**
+         * 
+         */
         public FileResultTableCellRenderer()
         {
             iconLoader = new FileIconLoader();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Component getTableCellRendererComponent( JTable table,
             Object value, boolean isSelected, boolean hasFocus, int row,
@@ -365,35 +389,40 @@ public class DuakPanel implements IDataView<FileInfo>
      **************************************************************************/
     private static class FileIconLoader
     {
+        /**  */
         private final FileSystemView fsv;
+        /**  */
         private final Map<File, Icon> iconMap;
-        private final Icon defaultIcon;
 
+        /**
+         * 
+         */
         public FileIconLoader()
         {
-            fsv = FileSystemView.getFileSystemView();
-            iconMap = new HashMap<File, Icon>();
-            defaultIcon = IconConstants.getIcon( IconConstants.OPEN_FILE_16 );
+            this.fsv = FileSystemView.getFileSystemView();
+            this.iconMap = new HashMap<File, Icon>();
         }
 
+        /**
+         * @param file
+         * @return
+         */
         public String getSystemName( File file )
         {
             return fsv.getSystemDisplayName( file );
         }
 
+        /**
+         * @param file
+         * @return
+         */
         public Icon getSystemIcon( File file )
         {
             Icon icon = iconMap.get( file );
 
             if( icon == null )
             {
-                icon = fsv.getSystemIcon( file );
-
-                if( icon == null )
-                {
-                    icon = defaultIcon;
-                }
-                iconMap.put( file, icon );
+                icon = SwingUtils.getFileIcon( fsv, file );
             }
 
             return icon;
