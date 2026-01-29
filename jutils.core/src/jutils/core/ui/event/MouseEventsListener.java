@@ -4,6 +4,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+import jutils.core.INamedItem;
+
 /*******************************************************************************
  * Defines a mouse listener with single callback because {@link MouseAdapter} is
  * dumb.
@@ -97,26 +99,46 @@ public class MouseEventsListener extends MouseAdapter
     /***************************************************************************
      * Defines all the functions in {@link MouseAdapter}.
      **************************************************************************/
-    public static enum MouseEventType
+    public static enum MouseEventType implements INamedItem
     {
         /** An event from {@link MouseAdapter#mouseClicked(MouseEvent)}. */
-        CLICKED,
+        CLICKED( "Clicked" ),
         /** An event from {@link MouseAdapter#mousePressed(MouseEvent)}. */
-        PRESSED,
+        PRESSED( "Pressed" ),
         /** An event from {@link MouseAdapter#mouseReleased(MouseEvent)}. */
-        RELEASED,
+        RELEASED( "Released" ),
         /** An event from {@link MouseAdapter#mouseEntered(MouseEvent)}. */
-        ENTERED,
+        ENTERED( "Entered" ),
         /** An event from {@link MouseAdapter#mouseExited(MouseEvent)}. */
-        EXITED,
+        EXITED( "Exited" ),
         /**
          * An event from {@link MouseAdapter#mouseWheelMoved(MouseWheelEvent)}.
          */
-        WHEEL_MOVED,
+        WHEEL_MOVED( "Wheel Moved" ),
         /** An event from {@link MouseAdapter#mouseDragged(MouseEvent)}. */
-        DRAGGED,
+        DRAGGED( "Dragged" ),
         /** An event from {@link MouseAdapter#mouseMoved(MouseEvent)}. */
-        MOVED;
+        MOVED( "Moved" );
+
+        /**  */
+        private final String name;
+
+        /**
+         * @param name
+         */
+        private MouseEventType( String name )
+        {
+            this.name = name;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getName()
+        {
+            return name;
+        }
     }
 
     /***************************************************************************
