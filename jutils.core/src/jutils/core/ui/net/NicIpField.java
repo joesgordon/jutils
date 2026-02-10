@@ -4,6 +4,7 @@ import java.awt.Point;
 
 import jutils.core.net.IpAddress;
 import jutils.core.net.NicInfo;
+import jutils.core.ui.event.updater.IUpdater;
 
 /*******************************************************************************
  * 
@@ -51,5 +52,12 @@ public class NicIpField extends IpAddressField
         IpAddress ip = getValue();
         ip.setInetAddress( nic.address );
         setValue( ip );
+
+        IUpdater<IpAddress> updater = getUpdater();
+
+        if( updater != null )
+        {
+            updater.update( ip );
+        }
     }
 }

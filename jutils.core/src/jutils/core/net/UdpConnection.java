@@ -136,10 +136,10 @@ public class UdpConnection implements IConnection
      **************************************************************************/
     public void setRemote( int port ) throws IllegalArgumentException
     {
-        if( port < 1 || port > 65535 )
+        if( port < 0 || port > 65535 )
         {
             throw new IllegalArgumentException(
-                "Remote address may not be null" );
+                "Port is out of range [1-65535]: " + port );
         }
 
         this.remotePort = port;
