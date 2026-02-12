@@ -26,7 +26,7 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
     /**  */
     private final IntegerFormField localPortField;
     /**  */
-    private final IDataFormField<String> nicField;
+    private final IDataFormField<IpAddress> nicField;
     /**  */
     private final BooleanFormField broadcastField;
     /**  */
@@ -111,7 +111,7 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
         validityManager.addField( ttlField );
 
         localPortField.setUpdater( ( d ) -> inputs.localPort = d );
-        nicField.setUpdater( ( d ) -> inputs.nic = d );
+        nicField.setUpdater( ( d ) -> inputs.nic.set( d ) );
 
         broadcastField.setUpdater( ( d ) -> inputs.broadcast = d );
         multicastField.setUpdater( ( d ) -> inputs.multicast.set( d ) );

@@ -151,7 +151,7 @@ public class NtpMessage
         inputs.localPort = 0;
         inputs.loopback = false;
         inputs.multicast.isUsed = false;
-        inputs.nic = local.toString();
+        inputs.nic.set( local );
         inputs.timeout = 5000;
         inputs.ttl = 1;
 

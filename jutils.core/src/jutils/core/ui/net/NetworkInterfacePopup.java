@@ -7,39 +7,44 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import jutils.core.IconConstants;
+import jutils.core.net.IpAddress;
+import jutils.core.net.IpVersion;
 import jutils.core.net.NetUtils;
-import jutils.core.net.NicInfo;
 import jutils.core.ui.event.RightClickListener;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IView;
 
 /*******************************************************************************
- *
+ * Defines a {@link JPopupMenu} that displays the IP addresses of the local
+ * network interfaces.
  ******************************************************************************/
 public class NetworkInterfacePopup implements IView<JPopupMenu>
 {
-    /**  */
+    /** The menu of all IP addresses. */
     private final JPopupMenu nicMenu;
-    /**  */
-    private IUpdater<NicInfo> updater;
+
+    /** The callback invoked when a selection is made. Always non-null. */
+    private IUpdater<IpAddress> updater;
 
     /***************************************************************************
-     * 
+     * Creates a new popup menu with both IPv4 and IPv6 addresses
      **************************************************************************/
     public NetworkInterfacePopup()
     {
-        this( false );
+        this( null );
     }
 
     /***************************************************************************
-     * @param ipv4Only
+     * Creates a new popup menu with only the specified version.
+     * @param version either IPv4, IPv6, or {@code null} for both.
      **************************************************************************/
-    public NetworkInterfacePopup( boolean ipv4Only )
+    public NetworkInterfacePopup( IpVersion version )
     {
         this.nicMenu = new JPopupMenu();
-        this.updater = null;
+        this.updater = ( d ) -> {
+        };
 
-        buildNicMenu( ipv4Only );
+        buildNicMenu( version );
     }
 
     /***************************************************************************
@@ -52,7 +57,9 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
     }
 
     /***************************************************************************
-     * @param component
+     * Adds this popup to the components mouse listeners, displaying on
+     * right-click only.
+     * @param component the component to display the menu on right-click.
      **************************************************************************/
     public void addToRightClick( Component component )
     {
@@ -62,9 +69,10 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
     }
 
     /***************************************************************************
-     * @param component
-     * @param x
-     * @param y
+     * Displays this menu for the provided component at its x/y position.
+     * @param component the component to display the menu.
+     * @param x the x position in the component's space.
+     * @param y the y position in the component's space.
      **************************************************************************/
     public void show( Component component, int x, int y )
     {
@@ -72,29 +80,27 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
     }
 
     /***************************************************************************
-     * @param ipv4Only
-     * @param e
+     * Builds the list of local addresses and sets up the callbacks for menu
+     * selection.
+     * @param version either IPv4, IPv6, or {@code null} for both.
      **************************************************************************/
-    private void buildNicMenu( boolean ipv4Only )
+    private void buildNicMenu( IpVersion version )
     {
-        List<NicInfo> nics = NetUtils.listUpNicsAndAny();
+        List<IpAddress> ips = NetUtils.listLocalAddresses( version );
 
         nicMenu.removeAll();
 
-        for( NicInfo nic : nics )
+        for( IpAddress ip : ips )
         {
-            if( !ipv4Only || nic.isIpv4 )
-            {
-                String title = nic.addressString + " : " + nic.name;
-                JMenuItem item = new JMenuItem( title );
-                item.addActionListener( ( e ) -> fireUpdater( nic ) );
-                nicMenu.add( item );
-            }
+            String title = ip.toString() + " : " + ip;
+            JMenuItem item = new JMenuItem( title );
+            item.addActionListener( ( e ) -> updater.update( ip ) );
+            nicMenu.add( item );
         }
 
-        if( nics.isEmpty() )
+        if( ips.isEmpty() )
         {
-            JMenuItem item = new JMenuItem( "No NICs Detected" );
+            JMenuItem item = new JMenuItem( "No Addresses Detected" );
             item.setEnabled( false );
             nicMenu.add( item );
         }
@@ -103,28 +109,17 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
 
         JMenuItem item = new JMenuItem( "Refresh",
             IconConstants.getIcon( IconConstants.REFRESH_16 ) );
-        item.addActionListener( ( ae ) -> buildNicMenu( ipv4Only ) );
+        item.addActionListener( ( ae ) -> buildNicMenu( version ) );
         nicMenu.add( item );
     }
 
     /***************************************************************************
-     * @param nic
+     * Sets the callback invoked when a selection is made.
+     * @param updater the callback to be invoked.
      **************************************************************************/
-    private void fireUpdater( NicInfo nic )
+    public void setUpdater( IUpdater<IpAddress> updater )
     {
-        IUpdater<NicInfo> updater = this.updater;
-
-        if( updater != null )
-        {
-            updater.update( nic );
-        }
-    }
-
-    /***************************************************************************
-     * @param updater
-     **************************************************************************/
-    public void setUpdater( IUpdater<NicInfo> updater )
-    {
-        this.updater = updater;
+        this.updater = updater != null ? updater : ( d ) -> {
+        };
     }
 }

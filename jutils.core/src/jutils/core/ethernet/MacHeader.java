@@ -1,7 +1,8 @@
-package jutils.core.pcapng.ethernet;
+package jutils.core.ethernet;
 
 import java.io.IOException;
 
+import jutils.core.iana.EtherType;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;

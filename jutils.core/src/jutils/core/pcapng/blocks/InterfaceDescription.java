@@ -2,6 +2,7 @@ package jutils.core.pcapng.blocks;
 
 import java.io.IOException;
 
+import jutils.core.iana.LinkType;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataStream;
 import jutils.core.pcapng.BlockType;

@@ -80,4 +80,20 @@ public class ByteSwapper
             }
         }
     }
+
+    /***************************************************************************
+     * @param value
+     * @return
+     **************************************************************************/
+    public static int swap( int value )
+    {
+        int swapped = 0;
+
+        swapped |= ( value >> 24 ) & 0x000000FF;
+        swapped |= ( value >> 8 ) & 0x0000FF00;
+        swapped |= ( value << 8 ) & 0x00FF0000;
+        swapped |= ( value << 24 ) & 0xFF000000;
+
+        return swapped;
+    }
 }

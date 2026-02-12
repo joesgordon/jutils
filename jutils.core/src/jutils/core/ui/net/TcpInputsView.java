@@ -2,6 +2,7 @@ package jutils.core.ui.net;
 
 import javax.swing.JComponent;
 
+import jutils.core.net.IpAddress;
 import jutils.core.net.TcpInputs;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.fields.IDataFormField;
@@ -16,7 +17,7 @@ public class TcpInputsView implements IDataView<TcpInputs>
     /**  */
     private final StandardFormView form;
     /**  */
-    private final IDataFormField<String> nicField;
+    private final IDataFormField<IpAddress> nicField;
     /**  */
     private final IntegerFormField localPortField;
     /**  */
@@ -69,7 +70,7 @@ public class TcpInputsView implements IDataView<TcpInputs>
         setData( new TcpInputs() );
 
         localPortField.setUpdater( ( d ) -> inputs.localPort = d );
-        nicField.setUpdater( ( d ) -> inputs.nic = d );
+        nicField.setUpdater( ( d ) -> inputs.nic.set( d ) );
         timeoutField.setUpdater( ( d ) -> inputs.timeout = d );
         remoteAddressField.setUpdater( ( d ) -> inputs.remoteAddress.set( d ) );
         remotePortField.setUpdater( ( d ) -> inputs.remotePort = d );

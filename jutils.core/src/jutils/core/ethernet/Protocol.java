@@ -1,4 +1,4 @@
-package jutils.core.pcapng.ethernet;
+package jutils.core.ethernet;
 
 import jutils.core.INamedValue;
 

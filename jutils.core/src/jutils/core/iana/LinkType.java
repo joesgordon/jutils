@@ -1,4 +1,4 @@
-package jutils.core.pcapng.blocks;
+package jutils.core.iana;
 
 import jutils.core.INamedValue;
 
@@ -713,5 +713,14 @@ public enum LinkType implements INamedValue
     public static LinkType fromValue( int value )
     {
         return INamedValue.fromValue( value, LinkType.values(), NULL );
+    }
+
+    /***************************************************************************
+     * @param value
+     * @return
+     **************************************************************************/
+    public static LinkType fromValue( short value )
+    {
+        return fromValue( value & 0xFFFF );
     }
 }

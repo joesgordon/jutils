@@ -6,7 +6,7 @@ import jutils.core.Utils;
 import jutils.core.ValidationException;
 import jutils.core.io.IParser;
 import jutils.core.net.IpAddress;
-import jutils.core.net.IpAddress.IpVersion;
+import jutils.core.net.IpVersion;
 
 /*******************************************************************************
  * 

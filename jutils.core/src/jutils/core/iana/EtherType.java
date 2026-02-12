@@ -1,9 +1,10 @@
-package jutils.core.pcapng.ethernet;
+package jutils.core.iana;
 
 import jutils.core.INamedValue;
 
 /*******************************************************************************
- * <a href="https://en.wikipedia.org/wiki/EtherType">Wiki</a>
+ * <a href="https://en.wikipedia.org/wiki/EtherType">Wiki</a><br /> <a
+ * href="https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml">IANA</a>
  ******************************************************************************/
 public enum EtherType implements INamedValue
 {

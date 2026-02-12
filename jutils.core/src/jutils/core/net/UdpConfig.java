@@ -10,11 +10,11 @@ public class UdpConfig
     /**  */
     public int localPort;
     /**  */
-    public String nic;
+    public final IpAddress nic;
     /**  */
     public boolean broadcast;
     /**  */
-    public Usable<IpAddress> multicast;
+    public final Usable<IpAddress> multicast;
     /**  */
     public int timeout;
     /**  */
@@ -30,7 +30,7 @@ public class UdpConfig
     public UdpConfig()
     {
         this.localPort = 0;
-        this.nic = null;
+        this.nic = new IpAddress();
         this.broadcast = false;
         this.multicast = new Usable<>( false, new IpAddress( 224, 0, 0, 1 ) );
         this.timeout = 500;

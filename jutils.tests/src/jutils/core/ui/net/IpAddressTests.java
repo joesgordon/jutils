@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import jutils.core.Utils;
 import jutils.core.net.IpAddress;
-import jutils.core.net.IpAddress.IpVersion;
+import jutils.core.net.IpVersion;
 
 public class IpAddressTests
 {

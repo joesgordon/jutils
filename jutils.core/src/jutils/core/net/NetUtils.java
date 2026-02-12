@@ -2,27 +2,43 @@ package jutils.core.net;
 
 import java.awt.Component;
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
 import jutils.core.OptionUtils;
-import jutils.core.Utils;
-import jutils.core.ValidationException;
-import jutils.core.io.LogUtils;
+import jutils.core.net.NicInfo.AddressInfo;
 
 /*******************************************************************************
  * Utility class for general network functions.
  ******************************************************************************/
 public final class NetUtils
 {
+    /** The number of hextets (16-bit values) in an IPv6 address. */
+    public static final int HEXTET_COUNT = 8;
+    /** The number of bytes in an IPv4 address. */
+    public static final int IPV4_SIZE = 4;
+    /** The number of bytes in an IPv6 address. */
+    public static final int IPV6_SIZE = 2 * HEXTET_COUNT;
+
+    /** Integer value for IPv4 loopback, 127.0.0.1. */
+    public static final int IPV4_LOOPBACK = 0x7F000001;
+    /** IPv6 bytes for {@code ANY}. */
+    public static final byte [] IPV6_ANY = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0 };
+    /** Bytes for IPv6 loopback ::1 */
+    public static final byte [] IPV6_LOOPBACK = new byte[] { 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+
+    /** The lowest integer value for IPv4 multicast groups. */
+    public static final int IP4_MIN_GROUP = 0xE0000000;
+    /** The highest integer value for IPv4 multicast groups. */
+    public static final int IP4_MAX_GROUP = 0xEFFFFFFF;
+
     /***************************************************************************
      * Declare the default and only constructor private to prevent instances.
      **************************************************************************/
@@ -31,30 +47,13 @@ public final class NetUtils
     }
 
     /***************************************************************************
-     * @param nic
-     * @return
+     * Creates a list of all network interfaces on this system.
+     * @return the list of all network interfaces found.
+     * @throws RuntimeException if any {@link SocketException} is thrown. See
+     * {@link NetworkInterface#getNetworkInterfaces()}.
      **************************************************************************/
-    public static String getIpv4( NetworkInterface nic )
-    {
-        Enumeration<InetAddress> addresses = nic.getInetAddresses();
-
-        while( addresses.hasMoreElements() )
-        {
-            InetAddress address = addresses.nextElement();
-
-            if( address instanceof Inet4Address )
-            {
-                return address.getHostAddress();
-            }
-        }
-
-        return null;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public static List<NetworkInterface> listAllNics()
+    public static List<NetworkInterface> listAllNicInterfaces()
+        throws RuntimeException
     {
         List<NetworkInterface> nics = new ArrayList<>();
         Enumeration<NetworkInterface> nets;
@@ -77,130 +76,73 @@ public final class NetUtils
     }
 
     /***************************************************************************
-     * @return
+     * List all interfaces that are up or have addresses.
+     * @return the list of connected interfaces.
      **************************************************************************/
-    public static List<NicInfo> listUpNicsAndAny()
+    public static List<NicInfo> listNics()
     {
         List<NicInfo> nics = new ArrayList<>();
-        Enumeration<NetworkInterface> nets;
 
-        nics.add( NicInfo.createAny() );
-
-        try
+        for( NetworkInterface nic : listAllNicInterfaces() )
         {
-            nets = NetworkInterface.getNetworkInterfaces();
+            NicInfo info = new NicInfo( nic );
 
-            for( NetworkInterface nic : Collections.list( nets ) )
+            if( info.isUp || !info.ipAddresses.isEmpty() )
             {
-                if( nic.isUp() )
-                {
-                    Enumeration<InetAddress> addresses = nic.getInetAddresses();
-                    while( addresses.hasMoreElements() )
-                    {
-                        InetAddress address = addresses.nextElement();
-                        nics.add( new NicInfo( nic, address ) );
-                    }
-                }
+                nics.add( info );
             }
-        }
-        catch( SocketException ex )
-        {
-            throw new RuntimeException( ex.getMessage(), ex );
         }
 
         return nics;
     }
 
     /***************************************************************************
-     * @param nicString
-     * @return
+     * Lists all local addresses found.
+     * @return the list of all local addresses.
      **************************************************************************/
-    public static NicInfo lookupInfo( String nicString )
+    public static List<IpAddress> listLocalAddresses()
     {
-        NicInfo info = null;
-        List<NicInfo> nics = listUpNicsAndAny();
-        NicInfo any = getAnyInfo();
-
-        if( nicString == null )
-        {
-            info = any;
-        }
-        else
-        {
-            for( NicInfo ni : nics )
-            {
-                if( ni.name.toLowerCase().equals( nicString.toLowerCase() ) )
-                {
-                    info = ni;
-                    break;
-                }
-                else if( ni.addressString.equals( nicString ) )
-                {
-                    info = ni;
-                    break;
-                }
-            }
-
-            if( info == null )
-            {
-                InetAddress addr = null;
-
-                try
-                {
-                    addr = InetAddress.getByName( nicString );
-
-                    if( addr.isAnyLocalAddress() )
-                    {
-                        return any;
-                    }
-
-                    boolean found = false;
-
-                    for( NicInfo ni : nics )
-                    {
-                        if( ni.nic == null )
-                        {
-                            continue;
-                        }
-
-                        for( InterfaceAddress intf : ni.nic.getInterfaceAddresses() )
-                        {
-                            short maskLen = intf.getNetworkPrefixLength();
-
-                            if( isSubnet( addr, intf.getAddress(), maskLen ) )
-                            {
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        if( found )
-                        {
-                            info = ni;
-                            break;
-                        }
-                    }
-                }
-                catch( UnknownHostException ex )
-                {
-                }
-            }
-        }
-
-        return info;
+        return listLocalAddresses( null );
     }
 
     /***************************************************************************
-     * @param addr1
-     * @param addr2
-     * @param maskLen
-     * @return
+     * Lists all local addresses of the provided version found.
+     * @param version either IPv4, IPv6, or {@code null} for both.
+     * @return the list of local addresses.
      **************************************************************************/
-    public static boolean isSubnet( InetAddress addr1, InetAddress addr2,
+    public static List<IpAddress> listLocalAddresses( IpVersion version )
+    {
+        List<IpAddress> addresses = new ArrayList<>();
+        List<NicInfo> nics = NetUtils.listNics();
+
+        for( NicInfo nic : nics )
+        {
+            for( AddressInfo ai : nic.ipAddresses )
+            {
+                IpAddress ip = ai.ip;
+
+                if( version == ip.getVersion() )
+                {
+                    addresses.add( ip );
+                }
+            }
+        }
+
+        return addresses;
+    }
+
+    /***************************************************************************
+     * Tests if the provided addresses are in the same subnet.
+     * @param addr1 the first address to be checked.
+     * @param addr2 the second address to be checked.
+     * @param maskLen the length of the subnet bits.
+     * @return {@code true} if the addresses are on the same subnet.
+     **************************************************************************/
+    public static boolean isSubnet( IpAddress addr1, IpAddress addr2,
         short maskLen )
     {
-        byte [] bytes1 = addr1.getAddress();
-        byte [] bytes2 = addr2.getAddress();
+        byte [] bytes1 = addr1.get();
+        byte [] bytes2 = addr2.get();
 
         if( bytes1.length != bytes2.length )
         {
@@ -234,186 +176,11 @@ public final class NetUtils
     }
 
     /***************************************************************************
-     * @param nicString
-     * @return
-     **************************************************************************/
-    public static InetAddress lookupNetAddress( String nicString )
-    {
-        InetAddress address = null;
-        List<NicInfo> nics = listUpNicsAndAny();
-
-        if( nicString == null )
-        {
-            try
-            {
-                address = InetAddress.getByAddress( new byte[] { 0, 0, 0, 0 } );
-            }
-            catch( UnknownHostException ex )
-            {
-                throw new RuntimeException( "Unable to make inaddr_any", ex );
-            }
-        }
-        else
-        {
-            for( NicInfo info : nics )
-            {
-                if( info.name.toLowerCase().equals( nicString.toLowerCase() ) )
-                {
-                    address = info.address;
-                    break;
-                }
-                else if( info.addressString.equals( nicString ) )
-                {
-                    address = info.address;
-                    break;
-                }
-            }
-
-            if( address == null )
-            {
-                List<String> octects = Utils.split( nicString, '.' );
-
-                if( octects.size() < 3 )
-                {
-                    return null;
-                }
-
-                String firstThree = octects.get( 0 ) + "." + octects.get( 1 ) +
-                    "." + octects.get( 2 ) + ".";
-
-                for( NicInfo info : nics )
-                {
-                    if( info.addressString.startsWith( firstThree ) )
-                    {
-                        address = info.address;
-                    }
-                }
-            }
-        }
-
-        return address;
-    }
-
-    /***************************************************************************
-     * @param nicString
-     * @param name
-     * @throws ValidationException
-     **************************************************************************/
-    public static void validateNicString( String nicString, String name )
-        throws ValidationException
-    {
-        if( lookupNetAddress( nicString ) == null )
-        {
-            throw new ValidationException(
-                "No Network Interface found for string \"" + name + "\"" );
-        }
-    }
-
-    /***************************************************************************
-     * Returns the first {@link InetAddress} of the network interface name
-     * provided or dies if the JRE is strange.
-     * @param nicName the name of the network interface to be found.
-     * @return The first address of the network interface of the provided name
-     * or {@code null} if none found.
-     * @throws RuntimeException if the implementing JRE is so strange as to not
-     * recognize 0.0.0.0 as a valid address or when a {@link SocketException} is
-     * thrown on {@link NetworkInterface#getByName(String)}. The former should
-     * never happen and it is unclear from the documentation when/why the latter
-     * would happen.
-     **************************************************************************/
-    public static InetAddress getNetAddress( String nicName )
-        throws RuntimeException
-    {
-        InetAddress nicAddr = null;
-
-        if( nicName != null )
-        {
-            try
-            {
-                NetworkInterface nic = NetworkInterface.getByName( nicName );
-
-                nicAddr = getNetAddress( nic );
-            }
-            catch( SocketException ex )
-            {
-                throw new RuntimeException(
-                    "0.0.0.0 not recognized as a valid address", ex );
-            }
-        }
-
-        if( nicAddr == null )
-        {
-            nicAddr = getAnyNetAddress();
-        }
-
-        return nicAddr;
-    }
-
-    /***************************************************************************
-     * Gets the first address of the provided network interface.
-     * @param nic the network interface to get the address of.
-     * @return The first address of the network interface of the provided name
-     * or {@code null} if none found or privoded interface is {@code null}.
-     **************************************************************************/
-    public static InetAddress getNetAddress( NetworkInterface nic )
-    {
-        if( nic != null )
-        {
-            Enumeration<InetAddress> addresses = nic.getInetAddresses();
-
-            if( addresses.hasMoreElements() )
-            {
-                return addresses.nextElement();
-            }
-        }
-
-        return null;
-    }
-
-    /***************************************************************************
-     * @return
-     * @throws RuntimeException if the implementing JRE is so strange as to not
-     * recognize 0.0.0.0 as a valid address.
-     **************************************************************************/
-    public static InetAddress getAnyNetAddress()
-    {
-        byte [] inAddrAnyBytes = new byte[] { 0, 0, 0, 0 };
-
-        try
-        {
-            return InetAddress.getByAddress( inAddrAnyBytes );
-        }
-        catch( UnknownHostException ex )
-        {
-            throw new RuntimeException(
-                "0.0.0.0 not recognized as a valid address", ex );
-        }
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public static NicInfo getAnyInfo()
-    {
-        InetAddress address = getAnyNetAddress();
-        try
-        {
-            NetworkInterface nic = NetworkInterface.getByInetAddress( address );
-            NicInfo info = new NicInfo( nic, address );
-
-            return info;
-        }
-        catch( SocketException ex )
-        {
-            throw new IllegalStateException(
-                "ANY address not found: " + ex.getMessage() );
-        }
-    }
-
-    /***************************************************************************
-     * @param ip
-     * @param timeout
-     * @param parent
+     * Pings the provided address and displays a message saying whether it can
+     * or cannot be reached OR the error that occurred by trying
+     * @param ip the address to ping.
+     * @param timeout the timeout to be used.
+     * @param parent the parent component of the dialog to be displayed.
      **************************************************************************/
     public static void ping( IpAddress ip, int timeout, Component parent )
     {
@@ -439,6 +206,12 @@ public final class NetUtils
         }
     }
 
+    /***************************************************************************
+     * Opens a UDP socket with the provided inputs.
+     * @param inputs the configuration of the socket.
+     * @return the created, open socket.
+     * @throws IOException any error that occurs.
+     **************************************************************************/
     public static UdpSocket openUdpSocket( UdpConfig inputs ) throws IOException
     {
         UdpSocket socket = new UdpSocket();
@@ -454,14 +227,7 @@ public final class NetUtils
         // LogUtils.printDebug( "Remote Port: " + inputs.remotePort );
         // LogUtils.printDebug( "" );
 
-        NicInfo info = NetUtils.lookupInfo( inputs.nic );
-
-        if( info == null )
-        {
-            throw new IOException( "NIC not found: " + inputs.nic );
-        }
-
-        InetAddress nicAddr = info.address;
+        InetAddress nicAddr = inputs.nic.getInetAddress();
         IpAddress localIp = new IpAddress();
 
         localIp.setInetAddress( nicAddr );
@@ -490,15 +256,5 @@ public final class NetUtils
         socket.setReceiveTimeout( inputs.timeout );
 
         return socket;
-    }
-
-    /***************************************************************************
-     * @param args
-     **************************************************************************/
-    public static void main( String [] args )
-    {
-        NicInfo info = lookupInfo( "google.com" );
-
-        LogUtils.printDebug( "Info: %s", info );
     }
 }

@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Image;
 import java.awt.event.ActionListener;
-import java.net.NetworkInterface;
 import java.util.List;
 
 import javax.swing.Action;
@@ -19,7 +18,7 @@ import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
 import jutils.core.io.FieldPrinter;
 import jutils.core.net.NetUtils;
-import jutils.core.net.NicInfo.NicTier;
+import jutils.core.net.NicInfo;
 import jutils.core.ui.IToolView;
 import jutils.core.ui.ItemListView;
 import jutils.core.ui.ListView;
@@ -34,20 +33,20 @@ import jutils.core.ui.model.IView;
 /*******************************************************************************
  *
  ******************************************************************************/
-public class NicsView implements IView<JComponent>
+public class NicInfosView implements IView<JComponent>
 {
     /**  */
     private final JComponent view;
     /**  */
-    private final ItemListView<NetworkInterface> nicsView;
+    private final ItemListView<NicInfo> nicsView;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public NicsView()
+    public NicInfosView()
     {
-        this.nicsView = new ItemListView<>( new NicView(), new NicModel(),
-            false, false );
+        this.nicsView = new ItemListView<>( new NicInfoView(),
+            new NicInfoModel(), false, false );
         this.view = createView();
     }
 
@@ -94,7 +93,7 @@ public class NicsView implements IView<JComponent>
      **************************************************************************/
     private void handleRefresh()
     {
-        List<NetworkInterface> nics = NetUtils.listAllNics();
+        List<NicInfo> nics = NetUtils.listNics();
 
         nicsView.setData( nics );
     }
@@ -140,23 +139,22 @@ public class NicsView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class NicModel
-        implements IItemListModel<NetworkInterface>
+    private static final class NicInfoModel implements IItemListModel<NicInfo>
     {
         /**
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( NetworkInterface item )
+        public String getTitle( NicInfo item )
         {
-            return item.getDisplayName();
+            return item.name;
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public NetworkInterface promptForNew( ListView<NetworkInterface> view )
+        public NicInfo promptForNew( ListView<NicInfo> view )
         {
             return null;
         }
@@ -165,18 +163,18 @@ public class NicsView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class NicView implements IDataView<NetworkInterface>
+    private static final class NicInfoView implements IDataView<NicInfo>
     {
         /**  */
         private final StringView view;
 
         /**  */
-        private NetworkInterface nic;
+        private NicInfo nic;
 
         /**
          * 
          */
-        public NicView()
+        public NicInfoView()
         {
             this.view = new StringView();
         }
@@ -194,7 +192,7 @@ public class NicsView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public NetworkInterface getData()
+        public NicInfo getData()
         {
             return this.nic;
         }
@@ -203,11 +201,13 @@ public class NicsView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public void setData( NetworkInterface data )
+        public void setData( NicInfo data )
         {
             this.nic = data;
 
-            view.setData( FieldPrinter.toString( new NicTier( nic ) ) );
+            String text = FieldPrinter.toString( data );
+
+            view.setData( text );
         }
     }
 
@@ -222,7 +222,7 @@ public class NicsView implements IView<JComponent>
         @Override
         public Container getView()
         {
-            return new NicsView().view;
+            return new NicInfosView().view;
         }
 
         /**

@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
-import jutils.core.INamedValue;
 import jutils.core.Utils;
 import jutils.core.ValidationException;
 import jutils.core.io.IDataSerializer;
@@ -17,26 +16,6 @@ import jutils.core.ui.hex.HexUtils;
  ******************************************************************************/
 public class IpAddress
 {
-    /** The number of hextets (16-bit values) in an IPv6 address. */
-    public static final int HEXTET_COUNT = 8;
-    /** The number of bytes in an IPv4 address. */
-    public static final int IPV4_SIZE = 4;
-    /** The number of bytes in an IPv6 address. */
-    public static final int IPV6_SIZE = 2 * HEXTET_COUNT;
-
-    /**  */
-    public static final int IPV4_LOOPBACK = 0x7F000001;
-    /**  */
-    public static final byte [] IPV6_ANY = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0 };
-    /**  */
-    public static final byte [] IPV6_LOOPBACK = new byte[] { 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
-    /**  */
-    public static final int IP4_MIN_GROUP = 0xE0000000;
-    /**  */
-    public static final int IP4_MAX_GROUP = 0xEFFFFFFF;
-
     /** IP address values (always IPv6 size). */
     public final byte [] address;
     /**  */
@@ -67,7 +46,7 @@ public class IpAddress
      **************************************************************************/
     public IpAddress( IpVersion version )
     {
-        this.address = new byte[IPV6_SIZE];
+        this.address = new byte[NetUtils.IPV6_SIZE];
         this.version = version;
     }
 
@@ -124,11 +103,11 @@ public class IpAddress
 
             switch( addr.length )
             {
-                case IPV4_SIZE:
+                case NetUtils.IPV4_SIZE:
                     vers = IpVersion.IPV4;
                     break;
 
-                case IPV6_SIZE:
+                case NetUtils.IPV6_SIZE:
                     vers = IpVersion.IPV6;
                     break;
 
@@ -166,11 +145,11 @@ public class IpAddress
         switch( version )
         {
             case IPV4:
-                setValue( IPV4_LOOPBACK );
+                setValue( NetUtils.IPV4_LOOPBACK );
                 break;
 
             case IPV6:
-                set( IPV6_LOOPBACK );
+                set( NetUtils.IPV6_LOOPBACK );
                 break;
         }
     }
@@ -188,7 +167,7 @@ public class IpAddress
                 return 0 == getValue();
 
             case IPV6:
-                return Arrays.equals( IPV6_ANY, address );
+                return Arrays.equals( NetUtils.IPV6_ANY, address );
         }
         return false;
     }
@@ -203,10 +182,10 @@ public class IpAddress
         switch( version )
         {
             case IPV4:
-                return IPV4_LOOPBACK == getValue();
+                return NetUtils.IPV4_LOOPBACK == getValue();
 
             case IPV6:
-                return Arrays.equals( IPV6_LOOPBACK, address );
+                return Arrays.equals( NetUtils.IPV6_LOOPBACK, address );
 
             default:
                 return false;
@@ -226,7 +205,8 @@ public class IpAddress
             {
                 int value = this.getValue();
 
-                return IP4_MIN_GROUP <= value && value <= IP4_MAX_GROUP;
+                return NetUtils.IP4_MIN_GROUP <= value &&
+                    value <= NetUtils.IP4_MAX_GROUP;
             }
 
             case IPV6:
@@ -297,9 +277,9 @@ public class IpAddress
                 "Cannot represent IPv4 as hextets" );
         }
 
-        short [] value = new short[HEXTET_COUNT];
+        short [] value = new short[NetUtils.HEXTET_COUNT];
 
-        for( int i = 0; i < HEXTET_COUNT; i++ )
+        for( int i = 0; i < NetUtils.HEXTET_COUNT; i++ )
         {
             value[i] = getHextet( i );
         }
@@ -363,11 +343,11 @@ public class IpAddress
 
         switch( address.length )
         {
-            case IPV4_SIZE:
+            case NetUtils.IPV4_SIZE:
                 v = IpVersion.IPV4;
                 break;
 
-            case IPV6_SIZE:
+            case NetUtils.IPV6_SIZE:
                 v = IpVersion.IPV6;
                 break;
 
@@ -621,9 +601,9 @@ public class IpAddress
     private static byte [] toOctets( short [] value )
         throws IllegalArgumentException
     {
-        byte [] addr = new byte[IPV6_SIZE];
+        byte [] addr = new byte[NetUtils.IPV6_SIZE];
 
-        if( value.length != HEXTET_COUNT )
+        if( value.length != NetUtils.HEXTET_COUNT )
         {
             throw new IllegalArgumentException(
                 "Cannot set an IPv6 address with " + value.length +
@@ -639,59 +619,6 @@ public class IpAddress
         }
 
         return addr;
-    }
-
-    /***************************************************************************
-     *
-     **************************************************************************/
-    public enum IpVersion implements INamedValue
-    {
-        /** IP version 4 */
-        IPV4( IPV4_SIZE, "IPv4" ),
-        /** IP version 6 */
-        IPV6( IPV6_SIZE, "IPv6" );
-
-        /** The number of bytes in this IP version. */
-        public final int byteCount;
-        /** The name of this IP version. */
-        public final String name;
-
-        /**
-         * @param byteCount the number of bytes in this IP version.
-         * @param name the name of this IP version.
-         */
-        private IpVersion( int byteCount, String name )
-        {
-            this.byteCount = byteCount;
-            this.name = name;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getName()
-        {
-            return name;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getValue()
-        {
-            return byteCount;
-        }
-
-        /**
-         * @param id
-         * @return
-         */
-        public static IpVersion fromId( byte id )
-        {
-            return INamedValue.fromValue( id, values(), null );
-        }
     }
 
     /***************************************************************************

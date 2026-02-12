@@ -1,4 +1,4 @@
-package jutils.core.pcapng.ethernet;
+package jutils.core.ethernet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,13 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import jutils.core.ValidationException;
+import jutils.core.ethernet.Ipv4Header.Ipv4HeaderSerializer;
+import jutils.core.ethernet.Ipv6Header.Ipv6HeaderSerializer;
+import jutils.core.ethernet.MacHeader.MacHeaderSerializer;
+import jutils.core.ethernet.TcpHeader.TcpHeaderSerializer;
+import jutils.core.ethernet.UdpHeader.UdpHeaderSerializer;
 import jutils.core.io.FieldPrinter;
-import jutils.core.io.FieldPrinter.ITierPrinter;
-import jutils.core.pcapng.ethernet.Ipv4Header.Ipv4HeaderSerializer;
-import jutils.core.pcapng.ethernet.Ipv6Header.Ipv6HeaderSerializer;
-import jutils.core.pcapng.ethernet.MacHeader.MacHeaderSerializer;
-import jutils.core.pcapng.ethernet.TcpHeader.TcpHeaderSerializer;
-import jutils.core.pcapng.ethernet.UdpHeader.UdpHeaderSerializer;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
 import jutils.core.utils.ByteOrdering;
@@ -21,7 +20,7 @@ import jutils.core.utils.ByteOrdering;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TcpIpPacket implements ITierPrinter
+public class EthernetPacket implements IPacketData
 {
     /**  */
     public final List<ITcpIpLayer> layers;
@@ -31,7 +30,7 @@ public class TcpIpPacket implements ITierPrinter
     /***************************************************************************
      * 
      **************************************************************************/
-    public TcpIpPacket()
+    public EthernetPacket()
     {
         this.layers = new ArrayList<>();
     }
@@ -54,10 +53,11 @@ public class TcpIpPacket implements ITierPrinter
      * 
      **************************************************************************/
     public static class TcpIpPacketSerializer
-        implements IDataSerializer<TcpIpPacket>
+        implements IDataSerializer<EthernetPacket>
     {
         /**  */
-        private final Map<Class<? extends ITcpIpLayer>, IDataSerializer<? extends ITcpIpLayer>> serializers;
+        private final Map<Class<? extends ITcpIpLayer>,
+            IDataSerializer<? extends ITcpIpLayer>> serializers;
 
         /**
          * 
@@ -79,10 +79,10 @@ public class TcpIpPacket implements ITierPrinter
          * {@inheritDoc}
          */
         @Override
-        public TcpIpPacket read( IDataStream stream )
+        public EthernetPacket read( IDataStream stream )
             throws IOException, ValidationException
         {
-            TcpIpPacket packet = new TcpIpPacket();
+            EthernetPacket packet = new EthernetPacket();
 
             stream.setOrder( ByteOrdering.BIG_ENDIAN );
 
@@ -117,7 +117,7 @@ public class TcpIpPacket implements ITierPrinter
          * {@inheritDoc}
          */
         @Override
-        public void write( TcpIpPacket data, IDataStream stream )
+        public void write( EthernetPacket data, IDataStream stream )
             throws IOException
         {
             // TODO Auto-generated method stub

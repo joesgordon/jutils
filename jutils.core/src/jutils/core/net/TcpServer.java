@@ -2,7 +2,6 @@ package jutils.core.net;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -21,14 +20,8 @@ public class TcpServer implements Closeable
      **************************************************************************/
     public TcpServer( TcpInputs inputs ) throws IOException
     {
-        InetAddress nicAddr = NetUtils.lookupNetAddress( inputs.nic );
-
-        if( nicAddr == null )
-        {
-            throw new IOException( "Nic not found: " + inputs.nic );
-        }
-
-        this.server = new ServerSocket( inputs.localPort, 64, nicAddr );
+        this.server = new ServerSocket( inputs.localPort, 64,
+            inputs.nic.getInetAddress() );
 
         server.setSoTimeout( inputs.timeout );
     }

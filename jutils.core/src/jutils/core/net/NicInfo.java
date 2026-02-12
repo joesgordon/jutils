@@ -1,17 +1,15 @@
 package jutils.core.net;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.FieldPrinter.ITierPrinter;
+import jutils.core.utils.EnumerationIteratorAdapter;
 
 /*******************************************************************************
  * 
@@ -19,68 +17,64 @@ import jutils.core.io.FieldPrinter.ITierPrinter;
 public class NicInfo implements ITierPrinter
 {
     /**  */
-    public final NetworkInterface nic;
-    /**  */
-    public final InetAddress address;
-
-    /**  */
     public final String name;
     /**  */
-    public final String addressString;
+    public final byte [] hardwareAddress;
     /**  */
-    public final boolean isIpv4;
+    public final int mtuSize;
+
+    /**  */
+    public final boolean isUp;
+    /**  */
+    public final boolean isLoopback;
+    /**  */
+    public final boolean isPointToPoint;
+    /**  */
+    public final boolean isVirtual;
+    /**  */
+    public final boolean isMulticastSupported;
+
+    /**  */
+    public final List<AddressInfo> ipAddresses;
+    /**  */
+    public final List<NicInfo> subNics;
 
     /***************************************************************************
-     * @param nic {@code null} indicates Any.
-     * @param address the address of the provided NIC may not be null.
+     * @param nic the interface to get information from.
+     * @throws RuntimeException if a {@link SocketException} is thrown.
      **************************************************************************/
-    public NicInfo( NetworkInterface nic, InetAddress address )
-    {
-        this.nic = nic;
-        this.name = nic != null ? nic.getDisplayName() : "Any";
-        this.address = address;
-        this.addressString = address.getHostAddress();
-        this.isIpv4 = address instanceof Inet4Address;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public IpAddress toIpAddress()
-    {
-        IpAddress ip = new IpAddress();
-
-        ip.setInetAddress( address );
-
-        return ip;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public static NicInfo createAny()
+    public NicInfo( NetworkInterface nic ) throws RuntimeException
     {
         try
         {
-            byte [] bytes = new byte[] { 0, 0, 0, 0 };
-            InetAddress address = InetAddress.getByAddress( bytes );
+            this.name = nic != null ? nic.getDisplayName() : "Any";
+            this.hardwareAddress = nic.getHardwareAddress();
+            this.mtuSize = nic.getMTU();
 
-            return new NicInfo( null, address );
+            this.isUp = nic.isUp();
+            this.isLoopback = nic.isLoopback();
+            this.isPointToPoint = nic.isPointToPoint();
+            this.isVirtual = nic.isVirtual();
+            this.isMulticastSupported = nic.supportsMulticast();
+
+            this.ipAddresses = new ArrayList<>();
+            this.subNics = new ArrayList<>();
+
+            for( InterfaceAddress intf : nic.getInterfaceAddresses() )
+            {
+                ipAddresses.add( new AddressInfo( intf ) );
+            }
+
+            for( NetworkInterface subnic : new EnumerationIteratorAdapter<>(
+                nic.getSubInterfaces() ) )
+            {
+                subNics.add( new NicInfo( subnic ) );
+            }
         }
-        catch( UnknownHostException ex )
+        catch( SocketException ex )
         {
-            throw new RuntimeException(
-                "0.0.0.0 was identified as a bad address" );
+            throw new RuntimeException( ex );
         }
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public String toString()
-    {
-        return name + "|" + addressString;
     }
 
     /***************************************************************************
@@ -90,11 +84,53 @@ public class NicInfo implements ITierPrinter
     public void printFields( FieldPrinter printer )
     {
         printer.printField( "Name", name );
-        printer.printField( "Address", addressString );
+        printer.printFieldValues( "Hardware Address", hardwareAddress );
+        printer.printField( "MTU Size", mtuSize );
+        printer.printField( "Is Up", isUp );
+        printer.printField( "Is Loopback", isLoopback );
+        printer.printField( "Is Point-to-Point", isPointToPoint );
+        printer.printField( "Is Virtual", isVirtual );
+        printer.printTiers( "Address", ipAddresses );
+        printer.printTiers( "Sub Nics", subNics );
+    }
 
-        if( nic != null )
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static class AddressInfo implements ITierPrinter
+    {
+        /**  */
+        public final IpAddress ip;
+        /**  */
+        public final IpAddress broadcast;
+        /**  */
+        public short prefixLength;
+
+        /**
+         * @param intf the interface to get information from.
+         */
+        public AddressInfo( InterfaceAddress intf )
         {
-            printer.printTier( "NIC", new NicTier( nic ) );
+            this.ip = new IpAddress();
+            this.broadcast = new IpAddress();
+            this.prefixLength = intf.getNetworkPrefixLength();
+
+            ip.setInetAddress( intf.getAddress() );
+            if( intf.getBroadcast() != null )
+            {
+                broadcast.setInetAddress( intf.getBroadcast() );
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void printFields( FieldPrinter printer )
+        {
+            printer.printField( "IP Address", ip );
+            printer.printField( "Broadcast Address", broadcast );
+            printer.printField( "Prefix Length", prefixLength );
         }
     }
 

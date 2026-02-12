@@ -1,4 +1,4 @@
-package jutils.core.pcapng.ethernet;
+package jutils.core.ethernet;
 
 import java.io.IOException;
 
@@ -6,6 +6,7 @@ import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
 import jutils.core.net.IpAddress;
+import jutils.core.net.NetUtils;
 
 /*******************************************************************************
  * <a href="https://en.wikipedia.org/wiki/IPv6_packet">Wiki</a>
@@ -40,8 +41,8 @@ public class Ipv6Header implements ITcpIpLayer
         this.payloadLength = 0;
         this.nextHeader = 0;
         this.hopLimit = 0;
-        this.source = new byte[IpAddress.IPV6_SIZE];
-        this.destination = new byte[IpAddress.IPV6_SIZE];
+        this.source = new byte[NetUtils.IPV6_SIZE];
+        this.destination = new byte[NetUtils.IPV6_SIZE];
     }
 
     /***************************************************************************

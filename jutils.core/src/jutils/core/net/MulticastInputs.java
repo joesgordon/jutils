@@ -1,7 +1,5 @@
 package jutils.core.net;
 
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.Objects;
 
 /*******************************************************************************
@@ -14,7 +12,7 @@ public class MulticastInputs
     /** The port to send/receive. */
     public int port;
     /** The nic to be bound to. */
-    public String nic;
+    public IpAddress nic;
     /**
      * Indicates that the socket will receive the messages it sends or not. This
      * flag may be ignored by the underlying subsystem because standards are
@@ -53,14 +51,8 @@ public class MulticastInputs
     }
 
     /***************************************************************************
-     * @return
-     * @throws SocketException
+     * {@inheritDoc}
      **************************************************************************/
-    public NetworkInterface getSystemNic() throws SocketException
-    {
-        return nic == null ? null : NetworkInterface.getByName( nic );
-    }
-
     @Override
     public boolean equals( Object obj )
     {

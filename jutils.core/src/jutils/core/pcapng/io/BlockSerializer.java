@@ -46,13 +46,13 @@ public class BlockSerializer implements IDataSerializer<IBlock>
     public IBlock read( IDataStream stream )
         throws IOException, ValidationException
     {
-        long pos = stream.getPosition();
+        // long pos = stream.getPosition();
         int id = stream.readInt();
         int length = stream.readInt();
         BlockType type = BlockType.fromValue( id );
 
-        LogUtils.printDebug( "Got a %s packet (0x%08X) of length %d at %d",
-            type.name, id, length, pos );
+        // LogUtils.printDebug( "Got a %s packet (0x%08X) of length %d at %d",
+        // type.name, id, length, pos );
 
         if( BlockType.UNKNOWN == type )
         {

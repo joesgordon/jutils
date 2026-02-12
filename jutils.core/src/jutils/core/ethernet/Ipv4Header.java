@@ -1,4 +1,4 @@
-package jutils.core.pcapng.ethernet;
+package jutils.core.ethernet;
 
 import java.io.IOException;
 
@@ -6,6 +6,7 @@ import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
 import jutils.core.net.IpAddress;
+import jutils.core.net.NetUtils;
 import jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
@@ -49,8 +50,8 @@ public class Ipv4Header implements ITcpIpLayer
         this.ttl = 0;
         this.protocol = 0;
         this.checksum = 0;
-        this.source = new byte[IpAddress.IPV4_SIZE];
-        this.destination = new byte[IpAddress.IPV4_SIZE];
+        this.source = new byte[NetUtils.IPV4_SIZE];
+        this.destination = new byte[NetUtils.IPV4_SIZE];
         this.options = new byte[0];
     }
 

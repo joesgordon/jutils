@@ -3,14 +3,14 @@ package jutils.core.pcapng.blocks;
 import java.io.IOException;
 
 import jutils.core.ValidationException;
+import jutils.core.ethernet.EthernetPacket;
+import jutils.core.ethernet.EthernetPacket.TcpIpPacketSerializer;
 import jutils.core.io.ByteArrayStream;
 import jutils.core.io.DataStream;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataStream;
 import jutils.core.pcapng.BlockType;
 import jutils.core.pcapng.IBlock;
-import jutils.core.pcapng.ethernet.TcpIpPacket;
-import jutils.core.pcapng.ethernet.TcpIpPacket.TcpIpPacketSerializer;
 
 /*******************************************************************************
  * 
@@ -53,7 +53,7 @@ public class EnhancedPacket extends IBlock
      * @throws IOException
      * @throws ValidationException
      **************************************************************************/
-    public TcpIpPacket readData()
+    public EthernetPacket readData()
     {
         try( ByteArrayStream byteStream = new ByteArrayStream( data,
             data.length, 0, false );

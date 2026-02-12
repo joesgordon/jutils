@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import jutils.core.data.DataItemPair;
+import jutils.core.ethernet.EthernetPacket;
+import jutils.core.ethernet.ITcpIpLayer;
+import jutils.core.ethernet.Ipv4Header;
+import jutils.core.ethernet.MacHeader;
+import jutils.core.ethernet.Protocol;
+import jutils.core.iana.EtherType;
 import jutils.core.pcapng.BlockType;
 import jutils.core.pcapng.IBlock;
 import jutils.core.pcapng.blocks.EnhancedPacket;
-import jutils.core.pcapng.ethernet.EtherType;
-import jutils.core.pcapng.ethernet.ITcpIpLayer;
-import jutils.core.pcapng.ethernet.Ipv4Header;
-import jutils.core.pcapng.ethernet.MacHeader;
-import jutils.core.pcapng.ethernet.Protocol;
-import jutils.core.pcapng.ethernet.TcpIpPacket;
 import jutils.core.time.TimeUtils;
 import jutils.core.ui.model.DefaultTableItemsConfig;
 
@@ -55,7 +55,7 @@ public class BlockTableConfig
      **************************************************************************/
     private Integer getAppLen( EnhancedPacket item )
     {
-        TcpIpPacket tcpip = item.readData();
+        EthernetPacket tcpip = item.readData();
 
         if( tcpip != null )
         {
@@ -115,7 +115,7 @@ public class BlockTableConfig
     private static <L extends ITcpIpLayer, T> T getLayerField( EnhancedPacket e,
         Class<L> layerClass, IFieldGetter<L, T> getter )
     {
-        TcpIpPacket tcpip = e.readData();
+        EthernetPacket tcpip = e.readData();
 
         if( tcpip != null )
         {

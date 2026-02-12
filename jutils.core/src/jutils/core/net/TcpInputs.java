@@ -6,11 +6,11 @@ package jutils.core.net;
 public class TcpInputs
 {
     /**  */
-    public String nic;
+    public final IpAddress nic;
     /**  */
     public int localPort;
     /**  */
-    public IpAddress remoteAddress;
+    public final IpAddress remoteAddress;
     /**  */
     public int remotePort;
     /**
@@ -24,7 +24,7 @@ public class TcpInputs
      **************************************************************************/
     public TcpInputs()
     {
-        this.nic = null;
+        this.nic = new IpAddress();
         this.localPort = 0;
         this.remoteAddress = new IpAddress( 127, 0, 0, 1 );
         this.remotePort = 5000;
