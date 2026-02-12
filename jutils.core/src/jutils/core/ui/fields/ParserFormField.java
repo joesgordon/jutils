@@ -153,7 +153,8 @@ public class ParserFormField<T> implements IDataFormField<T>
             ? new DefaultItemDescriptor<T>()
             : itemDescriptor;
 
-        this.updater = null;
+        this.updater = ( d ) -> {
+        };
         this.value = null;
         this.isSetting = false;
 
@@ -212,7 +213,8 @@ public class ParserFormField<T> implements IDataFormField<T>
     @Override
     public void setUpdater( IUpdater<T> updater )
     {
-        this.updater = updater;
+        this.updater = updater != null ? updater : ( d ) -> {
+        };
     }
 
     /***************************************************************************

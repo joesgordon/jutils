@@ -1,79 +1,86 @@
 package jutils.core.ui.fields;
 
 import javax.swing.JComponent;
-import javax.swing.JTextField;
 
-import jutils.core.NumberParsingUtils;
-import jutils.core.io.IParser;
-import jutils.core.io.parsers.BinaryByteParser;
+import jutils.core.data.INamedBitFlag;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 
 /*******************************************************************************
- * Defines an {@link IFormField} that contains a hexadecimal byte validater.
+ * 
  ******************************************************************************/
-public class BinaryByteFormField implements IDataFormField<Byte>
+public class BitFlagsField implements IDataFormField<Long>
 {
     /**  */
-    private final JTextField textField;
+    private final HexLongFormField field;
     /**  */
-    private final ParserFormField<Byte> field;
+    private final INamedBitFlag [] flags;
+
+    /**  */
+    private IUpdater<Long> updater;
+
+    // TODO add a button to set the fields individually
 
     /***************************************************************************
      * @param name
      **************************************************************************/
-    public BinaryByteFormField( String name )
+    public BitFlagsField( String name, INamedBitFlag [] flags )
     {
-        this( name, null );
+        this.field = new HexLongFormField( name );
+        this.flags = flags;
+        this.updater = ( d ) -> {
+        };
+
+        field.setUpdater( ( d ) -> handleUpdate( d ) );
     }
 
     /***************************************************************************
-     * @param name
-     * @param units
+     * {@inheritDoc}
      **************************************************************************/
-    public BinaryByteFormField( String name, String units )
+    @Override
+    public Long getValue()
     {
-        this( name, units, 20 );
+        return field.getValue();
     }
 
     /***************************************************************************
-     * @param name
-     * @param units
-     * @param columns
+     * {@inheritDoc}
      **************************************************************************/
-    public BinaryByteFormField( String name, String units, int columns )
+    @Override
+    public void setValue( Long value )
     {
-        this( name, units, columns, null, null );
+        field.setValue( value );
+
+        setTooltip( value );
     }
 
     /***************************************************************************
-     * @param name
-     * @param units
-     * @param min
-     * @param max
+     * {@inheritDoc}
      **************************************************************************/
-    public BinaryByteFormField( String name, String units, Byte min, Byte max )
+    @Override
+    public void setUpdater( IUpdater<Long> updater )
     {
-        this( name, units, 20, min, max );
+        this.updater = updater != null ? updater : ( d ) -> {
+        };
     }
 
     /***************************************************************************
-     * @param name
-     * @param units
-     * @param columns
-     * @param min
-     * @param max
+     * {@inheritDoc}
      **************************************************************************/
-    public BinaryByteFormField( String name, String units, int columns,
-        Byte min, Byte max )
+    @Override
+    public IUpdater<Long> getUpdater()
     {
-        IDescriptor<Byte> descriptor = ( d ) -> toString( d );
-        IParser<Byte> parser = new BinaryByteParser( min, max );
+        return field.getUpdater();
+    }
 
-        this.textField = new JTextField( columns );
-        this.field = new ParserFormField<>( name, parser, textField, descriptor,
-            textField, units );
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void setEditable( boolean editable )
+    {
+        field.setEditable( editable );
     }
 
     /***************************************************************************
@@ -92,51 +99,6 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     public JComponent getView()
     {
         return field.getView();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public Byte getValue()
-    {
-        return field.getValue();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setValue( Byte value )
-    {
-        field.setValue( value );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setUpdater( IUpdater<Byte> updater )
-    {
-        field.setUpdater( updater );
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public IUpdater<Byte> getUpdater()
-    {
-        return field.getUpdater();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public void setEditable( boolean editable )
-    {
-        field.setEditable( editable );
     }
 
     /***************************************************************************
@@ -167,20 +129,21 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * @return
+     * @param value
      **************************************************************************/
-    public JTextField getTextField()
+    private void handleUpdate( long value )
     {
-        return textField;
+        setTooltip( value );
+        updater.update( value );
     }
 
     /***************************************************************************
      * @param value
-     * @return
      **************************************************************************/
-    private static String toString( Byte value )
+    private void setTooltip( long value )
     {
-        return value == null ? ""
-            : NumberParsingUtils.toLeadingBinaryString( value );
+        String tooltip = INamedBitFlag.getStatuses( value, flags );
+
+        field.getTextField().setToolTipText( tooltip );
     }
 }

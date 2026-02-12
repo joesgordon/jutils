@@ -1,12 +1,14 @@
 package jutils.multicon.ui.net;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.SocketException;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 import jutils.core.io.options.OptionsSerializer;
 import jutils.core.net.*;
+import jutils.core.ui.StandardFormView;
 import jutils.core.ui.net.EndPointField;
 import jutils.core.ui.net.UdpConfigView;
 import jutils.core.ui.validation.Validity;
@@ -23,6 +25,8 @@ public class UdpView implements IConnectionView<UdpConfig>
     public static final String NAME = "UDP Connection";
 
     /**  */
+    private final JComponent view;
+    /**  */
     private final UdpConfigView inputsView;
     /**  */
     private final EndPointField remoteField;
@@ -37,6 +41,7 @@ public class UdpView implements IConnectionView<UdpConfig>
     {
         this.inputsView = new UdpConfigView();
         this.remoteField = new EndPointField( "Remote" );
+        this.view = createView();
         this.connection = null;
 
         OptionsSerializer<MulticonOptions> userio = MulticonMain.getUserData();
@@ -44,6 +49,38 @@ public class UdpView implements IConnectionView<UdpConfig>
         inputsView.setData( new UdpConfig( userio.getOptions().udpInputs ) );
 
         inputsView.addValidityChanged( ( v ) -> inputsValidityChanged( v ) );
+
+        remoteField.setUpdater( ( d ) -> connection.setRemote( d ) );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private JComponent createView()
+    {
+        JPanel panel = new JPanel( new GridBagLayout() );
+        GridBagConstraints constraints;
+
+        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
+        panel.add( inputsView.getView(), constraints );
+
+        StandardFormView form = new StandardFormView();
+
+        form.addField( remoteField );
+
+        constraints = new GridBagConstraints( 0, 1, 1, 1, 1.0, 0.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
+        panel.add( form.getView(), constraints );
+
+        constraints = new GridBagConstraints( 0, 2, 1, 1, 1.0, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
+        panel.add( Box.createHorizontalStrut( 0 ), constraints );
+
+        return panel;
     }
 
     /***************************************************************************
@@ -52,7 +89,7 @@ public class UdpView implements IConnectionView<UdpConfig>
     @Override
     public JComponent getView()
     {
-        return inputsView.getView();
+        return view;
     }
 
     /***************************************************************************
