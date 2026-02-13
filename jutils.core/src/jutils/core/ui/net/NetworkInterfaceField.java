@@ -3,6 +3,7 @@ package jutils.core.ui.net;
 import javax.swing.JComponent;
 
 import jutils.core.net.IpAddress;
+import jutils.core.net.IpVersion;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.validation.IValidityChangedListener;
@@ -23,8 +24,17 @@ public class NetworkInterfaceField implements IDataFormField<IpAddress>
      **************************************************************************/
     public NetworkInterfaceField( String name )
     {
+        this( name, null );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param version
+     **************************************************************************/
+    public NetworkInterfaceField( String name, IpVersion version )
+    {
         this.nicField = new IpAddressField( name );
-        this.nicMenu = new NetworkInterfacePopup();
+        this.nicMenu = new NetworkInterfacePopup( version );
 
         nicMenu.addToRightClick( nicField.getTextField() );
         nicMenu.setUpdater( ( d ) -> handleNicChosen( d ) );

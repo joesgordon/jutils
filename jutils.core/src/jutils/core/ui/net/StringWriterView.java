@@ -14,16 +14,16 @@ import jutils.core.ui.model.IDataView;
 public final class StringWriterView<T> implements IDataView<T>
 {
     /** The field for the string representation of the message content. */
-    private final JEditorPane editor;
+    public final JEditorPane editor;
     /**  */
     private final IStringWriter<T> writer;
 
     /**  */
     private T msg;
 
-    /**
+    /***************************************************************************
      * @param writer
-     */
+     **************************************************************************/
     public StringWriterView( IStringWriter<T> writer )
     {
         this.writer = writer;
@@ -33,27 +33,27 @@ public final class StringWriterView<T> implements IDataView<T>
         editor.setFont( SwingUtils.getFixedFont( 12 ) );
     }
 
-    /**
+    /***************************************************************************
      * {@inheritDoc}
-     */
+     **************************************************************************/
     @Override
     public Component getView()
     {
         return editor;
     }
 
-    /**
+    /***************************************************************************
      * {@inheritDoc}
-     */
+     **************************************************************************/
     @Override
     public T getData()
     {
         return msg;
     }
 
-    /**
+    /***************************************************************************
      * {@inheritDoc}
-     */
+     **************************************************************************/
     @Override
     public void setData( T msg )
     {
@@ -61,5 +61,13 @@ public final class StringWriterView<T> implements IDataView<T>
 
         editor.setText( writer.toString( msg ) );
         editor.setCaretPosition( 0 );
+    }
+
+    /***************************************************************************
+     * @param editable
+     **************************************************************************/
+    public void setEditable( boolean editable )
+    {
+        editor.setEditable( editable );
     }
 }
