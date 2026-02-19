@@ -92,7 +92,7 @@ public class NetworkInterfacePopup implements IView<JPopupMenu>
 
         for( IpAddress ip : ips )
         {
-            String title = ip.toString() + " : " + ip;
+            String title = ip.toString();
             JMenuItem item = new JMenuItem( title );
             item.addActionListener( ( e ) -> updater.update( ip ) );
             nicMenu.add( item );
