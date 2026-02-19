@@ -121,7 +121,7 @@ public final class NetUtils
             {
                 IpAddress ip = ai.ip;
 
-                if( version == ip.getVersion() )
+                if( version == null || version == ip.getVersion() )
                 {
                     addresses.add( ip );
                 }
