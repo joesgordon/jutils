@@ -92,7 +92,14 @@ public class PacketHeader implements ITierPrinter
             throws IOException, ValidationException
         {
             header.timestamp.seconds = stream.readInt() & BitMasks.INT_MASK;
-            // TODO Auto-generated method stub
+            header.timestamp.nanoseconds = stream.readInt();
+            header.capturedLength = stream.readInt() & BitMasks.INT_MASK;
+            header.originalLength = stream.readInt() & BitMasks.INT_MASK;
+
+            if( isMicros )
+            {
+                header.timestamp.nanoseconds *= 1000;
+            }
         }
 
         /**
@@ -102,8 +109,15 @@ public class PacketHeader implements ITierPrinter
         public void write( PacketHeader header, IDataStream stream )
             throws IOException
         {
-            // TODO Auto-generated method stub
+            int frac = header.timestamp.nanoseconds;
 
+            frac = isMicros ? ( header.timestamp.nanoseconds + 500 ) / 1000
+                : frac;
+
+            stream.writeInt( ( int )header.timestamp.seconds );
+            stream.writeInt( frac );
+            stream.writeInt( ( int )header.capturedLength );
+            stream.writeInt( ( int )header.originalLength );
         }
     }
 }

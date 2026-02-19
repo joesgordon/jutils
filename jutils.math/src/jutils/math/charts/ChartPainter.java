@@ -28,7 +28,6 @@ public class ChartPainter implements IPainter
     }
 
     /***************************************************************************
-     * @param c
      * @param g
      **************************************************************************/
     @Override
@@ -36,17 +35,39 @@ public class ChartPainter implements IPainter
     {
         Rectangle bounds = g.getClipBounds();
 
-        int margin = 14;
-        int fontHeight = properties.primaryAxes.domain.majorTicks.textFont.getSize();
-        int fontMargin = 5;
-        int areaMargin = margin + fontHeight + fontMargin;
+        int tickFontHeight = properties.primaryAxes.domain.majorTicks.textFont.getSize();
+        int tickFontMargin = 5;
+
+        int margin = 4;
+
+        // ---------------------------------------------------------------------
+        // Determine top area
+        // ---------------------------------------------------------------------
+        Rectangle top = new Rectangle();
+
+        // ---------------------------------------------------------------------
+        // Determine bottom area
+        // ---------------------------------------------------------------------
+        Rectangle bottom = new Rectangle();
+
+        // ---------------------------------------------------------------------
+        // Determine left area
+        // ---------------------------------------------------------------------
+        Rectangle left = new Rectangle();
+
+        // ---------------------------------------------------------------------
+        // Determine top area
+        // ---------------------------------------------------------------------
+        Rectangle right = new Rectangle();
+
+        int areaMargin = margin + tickFontHeight + tickFontMargin;
 
         Rectangle areaBounds = new Rectangle();
 
-        areaBounds.x = areaMargin;
-        areaBounds.y = areaMargin;
-        areaBounds.width = bounds.width - 2 * areaMargin;
-        areaBounds.height = bounds.height - 2 * areaMargin;
+        areaBounds.x = margin;
+        areaBounds.y = areaBounds.x;
+        areaBounds.width = bounds.width - 2 * areaBounds.x;
+        areaBounds.height = bounds.height - 2 * areaBounds.x;
 
         areaBounds.width = Math.max( 100, areaBounds.width );
         areaBounds.height = Math.max( 100, areaBounds.height );

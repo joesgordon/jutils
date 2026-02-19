@@ -3,6 +3,7 @@ package jutils.math.dsp;
 import javax.swing.JFrame;
 
 import jutils.core.io.LogUtils;
+import jutils.core.ui.app.AppRunner;
 
 /*******************************************************************************
  * 
@@ -14,10 +15,18 @@ public class DspMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        // AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
+        testA2d();
 
-        // AppRunner.invokeLater( () -> createFrame() );
+        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
 
+        AppRunner.invokeLater( () -> createFrame() );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private static void testA2d()
+    {
         DigAnaConverter c = new DigAnaConverter();
 
         double max = c.getMaximum();
