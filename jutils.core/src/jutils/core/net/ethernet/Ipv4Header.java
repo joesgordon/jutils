@@ -1,4 +1,4 @@
-package jutils.core.ethernet;
+package jutils.core.net.ethernet;
 
 import java.io.IOException;
 
@@ -6,16 +6,23 @@ import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
 import jutils.core.net.IpAddress;
+import jutils.core.net.IpVersion;
 import jutils.core.net.NetUtils;
 import jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
  * <a href="https://en.wikipedia.org/wiki/Internet_Protocol_version_4">Wiki</a>
+ * <a href="https://www.rfc-editor.org/rfc/rfc760">RFC-760</a>
  ******************************************************************************/
 public class Ipv4Header implements ITcpIpLayer
 {
-    /**  */
-    public byte verLenWord;
+    /** Format of the Internet Header */
+    public IpVersion version;
+    /**
+     * Internet Header Length is the number of 32 bit words in this header
+     * (minimum 5).
+     */
+    public byte ihl;
     /**  */
     public byte servicesWord;
     /**  */
@@ -42,7 +49,8 @@ public class Ipv4Header implements ITcpIpLayer
      **************************************************************************/
     public Ipv4Header()
     {
-        this.verLenWord = 0;
+        this.version = IpVersion.IPV4;
+        this.ihl = 0;
         this.servicesWord = 0;
         this.totalLength = 0;
         this.id = 0;
@@ -53,14 +61,6 @@ public class Ipv4Header implements ITcpIpLayer
         this.source = new byte[NetUtils.IPV4_SIZE];
         this.destination = new byte[NetUtils.IPV4_SIZE];
         this.options = new byte[0];
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public int getIhl()
-    {
-        return verLenWord & 0x0F;
     }
 
     /***************************************************************************
@@ -77,7 +77,8 @@ public class Ipv4Header implements ITcpIpLayer
     @Override
     public void printFields( FieldPrinter printer )
     {
-        printer.printHexField( "Version/IHL", verLenWord );
+        printer.printField( "Version", version.name );
+        printer.printField( "IHL", ihl );
         printer.printHexField( "DSCP/ECN", servicesWord );
         printer.printField( "Total Length", totalLength );
         printer.printField( "Identification", id );
@@ -157,7 +158,12 @@ public class Ipv4Header implements ITcpIpLayer
         {
             Ipv4Header header = new Ipv4Header();
 
-            header.verLenWord = stream.read();
+            byte verIhl = stream.read();
+            byte version = ( byte )( ( verIhl >>> 4 ) & 0x0F );
+            byte ihl = ( byte )( verIhl & 0x0F );
+
+            header.version = IpVersion.fromId( version );
+            header.ihl = ihl;
             header.servicesWord = stream.read();
             header.totalLength = stream.readShort();
             header.id = stream.readShort();
@@ -169,7 +175,6 @@ public class Ipv4Header implements ITcpIpLayer
             stream.readFully( header.source );
             stream.readFully( header.destination );
 
-            int ihl = header.getIhl();
             if( ihl > 5 )
             {
                 header.options = new byte[4 * ( ihl - 5 )];

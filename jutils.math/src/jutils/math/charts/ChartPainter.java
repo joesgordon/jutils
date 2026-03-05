@@ -14,7 +14,7 @@ import jutils.math.charts.props.ChartProperties;
 public class ChartPainter implements IPainter
 {
     /**  */
-    private ChartProperties properties;
+    private final ChartProperties properties;
     /**  */
     private IChartPainter chart;
 

@@ -3,9 +3,9 @@ package jutils.core.pcap;
 import java.io.IOException;
 
 import jutils.core.ValidationException;
-import jutils.core.iana.LinkType;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.FieldPrinter.ITierPrinter;
+import jutils.core.net.iana.LinkType;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
 import jutils.core.swap.ByteSwapper;

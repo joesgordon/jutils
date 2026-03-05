@@ -1,4 +1,4 @@
-package jutils.core.ethernet;
+package jutils.core.net.ethernet;
 
 import java.io.IOException;
 

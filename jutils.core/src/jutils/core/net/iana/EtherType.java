@@ -1,4 +1,4 @@
-package jutils.core.iana;
+package jutils.core.net.iana;
 
 import jutils.core.INamedValue;
 
@@ -15,7 +15,9 @@ public enum EtherType implements INamedValue
     /**  */
     IPV6( 0x86DD, "IPv6" ),
     /**  */
-    UNKNOWN( 0xFF, "Unknown" );
+    LLDP( 0x88CC, "IEEE Std 802.1AB - Link Layer Discovery Protocol (LLDP)" ),
+    /**  */
+    UNKNOWN( 0xFFFF, "Unknown" );
 
     /** Length if less than this. */
     public static final int MIN_TYPE = 0x0600;

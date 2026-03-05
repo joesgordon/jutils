@@ -4,12 +4,13 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import jutils.core.data.DataItemPair;
-import jutils.core.ethernet.EthernetPacket;
-import jutils.core.ethernet.ITcpIpLayer;
-import jutils.core.ethernet.Ipv4Header;
-import jutils.core.ethernet.MacHeader;
-import jutils.core.ethernet.Protocol;
-import jutils.core.iana.EtherType;
+import jutils.core.net.ethernet.EthernetPacket;
+import jutils.core.net.ethernet.ITcpIpLayer;
+import jutils.core.net.ethernet.Ipv4Header;
+import jutils.core.net.ethernet.Ipv6Header;
+import jutils.core.net.ethernet.MacHeader;
+import jutils.core.net.ethernet.Protocol;
+import jutils.core.net.iana.EtherType;
 import jutils.core.pcapng.BlockType;
 import jutils.core.pcapng.IBlock;
 import jutils.core.pcapng.blocks.EnhancedPacket;
@@ -96,8 +97,18 @@ public class BlockTableConfig
     {
         IFieldGetter<EnhancedPacket, Protocol> getter;
 
-        getter = ( e ) -> getLayerField( e, Ipv4Header.class,
-            ( lr ) -> lr.getProtocol() );
+        getter = ( e ) -> {
+            Protocol p = getLayerField( e, Ipv4Header.class,
+                ( lr ) -> lr.getProtocol() );
+
+            if( p == null )
+            {
+                p = getLayerField( e, Ipv6Header.class,
+                    ( lr ) -> lr.getNextHeaderProtocol() );
+            }
+
+            return p;
+        };
 
         Protocol p = getEnhancedField( block, getter );
 

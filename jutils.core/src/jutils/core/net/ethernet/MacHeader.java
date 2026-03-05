@@ -1,11 +1,11 @@
-package jutils.core.ethernet;
+package jutils.core.net.ethernet;
 
 import java.io.IOException;
 
-import jutils.core.iana.EtherType;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
+import jutils.core.net.iana.EtherType;
 import jutils.core.ui.hex.HexUtils;
 
 /*******************************************************************************
