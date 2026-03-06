@@ -113,7 +113,7 @@ function findf()
 
 function fe()
 {
-    ( /usr/bin/geany $* 1>/dev/null 2>&1 ) &
+    ( /usr/bin/gedit $* 1>/dev/null 2>&1 ) &
 }
 
 function few()
