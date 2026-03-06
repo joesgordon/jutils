@@ -5,14 +5,14 @@
 
 echo "========================= Loading Bash Extras ========================="
 
-user_rc_file="~/.beuserrc"
+user_rc_file="$HOME/.beuserrc"
 
-alias rs='source ~/.bashrc'
+alias rs='source $HOME/.bashrc'
 alias rse='exec bash'
-alias ec='fe ~/.bashrc'
+alias ec='fe $HOME/.bashrc'
 alias ecc='fe /apps/bashextras.sh'
 alias ecu='fe $user_rc_file'
-alias gou='go ~'
+alias gou='go $HOME'
 alias gof='go /files/'
 alias h='history'
 
@@ -25,6 +25,7 @@ alias lld='ll -d'
 alias geterr='errcode="$?"; if [[ $errcode -eq "0" ]] ; then echo "No Error"; else echo "ERROR $errcode"; fi;'
 
 alias gitdi='git difftool -y'
+alias gitco='git clone --recurse-submodules --progress -v --'
 alias gitcfg='git config -l --show-origin | sort'
 alias gitci='git commit -m '
 alias gitad='git add'
@@ -32,6 +33,8 @@ alias gitst='git status -s'
 alias gitup='git pull -v --progress;git submodule update --recursive --remote'
 alias gitlc='git config -l --show-origin'
 alias gitwipe='git clean -f -d -X'
+
+alias psef='ps -ef'
 
 alias setcmd='sudo systemctl set-default multi-user'
 alias setgui='sudo systemctl set-default graphical'
@@ -92,7 +95,7 @@ function findcf()
         findcf_dir=$1
     fi
     
-    find $findcf_dir -mindepth 1 -type f -name '*.hpp' -o -name '*.C' -o -name '*.c' -o -name '*.cpp' -o -name '*.h' -printf '%p\n' | sort
+    find $findcf_dir -mindepth 1 -type f \( -name '*.hpp' -o -name '*.C' -o -name '*.c' -o -name '*.cpp' -o -name '*.h' \) -printf '%p\n' | sort
 }
 
 function findf()
@@ -214,8 +217,9 @@ function pdfunc ()
     gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile="$fulldir/${filename}_unencrypted.pdf" -c .setpdfwrite -f "$fullfile"
 }
 
-if [ -f "${user_rc_file}" ] ; then
-    echo "=================== Loading User Resource File ===================="
-    #echo "Loading ${user_rc_file}"
+
+if [[  -f "${user_rc_file}" ]] ; then
+    echo "====================== Loading User Resource File ====================="
+    # echo "Loading ${user_rc_file}"
 	. "${user_rc_file}"
 fi
