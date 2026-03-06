@@ -1,4 +1,4 @@
-package jutils.core.iana;
+package jutils.core.net.iana;
 
 import jutils.core.INamedValue;
 

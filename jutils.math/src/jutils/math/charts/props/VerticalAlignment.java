@@ -1,18 +1,18 @@
-package jutils.plot.model;
+package jutils.math.charts.props;
 
 import jutils.core.INamedItem;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public enum HorizontalAlignment implements INamedItem
+public enum VerticalAlignment implements INamedItem
 {
     /**  */
-    LEFT( "Left" ),
+    TOP( "Left" ),
     /**  */
-    CENTER( "Center" ),
+    MIDDLE( "Center" ),
     /**  */
-    RIGHT( "Right" );
+    BOTTOM( "Right" );
 
     /**  */
     public final String name;
@@ -20,7 +20,7 @@ public enum HorizontalAlignment implements INamedItem
     /***************************************************************************
      * @param name
      **************************************************************************/
-    private HorizontalAlignment( String name )
+    private VerticalAlignment( String name )
     {
         this.name = name;
     }

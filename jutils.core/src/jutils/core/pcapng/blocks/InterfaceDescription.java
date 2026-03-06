@@ -2,9 +2,9 @@ package jutils.core.pcapng.blocks;
 
 import java.io.IOException;
 
-import jutils.core.iana.LinkType;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataStream;
+import jutils.core.net.iana.LinkType;
 import jutils.core.pcapng.BlockType;
 import jutils.core.pcapng.IBlock;
 import jutils.core.ui.hex.HexUtils;

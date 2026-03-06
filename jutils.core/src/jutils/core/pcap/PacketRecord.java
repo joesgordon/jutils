@@ -3,10 +3,10 @@ package jutils.core.pcap;
 import java.io.IOException;
 
 import jutils.core.ValidationException;
-import jutils.core.ethernet.EthernetPacket;
-import jutils.core.ethernet.IPacketData;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.FieldPrinter.ITierPrinter;
+import jutils.core.net.ethernet.EthernetPacket;
+import jutils.core.net.ethernet.IPacketData;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
 

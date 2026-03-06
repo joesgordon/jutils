@@ -1,4 +1,4 @@
-package jutils.plot.model;
+package jutils.math.charts.props;
 
 import jutils.core.INamedItem;
 
@@ -14,7 +14,6 @@ public enum HorizontalAlignment implements INamedItem
     /**  */
     RIGHT( "Right" );
 
-    /**  */
     public final String name;
 
     /***************************************************************************

@@ -1,4 +1,4 @@
-package jutils.core.ethernet;
+package jutils.core.net.ethernet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import jutils.core.ValidationException;
-import jutils.core.ethernet.Ipv4Header.Ipv4HeaderSerializer;
-import jutils.core.ethernet.Ipv6Header.Ipv6HeaderSerializer;
-import jutils.core.ethernet.MacHeader.MacHeaderSerializer;
-import jutils.core.ethernet.TcpHeader.TcpHeaderSerializer;
-import jutils.core.ethernet.UdpHeader.UdpHeaderSerializer;
 import jutils.core.io.FieldPrinter;
 import jutils.core.io.IDataSerializer;
 import jutils.core.io.IDataStream;
+import jutils.core.net.ethernet.Ipv4Header.Ipv4HeaderSerializer;
+import jutils.core.net.ethernet.Ipv6Header.Ipv6HeaderSerializer;
+import jutils.core.net.ethernet.MacHeader.MacHeaderSerializer;
+import jutils.core.net.ethernet.TcpHeader.TcpHeaderSerializer;
+import jutils.core.net.ethernet.UdpHeader.UdpHeaderSerializer;
 import jutils.core.utils.ByteOrdering;
 
 /*******************************************************************************
@@ -52,7 +52,7 @@ public class EthernetPacket implements IPacketData
     /***************************************************************************
      * 
      **************************************************************************/
-    public static class TcpIpPacketSerializer
+    public static class EthernetPacketSerializer
         implements IDataSerializer<EthernetPacket>
     {
         /**  */
@@ -62,7 +62,7 @@ public class EthernetPacket implements IPacketData
         /**
          * 
          */
-        public TcpIpPacketSerializer()
+        public EthernetPacketSerializer()
         {
             this.serializers = new HashMap<>();
 
