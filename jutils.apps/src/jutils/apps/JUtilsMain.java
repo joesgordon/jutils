@@ -3,6 +3,7 @@ package jutils.apps;
 import java.util.ArrayList;
 import java.util.List;
 
+import jutils.colorific.ColorificTool;
 import jutils.core.pcapng.ui.PcapngTool;
 import jutils.core.ui.IToolView;
 import jutils.core.ui.app.AppRunner;
@@ -74,6 +75,7 @@ public class JUtilsMain
         apps.add( new InsomniaTool() );
         apps.add( new MinesTool() );
         apps.add( new TelemetryTool() );
+        apps.add( new ColorificTool() );
 
         return apps;
     }
