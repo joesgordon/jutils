@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import jutils.core.io.IconLoader;
 
 /*******************************************************************************
- * 
+ * Defines the functions to access icons specific to the Hexulator application.
  ******************************************************************************/
 public final class HexulatorIcons
 {
@@ -16,9 +16,9 @@ public final class HexulatorIcons
     public static final IconLoader loader = new IconLoader(
         HexulatorIcons.class, "icons" );
 
-    /**  */
+    /** The name of the icon for the application that is 24 x 24 pixels. */
     public static final String APP_024 = "hexulator_024.png";
-    /**  */
+    /** The name of the icon for the application that is 32 x 32 pixels. */
     public static final String APP_032 = "hexulator_032.png";
 
     /***************************************************************************
@@ -29,7 +29,8 @@ public final class HexulatorIcons
     }
 
     /***************************************************************************
-     * @return
+     * Provides the list of images for the Hexulator Application.
+     * @return list of application images.
      **************************************************************************/
     public static List<Image> getAppImages()
     {

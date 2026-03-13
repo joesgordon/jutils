@@ -1,28 +1,21 @@
 package jutils.colorific;
 
 import java.awt.AWTException;
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
-import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.Stroke;
-import java.awt.image.BufferedImage;
+import java.awt.Window;
 
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
@@ -31,66 +24,75 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
-import jutils.core.laf.UIProperty;
-import jutils.core.ui.ColorIcon;
-import jutils.core.ui.ShadowBorder;
+import jutils.core.SwingUtils;
 import jutils.core.ui.event.ActionAdapter;
+import jutils.core.ui.event.WindowCloseListener;
 import jutils.core.ui.model.IView;
 
-/***************************************************************************
- * 
- **************************************************************************/
+/*******************************************************************************
+ * Defines the primary view for the Colorific application.
+ ******************************************************************************/
 public class ColorificView implements IView<JComponent>
 {
-    /**  */
+    /** The number of of color grab displays. */
+    private final int SWATCH_COUNT = 16;
+    /** The delay between grabs in milliseconds. */
+    private final int GRAB_DELAY = 50;
+    /**
+     * The key(s) pressed to grab the color at the pixel under the mouse cursor.
+     */
+    private final String GRAB_KEY = "control G";
+
+    /** The primary component view. */
     private final JPanel view;
-    /**  */
+    /** A view that displays a zoomed in area of the current mouse location. */
     private final ZoomView zoomArea;
-    /**  */
+    /** Displays the components of the grabbed color in several formats. */
     private final JColorChooser colorChooser;
-    /**  */
+    /** Displays the RGB hex of the grabbed/hovered color. */
     private final JLabel colorLabel;
-    /**  */
+    /** The color grab displays. */
     private final SwatchView [] swatches;
-    /**  */
+    /** The action that grabs the screen around the mouse cursor. */
     private final Action grabAction;
-    /**  */
+    /** Called when the component's window is closed to stop the timer. */
+    private final WindowCloseListener windowListener;
+    /** The button used to enable/disable picking. */
     private final JToggleButton pickerButton;
 
-    /**  */
+    /** The index of the selected swatch. */
     private int selectedIndex;
-    /**  */
+    /** The index of the next swatch. */
     private int currentIndex;
 
     /**  */
     private Timer timer;
 
     /***************************************************************************
-     * 
+     * Creates a new Colorific view.
      **************************************************************************/
     public ColorificView()
     {
         this.zoomArea = new ZoomView();
-        this.colorLabel = new JLabel();
-        this.swatches = new SwatchView[16];
         this.colorChooser = new JColorChooser();
+        this.colorLabel = new JLabel();
+        this.swatches = new SwatchView[SWATCH_COUNT];
+        this.grabAction = new ActionAdapter( ( e ) -> handleGrab(),
+            "grabKeyStroke", null );
+        this.windowListener = new WindowCloseListener(
+            () -> handleWindowClosed() );
         this.pickerButton = new JToggleButton();
 
         this.selectedIndex = 0;
         this.currentIndex = 0;
-
         this.timer = null;
 
         this.view = createView();
 
         KeyStroke key;
 
-        grabAction = new ActionAdapter( ( e ) -> handleGrab(), "grabKeyStroke",
-            null );
-        key = KeyStroke.getKeyStroke( "control G" );
+        key = KeyStroke.getKeyStroke( GRAB_KEY );
 
         grabAction.putValue( Action.ACCELERATOR_KEY, key );
         view.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW ).put( key,
@@ -101,7 +103,8 @@ public class ColorificView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return the panel for this view.
+     * Creates a new component that is this view.
+     * @return the newly created component.
      **************************************************************************/
     private JPanel createView()
     {
@@ -116,7 +119,8 @@ public class ColorificView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return the panel containing the picker, zoom area, and swatches.
+     * Creates the component that displays the picker, zoom area, and swatches.
+     * @return the newly created component.
      **************************************************************************/
     private Component createPickerPanel()
     {
@@ -174,7 +178,8 @@ public class ColorificView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return the panel containing the swatches.
+     * Creates the component containing swatches.
+     * @return the newly created component.
      **************************************************************************/
     private Component createSwatchPanel()
     {
@@ -220,7 +225,7 @@ public class ColorificView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * 
+     * Callback invoked when the {@code #pickerButton} is pressed.
      **************************************************************************/
     private void handlePickerButton()
     {
@@ -235,7 +240,8 @@ public class ColorificView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * 
+     * Callback invoked when the user presses the action key to grab the color
+     * at the pixel under the mouse cursor.
      **************************************************************************/
     private void handleGrab()
     {
@@ -262,9 +268,12 @@ public class ColorificView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param bot
+     * Callback invoked when each screen update is invoked at
+     * {@link #GRAB_DELAY} milliseconds.
+     * @param bot the robot invoked at the moment the {@link #pickerButton} was
+     * pressed.
      **************************************************************************/
-    private void handlePickerTimer( Robot bot )
+    private void handleScreenUpdate( Robot bot )
     {
         PointerInfo pi = MouseInfo.getPointerInfo();
 
@@ -279,6 +288,7 @@ public class ColorificView implements IView<JComponent>
     }
 
     /***************************************************************************
+     * Callback invoked when a swatch is selected.
      * @param swatch the swatch selected.
      * @param index the index of the swatch selected.
      **************************************************************************/
@@ -295,7 +305,19 @@ public class ColorificView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * 
+     * Callback invoked when the component's window is closed.
+     **************************************************************************/
+    private void handleWindowClosed()
+    {
+        stopPicking();
+
+        Window window = SwingUtils.getComponentsWindow( view );
+
+        window.removeWindowListener( windowListener );
+    }
+
+    /***************************************************************************
+     * Starts the update of the selected swatch when the mouse is moved.
      **************************************************************************/
     private void startPicking()
     {
@@ -303,7 +325,12 @@ public class ColorificView implements IView<JComponent>
         {
             Robot bot = new Robot();
 
-            timer = new Timer( 10, ( e ) -> handlePickerTimer( bot ) );
+            timer = new Timer( GRAB_DELAY, ( e ) -> handleScreenUpdate( bot ) );
+
+            Window window = SwingUtils.getComponentsWindow( view );
+
+            window.removeWindowListener( windowListener );
+            window.addWindowListener( windowListener );
 
             timer.start();
 
@@ -317,7 +344,7 @@ public class ColorificView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * 
+     * Stops the update of the selected swatch when the mouse is moved.
      **************************************************************************/
     private void stopPicking()
     {
@@ -328,191 +355,6 @@ public class ColorificView implements IView<JComponent>
             zoomArea.reset();
             grabAction.setEnabled( false );
             pickerButton.setSelected( false );
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class ZoomView implements IView<JLabel>
-    {
-        /**  */
-        private static final int CAP_ZOOM = 16 + 1;
-        /**  */
-        private static final int CAP_SIZE = 9;
-        /**  */
-        private static final int CAP_HALF = CAP_SIZE / 2;
-        /**  */
-        public static final int IMG_SIZE = CAP_SIZE * CAP_ZOOM;
-        /**  */
-        private static final int LINE_W = 3;
-        /**  */
-        private static final int CH_MIN = CAP_ZOOM * CAP_HALF - LINE_W / 2;
-        /**  */
-        private static final int CH_MAX = CAP_ZOOM * CAP_HALF - LINE_W / 2 +
-            CAP_ZOOM;
-
-        /**  */
-        private final Stroke solidStroke;
-        /**  */
-        private final JLabel zoomLabel;
-
-        /**
-         * 
-         */
-        public ZoomView()
-        {
-            this.solidStroke = new BasicStroke( LINE_W, BasicStroke.CAP_SQUARE,
-                BasicStroke.JOIN_ROUND );
-            this.zoomLabel = new JLabel();
-
-            zoomLabel.setPreferredSize( new Dimension( IMG_SIZE, IMG_SIZE ) );
-            zoomLabel.setBorder( new ShadowBorder() );
-        }
-
-        /**
-         * @param p
-         * @param bot
-         * @param swatch
-         * @param colorLabel
-         */
-        public void copyArea( Point p, Robot bot, SwatchView swatch,
-            JLabel colorLabel )
-        {
-            Color c = bot.getPixelColor( p.x, p.y );
-
-            swatch.setColor( c );
-            colorLabel.setText(
-                String.format( "#%06X", c.getRGB() & 0x00FFFFFF ) );
-
-            Rectangle sr = new Rectangle( p.x - CAP_HALF, p.y - CAP_HALF,
-                CAP_SIZE, CAP_SIZE );
-            BufferedImage image = bot.createScreenCapture( sr );
-            BufferedImage resizedImage = new BufferedImage( IMG_SIZE, IMG_SIZE,
-                BufferedImage.TYPE_INT_RGB );
-            Graphics2D g2 = resizedImage.createGraphics();
-
-            g2.drawImage( image, 0, 0, IMG_SIZE, IMG_SIZE, null );
-
-            g2.setStroke( solidStroke );
-            g2.setColor( new Color( 255 - c.getRed(), 255 - c.getGreen(),
-                255 - c.getBlue() ) );
-
-            g2.drawLine( CH_MIN, CH_MIN, CH_MIN, CH_MAX );
-            g2.drawLine( CH_MIN, CH_MIN, CH_MAX, CH_MIN );
-            g2.drawLine( CH_MAX, CH_MIN, CH_MAX, CH_MAX );
-            g2.drawLine( CH_MIN, CH_MAX, CH_MAX, CH_MAX );
-
-            g2.dispose();
-
-            ImageIcon icon = new ImageIcon( resizedImage );
-            zoomLabel.setIcon( icon );
-        }
-
-        /**
-         * 
-         */
-        public void reset()
-        {
-            zoomLabel.setIcon( null );
-        }
-
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public JLabel getView()
-        {
-            return zoomLabel;
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static class SwatchView implements IView<JComponent>
-    {
-        /**  */
-        private final JButton component;
-        /**  */
-        private final ColorIcon icon;
-
-        /**  */
-        private final EmptyBorder invisibleBorder;
-        /**  */
-        private final LineBorder selectedBorder;
-
-        /**
-         * 
-         */
-        public SwatchView()
-        {
-            int bdrSize = 2;
-
-            this.icon = new ColorIcon( UIProperty.PANEL_BACKGROUND.getColor(),
-                32 );
-            this.component = new JButton( icon );
-            this.invisibleBorder = new EmptyBorder(
-                new Insets( bdrSize, bdrSize, bdrSize, bdrSize ) );
-            this.selectedBorder = new LineBorder( Color.blue, bdrSize );
-
-            component.setOpaque( false );
-            component.setMargin( new Insets( 2, 2, 2, 2 ) );
-            component.setEnabled( false );
-
-            setSelected( false );
-        }
-
-        /**
-         * @param selected
-         */
-        public void setSelected( boolean selected )
-        {
-            if( selected )
-            {
-                component.setBorder( selectedBorder );
-            }
-            else
-            {
-                component.setBorder( invisibleBorder );
-            }
-        }
-
-        /**
-         * @param c
-         */
-        public void setColor( Color c )
-        {
-            if( c != null )
-            {
-                component.setEnabled( true );
-            }
-            else
-            {
-                c = UIProperty.PANEL_BACKGROUND.getColor();
-                component.setEnabled( false );
-            }
-
-            icon.setColor( c );
-
-            component.repaint();
-        }
-
-        /**
-         * @return
-         */
-        public Color getColor()
-        {
-            return icon.getColor();
-        }
-
-        /**
-         * @{@inheritDoc}
-         */
-        @Override
-        public JButton getView()
-        {
-            return component;
         }
     }
 }

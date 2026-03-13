@@ -64,6 +64,6 @@ public class ColorificTool implements IToolView
     @Override
     public List<Image> getImages()
     {
-        return ColorificIcons.getColorImages();
+        return ColorificIcons.getAppImages();
     }
 }
