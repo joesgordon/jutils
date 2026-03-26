@@ -30,6 +30,7 @@ alias gitcfg='git config -l --show-origin | sort'
 alias gitci='git commit -m '
 alias gitad='git add'
 alias gitst='git status -s'
+alias gitsu='git submodule update --remote --recursive'
 alias gitup='git pull -v --progress;git submodule update --recursive --remote'
 alias gitlc='git config -l --show-origin'
 alias gitwipe='git clean -f -d -X'
@@ -39,6 +40,7 @@ alias psef='ps -ef'
 alias setcmd='sudo systemctl set-default multi-user'
 alias setgui='sudo systemctl set-default graphical'
 
+export BE_EDTR='gedit'
 export HISTTIMEFORMAT="%04y-%02m-%02d %02H:%02M:%02S "
 export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n[\d \t]\$ '
 #export PS1='\[\e]0;\w\a\]\n\u@\h \w\n[\d \t] $ '
@@ -113,7 +115,7 @@ function findf()
 
 function fe()
 {
-    ( /usr/bin/gedit $* 1>/dev/null 2>&1 ) &
+    ( $BE_EDTR $* 1>/dev/null 2>&1 ) &
 }
 
 function few()

@@ -48,8 +48,9 @@ public class AsciiStore implements ITierPrinter
     }
 
     /***************************************************************************
-     * @param key
-     * @return
+     * Gets the string value of the entry specified by the provided key.
+     * @param key the lookup of the entry.
+     * @return the string value of the entry.
      **************************************************************************/
     public String getString( String key )
     {
@@ -57,8 +58,9 @@ public class AsciiStore implements ITierPrinter
     }
 
     /***************************************************************************
-     * @param key
-     * @return
+     * Gets the integer value of the entry specified by the provided key.
+     * @param key key the lookup of the entry.
+     * @return the integer value of the entry.
      **************************************************************************/
     public Integer getInteger( String key )
     {

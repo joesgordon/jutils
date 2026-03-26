@@ -5,13 +5,25 @@
 
 #include "IPlatform.hpp"
 
-int main2(int argc, char *argv[])
+/*******************************************************************************
+ *
+ ******************************************************************************/
+int main(int argc, char *argv[])
 {
     return CUtils::runConsole();
 }
 
-int main(int argc, char *argv[])
+/*******************************************************************************
+ *
+ ******************************************************************************/
+int main2(int argc, char *argv[])
 {
+    printf("Number of arguments: %d\n", argc);
+    for (int i = 0; i < argc; i++)
+    {
+        printf("  Arg[%d]=%s\n", i, argv[i]);
+    }
+
     std::string serialName = "COM4";
 
     auto api = CUtils::getPlatform();
