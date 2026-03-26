@@ -1,47 +1,49 @@
-package jutils.hexulator;
+package jutils.colorific;
 
 import java.awt.Image;
 import java.util.List;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 
 import jutils.core.io.IconLoader;
 
 /*******************************************************************************
- * Defines the functions to access icons specific to the Hexulator application.
+ * Defines functions to access icons specific to the Colorific application.
  ******************************************************************************/
-public final class HexulatorIcons
+public final class ColorificIcons
 {
     /** The icon loader to be used to access icons in this project. */
     public static final IconLoader loader = new IconLoader(
-        HexulatorIcons.class, "icons" );
+        ColorificIcons.class, "icons" );
 
+    /** The name of the icon for picking a color that is 24 x 24 pixels. */
+    public static final String COLOR_PICKER_024 = "colorPicker024.png";
     /** The name of the icon for the application that is 24 x 24 pixels. */
-    public static final String APP_024 = "hexulator_024.png";
-    /** The name of the icon for the application that is 32 x 32 pixels. */
-    public static final String APP_032 = "hexulator_032.png";
+    public static final String COLOR_024 = "color024.png";
 
     /***************************************************************************
      * Private default constructor to prevent instantiation of this class.
      **************************************************************************/
-    private HexulatorIcons()
+    private ColorificIcons()
     {
     }
 
     /***************************************************************************
-     * Provides the list of images for the Hexulator Application.
+     * Provides the list of images for the Colorific Application.
      * @return list of application images.
      **************************************************************************/
     public static List<Image> getAppImages()
     {
-        return loader.getImages( IconLoader.buildNameList( "hexulator_" ) );
+        return loader.getImages( IconLoader.buildNameList( "color" ) );
     }
 
     /***************************************************************************
-     * @param name
-     * @return
+     * Returns the Colorific icon with the provided name.
+     * @param name the filename of the icon to be returned.
+     * @return the icon of the provided name; {@code null} if no icon of the
+     * provided name exists.
      **************************************************************************/
-    public static ImageIcon getIcon( String name )
+    public static Icon getIcon( String name )
     {
         return loader.getIcon( name );
     }

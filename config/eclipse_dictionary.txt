@@ -1,5 +1,3 @@
 emission
-interlock
-serializer
-hextet
-hextets
+swatch
+swatches
