@@ -234,9 +234,14 @@ public final class NetUtils
 
             socket.open();
             socket.setReuseAddress( true );
-            socket.setTimeToLive( inputs.ttl );
+
             socket.bind( localPoint );
+
+            socket.setTimeToLive( inputs.ttl );
             socket.setLoopback( inputs.loopback );
+
+            socket.setInterface( inputs.nic );
+
             socket.joinGroup( group, inputs.nic );
         }
         else
