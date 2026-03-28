@@ -18,6 +18,10 @@ JUtils is licensed under the MIT License. You are permitted to use, copy, modify
 
 JUtils comes with no warranty of correctness though it totally is.
 
+Run with:
+
+    javaw -Djava.net.preferIPv4Stack=true -jar jutils.jar
+
 ## Build
 
 JUtils is built with it's own [bootstrap build system](./jbcs/readme.md). You must have javac in your path before running:
