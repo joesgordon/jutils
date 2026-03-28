@@ -9,7 +9,6 @@ public interface IStorilizer<T>
     /***************************************************************************
      * @param item
      * @param store
-     * @return
      **************************************************************************/
     public void read( T item, AsciiStore store );
 }

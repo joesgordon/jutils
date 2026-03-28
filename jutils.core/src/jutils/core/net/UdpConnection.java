@@ -112,6 +112,7 @@ public class UdpConnection implements IConnection
     public NetMessage sendMessage( byte [] contents, InetAddress toAddr,
         int toPort ) throws IOException
     {
+
         return socket.send( contents, toAddr, toPort );
     }
 
