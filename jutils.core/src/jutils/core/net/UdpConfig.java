@@ -44,10 +44,18 @@ public class UdpConfig
      **************************************************************************/
     public UdpConfig( UdpConfig inputs )
     {
+        this();
+
         this.localPort = inputs.localPort;
-        this.nic = inputs.nic;
+        if( inputs.nic != null )
+        {
+            this.nic.set( inputs.nic );
+        }
         this.broadcast = inputs.broadcast;
-        this.multicast = new Usable<>( inputs.multicast );
+        if( inputs.multicast != null )
+        {
+            this.multicast.set( inputs.multicast );
+        }
         this.timeout = inputs.timeout;
         this.reuse = inputs.reuse;
         this.loopback = inputs.loopback;

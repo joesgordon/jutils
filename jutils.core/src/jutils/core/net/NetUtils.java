@@ -227,15 +227,9 @@ public final class NetUtils
         // LogUtils.printDebug( "Remote Port: " + inputs.remotePort );
         // LogUtils.printDebug( "" );
 
-        InetAddress nicAddr = inputs.nic.getInetAddress();
-        IpAddress localIp = new IpAddress();
-
-        localIp.setInetAddress( nicAddr );
-
-        EndPoint localPoint = new EndPoint( localIp, inputs.localPort );
-
         if( inputs.multicast.isUsed )
         {
+            EndPoint localPoint = new EndPoint( inputs.localPort );
             IpAddress group = inputs.multicast.data;
 
             socket.open();
@@ -243,10 +237,12 @@ public final class NetUtils
             socket.setTimeToLive( inputs.ttl );
             socket.bind( localPoint );
             socket.setLoopback( inputs.loopback );
-            socket.joinGroup( group, localIp );
+            socket.joinGroup( group, inputs.nic );
         }
         else
         {
+            EndPoint localPoint = new EndPoint( inputs.nic, inputs.localPort );
+
             socket.open();
             socket.setReuseAddress( inputs.reuse );
             socket.setBroadcast( inputs.broadcast );
