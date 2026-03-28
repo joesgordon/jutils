@@ -66,10 +66,10 @@ public class IpAddress
 
     /***************************************************************************
      * Creates an IPv4 address with the specified value.
-     * @param value the address of length {@link #IPV4_SIZE} or
-     * {@link #IPV6_SIZE}.
+     * @param value the address of length {@link NetUtils#IPV4_SIZE} or
+     * {@link NetUtils#IPV6_SIZE}.
      * @throws IllegalArgumentException if the provided address is not of length
-     * {@link #IPV4_SIZE} or {@link #IPV6_SIZE}.
+     * {@link NetUtils#IPV4_SIZE} or {@link NetUtils#IPV6_SIZE}.
      **************************************************************************/
     public IpAddress( byte [] value ) throws IllegalArgumentException
     {
@@ -266,7 +266,7 @@ public class IpAddress
 
     /***************************************************************************
      * This IPv6 address as hextets.
-     * @return an array of {@link #HEXTET_COUNT} hextets.
+     * @return an array of {@link NetUtils#HEXTET_COUNT} hextets.
      * @throws IllegalStateException if this is not an IPv6 address.
      **************************************************************************/
     public short [] getHextets() throws IllegalStateException
@@ -288,8 +288,9 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @param index
-     * @return
+     * Gets the hextet (byte) at the provided index.
+     * @param index the index of the hextet to be returned.
+     * @return the hextet at the provided index.
      **************************************************************************/
     public short getHextet( int index )
     {
@@ -306,7 +307,7 @@ public class IpAddress
      * @param value the hextets to be set. The high 2 bytes of each integer are
      * unchecked and have no effect.
      * @throws IllegalArgumentException if the provided value is not of length
-     * {@link #HEXTET_COUNT}.
+     * {@link NetUtils#HEXTET_COUNT}.
      **************************************************************************/
     public void setHextets( short [] value ) throws IllegalArgumentException
     {
@@ -316,8 +317,8 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * Returns a copy of the address of length {@link #IPV4_SIZE} or
-     * {@link #IPV6_SIZE} depending on the IP version.
+     * Returns a copy of the address of length {@link NetUtils#IPV4_SIZE} or
+     * {@link NetUtils#IPV6_SIZE} depending on the IP version.
      * @return a copy of the address.
      **************************************************************************/
     public byte [] get()
@@ -332,10 +333,10 @@ public class IpAddress
     /***************************************************************************
      * Sets this address to the specified values using the length of values to
      * determine the IP version.
-     * @param address the address of length {@link #IPV4_SIZE} or
-     * {@link #IPV6_SIZE}.
+     * @param address the address of length {@link NetUtils#IPV4_SIZE} or
+     * {@link NetUtils#IPV6_SIZE}.
      * @throws IllegalArgumentException if the provided address is not of length
-     * {@link #IPV4_SIZE} or {@link #IPV6_SIZE}.
+     * {@link NetUtils#IPV4_SIZE} or {@link NetUtils#IPV6_SIZE}.
      **************************************************************************/
     public void set( byte [] address ) throws IllegalArgumentException
     {
@@ -389,7 +390,8 @@ public class IpAddress
      * Sets this address to the provided address.
      * @param address the IP to set this address to.
      * @throws IllegalStateException if {@link InetAddress#getAddress()} returns
-     * an array that is not of length {@link #IPV4_SIZE} or {@link #IPV6_SIZE}.
+     * an array that is not of length {@link NetUtils#IPV4_SIZE} or
+     * {@link NetUtils#IPV6_SIZE}.
      **************************************************************************/
     public void setInetAddress( InetAddress address )
         throws IllegalStateException
@@ -594,9 +596,11 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @param value
-     * @return
-     * @throws IllegalArgumentException
+     * Gets the byte values of the provided IPv6 address.
+     * @param value the hextets of an IPv6 address
+     * @return the byte array of the address.
+     * @throws IllegalArgumentException if the length of the provided hextets is
+     * not {@link NetUtils#HEXTET_COUNT}.
      **************************************************************************/
     private static byte [] toOctets( short [] value )
         throws IllegalArgumentException

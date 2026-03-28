@@ -4,11 +4,31 @@ Contains common utility classes for java.
 
 [To Do](./todo.md)
 
+## Contents
+
+- [License](#license)
+- [Build](#build)
+- [Sub Projects](#sub-projects)
+- [Supporting Projects](#supporting-projects)
+- [Screenshots]
+
 ## License
 
 JUtils is licensed under the MIT License. You are permitted to use, copy, modify, distribute, sublicense and sell copies of the software.
 
 JUtils comes with no warranty of correctness though it totally is.
+
+## Build
+
+JUtils is built with it's own [bootstrap build system](./jbcs/readme.md). You must have javac in your path before running:
+
+    cd <jutils_dir>
+    javac -sourcepath ./jbcs/src -d ./jbcs/bin ./jbcs/src/jbcs/JbcsMain.java
+    java -cp jbcs/bin jbcs.JbcsMain
+
+If you would like to create a jar for easier use with other projects:
+
+    jar --create --file ./jbcs.jar --main-class jbcs.JbcsMain -C ./jbcs/bin .
 
 ## Sub Projects
 
