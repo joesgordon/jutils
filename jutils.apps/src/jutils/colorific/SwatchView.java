@@ -48,7 +48,8 @@ public class SwatchView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param selected
+     * Sets this view as being selected or de-selected.
+     * @param selected whether this component is selected or not.
      **************************************************************************/
     public void setSelected( boolean selected )
     {
@@ -63,7 +64,8 @@ public class SwatchView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param c
+     * Sets the color to be displayed in this swatch.
+     * @param c the color to be displayed in this swatch.
      **************************************************************************/
     public void setColor( Color c )
     {
@@ -83,7 +85,8 @@ public class SwatchView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return
+     * Returns the color displayed in this swatch.
+     * @return the color displayed in this swatch.
      **************************************************************************/
     public Color getColor()
     {

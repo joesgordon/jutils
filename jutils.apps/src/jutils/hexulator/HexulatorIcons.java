@@ -38,8 +38,10 @@ public final class HexulatorIcons
     }
 
     /***************************************************************************
-     * @param name
-     * @return
+     * Returns the Hexulator icon with the provided name.
+     * @param name the filename of the icon to be returned.
+     * @return the icon of the provided name; {@code null} if no icon of the
+     * provided name exists.
      **************************************************************************/
     public static ImageIcon getIcon( String name )
     {
