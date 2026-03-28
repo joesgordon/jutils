@@ -1,17 +1,17 @@
 # jbcs
 
 `jbcs` is a small Java bootstrap build tool intended for repositories that use
-Eclipse-style project directories.
+Eclipse-style sibling project directories.
 
 The tool is designed for cases where multiple projects contribute source and
 resources to a single aggregate build output.
-
-Once you have setup your [configuration](#configuration-files), see [bootstrap.md](./bootstrap.md) for instructions on how to run `jbcs`.
 
 ## Goals
 
 - Keep bootstrap simple: compile `jbcs` with a single `javac` command, then run
   it with `java`
+- Avoid requiring Gradle, Maven, Ant, Python, or a platform-specific scripting
+  environment on developer machines
 - Treat multiple included project `src` folders as one aggregate compile unit
 - Keep configuration easy to edit with Java `.properties` files
 - Keep external dependencies defined only at the top level
@@ -23,8 +23,7 @@ Eclipse-style project folders, for example:
 
 - `myproj1`
 - `myproj2`
-- `tools/mytool1`
-- `tools/mytool2`
+- `myproj3`
 
 Each included project is expected to contain a `src` directory by default.
 
@@ -74,7 +73,6 @@ contents.
 The source jar contains all included source trees, preserving relative paths.
 
 The javadoc jar contains generated documentation for the aggregate source set.
-Javadoc generation is disabled by default and enabled with `-d` or `--doc`.
 
 Each build run is intended to start by deleting and recreating the configured
 build output directory.
@@ -188,14 +186,14 @@ All other keys are optional and may use defaults.
 
 ```properties
 build.name=mybuild
-build.projects=myproj1,myproj2,tools/mytool1,tools/mytool2
+build.projects=myproj1,myproj2,myproj3
 ```
 
 ## Expanded Example
 
 ```properties
 build.name=mybuild
-myproj1,myproj2,tools/mytool1,tools/mytool2
+build.projects=myproj1,myproj2,myproj3
 
 build.java.version=21
 build.main.class=myproj1.Main
@@ -272,27 +270,16 @@ The preferred bootstrap flow is:
 This keeps bootstrap limited to a JDK, without requiring a separately installed
 build system.
 
-The current implementation compiles aggregate Java sources, copies non-Java
-resources into the compiled output trees, recreates the build directory, and
-creates release/debug/source jars by default. Javadoc jar generation is
-available with `-d` or `--doc`.
+The current implementation compiles aggregate Java sources, recreates the build
+directory, and creates release/debug/source/javadoc jars. Resource copying into
+the compiled output jars is still planned.
 
 ## Console Output
 
-`jcbs` has two output modes:
+By default, `jcbs` prints a compact build summary.
 
-- default output
-  This is the quiet mode and prints the build summary without project-by-project
-  detail.
-- verbose output
-  Use `-v` or `--verbose` to include project-by-project details.
-
-## Command Flags
-
-- `-v`, `--verbose`
-  Enables project-by-project output.
-- `-d`, `--doc`
-  Enables javadoc generation and `${build.name}-javadoc.jar` creation.
+Project-by-project details are only printed when `-v` or `--verbose` is
+specified on the command line.
 
 ## Design Constraints
 

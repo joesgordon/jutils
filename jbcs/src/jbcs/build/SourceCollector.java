@@ -186,6 +186,11 @@ public final class SourceCollector
         return files;
     }
 
+    /**
+     * @param sourceDirectory
+     * @param patterns
+     * @return
+     */
     @SuppressWarnings( "resource")
     private List<PathMatcher> createMatchers( Path sourceDirectory,
         List<String> patterns )

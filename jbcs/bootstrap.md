@@ -26,18 +26,10 @@ To run with the default top-level config file:
 java -cp ./bin jbcs.JbcsMain
 ```
 
-This is the default quiet output mode.
-
 To run with verbose project-level output:
 
 ```text
 java -cp ./bin jbcs.JbcsMain -v
-```
-
-To enable javadoc generation:
-
-```text
-java -cp ./bin jbcs.JbcsMain -d
 ```
 
 To run with an explicit config path:
@@ -56,17 +48,13 @@ The current implementation:
 - deletes and recreates the configured `build` directory
 - resolves aggregate output paths
 - writes a jar manifest, including `Main-Class` when `build.main.class` is set
-- prints a quiet build summary by default
+- prints a resolved build summary
 - prints per-project details only when `-v` is specified
 - collects aggregate Java source files from included projects
-- collects non-Java resources from included projects
 - compiles release classes into `build/release`
 - compiles debug classes into `build/debug`
-- copies resources into the release and debug output trees
 - creates fat release and debug jar files that include dependency jar contents
 - creates `${build.name}-src.jar`
-- generates javadocs and creates `${build.name}-javadoc.jar` only when `-d` or
-  `--doc` is specified
+- generates javadocs and creates `${build.name}-javadoc.jar`
 
-It does not yet apply any resource-specific filtering beyond the configured
-exclude patterns.
+It does not yet copy non-Java resources into the compiled output jars.

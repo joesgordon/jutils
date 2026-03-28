@@ -9,6 +9,7 @@ import jutils.core.INamedValue;
 import jutils.core.Iterables;
 import jutils.core.Iterables.Iteratorable;
 import jutils.core.Utils;
+import jutils.core.data.INamedBitFlag;
 import jutils.core.ui.hex.HexUtils;
 import jutils.core.utils.BitMasks;
 
@@ -337,6 +338,51 @@ public class FieldPrinter
     public void printField( String name, INamedValue value )
     {
         printField( name, value == null ? "null" : value.getDescription() );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     * @param flags
+     **************************************************************************/
+    public void printField( String name, byte value, INamedBitFlag [] flags )
+    {
+        printField( name, value & 0xFFL, flags );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     * @param flags
+     **************************************************************************/
+    public void printField( String name, short value, INamedBitFlag [] flags )
+    {
+        printField( name, value & 0xFFFFL, flags );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     * @param flags
+     **************************************************************************/
+    public void printField( String name, int value, INamedBitFlag [] flags )
+    {
+        printField( name, value & 0xFFFFFFFFL, flags );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     * @param flags
+     **************************************************************************/
+    public void printField( String name, long value, INamedBitFlag [] flags )
+    {
+        printFieldAsHex( name, value, 4 );
+        FieldPrinter flagTier = createTier( name );
+        for( INamedBitFlag def : flags )
+        {
+            flagTier.printField( def.getName(), def.getFlag( value ) );
+        }
     }
 
     /***************************************************************************
