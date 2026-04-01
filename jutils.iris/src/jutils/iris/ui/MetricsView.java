@@ -62,6 +62,9 @@ public class MetricsView implements IView<JComponent>
         return pane;
     }
 
+    /**
+     * @return
+     **************************************************************************/
     private JComponent createPanel()
     {
         JPanel panel = new JPanel( new GridBagLayout() );

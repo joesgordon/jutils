@@ -153,9 +153,9 @@ public class HistogramView implements IView<JComponent>
 
             view.repaint();
 
-            // LogUtils.print( "Pos: %d of %d (%.3f) => %d(%.3f) values %d -
-            // %d",
-            // x, xMax, percentX, iidx, didx, lbindex, ubindex );
+            // LogUtils.print(
+            // "Pos: %d of %d (%.3f) => " + "%d(%.3f) values %d - %d", x, xMax,
+            // percentX, iidx, didx, lbindex, ubindex );
         }
         else if( t == MouseEventType.EXITED )
         {
@@ -196,7 +196,7 @@ public class HistogramView implements IView<JComponent>
         if( hp != null )
         {
             int binStart = hoverStart + histogram.minValue;
-            int binEnd = hoverEnd + histogram.maxValue;
+            int binEnd = hoverEnd + histogram.minValue;
 
             String txt = binStart == binEnd
                 ? String.format( "%d: %d ", binStart, hoverCount )

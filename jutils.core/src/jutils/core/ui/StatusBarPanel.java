@@ -102,7 +102,7 @@ public class StatusBarPanel implements IView<JComponent>
     /***************************************************************************
      * @return
      **************************************************************************/
-    public JPanel createView()
+    private JPanel createView()
     {
         JPanel panel = new JPanel( new GridBagLayout() );
         GridBagConstraints constraints;
@@ -110,17 +110,24 @@ public class StatusBarPanel implements IView<JComponent>
         memoryLabel.addMouseListener(
             new RightClickListener( ( e ) -> handleMemoryRightClick( e ) ) );
 
-        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
+        int c = 0;
+
+        constraints = new GridBagConstraints( c++, 0, 1, 1, 1.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets( 4, 4, 4, 4 ), 0, 0 );
         panel.add( statusBar, constraints );
 
-        constraints = new GridBagConstraints( 1, 0, 1, 1, 0.0, 0.0,
+        constraints = new GridBagConstraints( c++, 0, 1, 1, 0.0, 0.0,
+            GridBagConstraints.EAST, GridBagConstraints.BOTH,
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
+        panel.add( createAdditionalStatus(), constraints );
+
+        constraints = new GridBagConstraints( c++, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.EAST, GridBagConstraints.BOTH,
             new Insets( 0, 0, 0, 0 ), 0, 0 );
         panel.add( memoryLabel, constraints );
 
-        constraints = new GridBagConstraints( 2, 0, 1, 1, 0.0, 0.0,
+        constraints = new GridBagConstraints( c++, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.EAST, GridBagConstraints.BOTH,
             new Insets( 0, 0, 0, 0 ), 0, 2 );
         panel.add( createToolbar(), constraints );
@@ -147,6 +154,10 @@ public class StatusBarPanel implements IView<JComponent>
     {
         JToolBar toolbar = new JToolBar();
 
+        SwingUtils.setToolbarDefaults( toolbar );
+
+        addToToolbar( toolbar );
+
         toolbar.setMargin( new Insets( 0, 0, 0, 0 ) );
         JButton refreshButton = new JButton();
         // refreshButton.setMargin( new Insets( 0, 0, 0, 0 ) );
@@ -157,8 +168,6 @@ public class StatusBarPanel implements IView<JComponent>
         refreshButton.addActionListener( ( e ) -> handleRefresh() );
 
         toolbar.add( refreshButton );
-
-        SwingUtils.setToolbarDefaults( toolbar );
 
         return toolbar;
     }
@@ -179,6 +188,22 @@ public class StatusBarPanel implements IView<JComponent>
         popup.add( flashMenuItem );
 
         return popup;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    protected JComponent createAdditionalStatus()
+    {
+        JPanel panel = new JPanel();
+        return panel;
+    }
+
+    /***************************************************************************
+     * @param toolbar
+     **************************************************************************/
+    protected void addToToolbar( JToolBar toolbar )
+    {
     }
 
     /***************************************************************************

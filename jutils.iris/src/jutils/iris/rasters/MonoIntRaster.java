@@ -158,7 +158,7 @@ public class MonoIntRaster extends AbstractRaster
                     size ) );
         }
 
-        int mask = ( int )BitMasks.getBitMask( bitDepth );
+        int mask = ( int )BitMasks.getFieldMask( bitDepth );
 
         try( ByteArrayStream bas = new ByteArrayStream( buffer, buffer.length,
             0, false ); DataStream stream = new DataStream( bas, order ) )
