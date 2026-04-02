@@ -28,7 +28,7 @@ import jutils.core.ui.model.IView;
 /*******************************************************************************
  *
  ******************************************************************************/
-public class StatusBarPanel implements IView<JComponent>
+public class StatusBarView implements IView<JComponent>
 {
     /**  */
     private static final int TIMER_PERIOD = 10000;
@@ -37,19 +37,24 @@ public class StatusBarPanel implements IView<JComponent>
     // Main panel components
     // -------------------------------------------------------------------------
     /**  */
+    private final JPanel view;
+
+    /**  */
     private final JLabel statusLabel;
     /**  */
     private final JProgressBar statusBar;
     /**  */
+    protected final JPanel additionalStatus;
+    /**  */
     private final JLabel memoryLabel;
     /**  */
-    private final JPanel view;
+    protected final JToolBar toolbar;
 
     // -------------------------------------------------------------------------
     // Popup menu components.
     // -------------------------------------------------------------------------
     /**  */
-    private final JPopupMenu popup;
+    protected final JPopupMenu popup;
 
     // -------------------------------------------------------------------------
     // Supporting members.
@@ -64,11 +69,13 @@ public class StatusBarPanel implements IView<JComponent>
     /***************************************************************************
      *
      **************************************************************************/
-    public StatusBarPanel()
+    public StatusBarView()
     {
         this.statusLabel = new JLabel( "" );
         this.statusBar = createProgressBar();
+        this.additionalStatus = new JPanel();
         this.memoryLabel = new JLabel( "" );
+        this.toolbar = new JToolBar();
         this.view = createView();
         this.popup = createPopupMenu();
         this.flasher = new ComponentFlasher( memoryLabel );
@@ -126,17 +133,19 @@ public class StatusBarPanel implements IView<JComponent>
         constraints = new GridBagConstraints( c++, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.EAST, GridBagConstraints.BOTH,
             new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( createAdditionalStatus(), constraints );
+        panel.add( additionalStatus, constraints );
 
         constraints = new GridBagConstraints( c++, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.EAST, GridBagConstraints.BOTH,
             new Insets( 0, 0, 0, 0 ), 0, 0 );
         panel.add( memoryLabel, constraints );
 
+        createToolbar();
+
         constraints = new GridBagConstraints( c++, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.EAST, GridBagConstraints.BOTH,
             new Insets( 0, 0, 0, 0 ), 0, 2 );
-        panel.add( createToolbar(), constraints );
+        panel.add( toolbar, constraints );
 
         return panel;
     }
@@ -156,15 +165,11 @@ public class StatusBarPanel implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return the newly created toolbar.
+     * 
      **************************************************************************/
-    private JToolBar createToolbar()
+    private void createToolbar()
     {
-        JToolBar toolbar = new JToolBar();
-
         SwingUtils.setToolbarDefaults( toolbar );
-
-        addToToolbar( toolbar );
 
         toolbar.setMargin( new Insets( 0, 0, 0, 0 ) );
         JButton refreshButton = new JButton();
@@ -176,8 +181,6 @@ public class StatusBarPanel implements IView<JComponent>
         refreshButton.addActionListener( ( e ) -> handleRefresh() );
 
         toolbar.add( refreshButton );
-
-        return toolbar;
     }
 
     /***************************************************************************
@@ -195,34 +198,7 @@ public class StatusBarPanel implements IView<JComponent>
         popup.add( delayMenuItem );
         popup.add( flashMenuItem );
 
-        addToPopup( popup );
-
         return popup;
-    }
-
-    /***************************************************************************
-     * Creates a panel for display between the progress bar and the memory
-     * status.
-     * @return the newly created panel to show status.
-     **************************************************************************/
-    protected JComponent createAdditionalStatus()
-    {
-        JPanel panel = new JPanel();
-        return panel;
-    }
-
-    /***************************************************************************
-     * @param toolbar
-     **************************************************************************/
-    protected void addToToolbar( JToolBar toolbar )
-    {
-    }
-
-    /***************************************************************************
-     * @param popup
-     **************************************************************************/
-    protected void addToPopup( JPopupMenu popup )
-    {
     }
 
     /***************************************************************************
@@ -322,7 +298,7 @@ public class StatusBarPanel implements IView<JComponent>
      **************************************************************************/
     private void handleSetDelay()
     {
-        Integer delay = OptionUtils.promptForValue( StatusBarPanel.this.view,
+        Integer delay = OptionUtils.promptForValue( StatusBarView.this.view,
             "delay", new IntegerParser(), "New Delay in seconds" );
 
         if( delay != null )
@@ -346,7 +322,6 @@ public class StatusBarPanel implements IView<JComponent>
      **************************************************************************/
     private void executeFlasher()
     {
-
         for( int i = 1; i < 101; i += 10 )
         {
             int val = i;

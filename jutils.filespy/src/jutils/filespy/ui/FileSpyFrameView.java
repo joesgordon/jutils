@@ -40,7 +40,7 @@ import jutils.core.ui.JGoodiesToolBar;
 import jutils.core.ui.OkDialogView;
 import jutils.core.ui.OkDialogView.OkDialogButtons;
 import jutils.core.ui.StandardFrameView;
-import jutils.core.ui.StatusBarPanel;
+import jutils.core.ui.StatusBarView;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.explorer.AppManagerView;
 import jutils.core.ui.model.IView;
@@ -67,7 +67,7 @@ public class FileSpyFrameView implements IView<JFrame>
     /**  */
     private final StandardFrameView view;
     /**  */
-    private final StatusBarPanel statusBar;
+    private final StatusBarView statusBar;
 
     /**  */
     private final SearchParamsView spyPanel;

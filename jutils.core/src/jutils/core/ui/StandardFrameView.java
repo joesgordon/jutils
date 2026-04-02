@@ -28,26 +28,26 @@ public class StandardFrameView implements IView<JFrame>
     /**  */
     private final JMenu fileMenu;
     /**  */
-    private final StatusBarPanel statusBar;
+    private final StatusBarView statusBar;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public StandardFrameView()
     {
-        this( new StatusBarPanel() );
+        this( new StatusBarView() );
     }
 
     /***************************************************************************
      * @param statusBar
      **************************************************************************/
-    public StandardFrameView( StatusBarPanel statusBar )
+    public StandardFrameView( StatusBarView statusBar )
     {
         this.frame = new JFrame();
         this.toolbarView = new ComponentView();
         this.contentView = new ComponentView();
         this.fileMenu = new JMenu( "File" );
-        this.statusBar = new StatusBarPanel();
+        this.statusBar = statusBar;
 
         frame.setJMenuBar( createMenuBar() );
         frame.setContentPane( createContentPane() );
@@ -201,7 +201,7 @@ public class StandardFrameView implements IView<JFrame>
     /***************************************************************************
      * @return
      **************************************************************************/
-    public StatusBarPanel getStatusBar()
+    public StatusBarView getStatusBar()
     {
         return statusBar;
     }
