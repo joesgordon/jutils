@@ -3,3 +3,5 @@ swatch
 swatches
 luminance
 serializer
+toolbar
+popup

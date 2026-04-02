@@ -35,6 +35,14 @@ public class StandardFrameView implements IView<JFrame>
      **************************************************************************/
     public StandardFrameView()
     {
+        this( new StatusBarPanel() );
+    }
+
+    /***************************************************************************
+     * @param statusBar
+     **************************************************************************/
+    public StandardFrameView( StatusBarPanel statusBar )
+    {
         this.frame = new JFrame();
         this.toolbarView = new ComponentView();
         this.contentView = new ComponentView();
