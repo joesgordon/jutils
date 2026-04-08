@@ -10,7 +10,7 @@ Contains common utility classes for java.
 - [Build](#build)
 - [Sub Projects](#sub-projects)
 - [Supporting Projects](#supporting-projects)
-- [Screenshots]
+- [Screenshots](#screenshots)
 
 ## License
 
@@ -24,7 +24,7 @@ Run with:
 
 ## Build
 
-JUtils is built with it's own [bootstrap build system](./jbcs/readme.md). You must have javac in your path before running:
+JUtils is built with its own [bootstrap build system](./jbcs/readme.md). You must have javac in your path before running:
 
     cd <jutils_dir>
     javac -sourcepath ./jbcs/src -d ./jbcs/bin ./jbcs/src/jbcs/JbcsMain.java
@@ -66,68 +66,15 @@ If you would like to create a jar for easier use with other projects:
 
 ## Screenshots
 
-- [Apps Window](#apps-window)
-- [Hexedit Window](#hexedit-window)
-- [Hexulator Window](#hexulator-window)
-- [Multicon Window](#multicon-window)
-- [Kairosion Window](#kairosion-window)
-
-### Apps Window
-
-![JUtils Apps Window](./docs/apps_main.png)
-
-[Screenshots](#screenshots)
-
-### Hexedit Window
-
-![JUtils HexEdit Window](./docs/hexedit_main.png)
-
-[Screenshots](#screenshots)
-
-### Hexulator Window
-
-![Hexulator Window](./docs/hexulator.png)
-
-[Screenshots](#screenshots)
-
-### Multicon Window
-
-![Multicon Window](./docs/multicon.png)
-
-[Screenshots](#screenshots)
-
-### Kairosion Window
-
-![Kairosion Window](./docs/kairosion_main.png)
-
-[Screenshots](#screenshots)
-
-### Serial Console Window
-
-![Serial Console Window](./docs/serial_console_main.png)
-
-[Screenshots](#screenshots)
-
-### Filespy Window
-
-![Filespy Window](./docs/filespy_main.png)
-
-[Screenshots](#screenshots)
-
-### JChart Window
-
-![JChart Window](./docs/jchart_main.png)
-
-[Screenshots](#screenshots)
-
-### Summer Window
-
-![Summer Window](./docs/summer_main.png)
-
-[Screenshots](#screenshots)
-
-### Duak Window
-
-![Duak Window](./docs/duak_main.png)
-
-[Screenshots](#screenshots)
+| Application | Screenshot |
+| :--- | :--- |
+| **Apps Window** | ![JUtils Apps Window](./docs/apps_main.png) |
+| **HexEdit Window** | ![JUtils HexEdit Window](./docs/hexedit_main.png) |
+| **Hexulator Window** | ![Hexulator Window](./docs/hexulator.png) |
+| **Multicon Window** | ![Multicon Window](./docs/multicon.png) |
+| **Kairosion Window** | ![Kairosion Window](./docs/kairosion_main.png) |
+| **Serial Console Window** | ![Serial Console Window](./docs/serial_console_main.png) |
+| **Filespy Window** | ![Filespy Window](./docs/filespy_main.png) |
+| **JChart Window** | ![JChart Window](./docs/jchart_main.png) |
+| **Summer Window** | ![Summer Window](./docs/summer_main.png) |
+| **Duak Window** | ![Duak Window](./docs/duak_main.png) |

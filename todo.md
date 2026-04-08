@@ -137,7 +137,6 @@
 
 ## jutils.multicon
 
-- Add ping
 - Add NTP
 - Add TFTP, FTP, SFTP clients and servers.
 - Add the ability to save pcapng files.
