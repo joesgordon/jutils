@@ -1,7 +1,6 @@
 package jutils.iris.colors;
 
 import jutils.iris.IrisUtils;
-import jutils.iris.data.IColorModel;
 
 /*******************************************************************************
  * 

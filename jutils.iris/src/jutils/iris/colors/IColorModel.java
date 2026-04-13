@@ -1,4 +1,4 @@
-package jutils.iris.data;
+package jutils.iris.colors;
 
 import java.awt.Color;
 

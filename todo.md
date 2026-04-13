@@ -2,16 +2,139 @@
 
 [Home](./README.md)
 
+- [jutils.apps](#jutilsapps)
+  - [Hexulator](#jutilshexulator)
 - [jutils.core](#jutilscore)
-- [jutils.filespy](#jutilsfilespy)
 - [jutils.hexedit](#jutilshexedit)
+- [jutils.filespy](#jutilsfilespy)
 - [jutils.iris](#jutilsiris)
 - [jutils.math](#jutilsmath)
 - [jutils.multicon](#jutilsmulticon)
 - [jutils.platform](#jutilsplatform)
+- [jutils.summer](#jutilssummer)
 - [jutils.telemetry](#jutilstelemetry)
 
+## jutils.apps
+
+- [Hexulator](#jutilshexulator)
+
+[Top](#jutils-to-do-list)
+
+
+### Hexulator
+
+- Add unsiged option.
+
+[Top](#jutils-to-do-list)
+
+
 ## jutils.core
+
+- Replace ColorMapFactory and ColorMapType in jutils.core.data with an `ColorModelType` and an `IColorModel` implementation for each type. Each color model should get/set a ColorModelOptions that contains:
+  - Upper Threshold value/color
+  - Lower Threshold value/color
+- Add IP enumeration to parser.
+- Add cyclic buffer to NetMsgsView.
+- Add focus listeners to form fields.
+  - Write `fieldHasFocus(field:IFormField):boolean` and `hasFocus(comp:JComponent):boolean` using
+    - `JFrame.getFocusOwner()` and 
+    - `Container.isAnscestorOf()`.
+- ListView:
+  - add `ItemActionList<ItemChanged<T>>` change listeners.
+  - make add/delete item listeners lamdas & call change listeners.
+- TaskPool: Add `AtomicInteger` complete count.
+- Add `Utils.contains(items:List<T>, data:D, IBinaryComparator<T,D>)`
+- Write `InputStreamLineReader` or `InputLineStream`.
+- Move `FileField` to validation and rename.
+- Write `ComboFileFormField`.
+- Write jutils.core.ini.
+- NicsGui: Add splitpane.
+- Add `CharsetName` enum.
+- Icons
+  - Add clock icon
+  - Add color icon
+  - Add stopwatch icon
+  - Replace external icons
+- Add generic embedded resource that can be extracted.
+- Add Matlab mat file reader/writer.
+- Add hdf5 reader/writer.
+- Replace Icons in jutils with custom icons.
+- ColorMapView fix legend.
+- Add `SwapUtils` that has explicit swaps for each datatype.
+- Created `NamedBitFieldField` and `NamedBitFlagField`
+
+[Top](#jutils-to-do-list)
+
+## jutils.hexedit
+
+- Add ability to edit and save a file.
+- Fix select->copy.
+
+[Top](#jutils-to-do-list)
+
+## jutils.summer
+
+- Find files using `TaskView.startAndShow()`.
+- Multithread checksum verification.
+- Update code to be able to update sums.
+
+## jutils.fileSpy
+
+- Add binary file detection. Skip binary files according to the users selction to be added to search parameters. Show non-printable characters around matches as spaces.
+- Capture only a few characters around a match up to the end of the line. Allow the user to edit this value in preferences. Set default to 1024 characters. Consider grabbing multiple lines up to the maximum amount.
+- Add the ability to save results to markdown or html
+- Add dropdown to patterns and directory.
+
+[Top](#jutils-to-do-list)
+
+## jutils.iris
+
+- [Image Structure] Add Bayer as a channel placement. Each bayer channel must be the same bit depth.
+- [Image Structure] Finish Bayer Bilinear demosaic.
+- [File Menu] Add ability to Save an image (raw, png, jpg, bmp, tiff).
+- [File Menu] Add ability to Save a video.
+- [Tools Menu] Add ability to apply image updates.
+  - Contrast
+  - Brightness
+  - Inversion
+  - Centroid Calculation
+- [Open] Add preview to Raw Options on open.
+- [Open] Add Gig-E support:
+  - Listen for messages.
+  - Import/Export msgs files.
+  - Import/Export netmsgs files
+  - Import/Export wireshark pcap (pcapng) files
+- [Open] Develop set of test images for each type that can be imported.
+- [Open] Enhance the set of patterns by:
+  - adding new patterns
+  - setting properties for existing patterns
+  - generating a set of images for a pattern using user inputs.
+- [IrisView] Show zoom buttons and level value.
+- [IrisView] Show Nav buttons.
+- [IrisView] Show Play/Pause button.
+- [ImageView] Fix scrolling.
+- [ImageView] Add ROI selection.
+- [ImageView] Add ability to pan with middle-click and drag.
+- [ImageView] Add profile plots that show X/Y Levels for a channel on top/side respectively.
+- [MetricsView] Add a histogram for each channel.
+- [MetricsView] Show image stats for each channel in the whole image, selection, and hover.
+  - width
+  - height
+  - min
+  - max
+  - average
+  - standard deviation
+- [MetricsView] Add configuration UI for MonoColorizer
+  - Add an auto-threshold checkbox with associated sigma gain.
+  - Add a `ThresholdView`.
+  - Add a Color Map dropdown.
+  - Brightness/Contrast
+- [General] Define the Raw Image Album format and add to open/save support. Default save to this format.
+
+[Top](#jutils-to-do-list)
+
+
+## jutils.kairosion
 
 - Add date/time chooser (Kairosion)
   - Add fields:
@@ -30,93 +153,6 @@
   - Add Calendar button to the right of fields; brings up date/time chooser.
   - Add ability to edit GPS Leap Seconds.
   - Add ability to change time zone.
-- Add cyclic buffer to NetMsgsView.
-- Add focus listeners to form fields.
-- Write 
-  - `fieldHasFocus(field:IFormField):boolean` and 
-  - `hasFocus(comp:JComponent):boolean` using `JFrame.getFocusOwner()` and 
-  - `Container.isAnscestorOf()`.
-- ListView:
-  - add `ItemActionList<ItemChanged<T>>` change listeners.
-  - make add/delete item listeners lamdas & call change listeners.
-- TaskPool: Add `AtomicInteger` complete count.
-- Add `Utils.contains(items:List<T>, data:D, IBinaryComparator<T,D>)`
-- Write `InputStreamLineReader` or `InputLineStream`.
-- Move `FileField` to validation and rename.
-- Write `ComboFileFormField`.
-- Write jutils.core.ini.
-- NicsGui: Add splitpane.
-- Hexulator: Add unsiged option.
-- Serial Console: Add a message delimiter option.
-- Add `CharsetName` enum.
-- Icons
-  - Add clock icon
-  - Add color icon
-  - Add stopwatch icon
-  - Replace external icons
-- Add generic embedded resource that can be extracted.
-- Add Matlab mat file reader/writer.
-- Add hdf5 reader/writer.
-- Replace Icons in jutils with custom icons.
-- ColorMapView fix legend.
-
-[Top](#jutils-to-do-list)
-
-## jutils.summer
-
-- Find files using `TaskView.startAndShow()`.
-- Multithread checksum verification.
-
-## jutils.fileSpy
-
-- Add binary file detection. Skip binary files according to the users selction to be added to search parameters. Show non-printable characters around matches as spaces.
-- Capture only a few characters around a match up to the end of the line. Allow the user to edit this value in preferences. Set default to 1024 characters. Consider grabbing multiple lines up to the maximum amount.
-- Add the ability to save results to markdown or html
-- Add dropdown to patterns and directory.
-
-[Top](#jutils-to-do-list)
-
-## jutils.hexedit
-
-- Add ability to edit and save a file.
-- Fix select->copy.
-
-[Top](#jutils-to-do-list)
-
-## jutils.iris
-
-- Fix scrolling
-- Add Bayer as a channel placement. Each bayer channel must be the same bit depth.
-- Add a histogram for each channel.
-- Show zoom level value.
-- Show image stats for each channel in the whole image, selection, and hover.
-  - width
-  - height
-  - min
-  - max
-  - average
-  - standard deviation
-- Add ability to Save (raw, png, jpg, bmp, tiff).
-- Finish Bayer Bilinear demosaic
-- Add ability to pan with middle-click and drag.
-- Add configuration for MonoColorizer
-  - Color map
-  - Thresholds
-  - Brightness/Contrast
-- Finish remainder of Bayer demosaic
-- X/Y Levels for a channel on top/side
-- Add ability to Playback.
-- Add preview to Raw Options on open.
-- Define the Raw Image Album format and add to open/save support. Default save to this format.
-- Centroid algorithm.
-- Add Gig-E support:
-  - Listen for messages.
-  - Import/Export msgs files.
-  - Import/Export netmsgs files
-  - Import/Export wireshark pcap (pcapng) files
-- Develop set of test images for each type that can be imported.
-
-[Top](#jutils-to-do-list)
 
 ## jutils.math
 
@@ -147,12 +183,19 @@
 ## jutils.platform
 
 - Add Linux platform or fail gracefully if not there. Add `isSupported()` function.
+- Serial Console: Add a message delimiter option.
 
 [Top](#jutils-to-do-list)
 
 ## jutils.plot
 
 - Log axes
+
+[Top](#jutils-to-do-list)
+
+## jutils.summer
+
+- Add UI to be able to hash copy/pasted text/data.
 
 [Top](#jutils-to-do-list)
 

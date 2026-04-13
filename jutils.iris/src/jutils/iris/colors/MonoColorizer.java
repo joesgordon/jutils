@@ -54,6 +54,9 @@ public class MonoColorizer implements IColorizer
             default:
                 break;
         }
+
+        this.options.highThreshold.value = seeds.length;
+        this.options.lowThreshold.value = 0;
     }
 
     /***************************************************************************
@@ -100,9 +103,9 @@ public class MonoColorizer implements IColorizer
             return options.highThreshold.color.getRGB();
         }
 
-        double adjPixel = options.gain * pixel + options.offset;
+        float adjPixel = 1.0f * pixel + 0.0f;
 
-        int index = ( int )( y1 * ( adjPixel - x0 ) / ( x1 - x0 ) );
+        int index = Math.round( y1 * ( adjPixel - x0 ) / ( x1 - x0 ) );
 
         index = Math.min( index, y1 );
         index = Math.max( index, 0 );
