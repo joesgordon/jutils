@@ -3,7 +3,6 @@ package jutils.core;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Font;
@@ -11,10 +10,7 @@ import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;
@@ -42,10 +38,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -59,7 +53,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import jutils.core.io.IOUtils;
-import jutils.core.ui.StatusBarPanel;
 import jutils.core.ui.event.ActionAdapter;
 
 /*******************************************************************************
@@ -108,46 +101,6 @@ public final class SwingUtils
         Action closeAction = new ActionAdapter( closeListener, mapKey, null );
 
         addKeyListener( rootPane, "ESCAPE", closeAction, true );
-    }
-
-    /***************************************************************************
-     * Creates a panel with the provided toolbar and content with a status bar.
-     * @param toolbar the toolbar to be added.
-     * @param container the container to be added.
-     * @return the panel built.
-     **************************************************************************/
-    public static JPanel createStandardConentPane( JToolBar toolbar,
-        Container container )
-    {
-        StatusBarPanel statusbar = new StatusBarPanel();
-        JPanel panel = new JPanel( new GridBagLayout() );
-        GridBagConstraints constraints;
-        int row = 0;
-
-        if( toolbar != null )
-        {
-            constraints = new GridBagConstraints( 0, row++, 1, 1, 1.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                new Insets( 0, 0, 0, 0 ), 0, 0 );
-            panel.add( toolbar, constraints );
-        }
-
-        constraints = new GridBagConstraints( 0, row++, 1, 1, 1.0, 1.0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( container, constraints );
-
-        constraints = new GridBagConstraints( 0, row++, 1, 1, 1.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-            new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( new JSeparator(), constraints );
-
-        constraints = new GridBagConstraints( 0, row++, 1, 1, 1.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-            new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( statusbar.getView(), constraints );
-
-        return panel;
     }
 
     /***************************************************************************

@@ -2,7 +2,7 @@ package jutils.filespy.search;
 
 import javax.swing.SwingUtilities;
 
-import jutils.core.ui.StatusBarPanel;
+import jutils.core.ui.StatusBarView;
 import jutils.filespy.data.SearchRecord;
 import jutils.filespy.ui.ResultsView;
 
@@ -14,14 +14,14 @@ public class SearchResultsHandler
     /**  */
     private final ResultsView resultsView;
     /**  */
-    private final StatusBarPanel statusBar;
+    private final StatusBarView statusBar;
 
     /***************************************************************************
      * @param panel SearchPanel
      * @param statusBar
      **************************************************************************/
     public SearchResultsHandler( ResultsView resultsView,
-        StatusBarPanel statusBar )
+        StatusBarView statusBar )
     {
         this.resultsView = resultsView;
         this.statusBar = statusBar;
@@ -113,11 +113,11 @@ public class SearchResultsHandler
     private static class StatusUpdater implements Runnable
     {
         /**  */
-        private final StatusBarPanel statusBar;
+        private final StatusBarView statusBar;
         /**  */
         private final String msg;
 
-        public StatusUpdater( String message, StatusBarPanel statusBar )
+        public StatusUpdater( String message, StatusBarView statusBar )
         {
             this.msg = message;
             this.statusBar = statusBar;

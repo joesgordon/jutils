@@ -28,25 +28,33 @@ import jutils.core.ui.model.IView;
 /*******************************************************************************
  *
  ******************************************************************************/
-public class StatusBarPanel implements IView<JComponent>
+public class StatusBarView implements IView<JComponent>
 {
+    /**  */
+    private static final int TIMER_PERIOD = 10000;
+
     // -------------------------------------------------------------------------
     // Main panel components
     // -------------------------------------------------------------------------
+    /**  */
+    private final JPanel view;
+
     /**  */
     private final JLabel statusLabel;
     /**  */
     private final JProgressBar statusBar;
     /**  */
+    protected final JPanel additionalStatus;
+    /**  */
     private final JLabel memoryLabel;
     /**  */
-    private final JPanel view;
+    protected final JToolBar toolbar;
 
     // -------------------------------------------------------------------------
     // Popup menu components.
     // -------------------------------------------------------------------------
     /**  */
-    private final JPopupMenu popup;
+    protected final JPopupMenu popup;
 
     // -------------------------------------------------------------------------
     // Supporting members.
@@ -55,19 +63,24 @@ public class StatusBarPanel implements IView<JComponent>
     private final ComponentFlasher flasher;
     /**  */
     private final Timer swingTimer;
+    /**  */
+    private final MemoryStatus memory;
 
     /***************************************************************************
      *
      **************************************************************************/
-    public StatusBarPanel()
+    public StatusBarView()
     {
         this.statusLabel = new JLabel( "" );
         this.statusBar = createProgressBar();
+        this.additionalStatus = new JPanel();
         this.memoryLabel = new JLabel( "" );
+        this.toolbar = new JToolBar();
         this.view = createView();
         this.popup = createPopupMenu();
         this.flasher = new ComponentFlasher( memoryLabel );
         this.swingTimer = createTimer();
+        this.memory = new MemoryStatus();
 
         refreshStatus( false );
 
@@ -75,7 +88,7 @@ public class StatusBarPanel implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return
+     * @return the newly created progress bar.
      **************************************************************************/
     private JProgressBar createProgressBar()
     {
@@ -100,7 +113,7 @@ public class StatusBarPanel implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return
+     * @return the newly created main view.
      **************************************************************************/
     private JPanel createView()
     {
@@ -120,27 +133,31 @@ public class StatusBarPanel implements IView<JComponent>
         constraints = new GridBagConstraints( c++, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.EAST, GridBagConstraints.BOTH,
             new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( createAdditionalStatus(), constraints );
+        panel.add( additionalStatus, constraints );
 
         constraints = new GridBagConstraints( c++, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.EAST, GridBagConstraints.BOTH,
             new Insets( 0, 0, 0, 0 ), 0, 0 );
         panel.add( memoryLabel, constraints );
 
+        createToolbar();
+
         constraints = new GridBagConstraints( c++, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.EAST, GridBagConstraints.BOTH,
             new Insets( 0, 0, 0, 0 ), 0, 2 );
-        panel.add( createToolbar(), constraints );
+        panel.add( toolbar, constraints );
 
         return panel;
     }
 
     /***************************************************************************
-     * @return
+     * Creates a timer that calls {@link #refreshStatus(boolean)} at
+     * {@link #TIMER_PERIOD}.
+     * @return the newly created timer.
      **************************************************************************/
     private Timer createTimer()
     {
-        Timer t = new Timer( 10000, ( e ) -> refreshStatus( false ) );
+        Timer t = new Timer( TIMER_PERIOD, ( e ) -> refreshStatus( false ) );
 
         t.setRepeats( true );
 
@@ -148,15 +165,11 @@ public class StatusBarPanel implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return
+     * 
      **************************************************************************/
-    private JToolBar createToolbar()
+    private void createToolbar()
     {
-        JToolBar toolbar = new JToolBar();
-
         SwingUtils.setToolbarDefaults( toolbar );
-
-        addToToolbar( toolbar );
 
         toolbar.setMargin( new Insets( 0, 0, 0, 0 ) );
         JButton refreshButton = new JButton();
@@ -168,12 +181,10 @@ public class StatusBarPanel implements IView<JComponent>
         refreshButton.addActionListener( ( e ) -> handleRefresh() );
 
         toolbar.add( refreshButton );
-
-        return toolbar;
     }
 
     /***************************************************************************
-     * @return
+     * @return the newly created popup menu.
      **************************************************************************/
     private JPopupMenu createPopupMenu()
     {
@@ -191,23 +202,7 @@ public class StatusBarPanel implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @return
-     **************************************************************************/
-    protected JComponent createAdditionalStatus()
-    {
-        JPanel panel = new JPanel();
-        return panel;
-    }
-
-    /***************************************************************************
-     * @param toolbar
-     **************************************************************************/
-    protected void addToToolbar( JToolBar toolbar )
-    {
-    }
-
-    /***************************************************************************
-     * @return
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -225,26 +220,19 @@ public class StatusBarPanel implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param runGC boolean
+     * @param runGc boolean
      **************************************************************************/
-    public void refreshStatus( boolean runGC )
+    protected void refreshStatus( boolean runGc )
     {
-        Runtime rt = Runtime.getRuntime();
+        memory.refreshStatus();
 
-        long freeMemory = rt.freeMemory();
-        long maxMemory = rt.maxMemory();
-        long totalMemory = rt.totalMemory();
-        long usedMemory = totalMemory - freeMemory;
+        int memMib = ( int )( memory.maxMemory / 1024 / 1024 );
 
-        double percentUsed = ( double )usedMemory / ( double )maxMemory;
-        int per = ( int )( 100 * percentUsed );
-        int memMeg = ( int )( maxMemory / 1024 / 1024 );
+        memoryLabel.setText( memory.percentUsed + "% of " + memMib + "MB" );
 
-        memoryLabel.setText( Integer.toString( per ) + "% of " +
-            Integer.toString( memMeg ) + "MB" );
-        evalMem( percentUsed );
+        evalMem( memory.percentUsed );
 
-        if( runGC )
+        if( runGc )
         {
             Thread collector = new Thread( () -> runGc(), "GCThread" );
             collector.start();
@@ -281,11 +269,11 @@ public class StatusBarPanel implements IView<JComponent>
     /***************************************************************************
      * @param percentUsed double
      **************************************************************************/
-    private void evalMem( double percentUsed )
+    private void evalMem( int percentUsed )
     {
         // LogUtils.printDebug( "% used = " + percentUsed );
 
-        if( percentUsed > 0.95 )
+        if( percentUsed > 95 )
         {
             flasher.startFlashing();
         }
@@ -310,7 +298,7 @@ public class StatusBarPanel implements IView<JComponent>
      **************************************************************************/
     private void handleSetDelay()
     {
-        Integer delay = OptionUtils.promptForValue( StatusBarPanel.this.view,
+        Integer delay = OptionUtils.promptForValue( StatusBarView.this.view,
             "delay", new IntegerParser(), "New Delay in seconds" );
 
         if( delay != null )
@@ -334,7 +322,6 @@ public class StatusBarPanel implements IView<JComponent>
      **************************************************************************/
     private void executeFlasher()
     {
-
         for( int i = 1; i < 101; i += 10 )
         {
             int val = i;
@@ -359,5 +346,51 @@ public class StatusBarPanel implements IView<JComponent>
     {
         Runtime.getRuntime().gc();
         refreshStatus( false );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    protected static class MemoryStatus
+    {
+        /**  */
+        public long freeMemory;
+        /**  */
+        public long maxMemory;
+        /**  */
+        public long totalMemory;
+        /**  */
+        public long usedMemory;
+
+        /**  */
+        public int percentUsed;
+
+        /**
+         * 
+         */
+        public MemoryStatus()
+        {
+            this.freeMemory = 0L;
+            this.maxMemory = 0L;
+            this.totalMemory = 0L;
+            this.usedMemory = 0L;
+            this.percentUsed = 0;
+        }
+
+        /**
+         * 
+         */
+        public void refreshStatus()
+        {
+            Runtime rt = Runtime.getRuntime();
+
+            this.freeMemory = rt.freeMemory();
+            this.maxMemory = rt.maxMemory();
+            this.totalMemory = rt.totalMemory();
+            this.usedMemory = totalMemory - freeMemory;
+
+            double fractionUsed = ( double )usedMemory / ( double )maxMemory;
+            this.percentUsed = ( int )( 100 * fractionUsed );
+        }
     }
 }

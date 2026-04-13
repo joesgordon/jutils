@@ -9,7 +9,7 @@ import java.awt.Component;
 public interface IView<T extends Component>
 {
     /***************************************************************************
-     * Returns control or panel that represents this view. For performance
+     * Returns a control or panel that represents this view. For performance
      * reasons, it is recommended that the view is created previously to calling
      * this function.
      * @return the previously built view.
