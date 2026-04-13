@@ -1,25 +1,25 @@
-package jbcs;
+package bukl;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import jbcs.build.BuildDirectoryCleaner;
-import jbcs.build.JarArchiver;
-import jbcs.build.JavaSourceCompiler;
-import jbcs.build.JavadocGenerator;
-import jbcs.build.ResourceCopier;
-import jbcs.build.SourceArchiveBuilder;
-import jbcs.build.SourceCollector;
-import jbcs.build.SourceCollector.CollectedFile;
-import jbcs.config.JbcsConfig;
-import jbcs.config.JbcsConfigLoader;
+import bukl.build.BuildDirectoryCleaner;
+import bukl.build.JarArchiver;
+import bukl.build.JavaSourceCompiler;
+import bukl.build.JavadocGenerator;
+import bukl.build.ResourceCopier;
+import bukl.build.SourceArchiveBuilder;
+import bukl.build.SourceCollector;
+import bukl.build.SourceCollector.CollectedFile;
+import bukl.config.BuklConfig;
+import bukl.config.BuklConfigLoader;
 
 /*******************************************************************************
- * Loads jcbs configuration and compiles the aggregate source set.
+ * Loads bukl configuration and compiles the aggregate source set.
  ******************************************************************************/
-public final class Jbcs
+public final class BuklRunner
 {
     /**  */
     private final Path configPath;
@@ -33,7 +33,7 @@ public final class Jbcs
      * @param verbose
      * @param generateDocs
      **************************************************************************/
-    public Jbcs( Path configPath, boolean verbose, boolean generateDocs )
+    public BuklRunner( Path configPath, boolean verbose, boolean generateDocs )
     {
         this.configPath = configPath;
         this.verbose = verbose;
@@ -45,7 +45,8 @@ public final class Jbcs
      **************************************************************************/
     public void run() throws IOException
     {
-        JbcsConfig config = new JbcsConfigLoader().load( configPath );
+        BuklConfigLoader configLoader = new BuklConfigLoader();
+        BuklConfig config = configLoader.load( configPath );
         SourceCollector collector = new SourceCollector();
         List<Path> sourceFiles = collector.collectSources( config );
         List<
@@ -100,9 +101,9 @@ public final class Jbcs
     /***************************************************************************
      * @param config
      **************************************************************************/
-    private void printSummary( JbcsConfig config )
+    private void printSummary( BuklConfig config )
     {
-        System.out.println( "jcbs build summary" );
+        System.out.println( "bukl build summary" );
         System.out.println( "  config        : " + config.getConfigFile() );
         System.out.println( "  root dir      : " + config.getRootDirectory() );
         System.out.println( "  build name    : " + config.getBuildName() );
@@ -142,7 +143,7 @@ public final class Jbcs
      * @param config
      * @throws IOException
      **************************************************************************/
-    private void prepareBuildDirectories( JbcsConfig config ) throws IOException
+    private void prepareBuildDirectories( BuklConfig config ) throws IOException
     {
         new BuildDirectoryCleaner().recreateDirectory(
             config.getOutputDirectory() );

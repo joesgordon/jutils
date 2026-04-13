@@ -1,4 +1,4 @@
-package jbcs.build;
+package bukl.build;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,21 +17,33 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import jbcs.config.JbcsConfig;
+import bukl.config.BuklConfig;
 
-/**
+/*******************************************************************************
  * Creates jar files from compiled output directories.
- */
+ ******************************************************************************/
 public final class JarArchiver
 {
+    /***************************************************************************
+     * @param inputDirectory
+     * @param jarFile
+     * @throws IOException
+     **************************************************************************/
     public void createPlainJar( Path inputDirectory, Path jarFile )
         throws IOException
     {
         createJar( inputDirectory, jarFile, List.of(), null );
     }
 
+    /***************************************************************************
+     * @param inputDirectory
+     * @param jarFile
+     * @param dependencyJars
+     * @param config
+     * @throws IOException
+     **************************************************************************/
     public void createJar( Path inputDirectory, Path jarFile,
-        Iterable<Path> dependencyJars, JbcsConfig config ) throws IOException
+        Iterable<Path> dependencyJars, BuklConfig config ) throws IOException
     {
         Files.createDirectories( jarFile.getParent() );
 
@@ -65,8 +77,14 @@ public final class JarArchiver
         System.out.println( "Created jar: " + jarFile );
     }
 
+    /***************************************************************************
+     * @param out
+     * @param config
+     * @return
+     * @throws IOException
+     **************************************************************************/
     private JarOutputStream createJarOutputStream( OutputStream out,
-        JbcsConfig config ) throws IOException
+        BuklConfig config ) throws IOException
     {
         if( config == null )
         {
@@ -76,7 +94,11 @@ public final class JarArchiver
         return new JarOutputStream( out, createManifest( config ) );
     }
 
-    private Manifest createManifest( JbcsConfig config )
+    /***************************************************************************
+     * @param config
+     * @return
+     **************************************************************************/
+    private Manifest createManifest( BuklConfig config )
     {
         Manifest manifest = new Manifest();
         Attributes attributes = manifest.getMainAttributes();
@@ -90,6 +112,12 @@ public final class JarArchiver
         return manifest;
     }
 
+    /***************************************************************************
+     * @param jarOut
+     * @param writtenEntries
+     * @param dependencyJar
+     * @throws IOException
+     **************************************************************************/
     private void addDependencyJar( JarOutputStream jarOut,
         Set<String> writtenEntries, Path dependencyJar ) throws IOException
     {
@@ -128,6 +156,14 @@ public final class JarArchiver
         }
     }
 
+    /***************************************************************************
+     * @param jarOut
+     * @param writtenEntries
+     * @param entryName
+     * @param file
+     * @param modifiedTime
+     * @throws IOException
+     **************************************************************************/
     private void addFileEntry( JarOutputStream jarOut,
         Set<String> writtenEntries, String entryName, Path file,
         long modifiedTime ) throws IOException
@@ -145,6 +181,12 @@ public final class JarArchiver
         jarOut.closeEntry();
     }
 
+    /***************************************************************************
+     * @param jarOut
+     * @param writtenEntries
+     * @param entryName
+     * @throws IOException
+     **************************************************************************/
     private void addParentDirectories( JarOutputStream jarOut,
         Set<String> writtenEntries, String entryName ) throws IOException
     {
@@ -165,6 +207,10 @@ public final class JarArchiver
         }
     }
 
+    /***************************************************************************
+     * @param entryName
+     * @return
+     **************************************************************************/
     private boolean shouldSkipEntry( String entryName )
     {
         String normalized = entryName.replace( '\\', '/' );
@@ -174,6 +220,10 @@ public final class JarArchiver
             normalized.endsWith( ".RSA" );
     }
 
+    /***************************************************************************
+     * @param relativePath
+     * @return
+     **************************************************************************/
     private String normalizeEntryName( String relativePath )
     {
         return relativePath.replace( '\\', '/' );

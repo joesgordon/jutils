@@ -1,4 +1,4 @@
-package jbcs.build;
+package bukl.build;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,13 +6,18 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-import jbcs.build.SourceCollector.CollectedFile;
+import bukl.build.SourceCollector.CollectedFile;
 
-/**
+/*******************************************************************************
  * Copies non-Java source-tree resources into compiled output directories.
- */
+ ******************************************************************************/
 public final class ResourceCopier
 {
+    /***************************************************************************
+     * @param resources
+     * @param outputDirectory
+     * @throws IOException
+     **************************************************************************/
     public void copyResources( List<CollectedFile> resources,
         Path outputDirectory ) throws IOException
     {

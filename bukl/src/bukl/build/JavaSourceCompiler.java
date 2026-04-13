@@ -1,4 +1,4 @@
-package jbcs.build;
+package bukl.build;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -10,26 +10,43 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
-import jbcs.config.JbcsConfig;
+import bukl.config.BuklConfig;
 
-/**
+/*******************************************************************************
  * Compiles aggregate Java source files into configured output directories.
- */
+ ******************************************************************************/
 public final class JavaSourceCompiler
 {
-    public void compileRelease( JbcsConfig config, List<Path> sourceFiles )
+    /***************************************************************************
+     * @param config
+     * @param sourceFiles
+     * @throws IOException
+     **************************************************************************/
+    public void compileRelease( BuklConfig config, List<Path> sourceFiles )
         throws IOException
     {
         compile( config, sourceFiles, config.getClassesDirectory(), false );
     }
 
-    public void compileDebug( JbcsConfig config, List<Path> sourceFiles )
+    /***************************************************************************
+     * @param config
+     * @param sourceFiles
+     * @throws IOException
+     **************************************************************************/
+    public void compileDebug( BuklConfig config, List<Path> sourceFiles )
         throws IOException
     {
         compile( config, sourceFiles, config.getDebugClassesDirectory(), true );
     }
 
-    private void compile( JbcsConfig config, List<Path> sourceFiles,
+    /***************************************************************************
+     * @param config
+     * @param sourceFiles
+     * @param outputDirectory
+     * @param debug
+     * @throws IOException
+     **************************************************************************/
+    private void compile( BuklConfig config, List<Path> sourceFiles,
         Path outputDirectory, boolean debug ) throws IOException
     {
         if( sourceFiles.isEmpty() )
@@ -44,7 +61,7 @@ public final class JavaSourceCompiler
         if( compiler == null )
         {
             throw new IOException(
-                "No system Java compiler is available. Run jcbs with a JDK." );
+                "No system Java compiler is available. Run bukl with a JDK." );
         }
 
         try( StandardJavaFileManager fileManager = compiler.getStandardFileManager(

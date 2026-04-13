@@ -1,4 +1,4 @@
-package jbcs.build;
+package bukl.build;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -11,14 +11,19 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
-import jbcs.config.JbcsConfig;
+import bukl.config.BuklConfig;
 
-/**
+/*******************************************************************************
  * Generates aggregate javadocs from the configured source set.
- */
+ ******************************************************************************/
 public final class JavadocGenerator
 {
-    public void generate( JbcsConfig config, List<Path> sourceFiles )
+    /***************************************************************************
+     * @param config
+     * @param sourceFiles
+     * @throws IOException
+     **************************************************************************/
+    public void generate( BuklConfig config, List<Path> sourceFiles )
         throws IOException
     {
         if( sourceFiles.isEmpty() )
@@ -32,7 +37,7 @@ public final class JavadocGenerator
         if( tool == null )
         {
             throw new IOException(
-                "No system javadoc tool is available. Run jcbs with a JDK." );
+                "No system javadoc tool is available. Run bukl with a JDK." );
         }
 
         try( StandardJavaFileManager fileManager = tool.getStandardFileManager(

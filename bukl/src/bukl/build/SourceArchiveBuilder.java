@@ -1,4 +1,4 @@
-package jbcs.build;
+package bukl.build;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,13 +10,18 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import jbcs.build.SourceCollector.CollectedFile;
+import bukl.build.SourceCollector.CollectedFile;
 
-/**
+/*******************************************************************************
  * Creates source jars from collected source-tree files.
- */
+ ******************************************************************************/
 public final class SourceArchiveBuilder
 {
+    /***************************************************************************
+     * @param files
+     * @param jarFile
+     * @throws IOException
+     **************************************************************************/
     public void createSourceJar( List<CollectedFile> files, Path jarFile )
         throws IOException
     {
@@ -51,6 +56,12 @@ public final class SourceArchiveBuilder
         System.out.println( "Created jar: " + jarFile );
     }
 
+    /***************************************************************************
+     * @param jarOut
+     * @param writtenEntries
+     * @param entryName
+     * @throws IOException
+     **************************************************************************/
     private void addParentDirectories( JarOutputStream jarOut,
         Set<String> writtenEntries, String entryName ) throws IOException
     {
@@ -71,6 +82,10 @@ public final class SourceArchiveBuilder
         }
     }
 
+    /***************************************************************************
+     * @param relativePath
+     * @return
+     **************************************************************************/
     private String normalizeEntryName( String relativePath )
     {
         return relativePath.replace( '\\', '/' );

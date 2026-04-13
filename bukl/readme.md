@@ -1,6 +1,6 @@
-# jbcs
+# bukl
 
-`jbcs` is a small Java bootstrap build tool intended for repositories that use
+`bukl` is a small Java bootstrap build tool intended for repositories that use
 Eclipse-style sibling project directories.
 
 The tool is designed for cases where multiple projects contribute source and
@@ -8,7 +8,7 @@ resources to a single aggregate build output.
 
 ## Goals
 
-- Keep bootstrap simple: compile `jbcs` with a single `javac` command, then run
+- Keep bootstrap simple: compile `bukl` with a single `javac` command, then run
   it with `java`
 - Avoid requiring Gradle, Maven, Ant, Python, or a platform-specific scripting
   environment on developer machines
@@ -34,11 +34,11 @@ copied into the output using the same relative paths they have under `src`.
 
 Top-level configuration file:
 
-- `jcbs.properties`
+- `bukl.properties`
 
 Optional per-project override file:
 
-- `jcbs_proj.properties`
+- `bukl_proj.properties`
 
 The top-level file defines the aggregate build.
 
@@ -47,7 +47,7 @@ optional and used sparingly.
 
 ## Build Model
 
-`jcbs` treats all included project source trees as one combined source set.
+`bukl` treats all included project source trees as one combined source set.
 
 This means:
 
@@ -59,7 +59,7 @@ This means:
 
 ## Outputs
 
-One invocation of `jcbs` is intended to support producing:
+One invocation of `bukl` is intended to support producing:
 
 - release jar
 - debug jar
@@ -79,7 +79,7 @@ build output directory.
 
 ## Top-Level Schema
 
-The top-level file is `jcbs.properties`.
+The top-level file is `bukl.properties`.
 
 Required keys:
 
@@ -217,7 +217,7 @@ build.javadoc.exclude=
 
 ## Per-Project Schema
 
-The per-project file is `jcbs_proj.properties`.
+The per-project file is `bukl_proj.properties`.
 
 This file is optional.
 
@@ -261,11 +261,11 @@ design.
 
 The preferred bootstrap flow is:
 
-1. Compile the `jcbs` Java sources with `javac`
-2. Run `jcbs` with `java`
-3. `jcbs` reads `jcbs.properties`
-4. `jcbs` loads the included project source trees
-5. `jcbs` compiles sources, copies resources, and emits the configured jars
+1. Compile the `bukl` Java sources with `javac`
+2. Run `bukl` with `java`
+3. `bukl` reads `bukl.properties`
+4. `bukl` loads the included project source trees
+5. `bukl` compiles sources, copies resources, and emits the configured jars
 
 This keeps bootstrap limited to a JDK, without requiring a separately installed
 build system.
@@ -276,7 +276,7 @@ the compiled output jars is still planned.
 
 ## Console Output
 
-By default, `jcbs` prints a compact build summary.
+By default, `bukl` prints a compact build summary.
 
 Project-by-project details are only printed when `-v` or `--verbose` is
 specified on the command line.

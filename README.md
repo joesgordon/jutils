@@ -24,15 +24,15 @@ Run with:
 
 ## Build
 
-JUtils is built with it's own [bootstrap build system](./jbcs/readme.md). You must have javac in your path before running:
+JUtils is built with it's own [bootstrap build system](./bukl/readme.md). You must have javac in your path before running:
 
     cd <jutils_dir>
-    javac -sourcepath ./jbcs/src -d ./jbcs/bin ./jbcs/src/jbcs/JbcsMain.java
-    java -cp jbcs/bin jbcs.JbcsMain
+    javac -sourcepath ./bukl/src -d ./bukl/bin ./bukl/src/bukl/BuklMain.java
+    java -cp bukl/bin bukl.BuklMain
 
 If you would like to create a jar for easier use with other projects:
 
-    jar --create --file ./jbcs.jar --main-class jbcs.JbcsMain -C ./jbcs/bin .
+    jar --create --file ./bukl.jar --main-class bukl.BuklMain -C ./bukl/bin .
 
 ## Sub Projects
 

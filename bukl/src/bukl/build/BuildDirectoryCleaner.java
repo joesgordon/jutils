@@ -1,4 +1,4 @@
-package jbcs.build;
+package bukl.build;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -8,11 +8,15 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.DosFileAttributeView;
 
-/**
+/*******************************************************************************
  * Recreates the configured build directory so each run starts clean.
- */
+ ******************************************************************************/
 public final class BuildDirectoryCleaner
 {
+    /***************************************************************************
+     * @param directory
+     * @throws IOException
+     **************************************************************************/
     public void recreateDirectory( Path directory ) throws IOException
     {
         if( Files.exists( directory ) )
@@ -23,6 +27,10 @@ public final class BuildDirectoryCleaner
         Files.createDirectories( directory );
     }
 
+    /***************************************************************************
+     * @param directory
+     * @throws IOException
+     **************************************************************************/
     private void deleteRecursively( Path directory ) throws IOException
     {
         Files.walkFileTree( directory, new SimpleFileVisitor<>()
@@ -52,6 +60,10 @@ public final class BuildDirectoryCleaner
         } );
     }
 
+    /***************************************************************************
+     * @param path
+     * @throws IOException
+     **************************************************************************/
     private void clearReadOnly( Path path ) throws IOException
     {
         DosFileAttributeView dosView = Files.getFileAttributeView( path,

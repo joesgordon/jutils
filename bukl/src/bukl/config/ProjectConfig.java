@@ -1,4 +1,4 @@
-package jbcs.config;
+package bukl.config;
 
 import java.nio.file.Path;
 import java.util.Collections;

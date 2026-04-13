@@ -1,4 +1,4 @@
-package jbcs.build;
+package bukl.build;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -11,26 +11,41 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-import jbcs.config.JbcsConfig;
-import jbcs.config.ProjectConfig;
+import bukl.config.BuklConfig;
+import bukl.config.ProjectConfig;
 
-/**
+/*******************************************************************************
  * Collects Java source files from included project source directories.
- */
+ ******************************************************************************/
 public final class SourceCollector
 {
-    public List<Path> collectSources( JbcsConfig config ) throws IOException
+    /***************************************************************************
+     * @param config
+     * @return
+     * @throws IOException
+     **************************************************************************/
+    public List<Path> collectSources( BuklConfig config ) throws IOException
     {
         return collectJavaFiles( config, FileKind.SOURCE );
     }
 
-    public List<Path> collectJavadocSources( JbcsConfig config )
+    /***************************************************************************
+     * @param config
+     * @return
+     * @throws IOException
+     **************************************************************************/
+    public List<Path> collectJavadocSources( BuklConfig config )
         throws IOException
     {
         return collectJavaFiles( config, FileKind.JAVADOC );
     }
 
-    public List<CollectedFile> collectSourceArchiveFiles( JbcsConfig config )
+    /***************************************************************************
+     * @param config
+     * @return
+     * @throws IOException
+     **************************************************************************/
+    public List<CollectedFile> collectSourceArchiveFiles( BuklConfig config )
         throws IOException
     {
         List<CollectedFile> sourceFiles = new ArrayList<>();
@@ -51,7 +66,12 @@ public final class SourceCollector
         return sourceFiles;
     }
 
-    public List<CollectedFile> collectResources( JbcsConfig config )
+    /***************************************************************************
+     * @param config
+     * @return
+     * @throws IOException
+     **************************************************************************/
+    public List<CollectedFile> collectResources( BuklConfig config )
         throws IOException
     {
         List<CollectedFile> resourceFiles = new ArrayList<>();
@@ -72,7 +92,13 @@ public final class SourceCollector
         return resourceFiles;
     }
 
-    private List<Path> collectJavaFiles( JbcsConfig config, FileKind kind )
+    /***************************************************************************
+     * @param config
+     * @param kind
+     * @return
+     * @throws IOException
+     **************************************************************************/
+    private List<Path> collectJavaFiles( BuklConfig config, FileKind kind )
         throws IOException
     {
         List<Path> sourceFiles = new ArrayList<>();
@@ -93,6 +119,12 @@ public final class SourceCollector
         return sourceFiles;
     }
 
+    /***************************************************************************
+     * @param project
+     * @param kind
+     * @return
+     * @throws IOException
+     **************************************************************************/
     private List<Path> collectProjectJavaFiles( ProjectConfig project,
         FileKind kind ) throws IOException
     {
@@ -125,6 +157,11 @@ public final class SourceCollector
         return sourceFiles;
     }
 
+    /***************************************************************************
+     * @param project
+     * @return
+     * @throws IOException
+     **************************************************************************/
     private List<CollectedFile> collectProjectFiles( ProjectConfig project )
         throws IOException
     {
@@ -155,6 +192,11 @@ public final class SourceCollector
         return files;
     }
 
+    /***************************************************************************
+     * @param project
+     * @return
+     * @throws IOException
+     **************************************************************************/
     private List<CollectedFile> collectProjectResources( ProjectConfig project )
         throws IOException
     {
@@ -186,11 +228,11 @@ public final class SourceCollector
         return files;
     }
 
-    /**
+    /***************************************************************************
      * @param sourceDirectory
      * @param patterns
      * @return
-     */
+     **************************************************************************/
     @SuppressWarnings( "resource")
     private List<PathMatcher> createMatchers( Path sourceDirectory,
         List<String> patterns )
@@ -224,28 +266,48 @@ public final class SourceCollector
         return false;
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     private enum FileKind
     {
+        /**  */
         SOURCE,
+        /**  */
         JAVADOC
     }
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     public static final class CollectedFile
     {
+        /**  */
         private final Path sourceFile;
+        /**  */
         private final Path relativePath;
 
+        /**
+         * @param sourceFile
+         * @param relativePath
+         */
         public CollectedFile( Path sourceFile, Path relativePath )
         {
             this.sourceFile = sourceFile;
             this.relativePath = relativePath;
         }
 
+        /**
+         * @return
+         */
         public Path getSourceFile()
         {
             return sourceFile;
         }
 
+        /**
+         * @return
+         */
         public Path getRelativePath()
         {
             return relativePath;

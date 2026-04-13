@@ -1,4 +1,4 @@
 @echo off
-javac -sourcepath ./jbcs/src -d ./jbcs/bin ./jbcs/src/jbcs/JbcsMain.java
-java -cp jbcs/bin jbcs.JbcsMain
+javac -sourcepath ./bukl/src -d ./bukl/bin ./bukl/src/bukl/BuklMain.java
+java -cp bukl/bin bukl.BuklMain
 pause

@@ -1,4 +1,4 @@
-package jbcs.config;
+package bukl.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,14 +9,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-/**
- * Loads jcbs.properties and optional jcbs_proj.properties files.
- */
-public final class JbcsConfigLoader
+/*******************************************************************************
+ * Loads bukl.properties and optional bukl_proj.properties files.
+ ******************************************************************************/
+public final class BuklConfigLoader
 {
-    private static final String PROJECT_CONFIG_FILE = "jcbs_proj.properties";
+    /**  */
+    private static final String PROJECT_CONFIG_FILE = "bukl_proj.properties";
 
-    public JbcsConfig load( Path configPath ) throws IOException
+    /***************************************************************************
+     * @param configPath
+     * @return
+     * @throws IOException
+     **************************************************************************/
+    public BuklConfig load( Path configPath ) throws IOException
     {
         Path resolvedConfig = configPath.toAbsolutePath().normalize();
 
@@ -118,7 +124,7 @@ public final class JbcsConfigLoader
                 projectJavadocExcludes ) );
         }
 
-        return new JbcsConfig( resolvedConfig, rootDirectory, buildName,
+        return new BuklConfig( resolvedConfig, rootDirectory, buildName,
             javaVersion, mainClass, dependencies, outputDirectory,
             classesDirectory, debugClassesDirectory, javadocDirectory,
             releaseJar, debugJar, sourcesJar, javadocJar,
@@ -126,6 +132,11 @@ public final class JbcsConfigLoader
             topLevelJavadocExcludes, projects );
     }
 
+    /***************************************************************************
+     * @param projectDirectory
+     * @return
+     * @throws IOException
+     **************************************************************************/
     private Properties loadOptionalProjectProperties( Path projectDirectory )
         throws IOException
     {
@@ -139,6 +150,11 @@ public final class JbcsConfigLoader
         return loadProperties( projectConfig );
     }
 
+    /***************************************************************************
+     * @param path
+     * @return
+     * @throws IOException
+     **************************************************************************/
     private Properties loadProperties( Path path ) throws IOException
     {
         Properties props = new Properties();
@@ -151,6 +167,12 @@ public final class JbcsConfigLoader
         return props;
     }
 
+    /***************************************************************************
+     * @param props
+     * @param key
+     * @return
+     * @throws IOException
+     **************************************************************************/
     private static String requireValue( Properties props, String key )
         throws IOException
     {
@@ -164,12 +186,21 @@ public final class JbcsConfigLoader
         return value;
     }
 
+    /***************************************************************************
+     * @param value
+     * @param defaultValue
+     * @return
+     **************************************************************************/
     private static String defaultValue( String value, String defaultValue )
     {
         String trimmed = trimToNull( value );
         return trimmed == null ? defaultValue : trimmed;
     }
 
+    /***************************************************************************
+     * @param value
+     * @return
+     **************************************************************************/
     private static String trimToNull( String value )
     {
         if( value == null )
@@ -181,6 +212,10 @@ public final class JbcsConfigLoader
         return trimmed.isEmpty() ? null : trimmed;
     }
 
+    /***************************************************************************
+     * @param value
+     * @return
+     **************************************************************************/
     private static List<String> splitCsv( String value )
     {
         List<String> items = new ArrayList<>();
@@ -204,6 +239,11 @@ public final class JbcsConfigLoader
         return items;
     }
 
+    /***************************************************************************
+     * @param value
+     * @param fallback
+     * @return
+     **************************************************************************/
     private static List<String> splitCsvWithDefault( String value,
         String fallback )
     {
@@ -217,6 +257,11 @@ public final class JbcsConfigLoader
         return items;
     }
 
+    /***************************************************************************
+     * @param first
+     * @param second
+     * @return
+     **************************************************************************/
     private static List<String> mergeLists( List<String> first,
         List<String> second )
     {
@@ -225,6 +270,12 @@ public final class JbcsConfigLoader
         return merged;
     }
 
+    /***************************************************************************
+     * @param rootDirectory
+     * @param value
+     * @param fallback
+     * @return
+     **************************************************************************/
     private static Path resolvePath( Path rootDirectory, String value,
         String fallback )
     {
