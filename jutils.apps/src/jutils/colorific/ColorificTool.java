@@ -46,7 +46,7 @@ public class ColorificTool implements IToolView
     @Override
     public String getName()
     {
-        return "Color Chooser";
+        return "Colorific";
     }
 
     /***************************************************************************

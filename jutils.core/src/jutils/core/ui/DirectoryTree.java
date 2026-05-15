@@ -463,11 +463,11 @@ public class DirectoryTree implements IView<JTree>
 
         node.children.clear();
 
-        LogUtils.printDebug( "Adding children of %s",
-            node.file.getAbsolutePath() );
+        // LogUtils.printDebug( "Adding children of %s",
+        // node.file.getAbsolutePath() );
         for( File f : files )
         {
-            LogUtils.printDebug( "Adding child %s", f.getAbsolutePath() );
+            // LogUtils.printDebug( "Adding child %s", f.getAbsolutePath() );
             if( f.isDirectory() )
             {
                 // LogUtils.printDebug( "Adding %s to %s", f.getName(),

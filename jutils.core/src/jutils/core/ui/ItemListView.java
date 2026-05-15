@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.ListView.SelectionMode;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.event.updater.IUpdater;
@@ -51,7 +51,7 @@ public class ItemListView<T> implements IDataView<List<T>>
      * @param dataView the view that displays an individual item when selected.
      * @param itemsModel the model for this view.
      **************************************************************************/
-    public ItemListView( IDataView<T> dataView, IItemListModel<T> itemsModel )
+    public ItemListView( IDataView<T> dataView, IListViewModel<T> itemsModel )
     {
         this( dataView, itemsModel, true, true );
     }
@@ -63,7 +63,7 @@ public class ItemListView<T> implements IDataView<List<T>>
      * @param allowAddRemove shows add/remove buttons if {@code true}.
      * @param allowReorder shows order buttons if {@code true}.
      **************************************************************************/
-    public ItemListView( IDataView<T> dataView, IItemListModel<T> itemsModel,
+    public ItemListView( IDataView<T> dataView, IListViewModel<T> itemsModel,
         boolean allowAddRemove, boolean allowReorder )
     {
         this( dataView, itemsModel, allowAddRemove, allowReorder, true );
@@ -77,7 +77,7 @@ public class ItemListView<T> implements IDataView<List<T>>
      * @param allowReorder shows order buttons if {@code true}.
      * @param useScrollPane
      **************************************************************************/
-    public ItemListView( IDataView<T> dataView, IItemListModel<T> itemsModel,
+    public ItemListView( IDataView<T> dataView, IListViewModel<T> itemsModel,
         boolean allowAddRemove, boolean allowReorder, boolean useScrollPane )
     {
         this.dataView = dataView;

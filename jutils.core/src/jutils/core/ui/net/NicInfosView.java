@@ -22,7 +22,7 @@ import jutils.core.net.NicInfo;
 import jutils.core.ui.IToolView;
 import jutils.core.ui.ItemListView;
 import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.StringView;
 import jutils.core.ui.app.AppRunner;
@@ -139,7 +139,7 @@ public class NicInfosView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class NicInfoModel implements IItemListModel<NicInfo>
+    private static final class NicInfoModel implements IListViewModel<NicInfo>
     {
         /**
          * {@inheritDoc}

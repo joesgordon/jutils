@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 import jutils.core.IconConstants;
 import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.explorer.data.ExtensionConfig;
@@ -105,7 +105,7 @@ public class ExtensionView implements IDataView<ExtensionConfig>
      * 
      **************************************************************************/
     private static class ExtensionItemListModel
-        implements IItemListModel<String>
+        implements IListViewModel<String>
     {
         @Override
         public String getTitle( String item )

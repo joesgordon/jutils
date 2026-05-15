@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import jutils.core.INamedItem;
 import jutils.core.io.LogUtils;
 import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
 import jutils.demo.ui.swing.RadioButtonView;
@@ -153,7 +153,7 @@ public class SwingView implements IView<JComponent>
      * 
      **************************************************************************/
     private static final class ComponentPanelListModel
-        implements IItemListModel<ComponentPanel>
+        implements IListViewModel<ComponentPanel>
     {
         /**
          * {@inheritDoc}

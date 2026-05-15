@@ -12,7 +12,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.event.updater.UpdaterList;
@@ -210,7 +210,7 @@ public class ItemListViewMain
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class TestDataModel implements IItemListModel<TestData>
+    private static final class TestDataModel implements IListViewModel<TestData>
     {
         /**
          * {@inheritDoc}

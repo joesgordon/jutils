@@ -8,7 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import jutils.core.ui.ItemListView;
 import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.ListView.SelectionMode;
 import jutils.core.ui.model.IView;
 import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
@@ -63,7 +63,7 @@ public class NewConnectionView implements IView<JComponent>
      * 
      **************************************************************************/
     private static final class ConnectionsListModel
-        implements IItemListModel<ConnectionType>
+        implements IListViewModel<ConnectionType>
     {
         /**
          * {@inheritDoc}

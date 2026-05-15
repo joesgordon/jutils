@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import jutils.core.io.parsers.ExistenceType;
 import jutils.core.io.parsers.FileType;
 import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.OkDialogView;
 import jutils.core.ui.OkDialogView.OkDialogButtons;
 import jutils.core.ui.StandardFormView;
@@ -151,7 +151,7 @@ public class SaveOptionsView implements IDataView<SaveOptions>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class NamesModel implements IItemListModel<String>
+    private static final class NamesModel implements IListViewModel<String>
     {
         /**
          * {@inheritDoc}

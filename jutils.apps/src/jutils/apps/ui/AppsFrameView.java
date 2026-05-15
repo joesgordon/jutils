@@ -39,7 +39,7 @@ public class AppsFrameView implements IView<JFrame>
         frameView.setContent( view.getView() );
         frameView.setTitle( "JUtils Apps" );
         frameView.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        frameView.setSize( 500, 633 );
+        frameView.setSize( 500, 84 + 32 * tools.size() + 36 );
 
         frameView.getView().setIconImages(
             IconConstants.getAllImages( "jutils" ) );

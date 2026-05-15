@@ -154,27 +154,28 @@ public class ChecksumFileSerializer implements IReader<ChecksumResult, File>
     {
         try( PrintStream stream = new PrintStream( outputFile ) )
         {
-            if( input.type.name == "SHA-256" )
+            switch( input.type.name )
             {
-                stream.println( "# SHA-256 compliant checksum(s) " );
-            }
-            else if( input.type.name == "SHA-1" )
-            {
-                stream.println( "# SHA-1 compliant checksum(s) " );
-            }
-            else if( input.type.name == "CRC-32" )
-            {
-                stream.println( "# CRC-32 compliant checksum(s) " );
-            }
-            else if( input.type.name == "MD5" )
-            {
-                stream.println(
-                    "# MD5 checksums compatible with MD5summer (http://www.md5summer.org)" );
-            }
-            else
-            {
-                throw new IllegalStateException(
-                    "checksum null for type " + input.type.name );
+                case "SHA-256":
+                    stream.println( "# SHA-256 compliant checksum(s) " );
+                    break;
+
+                case "SHA-1":
+                    stream.println( "# SHA-1 compliant checksum(s) " );
+                    break;
+
+                case "CRC-32":
+                    stream.println( "# CRC-32 compliant checksum(s) " );
+                    break;
+
+                case "MD5":
+                    stream.println(
+                        "# MD5 checksums compatible with MD5summer (http://www.md5summer.org)" );
+                    break;
+
+                default:
+                    throw new IllegalStateException(
+                        "checksum null for type " + input.type.name );
             }
 
             stream.print( "# Generated " );
@@ -191,7 +192,7 @@ public class ChecksumFileSerializer implements IReader<ChecksumResult, File>
     }
 
     /***************************************************************************
-     * @param input
+     * @param results
      * @param outputFile
      * @param append
      * @param replace

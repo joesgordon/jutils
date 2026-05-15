@@ -16,7 +16,11 @@ public enum ConnectionType implements INamedValue
     /**  */
     SERIAL( 3, "Serial" ),
     /**  */
-    BRIDGE( 4, "Bridge" );
+    BRIDGE( 4, "Bridge" ),
+    /**  */
+    TRANSFER( 5, "Transfer" ),
+    /**  */
+    NTP( 6, "NTP" );
 
     /**  */
     public final int value;

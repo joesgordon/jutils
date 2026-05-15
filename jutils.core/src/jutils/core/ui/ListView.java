@@ -50,7 +50,7 @@ public class ListView<T> implements IDataView<List<T>>
     /** The scroll pane containing the items. */
     private final JScrollPane itemsPane;
     /** The model for the items. */
-    private final IItemListModel<T> itemsModel;
+    private final IListViewModel<T> itemsModel;
 
     /** The action used for adding items. */
     private final Action addAction;
@@ -75,7 +75,7 @@ public class ListView<T> implements IDataView<List<T>>
      * Creates a new view with the provided data view and model.
      * @param itemsModel the model for this view.
      **************************************************************************/
-    public ListView( IItemListModel<T> itemsModel )
+    public ListView( IListViewModel<T> itemsModel )
     {
         this( itemsModel, true, true );
     }
@@ -86,7 +86,7 @@ public class ListView<T> implements IDataView<List<T>>
      * @param allowAddRemove shows add/remove buttons if {@code true}.
      * @param allowOrder shows order buttons if {@code true}.
      **************************************************************************/
-    public ListView( IItemListModel<T> itemsModel, boolean allowAddRemove,
+    public ListView( IListViewModel<T> itemsModel, boolean allowAddRemove,
         boolean allowOrder )
     {
         this.itemsModel = itemsModel;
@@ -562,7 +562,7 @@ public class ListView<T> implements IDataView<List<T>>
      * provides methods of accessing said data.
      * @param <T>
      **************************************************************************/
-    public static interface IItemListModel<T>
+    public static interface IListViewModel<T>
     {
         /**
          * Returns the string representation of the provided item.
@@ -623,14 +623,14 @@ public class ListView<T> implements IDataView<List<T>>
     private static class DisplayItemRenderer<T> extends LabelListCellRenderer<T>
     {
         /**  */
-        private final IItemListModel<T> model;
+        private final IListViewModel<T> model;
 
         /**
          * @param decorator
          * @param model
          */
         public DisplayItemRenderer( IListCellLabelDecorator<T> decorator,
-            IItemListModel<T> model )
+            IListViewModel<T> model )
         {
             super( decorator );
 

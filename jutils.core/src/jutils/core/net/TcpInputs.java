@@ -36,7 +36,7 @@ public class TcpInputs
      **************************************************************************/
     public TcpInputs( TcpInputs inputs )
     {
-        this.nic = inputs.nic;
+        this.nic = inputs.nic == null ? new IpAddress() : inputs.nic;
         this.localPort = inputs.localPort;
         this.remoteAddress = new IpAddress( inputs.remoteAddress );
         this.remotePort = inputs.remotePort;

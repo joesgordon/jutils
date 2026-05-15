@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import jutils.core.INamedItem;
 import jutils.core.io.LogUtils;
 import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
 import jutils.demo.ui.jutils.DateTimeViews;
@@ -190,7 +190,7 @@ public class JUtilsView implements IView<JComponent>
      * 
      **************************************************************************/
     private static final class JUtilsComponentListModel
-        implements IItemListModel<JUtilsComponent>
+        implements IListViewModel<JUtilsComponent>
     {
         /**
          * {@inheritDoc}

@@ -12,9 +12,9 @@ import javax.swing.filechooser.FileSystemView;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
-import jutils.core.ui.SplitButtonView.IListItemModel;
 import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.IRecentListener;
+import jutils.core.ui.model.ItemsListModel;
 
 /*******************************************************************************
  * Manages a {@link JMenu} and a {@link SplitButtonView} that displays a list of
@@ -146,7 +146,7 @@ public class RecentFilesViews
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class FileListItemModel implements IListItemModel<File>
+    private static final class FileListItemModel implements ItemsListModel<File>
     {
         /**  */
         private final FileSystemView fsv = FileSystemView.getFileSystemView();

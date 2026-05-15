@@ -133,7 +133,7 @@ public class PopupWindowTestMain implements IFrameApp
         private void showPopup()
         {
             DateView view = new DateView();
-            PopupWindow popup = new PopupWindow( true, view.getView() );
+            PopupWindow popup = new PopupWindow( view.getView() );
 
             popup.show( testButton, testButton.getWidth(),
                 testButton.getHeight() );

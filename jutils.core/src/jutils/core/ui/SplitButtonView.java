@@ -7,34 +7,22 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.dnd.DropTarget;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 
-import jutils.core.SwingUtils;
-import jutils.core.laf.UIProperty;
 import jutils.core.ui.event.IRecentListener;
-import jutils.core.ui.model.CollectionListModel;
 import jutils.core.ui.model.IView;
-import jutils.core.ui.model.LabelListCellRenderer;
-import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
+import jutils.core.ui.model.ItemsListModel;
 
 /*******************************************************************************
  * Defines a button with a drop-down menu.
@@ -49,7 +37,7 @@ public class SplitButtonView<T> implements IView<JComponent>
     /**  */
     private final JButton arrowButton;
     /**  */
-    private final ListPopup<T> popup;
+    private final ItemsListPopup<T> popup;
     /**  */
     private final List<IRecentListener<T>> selectedListeners;
 
@@ -78,11 +66,11 @@ public class SplitButtonView<T> implements IView<JComponent>
      * @param descriptor
      **************************************************************************/
     public SplitButtonView( String text, Icon icon, List<T> items,
-        IListItemModel<T> descriptor )
+        ItemsListModel<T> descriptor )
     {
         this.button = new JButton( text, icon );
         this.arrowButton = new JButton( new ArrowIcon() );
-        this.popup = new ListPopup<>( items, descriptor );
+        this.popup = new ItemsListPopup<>( items, descriptor );
         this.view = createView();
         this.selectedListeners = new ArrayList<>();
 
@@ -385,274 +373,6 @@ public class SplitButtonView<T> implements IView<JComponent>
     }
 
     /***************************************************************************
-     * 
-     **************************************************************************/
-    private static final class ListPopup<T>
-    {
-        /**  */
-        private final PopupWindow popup;
-        /**  */
-        private final CollectionListModel<T> model;
-        /**  */
-        private final JList<T> list;
-        /**  */
-        private final List<IRecentListener<T>> selectedListeners;
-        /**  */
-        private final List<IListRightClickListener<T>> rightClickListeners;
-
-        /**
-         * @param items
-         * @param descriptor
-         */
-        public ListPopup( List<T> items, IListItemModel<T> descriptor )
-        {
-            this.model = new CollectionListModel<>();
-            this.list = new JList<>( model );
-            this.selectedListeners = new ArrayList<>();
-            this.rightClickListeners = new ArrayList<>();
-            this.popup = new PopupWindow( true, list );
-
-            model.setData( items );
-
-            // list.setFocusable( false );
-            SwingUtils.addKeyListener( list, "ENTER",
-                ( e ) -> fireSelected( list.getSelectedValue(), false ),
-                "List Enter Pressed", false );
-            list.setBackground( UIProperty.PANEL_BACKGROUND.getColor() );
-            list.setVisibleRowCount( 10 );
-
-            ListMouseListener<T> lml = new ListMouseListener<>( this );
-
-            list.addMouseListener( lml );
-            list.addMouseMotionListener( lml );
-            list.setCellRenderer( new LabelListCellRenderer<T>(
-                new DescriptorListCellLabelDecorator<T>( descriptor ) ) );
-            list.setFixedCellHeight( 24 );
-
-            // JScrollPane pane = new JScrollPane( list );
-            //
-            // pane.setHorizontalScrollBarPolicy(
-            // ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
-            // pane.getVerticalScrollBar().setUnitIncrement( 12 );
-            // pane.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
-
-            // popup.setPreferredSize( dim );
-
-            popup.setBorder( new LineBorder( Color.black ) );
-        }
-
-        /**
-         * @param listener
-         */
-        public void addRightClickListener( IListRightClickListener<T> listener )
-        {
-            rightClickListeners.add( listener );
-        }
-
-        /**
-         * 
-         */
-        public void hide()
-        {
-            // LogUtils.printDebug( "Hiding" );
-            popup.hide();
-        }
-
-        /**
-         * @param l
-         */
-        public void addItemSelectedListener( IRecentListener<T> l )
-        {
-            selectedListeners.add( l );
-        }
-
-        /**
-         * @param items
-         */
-        public void setItems( List<T> items )
-        {
-            model.setData( items );
-        }
-
-        /**
-         * @param parent
-         */
-        public void show( JComponent parent )
-        {
-            if( model.getSize() > 0 )
-            {
-                list.setSelectedValue( model.get( 0 ), true );
-            }
-            list.clearSelection();
-            popup.show( parent, 0, parent.getHeight() );
-            list.requestFocus();
-        }
-
-        /**
-         * @param item
-         * @param ctrlPressed
-         */
-        public void fireSelected( T item, boolean ctrlPressed )
-        {
-            for( IRecentListener<T> irl : selectedListeners )
-            {
-                irl.selected( item, ctrlPressed );
-            }
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static final class ListMouseListener<T> extends MouseAdapter
-    {
-        /**  */
-        private final ListPopup<T> popup;
-
-        /**
-         * @param popup
-         */
-        public ListMouseListener( ListPopup<T> popup )
-        {
-            this.popup = popup;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void mousePressed( MouseEvent e )
-        {
-            int modifiers = e.getModifiersEx();
-            boolean ctrlPressed = ( ActionEvent.CTRL_MASK &
-                modifiers ) == ActionEvent.CTRL_MASK;
-
-            @SuppressWarnings( "unchecked")
-            JList<T> list = ( JList<T> )e.getSource();
-            if( e.getClickCount() == 1 )
-            {
-                Point ept = e.getPoint();
-                int index = list.locationToIndex( ept );
-
-                if( index > -1 )
-                {
-                    Rectangle rect = list.getCellBounds( index, index );
-
-                    if( rect.contains( ept ) )
-                    {
-                        T item = list.getModel().getElementAt( index );
-
-                        if( SwingUtilities.isLeftMouseButton( e ) )
-                        {
-                            popup.fireSelected( item, ctrlPressed );
-                        }
-                        else if( SwingUtilities.isRightMouseButton( e ) )
-                        {
-                            Component c = e.getComponent();
-                            int x = e.getX();
-                            int y = e.getY();
-                            popup.rightClickListeners.forEach(
-                                ( l ) -> l.rightClicked( item, c, x, y ) );
-                        }
-                    }
-                }
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void mouseMoved( MouseEvent e )
-        {
-            @SuppressWarnings( "unchecked")
-            JList<T> list = ( JList<T> )e.getSource();
-            int index = list.locationToIndex( e.getPoint() );
-            if( index > -1 )
-            {
-                list.setSelectedIndex( index );
-            }
-            else
-            {
-                list.clearSelection();
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void mouseExited( MouseEvent e )
-        {
-            @SuppressWarnings( "unchecked")
-            JList<T> list = ( JList<T> )e.getSource();
-            list.clearSelection();
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static final class DescriptorListCellLabelDecorator<T>
-        implements IListCellLabelDecorator<T>
-    {
-        /**  */
-        private final IListItemModel<T> descriptor;
-
-        /**
-         * @param descriptor
-         */
-        public DescriptorListCellLabelDecorator( IListItemModel<T> descriptor )
-        {
-            this.descriptor = descriptor;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void decorate( JLabel label, JList<? extends T> list, T value,
-            int index, boolean isSelected, boolean cellHasFocus )
-        {
-            Icon icon = null;
-            String text = "";
-
-            if( value != null )
-            {
-                icon = descriptor.getIcon( value );
-                text = descriptor.getName( value );
-            }
-
-            label.setIcon( icon );
-            label.setText( text );
-        }
-    }
-
-    /***************************************************************************
-     * @param <T>
-     **************************************************************************/
-    public static interface IListItemModel<T>
-    {
-        /**
-         * @param item
-         * @return
-         */
-        public String getName( T item );
-
-        /**
-         * @param item
-         * @return
-         */
-        public String getTooltip( T item );
-
-        /**
-         * @param item
-         * @return
-         */
-        public Icon getIcon( T item );
-    }
-
-    /***************************************************************************
      * @param <T>
      **************************************************************************/
     public static interface IListRightClickListener<T>
@@ -669,7 +389,7 @@ public class SplitButtonView<T> implements IView<JComponent>
     /***************************************************************************
      * @param <T>
      **************************************************************************/
-    public static class DefaultListItemModel<T> implements IListItemModel<T>
+    public static class DefaultListItemModel<T> implements ItemsListModel<T>
     {
         /**
          * {@inheritDoc}
