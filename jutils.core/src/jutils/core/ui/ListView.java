@@ -1,6 +1,5 @@
 package jutils.core.ui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -580,26 +579,6 @@ public class ListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * Defines a cell renderer.
-     * @param <T> The type of item to be added to the list.
-     **************************************************************************/
-    public static interface ItemListCellRenderer<T>
-    {
-        /**
-         * @param list
-         * @param value
-         * @param index
-         * @param isSelected
-         * @param cellHasFocus
-         * @param text
-         * @return
-         */
-        public Component getListCellRendererComponent( JList<? extends T> list,
-            T value, int index, boolean isSelected, boolean cellHasFocus,
-            String text );
-    }
-
-    /***************************************************************************
      * @param <T>
      **************************************************************************/
     private static final class DefaultItemListCellRenderer<T>
@@ -617,8 +596,8 @@ public class ListView<T> implements IDataView<List<T>>
 
     /***************************************************************************
      * Defines an Adapter to be a renderer for the DisplayItem<T> list that uses
-     * a {@link ListView.ItemListCellRenderer} to render the cell.
-     * @param <T> The type of item to be added to the list.
+     * a {@link IListCellLabelDecorator} to render the cell.
+     * @param <T> The type of items rendered in the list.
      **************************************************************************/
     private static class DisplayItemRenderer<T> extends LabelListCellRenderer<T>
     {

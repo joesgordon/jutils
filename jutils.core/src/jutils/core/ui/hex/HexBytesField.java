@@ -225,6 +225,8 @@ public class HexBytesField implements IDataFormField<byte []>
                         return false;
                     }
                 }
+
+                return true;
             }
 
             return false;

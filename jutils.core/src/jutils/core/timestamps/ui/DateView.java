@@ -307,7 +307,7 @@ public class DateView implements IDataView<LocalDate>
 
         monthSpinner.setValue( MONTHS[date.getMonthValue() - 1] );
 
-        LogUtils.printDebug( "Setting year field to %d", date.getYear() );
+        // LogUtils.printDebug( "Setting year field to %d", date.getYear() );
 
         yearSpinner.setValue( date.getYear() );
     }
