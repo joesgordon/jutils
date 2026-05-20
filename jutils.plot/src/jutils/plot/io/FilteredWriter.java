@@ -108,7 +108,7 @@ public class FilteredWriter
                                 if( m.matches() )
                                 {
                                     stream.println(
-                                        m.group( 1 ) + removalMethod.value );
+                                        m.group( 1 ) + "\t" + removalMethod.value );
                                 }
 
                                 // stream.println( line );

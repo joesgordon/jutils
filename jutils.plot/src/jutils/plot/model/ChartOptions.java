@@ -33,7 +33,7 @@ public class ChartOptions
         this.textAntiAlias = true;
         this.gridlinesVisible = true;
         this.removalEnabled = true;
-        this.removalMethod = PointRemovalMethod.NAN;
+        this.removalMethod = PointRemovalMethod.DELETE;
     }
 
     /***************************************************************************
