@@ -8,15 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import jutils.core.ui.ListView.IItemListModel;
-import jutils.core.ui.ListView.ItemListCellRenderer;
+import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ListView.SelectionMode;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IDataView;
+import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
 
 /*******************************************************************************
  * Defines a view that displays a list of items to the user. The view allows for
@@ -44,15 +46,12 @@ public class ItemListView<T> implements IDataView<List<T>>
     /** The item selection listeners to be called when an item is selected. */
     private final List<IUpdater<T>> selectedListeners;
 
-    /** The items to be displayed. */
-    private List<T> items;
-
     /***************************************************************************
      * Creates a new view with the provided data view and model.
      * @param dataView the view that displays an individual item when selected.
      * @param itemsModel the model for this view.
      **************************************************************************/
-    public ItemListView( IDataView<T> dataView, IItemListModel<T> itemsModel )
+    public ItemListView( IDataView<T> dataView, IListViewModel<T> itemsModel )
     {
         this( dataView, itemsModel, true, true );
     }
@@ -64,7 +63,7 @@ public class ItemListView<T> implements IDataView<List<T>>
      * @param allowAddRemove shows add/remove buttons if {@code true}.
      * @param allowReorder shows order buttons if {@code true}.
      **************************************************************************/
-    public ItemListView( IDataView<T> dataView, IItemListModel<T> itemsModel,
+    public ItemListView( IDataView<T> dataView, IListViewModel<T> itemsModel,
         boolean allowAddRemove, boolean allowReorder )
     {
         this( dataView, itemsModel, allowAddRemove, allowReorder, true );
@@ -78,7 +77,7 @@ public class ItemListView<T> implements IDataView<List<T>>
      * @param allowReorder shows order buttons if {@code true}.
      * @param useScrollPane
      **************************************************************************/
-    public ItemListView( IDataView<T> dataView, IItemListModel<T> itemsModel,
+    public ItemListView( IDataView<T> dataView, IListViewModel<T> itemsModel,
         boolean allowAddRemove, boolean allowReorder, boolean useScrollPane )
     {
         this.dataView = dataView;
@@ -90,8 +89,6 @@ public class ItemListView<T> implements IDataView<List<T>>
         this.scrollPane = useScrollPane ? new JScrollPane( dataView.getView() )
             : null;
         this.nullSelectionPanel = createNullSelectionPanel();
-
-        this.items = new ArrayList<>();
 
         this.view = createView();
 
@@ -138,7 +135,7 @@ public class ItemListView<T> implements IDataView<List<T>>
 
         constraints = new GridBagConstraints( 0, 0, 1, 1, 0.0, 1.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 0, 8, 8, 8 ), 0, 0 );
+            new Insets( 8, 8, 8, 8 ), 0, 0 );
         panel.add( itemsView.getView(), constraints );
 
         constraints = new GridBagConstraints( 1, 0, 1, 1, 1.0, 1.0,
@@ -173,29 +170,26 @@ public class ItemListView<T> implements IDataView<List<T>>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Component getView()
+    public JComponent getView()
     {
         return view;
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public List<T> getData()
     {
-        ArrayList<T> data = new ArrayList<>( items );
-        return data;
+        return itemsView.getData();
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setData( List<T> data )
     {
-        items = data;
-
         itemsView.setData( data );
     }
 
@@ -203,9 +197,17 @@ public class ItemListView<T> implements IDataView<List<T>>
      * Sets the renderer for the list.
      * @param renderer the list cell renderer.
      **************************************************************************/
-    public void setItemRenderer( ItemListCellRenderer<T> renderer )
+    public void setItemDecorator( IListCellLabelDecorator<T> renderer )
     {
-        itemsView.setItemRenderer( renderer );
+        itemsView.setItemDecorator( renderer );
+    }
+
+    /***************************************************************************
+     * @param mode
+     **************************************************************************/
+    public void setSelectionMode( SelectionMode mode )
+    {
+        itemsView.setSelectionMode( mode );
     }
 
     /***************************************************************************
@@ -247,6 +249,22 @@ public class ItemListView<T> implements IDataView<List<T>>
     public void setSelected( T item )
     {
         itemsView.setSelected( item );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getSelectedIndex()
+    {
+        return itemsView.getSelectedIndex();
+    }
+
+    /***************************************************************************
+     * @param index
+     **************************************************************************/
+    public void setSelectedIndex( int index )
+    {
+        itemsView.setSelectedIndex( index );
     }
 
     /***************************************************************************

@@ -1,6 +1,8 @@
 package jutils.core.ui;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FocusTraversalPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

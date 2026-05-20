@@ -1,0 +1,64 @@
+package jutils.core.net;
+
+import jutils.core.utils.Usable;
+
+/*******************************************************************************
+ * 
+ ******************************************************************************/
+public class UdpConfig
+{
+    /**  */
+    public int localPort;
+    /**  */
+    public final IpAddress nic;
+    /**  */
+    public boolean broadcast;
+    /**  */
+    public final Usable<IpAddress> multicast;
+    /**  */
+    public int timeout;
+    /**  */
+    public boolean reuse;
+    /**  */
+    public boolean loopback;
+    /**  */
+    public int ttl;
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public UdpConfig()
+    {
+        this.localPort = 0;
+        this.nic = new IpAddress();
+        this.broadcast = false;
+        this.multicast = new Usable<>( false, new IpAddress( 224, 0, 0, 1 ) );
+        this.timeout = 500;
+        this.reuse = false;
+        this.loopback = false;
+        this.ttl = 2;
+    }
+
+    /***************************************************************************
+     * @param inputs
+     **************************************************************************/
+    public UdpConfig( UdpConfig inputs )
+    {
+        this();
+
+        this.localPort = inputs.localPort;
+        if( inputs.nic != null )
+        {
+            this.nic.set( inputs.nic );
+        }
+        this.broadcast = inputs.broadcast;
+        if( inputs.multicast != null )
+        {
+            this.multicast.set( inputs.multicast );
+        }
+        this.timeout = inputs.timeout;
+        this.reuse = inputs.reuse;
+        this.loopback = inputs.loopback;
+        this.ttl = inputs.ttl;
+    }
+}

@@ -1,20 +1,13 @@
 package jutils.telemetry.ch10;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jutils.core.ValidationException;
-import jutils.core.io.DataStream;
-import jutils.core.io.FileStream;
-import jutils.core.io.IDataReader;
 import jutils.core.io.IDataStream;
-import jutils.core.io.IReader;
-import jutils.core.utils.ByteOrdering;
-import jutils.telemetry.ch10.PacketHeader.PacketHeaderSerializer;
+import jutils.core.io.LogUtils;
+import jutils.telemetry.ch10.io.PacketSerializer;
 
 /*******************************************************************************
  * 
@@ -26,10 +19,14 @@ public class Ch10File
     /**  */
     public final List<Ch10Channel> channels;
     /**  */
-    public final List<Long> positions;
+    public final List<Long> packets;
+    /**  */
+    private final PacketSerializer packetSerializer;
 
     /**  */
     public String name;
+    /**  */
+    public long initRelTime;
 
     /***************************************************************************
      * @param stream
@@ -38,7 +35,11 @@ public class Ch10File
     {
         this.stream = stream;
         this.channels = new ArrayList<>();
-        this.positions = new ArrayList<>();
+        this.packets = new ArrayList<>();
+        this.packetSerializer = new PacketSerializer();
+
+        this.name = "";
+        this.initRelTime = 0;
     }
 
     /***************************************************************************
@@ -46,16 +47,33 @@ public class Ch10File
      * @return
      * @throws IllegalStateException
      **************************************************************************/
-    public Packet readPacket( int index ) throws IllegalStateException
+    public PacketInfo readPacket( int index ) throws IllegalStateException
     {
-        long position = positions.get( index );
-        Packet p = new Packet();
-        PacketHeaderSerializer headerSerializer = new PacketHeaderSerializer();
+        long position = packets.get( index );
+
+        return readPacketAt( position );
+    }
+
+    /***************************************************************************
+     * @param position
+     * @return
+     * @throws IllegalStateException
+     **************************************************************************/
+    private PacketInfo readPacketAt( long position )
+        throws IllegalStateException
+    {
 
         try
         {
             stream.seek( position );
-            headerSerializer.read( p.header, stream );
+
+            Packet p = packetSerializer.read( stream );
+            PacketInfo info = new PacketInfo( position, p );
+
+            stream.seek( position );
+            stream.readFully( info.data );
+
+            return info;
         }
         catch( IOException ex )
         {
@@ -65,105 +83,58 @@ public class Ch10File
         {
             throw new IllegalStateException( ex );
         }
-
-        return p;
     }
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public static final class Ch10FileReader implements IReader<Ch10File, File>
+    public void printInfo()
     {
-        /**  */
-        private final Ch10StreamReader reader;
-
-        /**
-         * 
-         */
-        public Ch10FileReader()
+        for( Ch10Channel channel : channels )
         {
-            this.reader = new Ch10StreamReader();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @SuppressWarnings( "resource")
-        @Override
-        public Ch10File read( File file )
-            throws IOException, ValidationException
-        {
-            FileStream fs = new FileStream( file, true );
-            IDataStream stream = new DataStream( fs, ByteOrdering.INTEL_ORDER );
-            Ch10File c10 = reader.read( stream );
-
-            c10.name = file.getName();
-
-            return c10;
-        }
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static final class Ch10StreamReader implements IDataReader<Ch10File>
-    {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Ch10File read( IDataStream stream )
-            throws IOException, ValidationException
-        {
-            Ch10File c10 = new Ch10File( stream );
-            Map<Short, Ch10Channel> channels = new HashMap<>();
-
-            PacketHeaderSerializer serializer = new PacketHeaderSerializer();
-
-            // FieldPrinter fp = new FieldPrinter();
-            // int i = 0;
-            while( PacketHeader.SIZE < stream.getAvailable() )
+            if( channel.dataType == DataType.PCM_1 )
             {
-                long position = stream.getPosition();
-                PacketHeader header = serializer.read( stream );
-                Ch10Channel channel = channels.get( header.channelId );
+                LogUtils.print( "PCM Time\tPCM Delta\tTime\tTime Delta" );
 
-                if( channel == null )
+                long startPcmTime = -1;
+                long lastPcmTime = -1;
+                long timeTime = -1;
+                long lastTime = -1;
+
+                for( long position : packets )
                 {
-                    channel = new Ch10Channel( header.channelId,
-                        header.dataType );
+                    PacketInfo info = readPacketAt( position );
 
-                    channels.put( header.channelId, channel );
+                    DataType packetType = info.packet.header.dataType;
+                    long packetTime = info.packet.header.relativeTimeCounter;
+
+                    if( packetType == DataType.TIME_1 )
+                    {
+                        timeTime = packetTime;
+                    }
+                    else if( info.packet.header.channelId == channel.id )
+                    {
+                        if( startPcmTime < 1 )
+                        {
+                            startPcmTime = packetTime;
+                        }
+                        else
+                        {
+                            long pcmTime = packetTime - startPcmTime;
+                            long pcmDelta = packetTime - lastPcmTime;
+                            long time = packetTime - timeTime;
+                            long timeDelta = time - lastTime;
+
+                            LogUtils.print( "%d\t%d\t%d\t%d", pcmTime, pcmDelta,
+                                time, timeDelta );
+
+                            lastTime = time;
+                        }
+
+                        lastPcmTime = packetTime;
+                    }
                 }
-
-                if( header.channelId != channel.id )
-                {
-                    String err = String.format(
-                        " Data type (%s) of packet at %d does not match data " +
-                            "type (%s) of channel ID (%d) ",
-                        header.dataType.getDescription(), position,
-                        channel.dataType.getDescription(), header.channelId );
-                    throw new ValidationException( err );
-                }
-
-                c10.positions.add( position );
-
-                // fp.printTier( "Packet " + i, header );
-
-                long skipSize = header.packetLength - PacketHeader.SIZE;
-
-                stream.skip( skipSize );
-                // i++;
             }
-
-            for( Ch10Channel channel : channels.values() )
-            {
-                c10.channels.add( channel );
-            }
-
-            // LogUtils.print( fp.toString() );
-
-            return c10;
         }
     }
 }

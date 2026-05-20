@@ -10,8 +10,11 @@ import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import jutils.core.data.Pair;
 import jutils.core.io.LogUtils;
 
 /*******************************************************************************
@@ -21,6 +24,8 @@ public class UdpSocket
 {
     /**  */
     private final byte [] rxBuffer;
+    /**  */
+    private final List<Pair<SocketAddress, NetworkInterface>> groups;
 
     /**  */
     private DatagramSocket socket;
@@ -40,6 +45,7 @@ public class UdpSocket
     {
         this.socket = socket;
         this.rxBuffer = new byte[65536];
+        this.groups = new ArrayList<>();
     }
 
     /***************************************************************************
@@ -65,6 +71,18 @@ public class UdpSocket
      **************************************************************************/
     public void close() throws IOException
     {
+        for( Pair<SocketAddress, NetworkInterface> group : groups )
+        {
+            try
+            {
+                socket.leaveGroup( group.a, group.b );
+            }
+            catch( IOException ex )
+            {
+                ;
+            }
+        }
+
         socket.close();
     }
 
@@ -120,6 +138,8 @@ public class UdpSocket
     public NetMessage receive() throws IOException, SocketTimeoutException
     {
         DatagramPacket packet = new DatagramPacket( rxBuffer, rxBuffer.length );
+        // TODO create receive with buffer passed in.
+
         socket.receive( packet );
         byte [] contents = Arrays.copyOf( rxBuffer, packet.getLength() );
         InetAddress address = packet.getAddress();
@@ -211,9 +231,9 @@ public class UdpSocket
     {
         try
         {
-        	( ( MulticastSocket )socket ).setLoopbackMode( !loopback );
-//            socket = socket.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
-//                loopback );
+        	//( ( MulticastSocket )socket ).setLoopbackMode( !loopback );
+            socket = socket.setOption( StandardSocketOptions.IP_MULTICAST_LOOP,
+                loopback );
             return true;
         }
         catch( IOException ex )
@@ -223,30 +243,72 @@ public class UdpSocket
     }
 
     /***************************************************************************
+     * @param nic
+     * @return
+     **************************************************************************/
+    public boolean setInterface( IpAddress nic )
+    {
+        InetAddress addr = nic.getInetAddress();
+
+        try
+        {
+            NetworkInterface nif = NetworkInterface.getByInetAddress( addr );
+
+            if( nif != null )
+            {
+                socket = socket.setOption(
+                    StandardSocketOptions.IP_MULTICAST_IF, nif );
+                return true;
+            }
+
+            String err = String.format(
+                "Unable to set interface to %s: Interface not found", nic );
+            LogUtils.printWarning( err );
+        }
+        catch( IOException ex )
+        {
+            String err = String.format( "Unable to set interface to %s: %s",
+                nic, ex.getMessage() );
+            LogUtils.printWarning( err );
+            return false;
+        }
+
+        return false;
+    }
+
+    /***************************************************************************
+     * @param group
+     * @return
+     **************************************************************************/
+    public boolean joinGroup( IpAddress group )
+    {
+        return joinGroup( group, new IpAddress() );
+    }
+
+    /***************************************************************************
      * @param group
      * @param nic
      * @return
      **************************************************************************/
     public boolean joinGroup( IpAddress group, IpAddress nic )
     {
-        int port = socket.getLocalPort();
-
         try
         {
             InetAddress nicAddress = nic.getInetAddress();
             InetAddress mcAddress = group.getInetAddress();
-            SocketAddress mcSockAddress = new InetSocketAddress( mcAddress,
-                port );
+            SocketAddress mcSockAddress = new InetSocketAddress( mcAddress, 0 );
             NetworkInterface nicNi = NetworkInterface.getByInetAddress(
                 nicAddress );
 
             ( ( MulticastSocket )socket ).joinGroup( mcSockAddress, nicNi );
+
+            groups.add( new Pair<>( mcSockAddress, nicNi ) );
+
             return true;
         }
         catch( IOException ex )
         {
-            LogUtils.printWarning( "Unable to join %s:%d on %s", group, port,
-                nic );
+            LogUtils.printWarning( "Unable to join %s on %s", group, nic );
             return false;
         }
     }

@@ -20,7 +20,7 @@ public class StringFormField implements IDataFormField<String>
     private final ParserFormField<String> field;
 
     /***************************************************************************
-     * @param name
+     * @param name the name of this field.
      **************************************************************************/
     public StringFormField( String name )
     {
@@ -28,9 +28,9 @@ public class StringFormField implements IDataFormField<String>
     }
 
     /***************************************************************************
-     * @param name
-     * @param minLen
-     * @param maxLen
+     * @param name name the name of this field.
+     * @param minLen the minimum valid length of the string in this field.
+     * @param maxLen the maximum valid length of the string in this field.
      **************************************************************************/
     public StringFormField( String name, Integer minLen, Integer maxLen )
     {
@@ -38,10 +38,11 @@ public class StringFormField implements IDataFormField<String>
     }
 
     /***************************************************************************
-     * @param name
-     * @param minLen
-     * @param maxLen
-     * @param trim
+     * @param name name the name of this field.
+     * @param minLen the minimum valid length of the string in this field.
+     * @param maxLen the maximum valid length of the string in this field.
+     * @param trim indicates whether space characters entered at the beginning
+     * or end are ignored.
      **************************************************************************/
     public StringFormField( String name, Integer minLen, Integer maxLen,
         boolean trim )
@@ -50,11 +51,13 @@ public class StringFormField implements IDataFormField<String>
     }
 
     /***************************************************************************
-     * @param name
-     * @param minLen
-     * @param maxLen
-     * @param trim
-     * @param columns
+     * @param name name the name of this field.
+     * @param minLen the minimum valid length of the string in this field.
+     * @param maxLen the maximum valid length of the string in this field.
+     * @param trim indicates whether space characters entered at the beginning
+     * or end are ignored.
+     * @param columns the number of columns for the {@link JTextField}.
+     * @see JTextField#setColumns(int)
      **************************************************************************/
     public StringFormField( String name, Integer minLen, Integer maxLen,
         boolean trim, int columns )

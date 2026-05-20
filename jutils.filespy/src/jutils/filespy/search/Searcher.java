@@ -1,7 +1,7 @@
 package jutils.filespy.search;
 
 import jutils.core.concurrent.TaskThread;
-import jutils.core.ui.StatusBarPanel;
+import jutils.core.ui.StatusBarView;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.event.ItemActionListener;
 import jutils.core.utils.Stopwatch;
@@ -16,7 +16,7 @@ public class Searcher
     /**  */
     private final ResultsView resultsView;
     /**  */
-    private final StatusBarPanel statusBar;
+    private final StatusBarView statusBar;
 
     /**  */
     private TaskThread searchThread;
@@ -26,7 +26,7 @@ public class Searcher
      * @param fileSpyFrameView
      * @param statusBar
      **************************************************************************/
-    public Searcher( ResultsView resultsView, StatusBarPanel statusBar )
+    public Searcher( ResultsView resultsView, StatusBarView statusBar )
     {
         this.resultsView = resultsView;
         this.statusBar = statusBar;

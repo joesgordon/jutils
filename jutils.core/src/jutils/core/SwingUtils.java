@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -48,6 +50,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -55,7 +58,8 @@ import javax.swing.table.TableModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import jutils.core.ui.StatusBarPanel;
+import jutils.core.io.IOUtils;
+import jutils.core.ui.StatusBarView;
 import jutils.core.ui.event.ActionAdapter;
 
 /*******************************************************************************
@@ -115,7 +119,7 @@ public final class SwingUtils
     public static JPanel createStandardConentPane( JToolBar toolbar,
         Container container )
     {
-        StatusBarPanel statusbar = new StatusBarPanel();
+        StatusBarView statusbar = new StatusBarView();
         JPanel panel = new JPanel( new GridBagLayout() );
         GridBagConstraints constraints;
         int row = 0;
@@ -167,6 +171,25 @@ public final class SwingUtils
     public static JButton addActionToToolbar( JToolBar toolbar, Action action )
     {
         JButton button = new JButton();
+
+        addActionToToolbar( toolbar, action, button );
+
+        return button;
+    }
+
+    /***************************************************************************
+     * Adds the provided action to the toolbar and returns the created button.
+     * @param toolbar the toolbar to which the action is added.
+     * @param listener the callback for the action to be performed.
+     * @param name the name of the action to be performed.
+     * @param icon the icon that represents the action to be performed
+     * @return the created button.
+     **************************************************************************/
+    public static JButton addActionToToolbar( JToolBar toolbar,
+        ActionListener listener, String name, Icon icon )
+    {
+        JButton button = new JButton();
+        ActionAdapter action = new ActionAdapter( listener, name, icon );
 
         addActionToToolbar( toolbar, action, button );
 
@@ -1000,5 +1023,42 @@ public final class SwingUtils
 
             return srcLoc;
         }
+    }
+
+    /***************************************************************************
+     * @param view
+     * @param file
+     * @return
+     **************************************************************************/
+    public static Icon getFileIcon( FileSystemView view, File file )
+    {
+        Icon icon = null;
+
+        if( file == null )
+        {
+            icon = IconConstants.getIcon( IconConstants.STOP_16 );
+        }
+        else if( IOUtils.isUncPath( file ) )
+        {
+            icon = IconConstants.getIcon( IconConstants.OPEN_FILE_16 );
+        }
+        else if( file.exists() )
+        {
+            try
+            {
+                icon = view.getSystemIcon( file );
+            }
+            catch( NullPointerException ex )
+            {
+                String err = "Unable to get icon for " + file.getAbsolutePath();
+                throw new RuntimeException( err, ex );
+            }
+        }
+        else
+        {
+            icon = IconConstants.getIcon( IconConstants.FIND_16 );
+        }
+
+        return icon;
     }
 }

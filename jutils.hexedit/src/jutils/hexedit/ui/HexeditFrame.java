@@ -23,12 +23,12 @@ import jutils.core.ui.RecentFilesViews;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.event.FileChooserListener;
-import jutils.core.ui.event.FileDropTarget;
-import jutils.core.ui.event.ItemActionEvent;
-import jutils.core.ui.event.ItemActionListener;
 import jutils.core.ui.event.FileChooserListener.IFileSelected;
 import jutils.core.ui.event.FileChooserListener.ILastFile;
+import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import jutils.core.ui.event.ItemActionEvent;
+import jutils.core.ui.event.ItemActionListener;
 import jutils.core.ui.fields.ComboFormField;
 import jutils.core.ui.hex.HexBufferSize;
 import jutils.core.ui.model.IView;
@@ -202,6 +202,8 @@ public class HexeditFrame implements IView<JFrame>
     {
         JMenu menu = new JMenu( "Navigate" );
 
+        menu.setMnemonic( 'N' );
+
         menu.add( editor.gotoAction );
         menu.add( editor.searchAction );
 
@@ -223,6 +225,8 @@ public class HexeditFrame implements IView<JFrame>
     {
         JMenu menu = new JMenu( "Tools" );
         JMenuItem item;
+
+        menu.setMnemonic( 'T' );
 
         item = new JMenuItem( "Set Buffer Size" );
         item.setIcon( IconConstants.getIcon( IconConstants.CONFIG_16 ) );
@@ -247,8 +251,9 @@ public class HexeditFrame implements IView<JFrame>
      **************************************************************************/
     private void showBufferSizeDialog()
     {
-        ComboFormField<HexBufferSize> sizeField = new ComboFormField<HexBufferSize>(
-            "Buffer Size", HexBufferSize.values() );
+        ComboFormField<
+            HexBufferSize> sizeField = new ComboFormField<HexBufferSize>(
+                "Buffer Size", HexBufferSize.values() );
 
         sizeField.setValue( bufferSize );
 

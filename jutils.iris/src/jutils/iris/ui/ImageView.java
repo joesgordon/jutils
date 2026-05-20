@@ -1,6 +1,5 @@
 package jutils.iris.ui;
 
-import java.awt.Dialog.ModalityType;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -11,8 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.LineBorder;
 
-import jutils.core.ui.OkDialogView;
-import jutils.core.ui.OkDialogView.OkDialogButtons;
+import jutils.core.ui.ComponentView;
 import jutils.core.ui.model.IView;
 import jutils.iris.IrisUtils;
 import jutils.iris.colors.IColorizer;
@@ -25,14 +23,13 @@ import jutils.iris.rasters.IRaster;
 public class ImageView implements IView<JComponent>
 {
     /**  */
-    private final JPanel view;
+    private final JComponent view;
     /**  */
     private final RasterView rasterView;
     /**  */
-    private final ImageInfoView infoView;
-
+    private final ComponentView rightView;
     /**  */
-    private OkDialogView infoDialog;
+    private final ImageInfoView infoView;
 
     /***************************************************************************
      * 
@@ -41,9 +38,9 @@ public class ImageView implements IView<JComponent>
     {
         this.rasterView = new RasterView();
         this.infoView = new ImageInfoView();
-        this.view = createView();
+        this.rightView = new ComponentView();
 
-        this.infoDialog = null;
+        this.view = createView();
 
         rasterView.setHoverCallback( ( p ) -> infoView.captureHoverImage( p.x,
             p.y, rasterView.getRasterImage() ) );
@@ -52,11 +49,29 @@ public class ImageView implements IView<JComponent>
     /***************************************************************************
      * @return
      **************************************************************************/
-    private JPanel createView()
+    private JComponent createView()
     {
         JPanel panel = new JPanel( new GridBagLayout() );
         GridBagConstraints constraints;
 
+        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
+        panel.add( createPane(), constraints );
+
+        constraints = new GridBagConstraints( 1, 0, 1, 1, 0.0, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 0, 0, 0, 0 ), 0, 0 );
+        panel.add( rightView.getView(), constraints );
+
+        return panel;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private JComponent createPane()
+    {
         JScrollPane pane = new JScrollPane( rasterView.getView() );
 
         pane.setBorder( new LineBorder( IrisUtils.BORDER_COLOR ) );
@@ -66,12 +81,7 @@ public class ImageView implements IView<JComponent>
         pane.setVerticalScrollBarPolicy(
             ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 
-        constraints = new GridBagConstraints( 0, 0, 2, 1, 1.0, 1.0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( pane, constraints );
-
-        return panel;
+        return pane;
     }
 
     /***************************************************************************
@@ -125,15 +135,17 @@ public class ImageView implements IView<JComponent>
      **************************************************************************/
     public void setInfoVisible( boolean visible )
     {
-        if( visible && infoDialog == null )
+        if( visible )
         {
-            infoDialog = new OkDialogView( getView(), infoView.getView(),
-                ModalityType.MODELESS, OkDialogButtons.OK_CANCEL );
-            infoDialog.setTitle( "Image Information" );
-            infoDialog.setSize( 512, 512 );
-            infoDialog.getView().setLocationRelativeTo( getView() );
+            rightView.setComponent( infoView.getView() );
+        }
+        else if( !visible )
+        {
+            rightView.setComponent( null );
         }
 
-        infoDialog.getView().setVisible( visible );
+        view.invalidate();
+        view.revalidate();
+        view.repaint();
     }
 }

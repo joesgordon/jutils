@@ -14,9 +14,9 @@ import javax.swing.JToolBar;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
+import jutils.core.timestamps.ui.DateView;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
-import jutils.core.ui.calendar.DateView;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.hex.HexPanel;
 
@@ -133,7 +133,7 @@ public class PopupWindowTestMain implements IFrameApp
         private void showPopup()
         {
             DateView view = new DateView();
-            PopupWindow popup = new PopupWindow( true, view.getView() );
+            PopupWindow popup = new PopupWindow( view.getView() );
 
             popup.show( testButton, testButton.getWidth(),
                 testButton.getHeight() );

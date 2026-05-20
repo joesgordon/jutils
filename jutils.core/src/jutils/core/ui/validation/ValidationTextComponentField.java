@@ -246,7 +246,8 @@ public class ValidationTextComponentField<T extends JTextComponent>
         @Override
         public void removeUpdate( DocumentEvent e )
         {
-            // LogUtils.printDebug( "Updating text" );
+            // LogUtils.printDebug( "Updating text at %d for %d", e.getOffset(),
+            // e.getLength() );
             callback.run();
         }
 
@@ -256,7 +257,9 @@ public class ValidationTextComponentField<T extends JTextComponent>
         @Override
         public void insertUpdate( DocumentEvent e )
         {
-            // LogUtils.printDebug( "Inserting text" );
+            // LogUtils.printDebug( "Inserting text at %d for %d",
+            // e.getOffset(),
+            // e.getLength() );
             callback.run();
         }
 
@@ -266,7 +269,8 @@ public class ValidationTextComponentField<T extends JTextComponent>
         @Override
         public void changedUpdate( DocumentEvent e )
         {
-            // LogUtils.printDebug( "Changing text" );
+            // LogUtils.printDebug( "Changing text at %d for %d", e.getOffset(),
+            // e.getLength() );
             callback.run();
         }
     }

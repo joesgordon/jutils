@@ -9,7 +9,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,8 @@ import javax.swing.SwingConstants;
 import jutils.core.INamedItem;
 import jutils.core.laf.UIProperty;
 import jutils.core.ui.event.MouseClickListener;
+import jutils.core.ui.event.MouseClickListener.ExtendedModifier;
+import jutils.core.ui.event.MouseClickListener.MouseButton;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IView;
 
@@ -72,7 +73,7 @@ public class ScreensView implements IView<JComponent>
 
         view.setPreferredSize( new Dimension( 200, 200 ) );
         view.addMouseListener( new MouseClickListener(
-            ( pc, c, p, m ) -> handleClick( pc, c, p, m ) ) );
+            ( b, c, p, m ) -> handleClick( b, c, p, m ) ) );
 
         idLabel.setFont(
             view.getFont().deriveFont( Font.BOLD ).deriveFont( 16f ) );
@@ -188,21 +189,20 @@ public class ScreensView implements IView<JComponent>
     }
 
     /***************************************************************************
-     * @param primaryClicked
+     * @param button
      * @param count
      * @param p
      * @param modifiers
      **************************************************************************/
-    private void handleClick( boolean primaryClicked, int count, Point p,
+    private void handleClick( MouseButton button, int count, Point p,
         int modifiers )
     {
-        if( !editable || !primaryClicked || count != 1 )
+        if( !editable || button != MouseButton.PRIMARY || count != 1 )
         {
             return;
         }
 
-        boolean controlPressed = MouseEvent.CTRL_DOWN_MASK == ( modifiers &
-            MouseEvent.CTRL_DOWN_MASK );
+        boolean controlPressed = ExtendedModifier.CONTROL.getFlag( modifiers );
 
         String newSelection = null;
 

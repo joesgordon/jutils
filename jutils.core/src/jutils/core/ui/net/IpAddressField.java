@@ -7,7 +7,6 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPopupMenu;
-import javax.swing.text.JTextComponent;
 
 import jutils.core.io.IParser;
 import jutils.core.io.parsers.IpAddressParser;
@@ -27,6 +26,8 @@ import jutils.core.utils.IGetter;
  ******************************************************************************/
 public class IpAddressField implements IDataFormField<IpAddress>
 {
+    /**  */
+    private final JFormattedTextField textField;
     /**  */
     private final ParserFormField<IpAddress> field;
     /**  */
@@ -57,7 +58,7 @@ public class IpAddressField implements IDataFormField<IpAddress>
     public IpAddressField( String name, IParser<IpAddress> parser,
         IGetter<List<IpAddress>> presetBuilder )
     {
-        JFormattedTextField textField = new JFormattedTextField(
+        this.textField = new JFormattedTextField(
             new ParserTextFormatter<>( parser ) );
 
         IGetter<List<IpAddress>> presets = buildStdGetter( presetBuilder );
@@ -150,9 +151,9 @@ public class IpAddressField implements IDataFormField<IpAddress>
     /***************************************************************************
      * @return
      **************************************************************************/
-    public JTextComponent getTextField()
+    public JFormattedTextField getTextField()
     {
-        return field.getTextField();
+        return textField;
     }
 
     /***************************************************************************

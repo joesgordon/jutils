@@ -13,7 +13,7 @@ public interface IPaintable
      * Called when the provided component is to be painted using the provided
      * graphics.
      * @param c the component to be painted.
-     * @param g the graphics use to paint.
+     * @param g the graphics used to paint.
      **************************************************************************/
     void paint( JComponent c, Graphics2D g );
 }

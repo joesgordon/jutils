@@ -6,6 +6,10 @@ import javax.swing.JFrame;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
+import jutils.core.timestamps.ui.DateAndTimeField;
+import jutils.core.timestamps.ui.DateField;
+import jutils.core.timestamps.ui.DateView;
+import jutils.core.timestamps.ui.TimeField;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.app.AppRunner;
@@ -88,7 +92,7 @@ public class DateTimeViewsMain
         form.addField( "Date View", new DateView().getView() );
         form.addField( new DateField( "Date Field" ) );
         form.addField( new TimeField( "Time Field" ) );
-        form.addField( new DateTimeField( "Date/Time Field" ) );
+        form.addField( new DateAndTimeField( "Date/Time Field" ) );
 
         return form.getView();
     }

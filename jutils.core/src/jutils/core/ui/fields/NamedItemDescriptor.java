@@ -4,6 +4,7 @@ import jutils.core.INamedItem;
 
 /*******************************************************************************
  * Defines an {@link IDescriptor} for {@link INamedItem}s.
+ * @param <T>
  ******************************************************************************/
 public class NamedItemDescriptor<T extends INamedItem> implements IDescriptor<T>
 {

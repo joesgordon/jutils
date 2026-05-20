@@ -144,7 +144,7 @@ public class FilePropertiesView implements IDataView<File>
         String desc = icon.fileSys.getSystemTypeDescription( file );
         String ext = IOUtils.getFileExtension( file );
         String type = "Does Not Exist";
-        LocalDateTime time = TimeUtils.fromLinuxEpoch( file.lastModified() );
+        LocalDateTime time = TimeUtils.fromUnixEpoch( file.lastModified() );
 
         if( file.exists() )
         {

@@ -1,6 +1,9 @@
 package jutils.core.utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /*******************************************************************************
  * Stack containing no more than a user-specified number of unique items.

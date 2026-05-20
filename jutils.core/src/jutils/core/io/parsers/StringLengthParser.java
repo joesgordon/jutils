@@ -57,13 +57,22 @@ public class StringLengthParser implements IParser<String>
         {
             text = text.trim();
         }
-        if( ( minLength != null && text.length() < minLength ) ||
-            ( maxLength != null && text.length() > maxLength ) )
+
+        boolean minErr = minLength != null && text.length() < minLength;
+        boolean maxErr = maxLength != null && text.length() > maxLength;
+
+        if( minErr || maxErr )
         {
             int min = minLength != null ? minLength : 0;
 
             if( maxLength != null )
             {
+                if( maxLength.equals( minLength ) )
+                {
+                    throw new ValidationException(
+                        "Must be exactly " + min + " characters." );
+                }
+
                 throw new ValidationException( "Must be between " + min +
                     " and " + maxLength + " characters." );
             }

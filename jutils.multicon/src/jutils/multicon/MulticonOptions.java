@@ -17,7 +17,7 @@ public class MulticonOptions
     /**  */
     public TcpInputs tcpClientInputs;
     /**  */
-    public UdpInputs udpInputs;
+    public UdpConfig udpInputs;
     /**  */
     public MulticastInputs multicastInputs;
     /**  */
@@ -30,7 +30,7 @@ public class MulticonOptions
     {
         this.tcpServerInputs = new TcpInputs();
         this.tcpClientInputs = new TcpInputs();
-        this.udpInputs = new UdpInputs();
+        this.udpInputs = new UdpConfig();
         this.multicastInputs = new MulticastInputs();
         this.favs = new HashMap<>();
     }
@@ -44,8 +44,8 @@ public class MulticonOptions
             : new TcpInputs( options.tcpServerInputs );
         this.tcpClientInputs = options.tcpClientInputs == null ? new TcpInputs()
             : new TcpInputs( options.tcpClientInputs );
-        this.udpInputs = options.udpInputs == null ? new UdpInputs()
-            : new UdpInputs( options.udpInputs );
+        this.udpInputs = options.udpInputs == null ? new UdpConfig()
+            : new UdpConfig( options.udpInputs );
         this.multicastInputs = options.multicastInputs == null
             ? new MulticastInputs()
             : new MulticastInputs( options.multicastInputs );

@@ -1,9 +1,21 @@
 package jutils.core.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import javax.swing.*;
+import javax.swing.ActionMap;
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+import javax.swing.Icon;
+import javax.swing.JCheckBox;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ActionMapUIResource;
 

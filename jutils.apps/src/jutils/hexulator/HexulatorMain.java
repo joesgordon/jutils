@@ -7,7 +7,7 @@ import jutils.core.ui.app.AppRunner;
 import jutils.hexulator.ui.HexulatorView;
 
 /*******************************************************************************
- *
+ * Defining the entry point for the Hexulator application.
  ******************************************************************************/
 public class HexulatorMain
 {
@@ -19,7 +19,8 @@ public class HexulatorMain
     }
 
     /***************************************************************************
-     * @param args
+     * Starts the Hexulator application.
+     * @param args ignored.
      **************************************************************************/
     public static void main( String [] args )
     {
@@ -29,7 +30,8 @@ public class HexulatorMain
     }
 
     /***************************************************************************
-     * @return
+     * Creates the frame for the Hexulator application.
+     * @return the frame for the Hexulator application.
      **************************************************************************/
     private static JFrame createFrame()
     {

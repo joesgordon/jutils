@@ -2,17 +2,43 @@
 
 [Home](./README.md)
 
-## General Issues
+- [jutils.apps](#jutilsapps)
+  - [Hexulator](#jutilshexulator)
+- [jutils.core](#jutilscore)
+- [jutils.hexedit](#jutilshexedit)
+- [jutils.filespy](#jutilsfilespy)
+- [jutils.iris](#jutilsiris)
+- [jutils.math](#jutilsmath)
+- [jutils.multicon](#jutilsmulticon)
+- [jutils.platform](#jutilsplatform)
+- [jutils.summer](#jutilssummer)
+- [jutils.telemetry](#jutilstelemetry)
 
-- Add time chooser that uses Chronos
+## jutils.apps
+
+- [Hexulator](#jutilshexulator)
+
+[Top](#jutils-to-do-list)
+
+
+### Hexulator
+
+- Add unsiged option.
+
+[Top](#jutils-to-do-list)
+
+
+## jutils.core
+
+- Replace ColorMapFactory and ColorMapType in jutils.core.data with an `ColorModelType` and an `IColorModel` implementation for each type. Each color model should get/set a ColorModelOptions that contains:
+  - Upper Threshold value/color
+  - Lower Threshold value/color
+- Add IP enumeration to parser.
 - Add cyclic buffer to NetMsgsView.
-- Add focus listeners to form fields
-- Write 
-  - `fieldHasFocus(field:IFormField):boolean` and 
-  - `hasFocus(comp:JComponent):boolean` using `JFrame.getFocusOwner()` and 
-  - `Container.isAnscestorOf()`.
-- Summer: Find files using `TaskView.startAndShow()`.
-- Summer: Multithread checksum verification.
+- Add focus listeners to form fields.
+  - Write `fieldHasFocus(field:IFormField):boolean` and `hasFocus(comp:JComponent):boolean` using
+    - `JFrame.getFocusOwner()` and 
+    - `Container.isAnscestorOf()`.
 - ListView:
   - add `ItemActionList<ItemChanged<T>>` change listeners.
   - make add/delete item listeners lamdas & call change listeners.
@@ -21,37 +47,112 @@
 - Write `InputStreamLineReader` or `InputLineStream`.
 - Move `FileField` to validation and rename.
 - Write `ComboFileFormField`.
-- Write jutils.ini.
-- Finish [jutils.maths](./docs/math.md)
-- Finish [cutils.platform](./docs/cutils.md)
-- See [jutils.plot](./docs/plot.md)
+- Write jutils.core.ini.
+- NicsGui: Add splitpane.
+- Add `CharsetName` enum.
+- Icons
+  - Add clock icon
+  - Add color icon
+  - Add stopwatch icon
+  - Replace external icons
+- Add generic embedded resource that can be extracted.
+- Add Matlab mat file reader/writer.
+- Add hdf5 reader/writer.
+- Replace Icons in jutils with custom icons.
+- ColorMapView fix legend.
+- Add `SwapUtils` that has explicit swaps for each datatype.
+- Created `NamedBitFieldField` and `NamedBitFlagField`
+
+[Top](#jutils-to-do-list)
+
+## jutils.hexedit
+
+- Add ability to edit and save a file.
+- Fix select->copy.
+
+[Top](#jutils-to-do-list)
+
+## jutils.summer
+
+- Find files using `TaskView.startAndShow()`.
+- Multithread checksum verification.
+- Update code to be able to update sums.
+
+## jutils.fileSpy
+
+- Add binary file detection. Skip binary files according to the users selction to be added to search parameters. Show non-printable characters around matches as spaces.
+- Capture only a few characters around a match up to the end of the line. Allow the user to edit this value in preferences. Set default to 1024 characters. Consider grabbing multiple lines up to the maximum amount.
+- Add the ability to save results to markdown or html
+- Add dropdown to patterns and directory.
+
+[Top](#jutils-to-do-list)
 
 ## jutils.iris
 
-- Fix scrolling
-- Add Bayer as a channel placement. Each bayer channel must be the same bit depth.
-- Add a histogram for each channel.
-- Show zoom level value.
-- Show image stats for each channel in the whole image, selection, and hover.
+- [Image Structure] Add Bayer as a channel placement. Each bayer channel must be the same bit depth.
+- [Image Structure] Finish Bayer Bilinear demosaic.
+- [File Menu] Add ability to Save an image (raw, png, jpg, bmp, tiff).
+- [File Menu] Add ability to Save a video.
+- [Tools Menu] Add ability to apply image updates.
+  - Contrast
+  - Brightness
+  - Inversion
+  - Centroid Calculation
+- [Open] Add preview to Raw Options on open.
+- [Open] Add Gig-E support:
+  - Listen for messages.
+  - Import/Export msgs files.
+  - Import/Export netmsgs files
+  - Import/Export wireshark pcap (pcapng) files
+- [Open] Develop set of test images for each type that can be imported.
+- [Open] Enhance the set of patterns by:
+  - adding new patterns
+  - setting properties for existing patterns
+  - generating a set of images for a pattern using user inputs.
+- [IrisView] Show zoom buttons and level value.
+- [IrisView] Show Nav buttons.
+- [IrisView] Show Play/Pause button.
+- [ImageView] Fix scrolling.
+- [ImageView] Add ROI selection.
+- [ImageView] Add ability to pan with middle-click and drag.
+- [ImageView] Add profile plots that show X/Y Levels for a channel on top/side respectively.
+- [MetricsView] Add a histogram for each channel.
+- [MetricsView] Show image stats for each channel in the whole image, selection, and hover.
   - width
   - height
   - min
   - max
   - average
   - standard deviation
-- Add ability to Save (raw, png, jpg, bmp, tiff).
-- Finish Bayer Bilinear demosaic
-- Add ability to pan with middle-click and drag.
-- Add configuration for MonoColorizer
-  - Color map
-  - Thresholds
+- [MetricsView] Add configuration UI for MonoColorizer
+  - Add an auto-threshold checkbox with associated sigma gain.
+  - Add a `ThresholdView`.
+  - Add a Color Map dropdown.
   - Brightness/Contrast
-- Finish remainder of Bayer demosaic
-- X/Y Levels for a channel on top/side
-- Add ability to Playback.
-- Add preview to Raw Options on open.
-- Define the Raw Image Album format and add to open/save support. Default save to this format.
-- Centroid algorithm
+- [General] Define the Raw Image Album format and add to open/save support. Default save to this format.
+
+[Top](#jutils-to-do-list)
+
+
+## jutils.kairosion
+
+- Add date/time chooser (Kairosion)
+  - Add fields:
+    - `Year` / `Month` / `Day of Month`
+    - `Hour` / `Minute` / `Second` / `Microsecond`
+    - `Day Of Year` / `Seconds into Day`
+    - `Days into Year`
+    - `Week of Year` / `Day of Week`
+    - `Hours into Day`
+    - `Seconds into Week`
+    - `Seconds into Year`
+    - `GPS Week` / `GPS Time`
+    - `Microsoft Filetime`
+    - `Julian Date/Time`
+    - `Sidereal Time`
+  - Add Calendar button to the right of fields; brings up date/time chooser.
+  - Add ability to edit GPS Leap Seconds.
+  - Add ability to change time zone.
 
 ## jutils.math
 
@@ -68,61 +169,54 @@
 - Add CoordinateTransformView
 - Add unit tests
 
+[Top](#jutils-to-do-list)
+
 ## jutils.multicon
 
 - Add ping
 - Add NTP
 - Add TFTP, FTP, SFTP clients and servers.
+- Add the ability to save pcapng files.
 
-## jutils.fileSpy
+[Top](#jutils-to-do-list)
 
-- Add binary file detection. Skip binary files according to the users selction to be added to search parameters. Show non-printable characters around matches as spaces.
-- Capture only a few characters around a match up to the end of the line. Allow the user to edit this value in preferences. Set default to 1024 characters. Consider grabbing multiple lines up to the maximum amount.
+## jutils.platform
 
-## jutils.rob
-*PROPOSED*
+- Add Linux platform or fail gracefully if not there. Add `isSupported()` function.
+- Serial Console: Add a message delimiter option.
 
-- Add clean target to jutils builds.
-- Update versioning to support:
-  - Rebuild (Same version)
-  - Build (Engineering version)
-  - Release (New version)
+[Top](#jutils-to-do-list)
 
-## jutils.games
+## jutils.plot
 
-- sudoku
-- snake
-- tetris
-- sokoban
-- lunar lander
-- fruit ninja
-- hearts
-- solataire
-- pinball
-- magic 8 ball
+- Log axes
 
-## jutils.chio
-*PROPOSED*
+[Top](#jutils-to-do-list)
+
+## jutils.summer
+
+- Add UI to be able to hash copy/pasted text/data.
+
+[Top](#jutils-to-do-list)
+
+## jutils.telemetry
 
 Chapter 10 library
 
-## jutils.helps
-*PROPOSED*
+- Make packet trailer serializer a Keyed serializer
+- Make the channels table a JTable
+- Implement `CompGen1BodySerializer`
+- Should time come from the nearest time packet or the previous?
+- Create TMATS Editor. Use to view fullly populated TMATS file to confirm reading/writing.
+- Create fully populated TMATS file and read back in.
+Handle corrupt chapter 10 files. Resynchronize on corruption. Allow user to view corrupt data.
+- Add screen builder.
+- Add packed binary import to chapter 10.
+- Add CCSDS support.
+- Add ability to publish chapter 10/ccsds to packets.
+- Define parameter table.
+- Add ability to import parameters to packed binary.
+- Add ability to read from streaming (10.3.9 as well as 218-20 TMoIP)
+- Add ability to export to matlab files.
 
-help system
-
-## jutils.jemini
-*PROPOSED*
-
-replacement for xstream
-
-## Error exploration
-
-- Error with built-in resolution:
-  - message - what happened
-  - context - when did it happen/what doing; not time
-  - content - what did it happen to
-- or alternatively
-  - action - what failed
-  - reason - why did it fail
-  - context - what did it happen to
+[Top](#jutils-to-do-list)

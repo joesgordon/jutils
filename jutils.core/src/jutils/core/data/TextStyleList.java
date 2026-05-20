@@ -3,7 +3,9 @@ package jutils.core.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyledDocument;
 
 import jutils.core.io.StringPrintStream;
 

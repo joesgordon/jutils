@@ -1,6 +1,8 @@
 package jutils.core.ui.hex;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import jutils.core.io.FileStream;
 import jutils.core.io.IStream;

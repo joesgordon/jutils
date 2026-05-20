@@ -17,14 +17,15 @@ import javax.swing.JPanel;
 import jutils.core.INamedItem;
 import jutils.core.io.LogUtils;
 import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
 import jutils.demo.ui.jutils.DateTimeViews;
+import jutils.demo.ui.jutils.ImageFileView;
 import jutils.demo.ui.jutils.LedViews;
 import jutils.demo.ui.jutils.MsgInputDemoView;
 import jutils.demo.ui.jutils.ScreenFormFieldView;
-import jutils.iris.demo.HistogramsDemoView;
+import jutils.math.ui.HistogramsDemoView;
 
 /*******************************************************************************
  * Defines a view to display all JUtils components.
@@ -84,6 +85,7 @@ public class JUtilsView implements IView<JComponent>
         views.put( JUtilsComponent.HISTOGRAMS_VIEW,
             () -> new HistogramsDemoView() );
         views.put( JUtilsComponent.LEDS_VIEW, () -> new LedViews() );
+        views.put( JUtilsComponent.IMAGE_VIEW, () -> new ImageFileView() );
     }
 
     /***************************************************************************
@@ -159,6 +161,8 @@ public class JUtilsView implements IView<JComponent>
         /**  */
         HISTOGRAMS_VIEW( "Histograms View" ),
         /**  */
+        IMAGE_VIEW( "Image View" ),
+        /**  */
         LEDS_VIEW( "LEDs View" ),;
 
         /**  */
@@ -186,7 +190,7 @@ public class JUtilsView implements IView<JComponent>
      * 
      **************************************************************************/
     private static final class JUtilsComponentListModel
-        implements IItemListModel<JUtilsComponent>
+        implements IListViewModel<JUtilsComponent>
     {
         /**
          * {@inheritDoc}

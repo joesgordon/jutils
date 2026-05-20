@@ -685,6 +685,20 @@ public final class Utils
     }
 
     /***************************************************************************
+     * @param <T>
+     * @param this1
+     * @param that1
+     * @return
+     **************************************************************************/
+    public static <T> boolean isEqual( T this1, T that1 )
+    {
+        boolean bothNull = this1 == null && that1 == null;
+        boolean bothNonNull = this1 != null && that1 != null;
+
+        return bothNull || ( bothNonNull && this1.equals( that1 ) );
+    }
+
+    /***************************************************************************
      * Executes {@link Runtime#gc()} in a thread.
      **************************************************************************/
     public static void runGcThreaded()

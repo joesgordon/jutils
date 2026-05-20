@@ -2,7 +2,6 @@ package jutils.core.ui.fields;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
 import jutils.core.io.parsers.HexIntegerParser;
 import jutils.core.ui.event.updater.IUpdater;
@@ -15,6 +14,8 @@ import jutils.core.ui.validation.Validity;
  ******************************************************************************/
 public class HexIntFormField implements IDataFormField<Integer>
 {
+    /**  */
+    private final JTextField textField;
     /**  */
     private final ParserFormField<Integer> field;
 
@@ -67,8 +68,7 @@ public class HexIntFormField implements IDataFormField<Integer>
     public HexIntFormField( String name, String units, int columns, Integer min,
         Integer max )
     {
-        JTextField textField = new JTextField( columns );
-
+        this.textField = new JTextField( columns );
         this.field = new ParserFormField<>( name,
             new HexIntegerParser( min, max ), textField, ( d ) -> toString( d ),
             textField, units );
@@ -183,8 +183,8 @@ public class HexIntFormField implements IDataFormField<Integer>
     /***************************************************************************
      * @return
      **************************************************************************/
-    public JTextComponent getTextField()
+    public JTextField getTextField()
     {
-        return field.getTextField();
+        return textField;
     }
 }

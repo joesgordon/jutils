@@ -12,17 +12,17 @@ import jutils.math.ui.MathDemoView;
 public class MathDemoMain
 {
     /***************************************************************************
-     * @param args
+     * @param args ignored
      **************************************************************************/
     public static void main( String [] args )
     {
-        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
+        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
 
         AppRunner.invokeLater( () -> createFrame() );
     }
 
     /***************************************************************************
-     * @return
+     * @return the newly created frame.
      **************************************************************************/
     private static JFrame createFrame()
     {

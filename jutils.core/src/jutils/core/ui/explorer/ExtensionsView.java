@@ -5,7 +5,7 @@ import java.util.List;
 
 import jutils.core.ui.ItemListView;
 import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.explorer.data.ExtensionConfig;
 import jutils.core.ui.model.IDataView;
 
@@ -65,7 +65,7 @@ public class ExtensionsView implements IDataView<List<ExtensionConfig>>
      * 
      **************************************************************************/
     private static final class ExtensionItemListModel
-        implements IItemListModel<ExtensionConfig>
+        implements IListViewModel<ExtensionConfig>
     {
         @Override
         public String getTitle( ExtensionConfig item )

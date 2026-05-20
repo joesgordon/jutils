@@ -367,6 +367,8 @@ public enum DataType implements INamedValue
     public final String description;
     /**  */
     public final int version;
+    /**  */
+    public final DataFamily family;
 
     /***************************************************************************
      * @param value
@@ -380,6 +382,7 @@ public enum DataType implements INamedValue
         this.name = name;
         this.description = description;
         this.version = version;
+        this.family = DataFamily.deriveFamily( value );
     }
 
     /***************************************************************************

@@ -8,6 +8,7 @@ import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
 
 import jutils.core.IconConstants;
+import jutils.core.SwingUtils;
 
 /*******************************************************************************
  * Defines an icon for files that uses the icon from a {@link FileSystemView} or
@@ -87,7 +88,7 @@ public class FileIcon implements Icon
         }
         else if( file.isFile() )
         {
-            icon = fileSys.getSystemIcon( file );
+            icon = SwingUtils.getFileIcon( fileSys, file );
 
             if( icon == null )
             {

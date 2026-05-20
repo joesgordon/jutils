@@ -22,6 +22,7 @@ public class HexBytesFieldMain
      **************************************************************************/
     public static void main( String [] args )
     {
+        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
         AppRunner.invokeLater( () -> createFrame() );
     }
 
@@ -55,6 +56,8 @@ public class HexBytesFieldMain
 
         f2.setUpdater(
             ( d ) -> f1.setValue( d.getBytes( IOUtils.get8BitEncoding() ) ) );
+
+        f1.getUpdater().update( f1.getValue() );
 
         frameView.setContent( form.getView() );
         frameView.setSize( 400, 400 );

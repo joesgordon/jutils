@@ -9,6 +9,12 @@ public class Ch10Channel
     public short id;
     /**  */
     public DataType dataType;
+    /**  */
+    public long startTime;
+    /**  */
+    public long endTime;
+    /**  */
+    public int packetCount;
 
     /***************************************************************************
      * @param id
@@ -18,5 +24,8 @@ public class Ch10Channel
     {
         this.id = id;
         this.dataType = dataType;
+        this.startTime = 0L;
+        this.endTime = 0L;
+        this.packetCount = 1;
     }
 }

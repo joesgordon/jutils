@@ -7,7 +7,7 @@
         <property name="props.dir" location="src/jutils/platform/resources" />
         <property name="props.path" location="${props.dir}/${resource.name}.props" />
 
-        <copy file="${resource.path}" todir="${props.dir}" />
+        <copy file="${resource.path}" todir="${props.dir}" failonerror="true" />
 		
 		<propertyfile file="${props.path}">
 			<entry key="time" type="date" default="now" pattern="YYYY-MM-dd HHmmss" operation="=" value="0" />

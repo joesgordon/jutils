@@ -1,6 +1,5 @@
 package jutils.core.ui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,17 +10,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Action;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
+import jutils.core.INamedValue;
 import jutils.core.IconConstants;
 import jutils.core.OptionUtils;
 import jutils.core.SwingUtils;
@@ -31,6 +30,8 @@ import jutils.core.ui.event.ItemActionListener;
 import jutils.core.ui.fields.StringFormField;
 import jutils.core.ui.model.CollectionListModel;
 import jutils.core.ui.model.IDataView;
+import jutils.core.ui.model.LabelListCellRenderer;
+import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
 
 /*******************************************************************************
  * Defines a view that displays a list of items to the user. The view allows for
@@ -48,7 +49,7 @@ public class ListView<T> implements IDataView<List<T>>
     /** The scroll pane containing the items. */
     private final JScrollPane itemsPane;
     /** The model for the items. */
-    private final IItemListModel<T> itemsModel;
+    private final IListViewModel<T> itemsModel;
 
     /** The action used for adding items. */
     private final Action addAction;
@@ -73,7 +74,7 @@ public class ListView<T> implements IDataView<List<T>>
      * Creates a new view with the provided data view and model.
      * @param itemsModel the model for this view.
      **************************************************************************/
-    public ListView( IItemListModel<T> itemsModel )
+    public ListView( IListViewModel<T> itemsModel )
     {
         this( itemsModel, true, true );
     }
@@ -84,7 +85,7 @@ public class ListView<T> implements IDataView<List<T>>
      * @param allowAddRemove shows add/remove buttons if {@code true}.
      * @param allowOrder shows order buttons if {@code true}.
      **************************************************************************/
-    public ListView( IItemListModel<T> itemsModel, boolean allowAddRemove,
+    public ListView( IListViewModel<T> itemsModel, boolean allowAddRemove,
         boolean allowOrder )
     {
         this.itemsModel = itemsModel;
@@ -105,7 +106,7 @@ public class ListView<T> implements IDataView<List<T>>
 
         this.view = createView();
 
-        setItemRenderer( new DefaultItemListCellRenderer<>() );
+        setItemDecorator( new DefaultItemListCellRenderer<>() );
 
         itemsListModel.setData( items );
 
@@ -199,8 +200,8 @@ public class ListView<T> implements IDataView<List<T>>
             itemsListModel.add( item );
             // items.add( item );
 
-            ItemChange<T> itemChange = new ItemChange<>( ChangeType.ADDED,
-                item );
+            ItemChange<
+                T> itemChange = new ItemChange<>( ChangeType.ADDED, item );
 
             changeListeners.fireListeners( this, itemChange );
         }
@@ -393,8 +394,7 @@ public class ListView<T> implements IDataView<List<T>>
     @Override
     public List<T> getData()
     {
-        ArrayList<T> data = new ArrayList<>( items );
-        return data;
+        return items;
     }
 
     /***************************************************************************
@@ -411,12 +411,12 @@ public class ListView<T> implements IDataView<List<T>>
 
     /***************************************************************************
      * Sets the renderer for the list.
-     * @param renderer the list cell renderer.
+     * @param decorator the decorator for the list cell renderer.
      **************************************************************************/
-    public void setItemRenderer( ItemListCellRenderer<T> renderer )
+    public void setItemDecorator( IListCellLabelDecorator<T> decorator )
     {
         itemsList.setCellRenderer(
-            new DisplayItemRenderer<T>( renderer, this.itemsModel ) );
+            new DisplayItemRenderer<T>( decorator, this.itemsModel ) );
     }
 
     /***************************************************************************
@@ -477,14 +477,6 @@ public class ListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * @return
-     **************************************************************************/
-    public T getSelected()
-    {
-        return itemsList.getSelectedValue();
-    }
-
-    /***************************************************************************
      * 
      **************************************************************************/
     public void clear()
@@ -505,6 +497,14 @@ public class ListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
+     * @return
+     **************************************************************************/
+    public T getSelected()
+    {
+        return itemsList.getSelectedValue();
+    }
+
+    /***************************************************************************
      * @param item
      **************************************************************************/
     public void setSelected( T item )
@@ -517,6 +517,30 @@ public class ListView<T> implements IDataView<List<T>>
         {
             itemsList.clearSelection();
         }
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getSelectedIndex()
+    {
+        return itemsList.getSelectedIndex();
+    }
+
+    /***************************************************************************
+     * @param index
+     **************************************************************************/
+    public void setSelectedIndex( int index )
+    {
+        itemsList.setSelectedIndex( index );
+    }
+
+    /***************************************************************************
+     * @param mode
+     **************************************************************************/
+    public void setSelectionMode( SelectionMode mode )
+    {
+        itemsList.setSelectionMode( mode.value );
     }
 
     /***************************************************************************
@@ -537,7 +561,7 @@ public class ListView<T> implements IDataView<List<T>>
      * provides methods of accessing said data.
      * @param <T>
      **************************************************************************/
-    public static interface IItemListModel<T>
+    public static interface IListViewModel<T>
     {
         /**
          * Returns the string representation of the provided item.
@@ -555,71 +579,40 @@ public class ListView<T> implements IDataView<List<T>>
     }
 
     /***************************************************************************
-     * Defines a cell renderer.
-     * @param <T> The type of item to be added to the list.
-     **************************************************************************/
-    public static interface ItemListCellRenderer<T>
-    {
-        /**
-         * @param list
-         * @param value
-         * @param index
-         * @param isSelected
-         * @param cellHasFocus
-         * @param text
-         * @return
-         */
-        public Component getListCellRendererComponent( JList<? extends T> list,
-            T value, int index, boolean isSelected, boolean cellHasFocus,
-            String text );
-    }
-
-    /***************************************************************************
      * @param <T>
      **************************************************************************/
     private static final class DefaultItemListCellRenderer<T>
-        implements ItemListCellRenderer<T>
+        implements IListCellLabelDecorator<T>
     {
-        /**  */
-        private final DefaultListCellRenderer renderer = new DefaultListCellRenderer();
-
         /**
          * {@inheritDoc}
          */
         @Override
-        public Component getListCellRendererComponent( JList<? extends T> list,
-            T value, int index, boolean isSelected, boolean cellHasFocus,
-            String text )
+        public void decorate( JLabel label, JList<? extends T> list, T value,
+            int index, boolean isSelected, boolean cellHasFocus )
         {
-            Component c = renderer.getListCellRendererComponent( list, value,
-                index, isSelected, cellHasFocus );
-
-            renderer.setText( text );
-
-            return c;
         }
     }
 
     /***************************************************************************
      * Defines an Adapter to be a renderer for the DisplayItem<T> list that uses
-     * a {@link ListView.ItemListCellRenderer} to render the cell.
-     * @param <T> The type of item to be added to the list.
+     * a {@link IListCellLabelDecorator} to render the cell.
+     * @param <T> The type of items rendered in the list.
      **************************************************************************/
-    private static class DisplayItemRenderer<T> implements ListCellRenderer<T>
+    private static class DisplayItemRenderer<T> extends LabelListCellRenderer<T>
     {
         /**  */
-        private final ItemListCellRenderer<T> renderer;
-        /**  */
-        private final IItemListModel<T> model;
+        private final IListViewModel<T> model;
 
         /**
-         * @param renderer
+         * @param decorator
          * @param model
          */
-        public DisplayItemRenderer( ItemListCellRenderer<T> renderer,
-            IItemListModel<T> model )
+        public DisplayItemRenderer( IListCellLabelDecorator<T> decorator,
+            IListViewModel<T> model )
         {
-            this.renderer = renderer;
+            super( decorator );
+
             this.model = model;
         }
 
@@ -627,9 +620,12 @@ public class ListView<T> implements IDataView<List<T>>
          * {@inheritDoc}
          */
         @Override
-        public Component getListCellRendererComponent( JList<? extends T> list,
-            T value, int index, boolean isSelected, boolean cellHasFocus )
+        protected JLabel getComponent( JList<? extends T> list, T value,
+            int index, boolean isSelected, boolean cellHasFocus )
         {
+            JLabel label = super.getComponent( list, value, index, isSelected,
+                cellHasFocus );
+
             String text = null;
 
             if( value != null )
@@ -637,8 +633,9 @@ public class ListView<T> implements IDataView<List<T>>
                 text = model.getTitle( value );
             }
 
-            return renderer.getListCellRendererComponent( list, value, index,
-                isSelected, cellHasFocus, text );
+            label.setText( text );
+
+            return label;
         }
     }
 
@@ -671,6 +668,54 @@ public class ListView<T> implements IDataView<List<T>>
         {
             this.type = type;
             this.item = item;
+        }
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static enum SelectionMode implements INamedValue
+    {
+        /** See {@link ListSelectionModel#SINGLE_SELECTION}. */
+        SINGLE_ITEM( ListSelectionModel.SINGLE_SELECTION, "Single Item" ),
+        /** See {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION}. */
+        SINGLE_INTERVAL( ListSelectionModel.SINGLE_INTERVAL_SELECTION,
+            "Single Interval" ),
+        /** See {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION}. */
+        MULTIPLE_INTERVAL( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION,
+            "Multiple Interval" );
+
+        /**  */
+        public final int value;
+        /**  */
+        public final String name;
+
+        /**
+         * @param value
+         * @param name
+         */
+        private SelectionMode( int value, String name )
+        {
+            this.value = value;
+            this.name = name;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getValue()
+        {
+            return value;
         }
     }
 }

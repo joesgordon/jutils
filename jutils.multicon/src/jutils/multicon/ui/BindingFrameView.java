@@ -10,7 +10,6 @@ import jutils.core.*;
 import jutils.core.io.LogUtils;
 import jutils.core.ui.JGoodiesToolBar;
 import jutils.core.ui.StandardFrameView;
-import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.IView;
 import jutils.multicon.MulticonIcons;
 
@@ -170,31 +169,5 @@ public class BindingFrameView implements IView<JFrame>
     public boolean isBound()
     {
         return bound;
-    }
-
-    /***************************************************************************
-     *
-     **************************************************************************/
-    public static interface IBindableView<T> extends IDataView<T>
-    {
-        /**
-         * @return
-         */
-        public String getName();
-
-        /**
-         * @return
-         */
-        public boolean isBound();
-
-        /**
-         * @throws IOException
-         */
-        public void bind() throws IOException;
-
-        /**
-         * @throws IOException
-         */
-        public void unbind() throws IOException;
     }
 }

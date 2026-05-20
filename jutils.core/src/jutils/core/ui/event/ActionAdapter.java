@@ -3,7 +3,9 @@ package jutils.core.ui.event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Icon;
 
 /*******************************************************************************
  * Creates an action object that calls the provided action listener on

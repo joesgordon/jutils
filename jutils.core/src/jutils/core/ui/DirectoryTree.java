@@ -3,20 +3,38 @@ package jutils.core.ui;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.JTree;
-import javax.swing.event.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.tree.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import jutils.core.SwingUtils;
 import jutils.core.io.IOUtils;
 import jutils.core.io.LogUtils;
-import jutils.core.ui.event.*;
+import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.DropActionType;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import jutils.core.ui.event.ItemActionEvent;
+import jutils.core.ui.event.ItemActionList;
+import jutils.core.ui.event.ItemActionListener;
 import jutils.core.ui.model.IView;
 import jutils.core.utils.IteratorEnumerationAdapter;
 
@@ -433,7 +451,6 @@ public class DirectoryTree implements IView<JTree>
         try
         {
             files = node.file.listFiles();
-
         }
         catch( SecurityException ex )
         {
@@ -446,8 +463,11 @@ public class DirectoryTree implements IView<JTree>
 
         node.children.clear();
 
+        // LogUtils.printDebug( "Adding children of %s",
+        // node.file.getAbsolutePath() );
         for( File f : files )
         {
+            // LogUtils.printDebug( "Adding child %s", f.getAbsolutePath() );
             if( f.isDirectory() )
             {
                 // LogUtils.printDebug( "Adding %s to %s", f.getName(),
@@ -738,8 +758,26 @@ public class DirectoryTree implements IView<JTree>
          */
         public FileData( File file )
         {
-            this.icon = DirectoryTree.FILE_SYSTEM.getSystemIcon( file );
-            this.name = DirectoryTree.FILE_SYSTEM.getSystemDisplayName( file );
+            Icon icon = null;
+            String name = "{null}";
+
+            if( file != null )
+            {
+                try
+                {
+                    icon = SwingUtils.getFileIcon( FILE_SYSTEM, file );
+                }
+                catch( NullPointerException ex )
+                {
+                    LogUtils.printWarning( "Unable to get icon for file %s",
+                        file.getAbsoluteFile() );
+                    icon = null;
+                }
+                name = DirectoryTree.FILE_SYSTEM.getSystemDisplayName( file );
+            }
+
+            this.icon = icon;
+            this.name = name;
         }
     }
 

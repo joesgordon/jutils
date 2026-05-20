@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import jutils.core.net.NetUtils.NicInfo;
-
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -20,65 +18,17 @@ public class UdpConnection implements IConnection
     private int remotePort;
 
     /***************************************************************************
-     * @param inputs
+     * @param config
+     * @param remote
      * @throws IOException
      * @throws SocketException
      **************************************************************************/
-    public UdpConnection( UdpInputs inputs ) throws IOException, SocketException
+    public UdpConnection( UdpConfig config, EndPoint remote )
+        throws IOException, SocketException
     {
-        this.socket = new UdpSocket();
+        this.socket = NetUtils.openUdpSocket( config );
 
-        if( inputs.multicast.isUsed && inputs.multicast.data == null )
-        {
-            throw new IOException( "Multicast group not specified" );
-        }
-
-        // LogUtils.printDebug( "NIC: " + inputs.nic );
-        // LogUtils.printDebug( "Address: " + nicAddr );
-        // LogUtils.printDebug( "Local Port: " + inputs.localPort );
-        // LogUtils.printDebug( "Remote Port: " + inputs.remotePort );
-        // LogUtils.printDebug( "" );
-
-        NicInfo info = NetUtils.lookupInfo( inputs.nic );
-
-        if( info == null )
-        {
-            throw new IOException( "NIC not found: " + inputs.nic );
-        }
-
-        InetAddress nicAddr = info.address;
-        IpAddress localIp = new IpAddress();
-
-        localIp.setInetAddress( nicAddr );
-
-        EndPoint localPoint = new EndPoint( localIp, inputs.localPort );
-
-        if( inputs.multicast.isUsed )
-        {
-            IpAddress group = inputs.multicast.data;
-
-            socket.open();
-            socket.setReuseAddress( true );
-            socket.setTimeToLive( inputs.ttl );
-            socket.bind( localPoint );
-            socket.setLoopback( inputs.loopback );
-            socket.joinGroup( group, localIp );
-        }
-        else
-        {
-            socket.open();
-            socket.setReuseAddress( inputs.reuse );
-            socket.setBroadcast( inputs.broadcast );
-            socket.bind( localPoint );
-        }
-
-        socket.setReceiveTimeout( inputs.timeout );
-
-        if( inputs.remoteAddress != null )
-        {
-            this.remoteAddress = inputs.remoteAddress.getInetAddress();
-        }
-        this.remotePort = inputs.remotePort;
+        setRemote( remote );
     }
 
     /***************************************************************************
@@ -162,6 +112,7 @@ public class UdpConnection implements IConnection
     public NetMessage sendMessage( byte [] contents, InetAddress toAddr,
         int toPort ) throws IOException
     {
+
         return socket.send( contents, toAddr, toPort );
     }
 
@@ -186,13 +137,22 @@ public class UdpConnection implements IConnection
      **************************************************************************/
     public void setRemote( int port ) throws IllegalArgumentException
     {
-        if( port < 1 || port > 65535 )
+        if( port < 0 || port > 65535 )
         {
             throw new IllegalArgumentException(
-                "Remote address may not be null" );
+                "Port is out of range [1-65535]: " + port );
         }
 
         this.remotePort = port;
+    }
+
+    /***************************************************************************
+     * @param remote
+     **************************************************************************/
+    public void setRemote( EndPoint remote )
+    {
+        setRemote( remote.address.getInetAddress() );
+        setRemote( remote.port );
     }
 
     /***************************************************************************

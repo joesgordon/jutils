@@ -9,6 +9,7 @@ import jutils.core.ui.StandardFormView;
 import jutils.core.ui.model.IView;
 import jutils.math.IMatrix;
 import jutils.math.Matrix;
+import jutils.math.charts.ui.DistributionView;
 
 /*******************************************************************************
  * 
@@ -24,6 +25,10 @@ public class MathDemoView implements IView<JComponent>
     private final QuaternionField quatField;
     /**  */
     private final MatrixView matrixView;
+    /**  */
+    private final HistogramsDemoView histogramView;
+    /**  */
+    private final DistributionView distributionView;
 
     /***************************************************************************
      * 
@@ -37,6 +42,10 @@ public class MathDemoView implements IView<JComponent>
 
         this.matrixView = new MatrixView();
 
+        this.histogramView = new HistogramsDemoView();
+
+        this.distributionView = new DistributionView();
+
         this.view = createView();
     }
 
@@ -49,6 +58,8 @@ public class MathDemoView implements IView<JComponent>
 
         tabs.addTab( "Fields", createFieldsTab() );
         tabs.addTab( "Matrix", createMatrixTab() );
+        tabs.addTab( "Histogram", histogramView.getView() );
+        tabs.addTab( "Distributions", distributionView.getView() );
 
         return tabs;
     }

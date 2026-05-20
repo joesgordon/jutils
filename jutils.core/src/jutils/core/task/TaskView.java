@@ -1,17 +1,29 @@
 package jutils.core.task;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dialog.ModalityType;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import jutils.core.IconConstants;
 import jutils.core.SwingUtils;
-import jutils.core.ui.event.*;
+import jutils.core.ui.event.ActionListenerList;
+import jutils.core.ui.event.ItemActionEvent;
+import jutils.core.ui.event.ItemActionListener;
 
 /*******************************************************************************
  * 

@@ -22,7 +22,7 @@ public class EndPoint
     public int port;
 
     /***************************************************************************
-     * Creates and end-point initialized to 0.0.0.0 and port 0.
+     * Creates an end-point initialized to 0.0.0.0 and port 0.
      **************************************************************************/
     public EndPoint()
     {
@@ -31,7 +31,16 @@ public class EndPoint
     }
 
     /***************************************************************************
-     * Creates and end-point initialized to 0.0.0.0 and the provided port.
+     * Creates a copy of an end-point.
+     * @param that the data to be copied.
+     **************************************************************************/
+    public EndPoint( EndPoint that )
+    {
+        this( that.address, that.port );
+    }
+
+    /***************************************************************************
+     * Creates an end-point initialized to 0.0.0.0 and the provided port.
      * @param port the network port.
      **************************************************************************/
     public EndPoint( int port )

@@ -46,13 +46,13 @@ import jutils.core.ui.TitleView;
 import jutils.core.ui.event.ActionAdapter;
 import jutils.core.ui.event.DirectoryChooserListener;
 import jutils.core.ui.event.FileChooserListener;
-import jutils.core.ui.event.FileDropTarget;
-import jutils.core.ui.event.ItemActionEvent;
-import jutils.core.ui.event.ItemActionListener;
 import jutils.core.ui.event.FileChooserListener.IFilesSelected;
 import jutils.core.ui.event.FileChooserListener.ILastFiles;
+import jutils.core.ui.event.FileDropTarget;
 import jutils.core.ui.event.FileDropTarget.DropActionType;
 import jutils.core.ui.event.FileDropTarget.IFileDropEvent;
+import jutils.core.ui.event.ItemActionEvent;
+import jutils.core.ui.event.ItemActionListener;
 import jutils.core.ui.fields.ComboFormField;
 import jutils.core.ui.fields.NamedItemDescriptor;
 import jutils.core.ui.model.IDataView;
@@ -679,7 +679,7 @@ public class CreateView implements IDataView<ChecksumResult>, IValidationField
             if( col == 0 )
             {
                 SumFile sf = view.pathsModel.getItem( row );
-                icon = FILE_SYSTEM.getSystemIcon( sf.file );
+                icon = SwingUtils.getFileIcon( FILE_SYSTEM, sf.file );
                 label.setHorizontalAlignment( SwingConstants.LEFT );
             }
             else

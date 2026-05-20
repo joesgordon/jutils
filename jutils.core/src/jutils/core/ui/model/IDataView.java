@@ -49,8 +49,8 @@ public interface IDataView<D> extends IView<Component>
     {
         JPanel panel = new JPanel( new BorderLayout() );
         JToolBar toolbar = new JToolBar();
-        ItemActionListener<D> pasteListener = ( e ) -> view.setData(
-            e.getItem() );
+        ItemActionListener<
+            D> pasteListener = ( e ) -> view.setData( e.getItem() );
 
         SwingUtils.setToolbarDefaults( toolbar );
 
@@ -102,8 +102,8 @@ public interface IDataView<D> extends IView<Component>
      * @param itemListener the listener to be called when the action is invoked.
      * @return the created action.
      **************************************************************************/
-    public static <T> Action createPasteAction(
-        ItemActionListener<T> itemListener )
+    public static <
+        T> Action createPasteAction( ItemActionListener<T> itemListener )
     {
         ActionListener listener = ( e ) -> {
             try

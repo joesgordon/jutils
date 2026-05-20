@@ -127,7 +127,7 @@ public class DefaultTableItemsConfig<T> implements ITableConfig<T>
     public static interface IFieldGetter<ITEM, FIELD>
     {
         /**
-         * @param field
+         * @param item
          * @return
          */
         public FIELD get( ITEM item );

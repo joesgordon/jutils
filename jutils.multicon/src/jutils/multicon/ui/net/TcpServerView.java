@@ -12,9 +12,7 @@ import jutils.core.net.*;
 import jutils.core.ui.net.TcpInputsView;
 import jutils.multicon.MulticonMain;
 import jutils.multicon.MulticonOptions;
-import jutils.multicon.ui.ConnectionBindableView;
-import jutils.multicon.ui.MulticonFrame;
-import jutils.multicon.ui.BindingFrameView.IBindableView;
+import jutils.multicon.ui.*;
 
 /*******************************************************************************
  * 
@@ -133,8 +131,9 @@ public class TcpServerView implements IBindableView<TcpInputs>
     private void handleConnectionAccepted( TcpConnection connection )
     {
         TcpClientView clientView = new TcpClientView();
-        ConnectionBindableView<TcpInputs> connectionView = new ConnectionBindableView<>(
-            new TcpClientView() );
+        ConnectionBindableView<
+            TcpInputs> connectionView = new ConnectionBindableView<>(
+                new TcpClientView() );
 
         TcpInputs inputs = connection.getInputs();
 
@@ -142,7 +141,7 @@ public class TcpServerView implements IBindableView<TcpInputs>
 
         connectionView.setConnection( connection );
 
-        MulticonFrame.showBindingFrame( connectionView, getView(), false );
+        MulticonOldFrame.showBindingFrame( connectionView, getView(), false );
     }
 
     /***************************************************************************

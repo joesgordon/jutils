@@ -1,6 +1,7 @@
 package jutils.core.io;
 
 import java.util.Iterator;
+import java.util.List;
 
 import jutils.core.ArrayPrinter;
 import jutils.core.INamedItem;
@@ -8,6 +9,7 @@ import jutils.core.INamedValue;
 import jutils.core.Iterables;
 import jutils.core.Iterables.Iteratorable;
 import jutils.core.Utils;
+import jutils.core.data.INamedBitFlag;
 import jutils.core.ui.hex.HexUtils;
 import jutils.core.utils.BitMasks;
 
@@ -91,12 +93,36 @@ public class FieldPrinter
     }
 
     /***************************************************************************
+     * @param <T>
      * @param tierName
      * @param tiers
      **************************************************************************/
     public <T extends ITierPrinter> void printTiers( String tierName,
         T [] tiers )
     {
+        printField( "Number of " + tierName, tiers.length );
+
+        int i = 0;
+        for( T t : tiers )
+        {
+            String tname = tierName + "[" + i + "]";
+            FieldPrinter p = createTier( tname );
+
+            t.printFields( p );
+            i++;
+        }
+    }
+
+    /***************************************************************************
+     * @param <T>
+     * @param tierName
+     * @param tiers
+     **************************************************************************/
+    public <T extends ITierPrinter> void printTiers( String tierName,
+        List<T> tiers )
+    {
+        printField( "Number of " + tierName, tiers.size() );
+
         int i = 0;
         for( T t : tiers )
         {
@@ -115,6 +141,15 @@ public class FieldPrinter
     public void printField( String name, String value )
     {
         stream.println( "%s%s: %s", tierString, name, value );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
+    public void printField( String name, Object value )
+    {
+        printField( name, value == null ? "null" : value.toString() );
     }
 
     /***************************************************************************
@@ -169,6 +204,15 @@ public class FieldPrinter
     public void printField( String name, int value )
     {
         printField( name, "" + value );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     **************************************************************************/
+    public void printField( String name, Integer value )
+    {
+        printField( name, value == null ? "null" : value.toString() );
     }
 
     /***************************************************************************
@@ -294,6 +338,51 @@ public class FieldPrinter
     public void printField( String name, INamedValue value )
     {
         printField( name, value == null ? "null" : value.getDescription() );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     * @param flags
+     **************************************************************************/
+    public void printField( String name, byte value, INamedBitFlag [] flags )
+    {
+        printField( name, value & 0xFFL, flags );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     * @param flags
+     **************************************************************************/
+    public void printField( String name, short value, INamedBitFlag [] flags )
+    {
+        printField( name, value & 0xFFFFL, flags );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     * @param flags
+     **************************************************************************/
+    public void printField( String name, int value, INamedBitFlag [] flags )
+    {
+        printField( name, value & 0xFFFFFFFFL, flags );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param value
+     * @param flags
+     **************************************************************************/
+    public void printField( String name, long value, INamedBitFlag [] flags )
+    {
+        printFieldAsHex( name, value, 4 );
+        FieldPrinter flagTier = createTier( name );
+        for( INamedBitFlag def : flags )
+        {
+            flagTier.printField( def.getName(), def.getFlag( value ) );
+        }
     }
 
     /***************************************************************************
@@ -429,9 +518,16 @@ public class FieldPrinter
     public void printFieldValues( String name, int itemsPerLine,
         byte... values )
     {
-        Iterable<Byte> array = Iterables.buildIteratable( values );
-        printIterableField( name, array, values.length, itemsPerLine, " ",
-            ( t ) -> HexUtils.getHexString( t ) );
+        if( values != null )
+        {
+            Iterable<Byte> array = Iterables.buildIteratable( values );
+            printIterableField( name, array, values.length, itemsPerLine, " ",
+                ( t ) -> HexUtils.getHexString( t ) );
+        }
+        else
+        {
+            printField( name, "null" );
+        }
     }
 
     /***************************************************************************

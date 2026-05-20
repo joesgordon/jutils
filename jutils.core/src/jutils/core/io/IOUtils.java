@@ -27,9 +27,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import jutils.core.OptionUtils;
+import jutils.core.OptionUtils.YncAnswer;
 import jutils.core.Utils;
 import jutils.core.ValidationException;
-import jutils.core.OptionUtils.YncAnswer;
 import jutils.core.data.SystemProperty;
 import jutils.core.io.parsers.ExistenceType;
 import jutils.core.io.parsers.FileType;
@@ -182,6 +182,14 @@ public final class IOUtils
         }
 
         return ans;
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public static Charset getAsciiEncoding()
+    {
+        return Charset.forName( "US-ASCII" );
     }
 
     /***************************************************************************
@@ -1229,5 +1237,17 @@ public final class IOUtils
                 }
                 return true;
         }
+    }
+
+    /***************************************************************************
+     * @param file
+     * @return
+     **************************************************************************/
+    public static boolean isUncPath( File file )
+    {
+        String path = file.getAbsolutePath();
+        path = path.replace( '\\', '/' );
+
+        return path.startsWith( "//" );
     }
 }

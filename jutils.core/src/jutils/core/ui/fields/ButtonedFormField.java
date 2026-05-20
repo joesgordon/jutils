@@ -1,8 +1,12 @@
 package jutils.core.ui.fields;
 
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.validation.IValidityChangedListener;
@@ -25,8 +29,17 @@ public class ButtonedFormField<T> implements IDataFormField<T>
      **************************************************************************/
     public ButtonedFormField( IDataFormField<T> field )
     {
+        this( field, new JButton() );
+    }
+
+    /***************************************************************************
+     * @param field
+     * @param button
+     **************************************************************************/
+    public ButtonedFormField( IDataFormField<T> field, JButton button )
+    {
         this.field = field;
-        this.button = new JButton();
+        this.button = button;
         this.view = createView();
     }
 

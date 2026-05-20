@@ -7,25 +7,24 @@ import jutils.core.Utils;
 import jutils.core.net.NetMessage;
 import jutils.core.ui.hex.HexUtils;
 import jutils.core.ui.model.ITableConfig;
-import jutils.core.ui.net.NetMessagesView.IMessageFields;
 
-/***************************************************************************
+/*******************************************************************************
  * 
- **************************************************************************/
+ ******************************************************************************/
 public class NetMessagesTableConfig implements ITableConfig<NetMessage>
 {
     /**  */
-    private static final String [] NAMES = new String[] { "Tx/Rx", "Time",
+    private static final String [] MSG_NAMES = new String[] { "Tx/Rx", "Time",
         "Local", "Remote", "Length", "Contents" };
     /**  */
-    private static final Class<?> [] CLASSES = new Class<?>[] { String.class,
-        LocalDateTime.class, String.class, String.class, Integer.class,
-        String.class };
+    private static final Class<
+        ?> [] MSG_CLASSES = new Class<?>[] { String.class, LocalDateTime.class,
+            String.class, String.class, Integer.class, String.class };
 
     /**  */
     private final Charset utf8;
     /**  */
-    private final IMessageFields fields;
+    private final IMessageFields<NetMessage> fields;
     /**  */
     private final String [] names;
     /**  */
@@ -45,14 +44,15 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
     /***************************************************************************
      * @param fields
      **************************************************************************/
-    public NetMessagesTableConfig( IMessageFields fields )
+    public NetMessagesTableConfig( IMessageFields<NetMessage> fields )
     {
-        fields = fields == null ? new EmptyMessageFields() : fields;
+        fields = fields == null ? new EmptyMessageFields<>() : fields;
 
         this.fields = fields;
         this.utf8 = Charset.forName( "UTF-8" );
-        this.names = new String[NAMES.length + this.fields.getFieldCount()];
-        this.classes = new Class<?>[NAMES.length + this.fields.getFieldCount()];
+        this.names = new String[MSG_NAMES.length + this.fields.getFieldCount()];
+        this.classes = new Class<?>[MSG_NAMES.length +
+            this.fields.getFieldCount()];
 
         this.isHex = true;
 
@@ -60,19 +60,20 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
         {
             String name = null;
             Class<?> cls = null;
-            if( i < ( NAMES.length - 1 ) )
+
+            if( i < ( MSG_NAMES.length - 1 ) )
             {
-                name = NAMES[i];
-                cls = CLASSES[i];
+                name = MSG_NAMES[i];
+                cls = MSG_CLASSES[i];
             }
             else if( i == names.length - 1 )
             {
-                name = NAMES[NAMES.length - 1];
-                cls = CLASSES[NAMES.length - 1];
+                name = MSG_NAMES[MSG_NAMES.length - 1];
+                cls = MSG_CLASSES[MSG_NAMES.length - 1];
             }
             else
             {
-                name = fields.getFieldName( i - NAMES.length + 1 );
+                name = fields.getFieldName( i - MSG_NAMES.length + 1 );
                 cls = String.class;
             }
             names[i] = name;
@@ -104,7 +105,7 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
     @Override
     public Object getItemData( NetMessage item, int col )
     {
-        int fieldStart = NAMES.length - 1;
+        int fieldStart = MSG_NAMES.length - 1;
         int contentsCol = names.length - 1;
 
         if( col < fieldStart )
@@ -190,7 +191,31 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class EmptyMessageFields implements IMessageFields
+    public static interface IMessageFields<T>
+    {
+        /**
+         * @return
+         */
+        public int getFieldCount();
+
+        /**
+         * @param index
+         * @return
+         */
+        public String getFieldName( int index );
+
+        /**
+         * @param message
+         * @param index
+         * @return
+         */
+        public String getFieldValue( T item, int index );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static final class EmptyMessageFields<T> implements IMessageFields<T>
     {
         /**
          * {@inheritDoc}
@@ -214,7 +239,7 @@ public class NetMessagesTableConfig implements ITableConfig<NetMessage>
          * {@inheritDoc}
          */
         @Override
-        public String getFieldValue( NetMessage message, int index )
+        public String getFieldValue( T item, int index )
         {
             return null;
         }

@@ -123,4 +123,14 @@ public class TimeParser implements IParser<LocalTime>
             throw new ValidationException( err );
         }
     }
+
+    /***************************************************************************
+     * @param d
+     * @return
+     **************************************************************************/
+    public static String toString( LocalTime time )
+    {
+        return String.format( "%02d:%02d:%02d.%09d", time.getHour(),
+            time.getMinute(), time.getSecond(), time.getNano() );
+    }
 }

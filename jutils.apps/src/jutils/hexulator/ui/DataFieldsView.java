@@ -17,9 +17,11 @@ import jutils.hexulator.fields.DoubleDataField;
 import jutils.hexulator.fields.FloatsDataField;
 import jutils.hexulator.fields.HeaderDataField;
 import jutils.hexulator.fields.HexBytesDataField;
+import jutils.hexulator.fields.HexIntsDataField;
 import jutils.hexulator.fields.HexLongDataField;
 import jutils.hexulator.fields.IDataField;
 import jutils.hexulator.fields.IntsDataField;
+import jutils.hexulator.fields.Ip4AddressesDataField;
 import jutils.hexulator.fields.LongDataField;
 import jutils.hexulator.fields.ShortsDataField;
 
@@ -42,14 +44,17 @@ public class DataFieldsView implements IDataView<Long>
     private final HexBytesDataField hexBytesField;
 
     /**  */
-    private final BinaryLongDataField binaryField;
+    private final BinaryLongDataField binaryLongField;
     /**  */
     private final LongDataField longField;
     /**  */
-    private final HexLongDataField hexField;
+    private final HexLongDataField hexLongField;
 
     /**  */
     private final IntsDataField intsField;
+    /**  */
+    private final HexIntsDataField hexIntsField;
+
     /**  */
     private final ShortsDataField shortsField;
 
@@ -58,6 +63,8 @@ public class DataFieldsView implements IDataView<Long>
     /**  */
     private final FloatsDataField floatsField;
 
+    /**  */
+    private final Ip4AddressesDataField ipsField;
     /**  */
     private final IDataField [] fields;
 
@@ -72,19 +79,23 @@ public class DataFieldsView implements IDataView<Long>
         this.decBytesField = new DecimalBytesDataField();
         this.hexBytesField = new HexBytesDataField();
 
-        this.binaryField = new BinaryLongDataField();
+        this.binaryLongField = new BinaryLongDataField();
         this.longField = new LongDataField();
-        this.hexField = new HexLongDataField();
+        this.hexLongField = new HexLongDataField();
 
         this.intsField = new IntsDataField();
+        this.hexIntsField = new HexIntsDataField();
         this.shortsField = new ShortsDataField();
 
         this.doubleField = new DoubleDataField();
         this.floatsField = new FloatsDataField();
 
+        this.ipsField = new Ip4AddressesDataField();
+
         this.fields = new IDataField[] { headerField, binBytesField,
-            decBytesField, hexBytesField, binaryField, longField, hexField,
-            intsField, shortsField, doubleField, floatsField };
+            decBytesField, hexBytesField, binaryLongField, longField,
+            hexLongField, intsField, hexIntsField, shortsField, doubleField,
+            floatsField, ipsField };
 
         this.view = createView();
 
@@ -118,15 +129,19 @@ public class DataFieldsView implements IDataView<Long>
             new Insets( 4, 0, 2, 0 ), 0, 0 );
         panel.add( new JSeparator(), constraints );
 
-        binaryField.addTo( "Long (0b)", panel, r++ );
-        longField.addTo( "Long", panel, r++ );
-        hexField.addTo( "Long (0x)", panel, r++ );
+        binaryLongField.addTo( "Long (0b)", panel, r++ );
+        longField.addTo( "Long (0d)", panel, r++ );
+        hexLongField.addTo( "Long (0x)", panel, r++ );
 
-        intsField.addTo( "Integer", panel, r++ );
+        intsField.addTo( "Integer (0d)", panel, r++ );
+        hexIntsField.addTo( "Integer (0x)", panel, r++ );
+
         shortsField.addTo( "Short", panel, r++ );
 
         doubleField.addTo( "Double", panel, r++ );
         floatsField.addTo( "Float", panel, r++ );
+
+        ipsField.addTo( "IP4s", panel, r );
 
         // GridBagConstraints constraints = new GridBagConstraints( 0, r++, 10,
         // 1,

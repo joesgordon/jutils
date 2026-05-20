@@ -103,7 +103,7 @@ public class TcpConnection implements IConnection
         TcpInputs inputs = new TcpInputs();
 
         inputs.localPort = socket.getLocalPort();
-        inputs.nic = socket.getLocalAddress().getHostAddress();
+        inputs.nic.setInetAddress( socket.getLocalAddress() );
         inputs.remoteAddress.setInetAddress(
             ( ( InetSocketAddress )socket.getRemoteSocketAddress() ).getAddress() );
         inputs.remotePort = socket.getPort();
@@ -130,20 +130,13 @@ public class TcpConnection implements IConnection
     {
         Socket socket = null;
 
-        InetAddress nicAddr = NetUtils.lookupNetAddress( inputs.nic );
-
-        if( nicAddr == null )
-        {
-            throw new IOException( "Nic not found: " + inputs.nic );
-        }
-
         // socket = new Socket( inputs.remoteAddress.getInetAddress(),
         // inputs.remotePort, nicAddr, inputs.localPort );
 
         socket = new Socket();
 
-        InetSocketAddress local = new InetSocketAddress( nicAddr,
-            inputs.localPort );
+        InetSocketAddress local = new InetSocketAddress(
+            inputs.nic.getInetAddress(), inputs.localPort );
         InetSocketAddress remote = new InetSocketAddress(
             inputs.remoteAddress.getInetAddress(), inputs.remotePort );
 

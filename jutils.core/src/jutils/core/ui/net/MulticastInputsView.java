@@ -3,6 +3,7 @@ package jutils.core.ui.net;
 import javax.swing.JComponent;
 
 import jutils.core.io.parsers.MulticastGroupParser;
+import jutils.core.net.IpAddress;
 import jutils.core.net.MulticastInputs;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.fields.BooleanFormField;
@@ -22,7 +23,7 @@ public class MulticastInputsView implements IDataView<MulticastInputs>
     /**  */
     private final IntegerFormField portField;
     /**  */
-    private final IDataFormField<String> nicField;
+    private final IDataFormField<IpAddress> nicField;
     /**  */
     private final IntegerFormField ttlField;
     /**  */

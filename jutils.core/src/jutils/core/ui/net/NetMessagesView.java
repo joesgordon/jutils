@@ -23,6 +23,7 @@ import jutils.core.io.DataStream;
 import jutils.core.io.FileStream;
 import jutils.core.io.IDataStream;
 import jutils.core.io.IItemStream;
+import jutils.core.io.IOUtils;
 import jutils.core.io.IStringWriter;
 import jutils.core.io.ReferenceItemStream;
 import jutils.core.io.ReferenceStream;
@@ -40,6 +41,7 @@ import jutils.core.ui.model.IDataView;
 import jutils.core.ui.model.ITableConfig;
 import jutils.core.ui.model.IView;
 import jutils.core.ui.model.LabelTableCellRenderer.ITableCellLabelDecorator;
+import jutils.core.ui.net.NetMessagesTableConfig.IMessageFields;
 
 /*******************************************************************************
  * Defines UI that displays {@link NetMessage}s.
@@ -79,7 +81,7 @@ public class NetMessagesView implements IView<JPanel>
      * @param fields
      * @param msgWriter
      **************************************************************************/
-    public NetMessagesView( IMessageFields fields,
+    public NetMessagesView( IMessageFields<NetMessage> fields,
         IStringWriter<NetMessage> msgWriter )
     {
         this( fields, PaginatedTableView.createItemWriterView( msgWriter ),
@@ -91,7 +93,7 @@ public class NetMessagesView implements IView<JPanel>
      * @param msgView
      * @param addScrollPane
      **************************************************************************/
-    public NetMessagesView( IMessageFields fields,
+    public NetMessagesView( IMessageFields<NetMessage> fields,
         IDataView<NetMessage> msgView, boolean addScrollPane )
     {
         this( fields, msgView, addScrollPane, false );
@@ -103,7 +105,7 @@ public class NetMessagesView implements IView<JPanel>
      * @param addScrollPane
      * @param isStaticSize
      **************************************************************************/
-    private NetMessagesView( IMessageFields fields,
+    private NetMessagesView( IMessageFields<NetMessage> fields,
         IDataView<NetMessage> msgView, boolean addScrollPane,
         boolean isStaticSize )
     {
@@ -123,8 +125,8 @@ public class NetMessagesView implements IView<JPanel>
             try
             {
                 @SuppressWarnings( "resource")
-                ReferenceStream<NetMessage> refs = new ReferenceStream<>(
-                    nmSerializer );
+                ReferenceStream<
+                    NetMessage> refs = new ReferenceStream<>( nmSerializer );
                 rs = refs;
             }
             catch( IOException ex )
@@ -200,7 +202,7 @@ public class NetMessagesView implements IView<JPanel>
      **************************************************************************/
     private Action createOpenAction()
     {
-        IFileSelected ifs = ( f ) -> openNetMsgsFile( f );
+        IFileSelected ifs = ( f ) -> handleOpenFile( f );
         FileChooserListener listener = new FileChooserListener( getView(),
             "Choose File", false, ifs );
         Icon icon = IconConstants.getIcon( IconConstants.OPEN_FOLDER_16 );
@@ -247,6 +249,28 @@ public class NetMessagesView implements IView<JPanel>
         tableCfg.setHexText( isHex );
 
         table.updateTable();
+    }
+
+    /***************************************************************************
+     * @param file
+     **************************************************************************/
+    private void handleOpenFile( File file )
+    {
+        String ext = IOUtils.getFileExtension( file ).toLowerCase();
+
+        switch( ext )
+        {
+            // case NetMessageSerializer.MSGS_EXT:
+            // openMsgsFile( file );
+            // break;
+
+            case NetMessageSerializer.NETMSGS_EXT:
+                openNetMsgsFile( file );
+                break;
+
+            default:
+                break;
+        }
     }
 
     /***************************************************************************
@@ -330,7 +354,8 @@ public class NetMessagesView implements IView<JPanel>
         }
         catch( IOException ex )
         {
-            throw new RuntimeException( ex );
+            throw new RuntimeException(
+                "Unable to read file " + file.getAbsolutePath(), ex );
         }
 
         refStream = new ReferenceItemStream<>( rs );
@@ -417,30 +442,6 @@ public class NetMessagesView implements IView<JPanel>
     public void setMsgsPerPage( int msgsPerPage )
     {
         table.setItemsPerPage( msgsPerPage );
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static interface IMessageFields
-    {
-        /**
-         * @return
-         */
-        public int getFieldCount();
-
-        /**
-         * @param index
-         * @return
-         */
-        public String getFieldName( int index );
-
-        /**
-         * @param message
-         * @param index
-         * @return
-         */
-        public String getFieldValue( NetMessage message, int index );
     }
 
     /***************************************************************************

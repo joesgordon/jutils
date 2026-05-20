@@ -12,7 +12,6 @@ import jutils.core.net.*;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.net.NetMessagesView;
-import jutils.multicon.ui.BindingFrameView.IBindableView;
 
 /*******************************************************************************
  *

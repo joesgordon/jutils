@@ -1,11 +1,17 @@
 package jutils.core.ui.fields;
 
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import jutils.core.IconConstants;
 import jutils.core.ui.StandardFormView;

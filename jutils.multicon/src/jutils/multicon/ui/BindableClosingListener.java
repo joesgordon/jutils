@@ -6,7 +6,6 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 import jutils.core.OptionUtils;
-import jutils.multicon.ui.BindingFrameView.IBindableView;
 
 /*******************************************************************************
  * 

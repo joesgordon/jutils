@@ -1,7 +1,5 @@
 package jutils.core.ui.model;
 
-import java.awt.Component;
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -10,8 +8,10 @@ import javax.swing.ListCellRenderer;
 /*******************************************************************************
  * A {@link ListCellRenderer} that uses the provided decorator to render cells
  * as a {@link JLabel}.
+ * @param <T>
  ******************************************************************************/
-public class LabelListCellRenderer<T> implements ListCellRenderer<T>
+public class LabelListCellRenderer<T>
+    extends ComponentListCellRenderer<JLabel, T>
 {
     /**  */
     private final DefaultListCellRenderer renderer;
@@ -31,16 +31,24 @@ public class LabelListCellRenderer<T> implements ListCellRenderer<T>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public Component getListCellRendererComponent( JList<? extends T> list,
-        T value, int index, boolean isSelected, boolean cellHasFocus )
+    protected JLabel getComponent( JList<? extends T> list, T value, int index,
+        boolean isSelected, boolean cellHasFocus )
     {
-        Component c = renderer.getListCellRendererComponent( list, value, index,
-            isSelected, cellHasFocus );
-
-        decorator.decorate( renderer, list, value, index, isSelected,
+        renderer.getListCellRendererComponent( list, value, index, isSelected,
             cellHasFocus );
 
-        return c;
+        return renderer;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    protected void decorateComponent( JLabel component, JList<? extends T> list,
+        T value, int index, boolean isSelected, boolean cellHasFocus )
+    {
+        decorator.decorate( component, list, value, index, isSelected,
+            cellHasFocus );
     }
 
     /***************************************************************************

@@ -1,7 +1,6 @@
 package jutils.core.net;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 
 import jutils.core.ValidationException;
@@ -15,9 +14,6 @@ import jutils.core.net.EndPoint.EndPointSerializer;
  ******************************************************************************/
 public class NetMessageSerializer implements IDataSerializer<NetMessage>
 {
-    /**  */
-    public static byte [] VERSION_MAGIC_NUM = "\0netmsg01\0".getBytes(
-        Charset.forName( "US-ASCII" ) );
     /**  */
     public static final String NETMSGS_EXT = "netmsgs";
     /**  */

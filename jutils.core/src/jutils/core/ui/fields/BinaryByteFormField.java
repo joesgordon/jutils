@@ -77,7 +77,7 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String getName()
@@ -86,7 +86,7 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -95,7 +95,7 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public Byte getValue()
@@ -104,7 +104,7 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setValue( Byte value )
@@ -113,7 +113,7 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setUpdater( IUpdater<Byte> updater )
@@ -122,7 +122,7 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public IUpdater<Byte> getUpdater()
@@ -131,7 +131,7 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * @param editable
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setEditable( boolean editable )
@@ -140,7 +140,7 @@ public class BinaryByteFormField implements IDataFormField<Byte>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void addValidityChanged( IValidityChangedListener l )

@@ -1,7 +1,11 @@
 package jutils.core.io;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import jutils.core.Utils;
@@ -61,17 +65,49 @@ public class ResourceLoader
      **************************************************************************/
     public URL getUrl( String name )
     {
-        URL url = null;
+        URI uri = null;
 
         try
         {
-            url = new URL( baseUrl.toString() + name );
+            uri = baseUrl.toURI();
         }
-        catch( MalformedURLException ex )
+        catch( URISyntaxException ex )
         {
+            String err = String.format( "Unable to create URI from base \"%s\"",
+                baseUrl );
+            throw new RuntimeException( err, ex );
         }
 
-        return url;
+        String path = uri.toString();
+
+        if( !path.endsWith( "/" ) )
+        {
+            path += "/";
+        }
+        path += name;
+
+        try
+        {
+            uri = new URI( path );
+            // uri = baseUrl.toURI().resolve( "./" + name );
+        }
+        catch( URISyntaxException ex )
+        {
+            String err = String.format( "Unable to create URI from path \"%s\"",
+                path );
+            throw new RuntimeException( err, ex );
+        }
+
+        try
+        {
+            return uri.toURL();
+        }
+        catch( MalformedURLException | IllegalArgumentException ex )
+        {
+            String err = String.format( "Unable to create URL from URI \"%s\"",
+                uri );
+            throw new RuntimeException( err, ex );
+        }
     }
 
     /***************************************************************************

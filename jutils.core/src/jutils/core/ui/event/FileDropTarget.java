@@ -10,8 +10,6 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
-import jutils.core.io.LogUtils;
-
 /*******************************************************************************
  * Class be added to a {@link JComponent} when the user drags a file onto the
  * component.
@@ -40,7 +38,7 @@ public class FileDropTarget extends DropTarget
         try
         {
             int dropAction = evt.getDropAction();
-            DropActionType action = getAction( dropAction );
+            DropActionType action = DropActionType.getAction( dropAction );
             Object xferData;
             DefaultFileDropEvent dfde;
             ItemActionEvent<IFileDropEvent> iae;
@@ -59,38 +57,7 @@ public class FileDropTarget extends DropTarget
         }
         catch( Exception ex )
         {
-            LogUtils.printError( "Unable to drag and drop file", ex );
-        }
-    }
-
-    /***************************************************************************
-     * @param action
-     * @return
-     **************************************************************************/
-    private static DropActionType getAction( int action )
-    {
-        switch( action )
-        {
-            case DnDConstants.ACTION_COPY:
-                return DropActionType.COPY;
-
-            case DnDConstants.ACTION_COPY_OR_MOVE:
-                return DropActionType.MOVE;
-
-            case DnDConstants.ACTION_LINK:
-                return DropActionType.LINK;
-
-            case DnDConstants.ACTION_MOVE:
-                return DropActionType.MOVE;
-
-            case DnDConstants.ACTION_NONE:
-                return DropActionType.MOVE;
-
-            // case DnDConstants.ACTION_REFERENCE:
-            // return DropActionType.MOVE;
-
-            default:
-                return DropActionType.MOVE;
+            throw new RuntimeException( "Unable to drag and drop file", ex );
         }
     }
 
@@ -122,12 +89,46 @@ public class FileDropTarget extends DropTarget
      **************************************************************************/
     public static enum DropActionType
     {
+        /** Enumerated value for {@link DnDConstants#ACTION_NONE}. */
+        NONE( DnDConstants.ACTION_NONE ),
         /** Enumerated value for {@link DnDConstants#ACTION_LINK}. */
-        LINK,
+        LINK( DnDConstants.ACTION_LINK ),
         /** Enumerated value for {@link DnDConstants#ACTION_COPY}. */
-        COPY,
+        COPY( DnDConstants.ACTION_COPY ),
         /** Enumerated value for {@link DnDConstants#ACTION_MOVE}. */
-        MOVE;
+        MOVE( DnDConstants.ACTION_MOVE ),
+        /** Enumerated value for {@link DnDConstants#ACTION_COPY_OR_MOVE}. */
+        COPY_OR_MOVE( DnDConstants.ACTION_COPY_OR_MOVE ),
+        /** Enumerated value for {@link DnDConstants#ACTION_REFERENCE}. */
+        REFERENCE( DnDConstants.ACTION_REFERENCE );
+
+        /**  */
+        public final int dndAction;
+
+        /**
+         * @param dndAction
+         */
+        private DropActionType( int dndAction )
+        {
+            this.dndAction = dndAction;
+        }
+
+        /***************************************************************************
+         * @param action
+         * @return
+         **************************************************************************/
+        public static DropActionType getAction( int action )
+        {
+            for( DropActionType dat : values() )
+            {
+                if( dat.dndAction == action )
+                {
+                    return dat;
+                }
+            }
+
+            return DropActionType.MOVE;
+        }
     }
 
     /***************************************************************************

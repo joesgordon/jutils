@@ -6,7 +6,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IItemListModel;
+import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.model.IDataView;
 import jutils.plot.model.Series;
 
@@ -56,7 +56,7 @@ public class PlotsPropertiesView implements IDataView<List<Series>>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static class SeriesItemListModel implements IItemListModel<Series>
+    private static class SeriesItemListModel implements IListViewModel<Series>
     {
         @Override
         public String getTitle( Series item )

@@ -2,20 +2,20 @@ package jutils.core.ui.net;
 
 import javax.swing.JComponent;
 
-import jutils.core.net.NetUtils.NicInfo;
+import jutils.core.net.IpAddress;
+import jutils.core.net.IpVersion;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
-import jutils.core.ui.fields.StringFormField;
 import jutils.core.ui.validation.IValidityChangedListener;
 import jutils.core.ui.validation.Validity;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class NetworkInterfaceField implements IDataFormField<String>
+public class NetworkInterfaceField implements IDataFormField<IpAddress>
 {
     /**  */
-    private final StringFormField nicField;
+    private final IpAddressField nicField;
     /**  */
     private final NetworkInterfacePopup nicMenu;
 
@@ -24,20 +24,29 @@ public class NetworkInterfaceField implements IDataFormField<String>
      **************************************************************************/
     public NetworkInterfaceField( String name )
     {
-        this.nicField = new StringFormField( name );
-        this.nicMenu = new NetworkInterfacePopup();
+        this( name, null );
+    }
+
+    /***************************************************************************
+     * @param name
+     * @param version
+     **************************************************************************/
+    public NetworkInterfaceField( String name, IpVersion version )
+    {
+        this.nicField = new IpAddressField( name );
+        this.nicMenu = new NetworkInterfacePopup( version );
 
         nicMenu.addToRightClick( nicField.getTextField() );
         nicMenu.setUpdater( ( d ) -> handleNicChosen( d ) );
     }
 
     /***************************************************************************
-     * @param nic
+     * @param address
      **************************************************************************/
-    private void handleNicChosen( NicInfo nic )
+    private void handleNicChosen( IpAddress address )
     {
-        nicField.setValue( nic.address.getHostAddress() );
-        IUpdater<String> updater = nicField.getUpdater();
+        nicField.setValue( address );
+        IUpdater<IpAddress> updater = nicField.getUpdater();
         if( updater != null )
         {
             updater.update( nicField.getValue() );
@@ -66,7 +75,7 @@ public class NetworkInterfaceField implements IDataFormField<String>
      * 
      **************************************************************************/
     @Override
-    public String getValue()
+    public IpAddress getValue()
     {
         return nicField.getValue();
     }
@@ -75,7 +84,7 @@ public class NetworkInterfaceField implements IDataFormField<String>
      * 
      **************************************************************************/
     @Override
-    public void setValue( String value )
+    public void setValue( IpAddress value )
     {
         nicField.setValue( value );
     }
@@ -84,7 +93,7 @@ public class NetworkInterfaceField implements IDataFormField<String>
      * 
      **************************************************************************/
     @Override
-    public void setUpdater( IUpdater<String> updater )
+    public void setUpdater( IUpdater<IpAddress> updater )
     {
         nicField.setUpdater( updater );
     }
@@ -93,7 +102,7 @@ public class NetworkInterfaceField implements IDataFormField<String>
      * 
      **************************************************************************/
     @Override
-    public IUpdater<String> getUpdater()
+    public IUpdater<IpAddress> getUpdater()
     {
         return nicField.getUpdater();
     }

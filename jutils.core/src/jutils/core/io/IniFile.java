@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jutils.core.data.SystemProperty;
+
 /** Implements method to read/write "Windows INI" style text files */
 public class IniFile
 {
@@ -24,7 +26,8 @@ public class IniFile
      */
     public IniFile( String iniFileName ) throws IOException
     {
-        load( System.getProperty( "user.dir" ) + File.separator + iniFileName );
+        load( SystemProperty.USER_DIR.getProperty() + File.separator +
+            iniFileName );
     }
 
     /**

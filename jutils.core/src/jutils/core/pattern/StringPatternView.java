@@ -5,7 +5,10 @@ import java.awt.Component;
 import javax.swing.JPanel;
 
 import jutils.core.ui.StandardFormView;
-import jutils.core.ui.fields.*;
+import jutils.core.ui.fields.BooleanFormField;
+import jutils.core.ui.fields.ComboFormField;
+import jutils.core.ui.fields.NamedItemDescriptor;
+import jutils.core.ui.fields.StringFormField;
 import jutils.core.ui.model.IDataView;
 
 /*******************************************************************************

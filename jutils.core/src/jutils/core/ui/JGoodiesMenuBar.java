@@ -5,7 +5,9 @@ import java.awt.Insets;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
-import com.jgoodies.looks.*;
+import com.jgoodies.looks.BorderStyle;
+import com.jgoodies.looks.HeaderStyle;
+import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 
 /*******************************************************************************

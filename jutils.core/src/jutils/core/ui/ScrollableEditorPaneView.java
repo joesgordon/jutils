@@ -1,12 +1,18 @@
 package jutils.core.ui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.JTextPane;
 import javax.swing.plaf.ComponentUI;
-import javax.swing.text.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Style;
 
 import jutils.core.ui.model.IView;
 

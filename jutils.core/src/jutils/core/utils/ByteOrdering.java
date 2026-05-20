@@ -11,12 +11,12 @@ public enum ByteOrdering implements INamedItem
 {
     /**
      * Defines the ordering pattern that stores the least significant byte first
-     * (i.e. 0x00000001 == 0d16777216).
+     * (i.e. 0x00 0x00 0x00 0x01 => 0d16777216).
      */
     LITTLE_ENDIAN( "Little Endian", ByteOrder.LITTLE_ENDIAN ),
     /**
      * Defines the ordering pattern that stores the most significant byte first
-     * (i.e. 0x00000001 == 0d1).
+     * (i.e. 0x00 0x00 0x00 0x01 => 0d1).
      */
     BIG_ENDIAN( "Big Endian", ByteOrder.BIG_ENDIAN ),
     /** An alternate way of specifying {@link #LITTLE_ENDIAN}. */

@@ -3,6 +3,7 @@ package jutils.core.io.parsers;
 import jutils.core.ValidationException;
 import jutils.core.io.IParser;
 import jutils.core.net.IpAddress;
+import jutils.core.net.NetUtils;
 
 /*******************************************************************************
  * 
@@ -37,9 +38,8 @@ public class MulticastGroupParser implements IParser<IpAddress>
                 case IPV4:
                     msg = String.format(
                         "Invalid address %s; not between multicast groups %s to %s",
-                        str,
-                        new IpAddress( IpAddress.IP4_MIN_GROUP ).toString(),
-                        new IpAddress( IpAddress.IP4_MAX_GROUP ).toString() );
+                        str, new IpAddress( NetUtils.IP4_MIN_GROUP ).toString(),
+                        new IpAddress( NetUtils.IP4_MAX_GROUP ).toString() );
                     break;
 
                 case IPV6:

@@ -3,7 +3,9 @@ package jutils.core.data;
 import java.awt.Color;
 import java.util.Objects;
 
-import javax.swing.text.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.StyleConstants;
 
 import jutils.core.Utils;
 import jutils.core.io.StringPrintStream;
@@ -91,8 +93,13 @@ public class FontDescription
         FontDescription fd = Utils.isAssignable( this, obj );
         if( fd != null )
         {
-            if( name.equals( fd.name ) && size == fd.size && bold == fd.bold &&
-                italic == fd.italic && underline == fd.underline &&
+            if( this == fd )
+            {
+                return true;
+            }
+            else if( name.equals( fd.name ) && size == fd.size &&
+                bold == fd.bold && italic == fd.italic &&
+                underline == fd.underline &&
                 strikeThrough == fd.strikeThrough &&
                 subscript == fd.subscript && superscript == fd.superscript &&
                 color.equals( fd.color ) )

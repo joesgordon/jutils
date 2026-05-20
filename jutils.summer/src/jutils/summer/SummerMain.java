@@ -43,6 +43,8 @@ public class SummerMain
     {
         if( args.length == 0 )
         {
+            AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
+
             IFrameApp app = new SummerApp();
             AppRunner.invokeLater( app );
         }

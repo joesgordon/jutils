@@ -15,11 +15,11 @@ import jutils.core.ui.fields.NamedItemDescriptor;
 import jutils.core.ui.fields.ShortFormField;
 import jutils.core.ui.model.IDataView;
 import jutils.core.utils.BitMasks;
-import jutils.telemetry.ch10.ChecksumPresence;
+import jutils.telemetry.ch10.ChecksumSize;
 import jutils.telemetry.ch10.DataType;
 import jutils.telemetry.ch10.DataTypeVersion;
 import jutils.telemetry.ch10.PacketHeader;
-import jutils.telemetry.ch10.SecHdrTimeFormat;
+import jutils.telemetry.ch10.SecondaryHeaderTimeFormat;
 
 /*******************************************************************************
  * 
@@ -42,9 +42,9 @@ public class PacketHeaderView implements IDataView<PacketHeader>
     /**  */
     private final DecimalByteFormField sequenceNumField;
     /**  */
-    private final ComboFormField<ChecksumPresence> checksumPresentField;
+    private final ComboFormField<ChecksumSize> checksumPresentField;
     /**  */
-    private final ComboFormField<SecHdrTimeFormat> secHdrTimeFmtField;
+    private final ComboFormField<SecondaryHeaderTimeFormat> secHdrTimeFmtField;
     /**  */
     private final BooleanFormField dataOverflowField;
     /**  */
@@ -76,9 +76,9 @@ public class PacketHeaderView implements IDataView<PacketHeader>
             DataTypeVersion.values(), new NamedItemDescriptor<>() );
         this.sequenceNumField = new DecimalByteFormField( "Sequence Number" );
         this.checksumPresentField = new ComboFormField<>( "Checksum Presence",
-            ChecksumPresence.values(), new NamedItemDescriptor<>() );
+            ChecksumSize.values(), new NamedItemDescriptor<>() );
         this.secHdrTimeFmtField = new ComboFormField<>(
-            "Secondary Header Time Format", SecHdrTimeFormat.values(),
+            "Secondary Header Time Format", SecondaryHeaderTimeFormat.values(),
             new NamedItemDescriptor<>() );
         this.dataOverflowField = new BooleanFormField( "Data Overflow" );
         this.rtcSyncErrorField = new BooleanFormField( "RTC Sync Error" );

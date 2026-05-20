@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
-import jutils.core.INamedValue;
 import jutils.core.Utils;
 import jutils.core.ValidationException;
 import jutils.core.io.IDataSerializer;
@@ -17,23 +16,6 @@ import jutils.core.ui.hex.HexUtils;
  ******************************************************************************/
 public class IpAddress
 {
-    /** The number of hextets (16-bit values) in an IPv6 address. */
-    public static final int HEXTET_COUNT = 8;
-    /** The number of bytes in an IPv4 address. */
-    public static final int IPV4_SIZE = 4;
-    /** The number of bytes in an IPv6 address. */
-    public static final int IPV6_SIZE = 2 * HEXTET_COUNT;
-
-    /**  */
-    public static final int IPV4_LOOPBACK = 0x7F000001;
-    /**  */
-    public static final byte [] IPV6_LOOPBACK = new byte[] { 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
-    /**  */
-    public static final int IP4_MIN_GROUP = 0xE0000000;
-    /**  */
-    public static final int IP4_MAX_GROUP = 0xEFFFFFFF;
-
     /** IP address values (always IPv6 size). */
     public final byte [] address;
     /**  */
@@ -64,7 +46,7 @@ public class IpAddress
      **************************************************************************/
     public IpAddress( IpVersion version )
     {
-        this.address = new byte[IPV6_SIZE];
+        this.address = new byte[NetUtils.IPV6_SIZE];
         this.version = version;
     }
 
@@ -84,10 +66,10 @@ public class IpAddress
 
     /***************************************************************************
      * Creates an IPv4 address with the specified value.
-     * @param value the address of length {@link #IPV4_SIZE} or
-     * {@link #IPV6_SIZE}.
+     * @param value the address of length {@link NetUtils#IPV4_SIZE} or
+     * {@link NetUtils#IPV6_SIZE}.
      * @throws IllegalArgumentException if the provided address is not of length
-     * {@link #IPV4_SIZE} or {@link #IPV6_SIZE}.
+     * {@link NetUtils#IPV4_SIZE} or {@link NetUtils#IPV6_SIZE}.
      **************************************************************************/
     public IpAddress( byte [] value ) throws IllegalArgumentException
     {
@@ -121,11 +103,11 @@ public class IpAddress
 
             switch( addr.length )
             {
-                case IPV4_SIZE:
+                case NetUtils.IPV4_SIZE:
                     vers = IpVersion.IPV4;
                     break;
 
-                case IPV6_SIZE:
+                case NetUtils.IPV6_SIZE:
                     vers = IpVersion.IPV6;
                     break;
 
@@ -163,33 +145,58 @@ public class IpAddress
         switch( version )
         {
             case IPV4:
-                setValue( IPV4_LOOPBACK );
+                setValue( NetUtils.IPV4_LOOPBACK );
                 break;
 
             case IPV6:
-                set( IPV6_LOOPBACK );
+                set( NetUtils.IPV6_LOOPBACK );
                 break;
         }
     }
 
     /***************************************************************************
-     * @return
+     * Returns {@code true} if the address is the ANY address; {@code false}
+     * otherwise.
+     * @return if this address is the ANY address.
+     **************************************************************************/
+    public boolean isAny()
+    {
+        switch( version )
+        {
+            case IPV4:
+                return 0 == getValue();
+
+            case IPV6:
+                return Arrays.equals( NetUtils.IPV6_ANY, address );
+        }
+        return false;
+    }
+
+    /***************************************************************************
+     * Returns {@code true} if the address is a loopback address; {@code false}
+     * otherwise.
+     * @return if this address is a loopback address.
      **************************************************************************/
     public boolean isLoopback()
     {
         switch( version )
         {
             case IPV4:
-                return IPV4_LOOPBACK == getValue();
+                return NetUtils.IPV4_LOOPBACK == getValue();
 
             case IPV6:
-                return Arrays.equals( IPV6_LOOPBACK, address );
+                return Arrays.equals( NetUtils.IPV6_LOOPBACK, address );
 
             default:
                 return false;
         }
     }
 
+    /***************************************************************************
+     * Returns {@code true} if the address is a multicast address; {@code false}
+     * otherwise.
+     * @return if this address is a multicast address.
+     **************************************************************************/
     public boolean isMulticast()
     {
         switch( version )
@@ -198,7 +205,8 @@ public class IpAddress
             {
                 int value = this.getValue();
 
-                return IP4_MIN_GROUP <= value && value <= IP4_MAX_GROUP;
+                return NetUtils.IP4_MIN_GROUP <= value &&
+                    value <= NetUtils.IP4_MAX_GROUP;
             }
 
             case IPV6:
@@ -228,6 +236,16 @@ public class IpAddress
     }
 
     /***************************************************************************
+     * Returns the octet at the provided index.
+     * @param index the 0-relative index of the octet to be returned.
+     * @return the unsigned integer representation of the octet.
+     **************************************************************************/
+    public int getOctet( int index )
+    {
+        return Byte.toUnsignedInt( address[index] );
+    }
+
+    /***************************************************************************
      * Sets this as an IPv4 address with the specified octets.
      * @param o1 octet 1
      * @param o2 octet 2
@@ -248,7 +266,7 @@ public class IpAddress
 
     /***************************************************************************
      * This IPv6 address as hextets.
-     * @return an array of {@link #HEXTET_COUNT} hextets.
+     * @return an array of {@link NetUtils#HEXTET_COUNT} hextets.
      * @throws IllegalStateException if this is not an IPv6 address.
      **************************************************************************/
     public short [] getHextets() throws IllegalStateException
@@ -259,9 +277,9 @@ public class IpAddress
                 "Cannot represent IPv4 as hextets" );
         }
 
-        short [] value = new short[HEXTET_COUNT];
+        short [] value = new short[NetUtils.HEXTET_COUNT];
 
-        for( int i = 0; i < HEXTET_COUNT; i++ )
+        for( int i = 0; i < NetUtils.HEXTET_COUNT; i++ )
         {
             value[i] = getHextet( i );
         }
@@ -270,8 +288,9 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @param index
-     * @return
+     * Gets the hextet (byte) at the provided index.
+     * @param index the index of the hextet to be returned.
+     * @return the hextet at the provided index.
      **************************************************************************/
     public short getHextet( int index )
     {
@@ -288,7 +307,7 @@ public class IpAddress
      * @param value the hextets to be set. The high 2 bytes of each integer are
      * unchecked and have no effect.
      * @throws IllegalArgumentException if the provided value is not of length
-     * {@link #HEXTET_COUNT}.
+     * {@link NetUtils#HEXTET_COUNT}.
      **************************************************************************/
     public void setHextets( short [] value ) throws IllegalArgumentException
     {
@@ -298,8 +317,8 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * Returns a copy of the address of length {@link #IPV4_SIZE} or
-     * {@link #IPV6_SIZE} depending on the IP version.
+     * Returns a copy of the address of length {@link NetUtils#IPV4_SIZE} or
+     * {@link NetUtils#IPV6_SIZE} depending on the IP version.
      * @return a copy of the address.
      **************************************************************************/
     public byte [] get()
@@ -314,10 +333,10 @@ public class IpAddress
     /***************************************************************************
      * Sets this address to the specified values using the length of values to
      * determine the IP version.
-     * @param address the address of length {@link #IPV4_SIZE} or
-     * {@link #IPV6_SIZE}.
+     * @param address the address of length {@link NetUtils#IPV4_SIZE} or
+     * {@link NetUtils#IPV6_SIZE}.
      * @throws IllegalArgumentException if the provided address is not of length
-     * {@link #IPV4_SIZE} or {@link #IPV6_SIZE}.
+     * {@link NetUtils#IPV4_SIZE} or {@link NetUtils#IPV6_SIZE}.
      **************************************************************************/
     public void set( byte [] address ) throws IllegalArgumentException
     {
@@ -325,11 +344,11 @@ public class IpAddress
 
         switch( address.length )
         {
-            case IPV4_SIZE:
+            case NetUtils.IPV4_SIZE:
                 v = IpVersion.IPV4;
                 break;
 
-            case IPV6_SIZE:
+            case NetUtils.IPV6_SIZE:
                 v = IpVersion.IPV6;
                 break;
 
@@ -371,7 +390,8 @@ public class IpAddress
      * Sets this address to the provided address.
      * @param address the IP to set this address to.
      * @throws IllegalStateException if {@link InetAddress#getAddress()} returns
-     * an array that is not of length {@link #IPV4_SIZE} or {@link #IPV6_SIZE}.
+     * an array that is not of length {@link NetUtils#IPV4_SIZE} or
+     * {@link NetUtils#IPV6_SIZE}.
      **************************************************************************/
     public void setInetAddress( InetAddress address )
         throws IllegalStateException
@@ -448,6 +468,10 @@ public class IpAddress
         if( obj == null )
         {
             return false;
+        }
+        else if( this == obj )
+        {
+            return true;
         }
         else if( obj instanceof IpAddress )
         {
@@ -572,16 +596,18 @@ public class IpAddress
     }
 
     /***************************************************************************
-     * @param value
-     * @return
-     * @throws IllegalArgumentException
+     * Gets the byte values of the provided IPv6 address.
+     * @param value the hextets of an IPv6 address
+     * @return the byte array of the address.
+     * @throws IllegalArgumentException if the length of the provided hextets is
+     * not {@link NetUtils#HEXTET_COUNT}.
      **************************************************************************/
     private static byte [] toOctets( short [] value )
         throws IllegalArgumentException
     {
-        byte [] addr = new byte[IPV6_SIZE];
+        byte [] addr = new byte[NetUtils.IPV6_SIZE];
 
-        if( value.length != HEXTET_COUNT )
+        if( value.length != NetUtils.HEXTET_COUNT )
         {
             throw new IllegalArgumentException(
                 "Cannot set an IPv6 address with " + value.length +
@@ -597,59 +623,6 @@ public class IpAddress
         }
 
         return addr;
-    }
-
-    /***************************************************************************
-     *
-     **************************************************************************/
-    public enum IpVersion implements INamedValue
-    {
-        /** IP version 4 */
-        IPV4( IPV4_SIZE, "IPv4" ),
-        /** IP version 6 */
-        IPV6( IPV6_SIZE, "IPv6" );
-
-        /** The number of bytes in this IP version. */
-        public final int byteCount;
-        /** The name of this IP version. */
-        public final String name;
-
-        /**
-         * @param byteCount the number of bytes in this IP version.
-         * @param name the name of this IP version.
-         */
-        private IpVersion( int byteCount, String name )
-        {
-            this.byteCount = byteCount;
-            this.name = name;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getName()
-        {
-            return name;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getValue()
-        {
-            return byteCount;
-        }
-
-        /**
-         * @param id
-         * @return
-         */
-        public static IpVersion fromId( byte id )
-        {
-            return INamedValue.fromValue( id, values(), null );
-        }
     }
 
     /***************************************************************************

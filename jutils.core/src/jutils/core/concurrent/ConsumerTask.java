@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import jutils.core.time.NanoWatch;
-
 /*******************************************************************************
  * Used to process data that is collected by a separate thread. When this task
  * has data AND has a chance to process said data, it will call the sub-class's
@@ -61,7 +59,7 @@ public class ConsumerTask<T> implements ITask
         // Thread.currentThread().getName() );
 
         List<T> items = new ArrayList<>();
-        NanoWatch watch = new NanoWatch();
+        // NanoWatch watch = new NanoWatch();
 
         // acceptInput.set( true );
 
@@ -71,9 +69,9 @@ public class ConsumerTask<T> implements ITask
 
             if( size < 1 )
             {
-                watch.start();
+                // watch.start();
                 dataReady.mawait( 400 );
-                watch.stop();
+                // watch.stop();
                 size = data.size();
             }
 
@@ -85,18 +83,18 @@ public class ConsumerTask<T> implements ITask
                 // LogUtils.printDebug( "Waited %d",
                 // watch.getElapsed() / 1000000 );
 
-                watch.start();
+                // watch.start();
                 for( T item : items )
                 {
                     consumer.consume( item, handler );
                 }
                 items.clear();
-                watch.stop();
+                // watch.stop();
 
                 // LogUtils.printDebug( "Sent %d message in %d", size,
                 // watch.getElapsed() / 1000000 );
 
-                watch.reset();
+                // watch.reset();
             }
         }
 
@@ -153,11 +151,12 @@ public class ConsumerTask<T> implements ITask
             try
             {
                 data.put( obj );
-                dataReady.signal();
             }
             catch( InterruptedException e )
             {
             }
+
+            dataReady.signal();
         }
     }
 
