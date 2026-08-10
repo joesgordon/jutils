@@ -1,63 +1,66 @@
-package jutils.core.ui.event;
+package jutils.multicon.ui.links;
 
-import java.util.LinkedList;
+import java.io.IOException;
+
+import javax.swing.JComponent;
+
+import jutils.multicon.links.ILink;
+import jutils.multicon.links.SerialLink;
+import jutils.multicon.ui.ILinkView;
+import jutils.platform.ui.SerialConsoleView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class RunnableList
+public class SerialLinkView implements ILinkView
 {
     /**  */
-    private LinkedList<Runnable> listeners;
+    private final SerialLink link;
+    /**  */
+    private final SerialConsoleView view;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public RunnableList()
+    public SerialLinkView()
     {
-        listeners = new LinkedList<Runnable>();
+        this.link = new SerialLink();
+        this.view = new SerialConsoleView();
     }
 
     /***************************************************************************
-     * @param r
+     * {@inheritDoc}
      **************************************************************************/
-    public void addListener( Runnable r )
+    @Override
+    public JComponent getView()
     {
-        listeners.addFirst( r );
+        return view.getView();
     }
 
     /***************************************************************************
-     * @param r
+     * {@inheritDoc}
      **************************************************************************/
-    public void removeListener( Runnable r )
+    @Override
+    public ILink getLink()
     {
-        listeners.remove( r );
+        return link;
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
-    public void fireListeners()
+    @Override
+    public void bind() throws IOException
     {
-        for( Runnable r : listeners )
-        {
-            r.run();
-        }
+        // TODO Auto-generated method stub
     }
 
     /***************************************************************************
-     * @return
+     * {@inheritDoc}
      **************************************************************************/
-    public int size()
+    @Override
+    public void unbind() throws IOException
     {
-        return listeners.size();
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public void removeAll()
-    {
-        listeners.clear();
+        // TODO Auto-generated method stub
     }
 }

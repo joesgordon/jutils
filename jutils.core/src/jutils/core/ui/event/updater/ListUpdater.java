@@ -8,7 +8,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /*******************************************************************************
- * 
+ * @param <T>
  ******************************************************************************/
 public class ListUpdater<T> implements ListSelectionListener
 {

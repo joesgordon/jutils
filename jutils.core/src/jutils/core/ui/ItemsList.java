@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.EmptyBorder;
 
 import jutils.core.ui.model.CollectionListModel;
@@ -15,23 +16,23 @@ import jutils.core.ui.model.LabelListCellRenderer;
 import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
 
 /*******************************************************************************
- * @param <D>
+ * @param <T>
  ******************************************************************************/
-public class ItemsList<D> extends JList<D>
+public class ItemsList<T> extends JList<T>
 {
     /**  */
     private static final long serialVersionUID = 1043132025374075714L;
 
     /**  */
-    private final CollectionListModel<D> listModel;
+    private final CollectionListModel<T> listModel;
     /**  */
-    private final ItemsListModel<D> itemModel;
+    private final ItemsListModel<T> itemModel;
 
     /***************************************************************************
      * @param itemModel
      * @param listModel
      **************************************************************************/
-    public ItemsList( ItemsListModel<D> itemModel )
+    public ItemsList( ItemsListModel<T> itemModel )
     {
         this( itemModel, new CollectionListModel<>() );
     }
@@ -40,16 +41,37 @@ public class ItemsList<D> extends JList<D>
      * @param itemModel
      * @param listModel
      **************************************************************************/
-    public ItemsList( ItemsListModel<D> itemModel,
-        CollectionListModel<D> listModel )
+    public ItemsList( ItemsListModel<T> itemModel,
+        CollectionListModel<T> listModel )
+    {
+        this( itemModel, listModel, new LabelListCellRenderer<T>(
+            new DescriptorListCellLabelDecorator<T>( itemModel ) ) );
+    }
+
+    /***************************************************************************
+     * @param itemModel
+     * @param renderer
+     **************************************************************************/
+    public ItemsList( ItemsListModel<T> itemModel,
+        ListCellRenderer<T> renderer )
+    {
+        this( itemModel, new CollectionListModel<>(), renderer );
+    }
+
+    /***************************************************************************
+     * @param itemModel
+     * @param listModel
+     * @param renderer
+     **************************************************************************/
+    public ItemsList( ItemsListModel<T> itemModel,
+        CollectionListModel<T> listModel, ListCellRenderer<T> renderer )
     {
         super( listModel );
 
         this.listModel = listModel;
         this.itemModel = itemModel;
 
-        setCellRenderer( new LabelListCellRenderer<D>(
-            new DescriptorListCellLabelDecorator<D>( itemModel ) ) );
+        setCellRenderer( renderer );
     }
 
     /***************************************************************************
@@ -76,7 +98,7 @@ public class ItemsList<D> extends JList<D>
      * @param index
      * @return
      **************************************************************************/
-    public D getItem( int index )
+    public T getItem( int index )
     {
         return listModel.get( index );
     }
@@ -99,9 +121,17 @@ public class ItemsList<D> extends JList<D>
     /***************************************************************************
      * @param items
      **************************************************************************/
-    public void setItems( List<D> items )
+    public void setItems( List<T> items )
     {
         listModel.setData( items );
+    }
+
+    /***************************************************************************
+     * @param item
+     **************************************************************************/
+    public void addItem( T item )
+    {
+        listModel.add( item );
     }
 
     /***************************************************************************
@@ -110,6 +140,14 @@ public class ItemsList<D> extends JList<D>
     public int getItemCount()
     {
         return listModel.getSize();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public List<T> getItems()
+    {
+        return listModel.getData();
     }
 
     /***************************************************************************

@@ -4,7 +4,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 import jutils.core.ValidationException;
 import jutils.core.io.IDataSerializer;
@@ -115,7 +114,7 @@ public class EndPoint
     /***************************************************************************
      * @return
      **************************************************************************/
-    public SocketAddress getInetSocketAddress()
+    public InetSocketAddress getInetSocketAddress()
     {
         return new InetSocketAddress( address.getInetAddress(), port );
     }

@@ -130,6 +130,7 @@
   - Add a Color Map dropdown.
   - Brightness/Contrast
 - [General] Define the Raw Image Album format and add to open/save support. Default save to this format.
+- Add D86 (DN) Dimeter Calculation
 
 [Top](#jutils-to-do-list)
 

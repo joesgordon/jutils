@@ -40,25 +40,33 @@ public class UdpConfig
     }
 
     /***************************************************************************
-     * @param inputs
+     * @param config
      **************************************************************************/
-    public UdpConfig( UdpConfig inputs )
+    public UdpConfig( UdpConfig config )
     {
         this();
 
-        this.localPort = inputs.localPort;
-        if( inputs.nic != null )
+        set( config );
+    }
+
+    /***************************************************************************
+     * @param config
+     **************************************************************************/
+    public void set( UdpConfig config )
+    {
+        this.localPort = config.localPort;
+        if( config.nic != null )
         {
-            this.nic.set( inputs.nic );
+            this.nic.set( config.nic );
         }
-        this.broadcast = inputs.broadcast;
-        if( inputs.multicast != null )
+        this.broadcast = config.broadcast;
+        if( config.multicast != null )
         {
-            this.multicast.set( inputs.multicast );
+            this.multicast.set( config.multicast );
         }
-        this.timeout = inputs.timeout;
-        this.reuse = inputs.reuse;
-        this.loopback = inputs.loopback;
-        this.ttl = inputs.ttl;
+        this.timeout = config.timeout;
+        this.reuse = config.reuse;
+        this.loopback = config.loopback;
+        this.ttl = config.ttl;
     }
 }

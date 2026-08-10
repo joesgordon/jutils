@@ -1,20 +1,11 @@
 package jutils.core.net;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import jutils.core.io.IOUtils;
 
 /*******************************************************************************
  * 
@@ -22,31 +13,20 @@ import jutils.core.io.IOUtils;
 public class TcpConnection implements IConnection
 {
     /**  */
-    private final TcpInputs inputs;
-    /**  */
-    private final Socket socket;
+    private final TcpConfig inputs;
     /**  */
     private final byte [] rxBuffer;
     /**  */
     private final List<Runnable> disconnetListeners;
-
     /**  */
-    private final InetAddress remoteAddress;
-    /**  */
-    private final int remotePort;
-    /**  */
-    private final BufferedInputStream input;
-    /**  */
-    private final OutputStream output;
+    private final TcpSocket socket;
 
     /***************************************************************************
      * @param inputs
-     * @param disconnetCallback
-     * @throws IOException
      **************************************************************************/
-    public TcpConnection( TcpInputs inputs ) throws IOException
+    public TcpConnection()
     {
-        this( inputs, null );
+        this( null );
     }
 
     /***************************************************************************
@@ -54,97 +34,17 @@ public class TcpConnection implements IConnection
      * @param disconnetCallback
      * @throws IOException
      **************************************************************************/
-    TcpConnection( Socket socket ) throws IOException
+    TcpConnection( TcpSocket socket )
     {
-        this( createInputs( socket ), socket );
-    }
-
-    /***************************************************************************
-     * @param inputs
-     * @param socket
-     * @throws IOException
-     **************************************************************************/
-    private TcpConnection( TcpInputs inputs, Socket socket ) throws IOException
-    {
-        if( inputs == null && socket == null )
-        {
-            throw new IllegalArgumentException(
-                "Cannot create a TcpConnection with no socket or configuration" );
-        }
-
-        if( socket == null )
-        {
-            socket = createSocket( inputs );
-        }
-
-        this.inputs = inputs;
-        this.socket = socket;
-
-        InputStream inStream = socket.getInputStream();
-
+        this.inputs = new TcpConfig();
         this.rxBuffer = new byte[65535];
         this.disconnetListeners = new ArrayList<>();
+        this.socket = socket;
 
-        this.remoteAddress = socket.getInetAddress();
-        this.remotePort = socket.getPort();
-        this.input = new BufferedInputStream( inStream,
-            IOUtils.DEFAULT_BUF_SIZE );
-        this.output = socket.getOutputStream();
-
-        socket.setSoTimeout( inputs.timeout );
-    }
-
-    /***************************************************************************
-     * @param socket
-     * @return
-     **************************************************************************/
-    private static TcpInputs createInputs( Socket socket )
-    {
-        TcpInputs inputs = new TcpInputs();
-
-        inputs.localPort = socket.getLocalPort();
-        inputs.nic.setInetAddress( socket.getLocalAddress() );
-        inputs.remoteAddress.setInetAddress(
-            ( ( InetSocketAddress )socket.getRemoteSocketAddress() ).getAddress() );
-        inputs.remotePort = socket.getPort();
-        try
+        if( socket != null )
         {
-            inputs.timeout = socket.getSoTimeout();
+            inputs.set( socket.getConfig() );
         }
-        catch( SocketException e )
-        {
-            inputs.timeout = -1;
-        }
-
-        return inputs;
-    }
-
-    /***************************************************************************
-     * @param inputs
-     * @return
-     * @throws UnknownHostException
-     * @throws IOException
-     **************************************************************************/
-    private static Socket createSocket( TcpInputs inputs )
-        throws UnknownHostException, IOException
-    {
-        Socket socket = null;
-
-        // socket = new Socket( inputs.remoteAddress.getInetAddress(),
-        // inputs.remotePort, nicAddr, inputs.localPort );
-
-        socket = new Socket();
-
-        InetSocketAddress local = new InetSocketAddress(
-            inputs.nic.getInetAddress(), inputs.localPort );
-        InetSocketAddress remote = new InetSocketAddress(
-            inputs.remoteAddress.getInetAddress(), inputs.remotePort );
-
-        socket.bind( local );
-        socket.setSoTimeout( inputs.timeout );
-        socket.connect( remote, inputs.timeout );
-
-        return socket;
     }
 
     /***************************************************************************
@@ -159,6 +59,16 @@ public class TcpConnection implements IConnection
     }
 
     /***************************************************************************
+     * @param config
+     * @throws IOException
+     **************************************************************************/
+    public void open( TcpConfig config ) throws IOException
+    {
+        socket.open( config );
+        this.inputs.set( socket.getConfig() );
+    }
+
+    /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
@@ -166,12 +76,6 @@ public class TcpConnection implements IConnection
     {
         if( socket != null )
         {
-            socket.shutdownInput();
-            socket.shutdownOutput();
-
-            input.close();
-            output.flush();
-            output.close();
             socket.close();
         }
     }
@@ -184,26 +88,19 @@ public class TcpConnection implements IConnection
     {
         try
         {
-            @SuppressWarnings( "resource")
-            OutputStream outStream = socket.getOutputStream();
-            outStream.write( contents );
+            int len = socket.send( contents );
+            byte [] bytes = Arrays.copyOf( contents, len );
+            NetMessage msg = new NetMessage( false, inputs.local, inputs.remote,
+                bytes );
+
+            return msg;
         }
         catch( SocketTimeoutException ex )
         {
             fireDisconnected();
-            return null;
         }
 
-        NetMessage msg = new NetMessage( false, getLocal(), getRemote(),
-            contents );
-
-        msg.local.address.setInetAddress( socket.getLocalAddress() );
-        msg.local.port = socket.getLocalPort();
-
-        msg.remote.address.setInetAddress( remoteAddress );
-        msg.remote.port = remotePort;
-
-        return msg;
+        return null;
     }
 
     /***************************************************************************
@@ -212,7 +109,7 @@ public class TcpConnection implements IConnection
     @Override
     public NetMessage receiveMessage() throws IOException
     {
-        int len = input.read( rxBuffer );
+        int len = socket.receive( rxBuffer );
 
         if( len == -1 )
         {
@@ -247,9 +144,9 @@ public class TcpConnection implements IConnection
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public String getNic()
+    public EndPoint getLocal()
     {
-        return socket.getLocalAddress().getHostAddress();
+        return new EndPoint( inputs.local );
     }
 
     /***************************************************************************
@@ -258,25 +155,7 @@ public class TcpConnection implements IConnection
     @Override
     public EndPoint getRemote()
     {
-        EndPoint ep = new EndPoint();
-
-        ep.address.setInetAddress( remoteAddress );
-        ep.port = remotePort;
-
-        return ep;
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public EndPoint getLocal()
-    {
-        EndPoint ep = new EndPoint();
-
-        ep.address.setInetAddress( socket.getLocalAddress() );
-        ep.port = socket.getLocalPort();
-
-        return ep;
+        return new EndPoint( inputs.remote );
     }
 
     /***************************************************************************
@@ -284,11 +163,7 @@ public class TcpConnection implements IConnection
      **************************************************************************/
     public IpAddress getRemoteAddress()
     {
-        IpAddress addr = new IpAddress();
-
-        addr.setInetAddress( remoteAddress );
-
-        return addr;
+        return new IpAddress( inputs.remote.address );
     }
 
     /***************************************************************************
@@ -296,7 +171,7 @@ public class TcpConnection implements IConnection
      **************************************************************************/
     public int getRemotePort()
     {
-        return remotePort;
+        return inputs.remote.port;
     }
 
     /***************************************************************************
@@ -311,17 +186,17 @@ public class TcpConnection implements IConnection
     /***************************************************************************
      * @return
      **************************************************************************/
-    public TcpInputs getInputs()
+    public TcpConfig getInputs()
     {
-        return new TcpInputs( inputs );
+        return new TcpConfig( inputs );
     }
 
     /***************************************************************************
      * @param on
      * @throws SocketException
      **************************************************************************/
-    public void setTcpNoDelay( boolean on ) throws SocketException
+    public void setTcpNoDelay( boolean on ) throws IOException
     {
-        socket.setTcpNoDelay( on );
+        socket.setNoDelay( on );
     }
 }

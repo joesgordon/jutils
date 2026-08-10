@@ -1,7 +1,6 @@
 package jutils.multicon.ui;
 
 import java.awt.Font;
-import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,7 +11,7 @@ import jutils.core.ui.ListView.IListViewModel;
 import jutils.core.ui.ListView.SelectionMode;
 import jutils.core.ui.model.IView;
 import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
-import jutils.multicon.data.ConnectionType;
+import jutils.multicon.data.LinkType;
 
 /*******************************************************************************
  * 
@@ -20,7 +19,7 @@ import jutils.multicon.data.ConnectionType;
 public class NewConnectionView implements IView<JComponent>
 {
     /**  */
-    private final ItemListView<ConnectionType> typeList;
+    private final ItemListView<LinkType> typeList;
 
     /***************************************************************************
      * 
@@ -31,23 +30,8 @@ public class NewConnectionView implements IView<JComponent>
             new ConnectionsListModel(), false, false );
 
         typeList.setSelectionMode( SelectionMode.SINGLE_ITEM );
-        typeList.setData( getSortedTypes() );
-        typeList.setItemDecorator( new TypeListCellRenderer() );
-    }
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    private List<ConnectionType> getSortedTypes()
-    {
-        ArrayList<ConnectionType> types = new ArrayList<>(
-            Arrays.asList( ConnectionType.values() ) );
-
-        Collections.sort( types, ( this1, that1 ) -> {
-            return Integer.compare( this1.value, that1.value );
-        } );
-
-        return types;
+        typeList.setData( LinkType.getSortedTypes() );
+        typeList.setItemDecorator( new TypeListCellDecorator() );
     }
 
     /***************************************************************************
@@ -63,13 +47,13 @@ public class NewConnectionView implements IView<JComponent>
      * 
      **************************************************************************/
     private static final class ConnectionsListModel
-        implements IListViewModel<ConnectionType>
+        implements IListViewModel<LinkType>
     {
         /**
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( ConnectionType item )
+        public String getTitle( LinkType item )
         {
             return item.name;
         }
@@ -78,7 +62,7 @@ public class NewConnectionView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public ConnectionType promptForNew( ListView<ConnectionType> view )
+        public LinkType promptForNew( ListView<LinkType> view )
         {
             // TODO Auto-generated method stub
             return null;
@@ -88,15 +72,15 @@ public class NewConnectionView implements IView<JComponent>
     /***************************************************************************
      * 
      **************************************************************************/
-    private static final class TypeListCellRenderer
-        implements IListCellLabelDecorator<ConnectionType>
+    private static final class TypeListCellDecorator
+        implements IListCellLabelDecorator<LinkType>
     {
         /**
          * {@inheritDoc}
          */
         @Override
         public void decorate( JLabel label,
-            JList<? extends ConnectionType> list, ConnectionType value,
+            JList<? extends LinkType> list, LinkType value,
             int index, boolean isSelected, boolean cellHasFocus )
         {
             label.setFont(

@@ -7,7 +7,7 @@ import javax.swing.JList;
 import javax.swing.JTable;
 
 import jutils.core.laf.UIProperty;
-import jutils.core.ui.event.RunnableList;
+import jutils.core.utils.RunnableList;
 
 /*******************************************************************************
  * 
@@ -235,7 +235,7 @@ public class RowHeaderView
         {
             this.rowStart = start;
             this.rowCount = count;
-            callbacks.fireListeners();
+            callbacks.fire();
         }
 
         /**
@@ -262,7 +262,7 @@ public class RowHeaderView
         @Override
         public void addUpdatedListener( Runnable callback )
         {
-            callbacks.addListener( callback );
+            callbacks.add( callback );
         }
     }
 
@@ -312,7 +312,7 @@ public class RowHeaderView
         {
             this.rowStart = start;
             this.rowCount = count;
-            callbacks.fireListeners();
+            callbacks.fire();
         }
 
         /**
@@ -339,7 +339,7 @@ public class RowHeaderView
         @Override
         public void addUpdatedListener( Runnable callback )
         {
-            this.callbacks.addListener( callback );
+            this.callbacks.add( callback );
         }
     }
 }

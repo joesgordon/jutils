@@ -1,20 +1,19 @@
-package jutils.core.ui.event.updater;
+package jutils.core.utils;
 
 import java.util.LinkedList;
 
 /***************************************************************************
- * Defines a class to store and call a list of {@link IUpdater}s.
- * @param <T>
+ * Defines a class to store and call a list of {@link Runnable}s.
  **************************************************************************/
-public class UpdaterList<T>
+public class RunnableList
 {
     /** The listeners to be called. */
-    private LinkedList<IUpdater<T>> listeners;
+    private LinkedList<Runnable> listeners;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public UpdaterList()
+    public RunnableList()
     {
         listeners = new LinkedList<>();
     }
@@ -22,7 +21,7 @@ public class UpdaterList<T>
     /***************************************************************************
      * @param l
      **************************************************************************/
-    public void add( IUpdater<T> l )
+    public void add( Runnable l )
     {
         listeners.addFirst( l );
     }
@@ -30,11 +29,11 @@ public class UpdaterList<T>
     /***************************************************************************
      * @param item
      **************************************************************************/
-    public void fire( T item )
+    public void fire()
     {
-        for( IUpdater<T> l : listeners )
+        for( Runnable r : listeners )
         {
-            l.update( item );
+            r.run();
         }
     }
 
@@ -42,7 +41,7 @@ public class UpdaterList<T>
      * @param index
      * @return
      **************************************************************************/
-    public IUpdater<T> get( int index )
+    public Runnable get( int index )
     {
         return listeners.get( index );
     }
@@ -58,7 +57,7 @@ public class UpdaterList<T>
     /***************************************************************************
      * @param l
      **************************************************************************/
-    public void remove( IUpdater<T> l )
+    public void remove( Runnable l )
     {
         listeners.remove( l );
     }

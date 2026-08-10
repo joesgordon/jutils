@@ -11,15 +11,16 @@ import javax.swing.JTabbedPane;
 import jutils.core.OptionUtils;
 import jutils.core.SwingUtils;
 import jutils.core.io.options.OptionsSerializer;
-import jutils.core.net.TcpInputs;
-import jutils.core.net.UdpConfig;
+import jutils.core.net.TcpConfig;
+import jutils.core.net.TcpServerConfig;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.event.WindowCloseListener;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IView;
 import jutils.core.ui.net.TcpInputsView;
-import jutils.core.ui.net.UdpConfigView;
+import jutils.core.ui.net.TcpServerConfigView;
 import jutils.multicon.*;
+import jutils.multicon.data.UdpInputs;
 import jutils.multicon.ui.net.*;
 
 /*******************************************************************************
@@ -47,12 +48,8 @@ public class MulticonOldFrame implements IView<JFrame>
         frameView.setTitle( "Multicon" );
         frameView.setContent( createContent() );
 
-        frameView.getView().addWindowListener( new WindowCloseListener( () -> {
-            for( IBindableView<?> view : views )
-            {
-                closeView( view );
-            }
-        } ) );
+        frameView.getView().addWindowListener(
+            new WindowCloseListener( () -> handleWindowClosed() ) );
     }
 
     /***************************************************************************
@@ -64,19 +61,19 @@ public class MulticonOldFrame implements IView<JFrame>
         IUpdater<IBindableView<?>> u = null;
         BindableFavView<?> favView;
 
-        UdpConfigView udpView = new UdpConfigView();
+        UdpInputsView udpView = new UdpInputsView();
         TcpInputsView tcpClientView = new TcpInputsView( false );
-        TcpInputsView tcpServerView = new TcpInputsView( true );
+        TcpServerConfigView tcpServerView = new TcpServerConfigView( true );
 
         OptionsSerializer<MulticonOptions> userio = MulticonMain.getUserData();
         MulticonOptions options = userio.getOptions();
 
-        udpView.setData( new UdpConfig( options.udpInputs ) );
-        tcpClientView.setData( new TcpInputs( options.tcpClientInputs ) );
-        tcpServerView.setData( new TcpInputs( options.tcpServerInputs ) );
+        udpView.setData( new UdpInputs( options.udpInputs ) );
+        tcpClientView.setData( new TcpConfig( options.tcpClientInputs ) );
+        tcpServerView.setData( new TcpServerConfig( options.tcpServerInputs ) );
 
         u = ( v ) -> {
-            options.udpInputs = new UdpConfig( udpView.getData() );
+            options.udpInputs = new UdpInputs( udpView.getData() );
             userio.write( options );
             showView( v );
         };
@@ -85,7 +82,7 @@ public class MulticonOldFrame implements IView<JFrame>
         tabs.addTab( favView.name, favView.getView() );
 
         u = ( v ) -> {
-            options.tcpClientInputs = new TcpInputs( tcpClientView.getData() );
+            options.tcpClientInputs = new TcpConfig( tcpClientView.getData() );
             userio.write( options );
             showView( v );
         };
@@ -94,7 +91,8 @@ public class MulticonOldFrame implements IView<JFrame>
         tabs.addTab( favView.name, favView.getView() );
 
         u = ( v ) -> {
-            options.tcpServerInputs = new TcpInputs( tcpServerView.getData() );
+            options.tcpServerInputs = new TcpServerConfig(
+                tcpServerView.getData() );
             userio.write( options );
             showView( v );
         };
@@ -113,6 +111,17 @@ public class MulticonOldFrame implements IView<JFrame>
         views.add( view );
 
         showBindingFrame( view, getView() );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private void handleWindowClosed()
+    {
+        for( IBindableView<?> view : views )
+        {
+            closeView( view );
+        }
     }
 
     /***************************************************************************

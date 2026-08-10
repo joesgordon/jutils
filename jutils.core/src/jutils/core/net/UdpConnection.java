@@ -18,15 +18,25 @@ public class UdpConnection implements IConnection
     private int remotePort;
 
     /***************************************************************************
+     * 
+     **************************************************************************/
+    public UdpConnection()
+    {
+        this.socket = new UdpSocket();
+        this.remoteAddress = null;
+        this.remotePort = -1;
+    }
+
+    /***************************************************************************
      * @param config
      * @param remote
      * @throws IOException
      * @throws SocketException
      **************************************************************************/
-    public UdpConnection( UdpConfig config, EndPoint remote )
+    public void open( UdpConfig config, EndPoint remote )
         throws IOException, SocketException
     {
-        this.socket = NetUtils.openUdpSocket( config );
+        NetUtils.openUdpSocket( this.socket, config );
 
         setRemote( remote );
     }
@@ -75,9 +85,9 @@ public class UdpConnection implements IConnection
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public String getNic()
+    public EndPoint getLocal()
     {
-        return socket.getLocal().address.toString();
+        return socket.getLocal();
     }
 
     /***************************************************************************
@@ -95,14 +105,6 @@ public class UdpConnection implements IConnection
     }
 
     /***************************************************************************
-     * @return
-     **************************************************************************/
-    public EndPoint getLocal()
-    {
-        return socket.getLocal();
-    }
-
-    /***************************************************************************
      * @param contents
      * @param toAddr
      * @param toPort
@@ -112,7 +114,6 @@ public class UdpConnection implements IConnection
     public NetMessage sendMessage( byte [] contents, InetAddress toAddr,
         int toPort ) throws IOException
     {
-
         return socket.send( contents, toAddr, toPort );
     }
 
@@ -162,5 +163,13 @@ public class UdpConnection implements IConnection
     public boolean setReceiveTimeout( int milliseconds )
     {
         return socket.setReceiveTimeout( milliseconds );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public boolean isBound()
+    {
+        return socket.isBound();
     }
 }

@@ -6,13 +6,13 @@ import jutils.core.ui.ComponentView;
 import jutils.core.ui.model.IDataView;
 import jutils.core.ui.net.TcpInputsView;
 import jutils.core.ui.net.UdpConfigView;
-import jutils.multicon.data.ConnectionType;
+import jutils.multicon.data.LinkType;
 import jutils.platform.ui.SerialConfigView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class ConnectionTypeView implements IDataView<ConnectionType>
+public class ConnectionTypeView implements IDataView<LinkType>
 {
     /**  */
     private final ComponentView view;
@@ -29,7 +29,7 @@ public class ConnectionTypeView implements IDataView<ConnectionType>
     private final BridgeConfigView bridgeView;
 
     /**  */
-    private ConnectionType type;
+    private LinkType type;
 
     /***************************************************************************
      * 
@@ -57,7 +57,7 @@ public class ConnectionTypeView implements IDataView<ConnectionType>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public ConnectionType getData()
+    public LinkType getData()
     {
         return type;
     }
@@ -66,7 +66,7 @@ public class ConnectionTypeView implements IDataView<ConnectionType>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( ConnectionType data )
+    public void setData( LinkType data )
     {
         this.type = data;
 
@@ -80,7 +80,7 @@ public class ConnectionTypeView implements IDataView<ConnectionType>
                 view.setComponent( tcpConnectView.getView() );
                 break;
 
-            case TCP_LISTEN:
+            case TCP_SERVER:
                 view.setComponent( tcpListenView.getView() );
                 break;
 

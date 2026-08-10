@@ -1,12 +1,10 @@
-package jutils.multicon.ui;
+package jutils.core.net;
 
 import java.io.IOException;
 
 import javax.swing.JComponent;
 
 import jutils.core.OptionUtils;
-import jutils.core.net.IConnection;
-import jutils.core.net.NetMessage;
 import jutils.core.ui.MessageInputView;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.event.updater.IUpdater;

@@ -8,6 +8,7 @@ import jutils.core.net.UdpConfig;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.fields.BooleanFormField;
 import jutils.core.ui.fields.IDataFormField;
+import jutils.core.ui.fields.IFormField;
 import jutils.core.ui.fields.IntegerFormField;
 import jutils.core.ui.fields.UsableFormField;
 import jutils.core.ui.model.IDataView;
@@ -24,9 +25,9 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
     /**  */
     private final StandardFormView form;
     /**  */
-    private final IntegerFormField localPortField;
-    /**  */
     private final IDataFormField<IpAddress> nicField;
+    /**  */
+    private final PortField localPortField;
     /**  */
     private final BooleanFormField broadcastField;
     /**  */
@@ -41,9 +42,6 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
     private final IntegerFormField ttlField;
 
     /**  */
-    private final boolean advanced;
-
-    /**  */
     private final AggregateValidityChangedManager validityManager;
 
     /**  */
@@ -54,20 +52,10 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
      **************************************************************************/
     public UdpConfigView()
     {
-        this( true );
-    }
-
-    /***************************************************************************
-     * @param advanced shows time-to-live and timeout fields.
-     **************************************************************************/
-    public UdpConfigView( boolean advanced )
-    {
-        this.advanced = advanced;
-
         this.form = new StandardFormView();
 
-        this.localPortField = new IntegerFormField( "Local Port", 0, 65535 );
         this.nicField = new NetworkInterfaceField( "NIC" );
+        this.localPortField = new PortField( "Local Port" );
 
         this.broadcastField = new BooleanFormField( "Broadcast" );
         this.multicastField = new UsableFormField<>(
@@ -81,20 +69,17 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
 
         this.validityManager = new AggregateValidityChangedManager();
 
-        form.addField( localPortField );
         form.addField( nicField );
+        form.addField( localPortField );
 
-        if( advanced )
-        {
-            form.addField( broadcastField );
-            form.addField( multicastField );
+        form.addField( broadcastField );
+        form.addField( multicastField );
 
-            form.addField( timeoutField );
-            form.addField( reuseField );
+        form.addField( timeoutField );
+        form.addField( reuseField );
 
-            form.addField( loopbackField );
-            form.addField( ttlField );
-        }
+        form.addField( loopbackField );
+        form.addField( ttlField );
 
         setData( new UdpConfig() );
 
@@ -124,7 +109,33 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
     }
 
     /***************************************************************************
-     * 
+     * @param field
+     **************************************************************************/
+    public void addField( IFormField field )
+    {
+        form.addField( field );
+    }
+
+    /***************************************************************************
+     * @param editable
+     **************************************************************************/
+    public void setEditable( boolean editable )
+    {
+        localPortField.setEditable( editable );
+        nicField.setEditable( editable );
+
+        broadcastField.setEditable( editable );
+        multicastField.setEditable( editable );
+
+        timeoutField.setEditable( editable );
+        reuseField.setEditable( editable );
+
+        loopbackField.setEditable( editable );
+        ttlField.setEditable( editable );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JComponent getView()
@@ -133,7 +144,7 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public UdpConfig getData()
@@ -142,7 +153,7 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public void setData( UdpConfig data )
@@ -160,24 +171,6 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
 
         loopbackField.setValue( inputs.loopback );
         ttlField.setValue( inputs.ttl );
-    }
-
-    /***************************************************************************
-     * @param enabled
-     **************************************************************************/
-    public void setEnabled( boolean enabled )
-    {
-        localPortField.setEditable( enabled );
-        nicField.setEditable( enabled );
-
-        broadcastField.setEditable( enabled && advanced );
-        multicastField.setEditable( enabled && advanced );
-
-        timeoutField.setEditable( enabled && advanced );
-        reuseField.setEditable( enabled && advanced );
-
-        loopbackField.setEditable( enabled && advanced );
-        ttlField.setEditable( enabled && advanced );
     }
 
     /***************************************************************************

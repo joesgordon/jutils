@@ -1,86 +1,55 @@
 package jutils.multicon.ui.net;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.SocketException;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 
 import jutils.core.io.options.OptionsSerializer;
 import jutils.core.net.*;
-import jutils.core.ui.StandardFormView;
-import jutils.core.ui.net.EndPointField;
-import jutils.core.ui.net.UdpConfigView;
 import jutils.core.ui.validation.Validity;
 import jutils.multicon.MulticonMain;
 import jutils.multicon.MulticonOptions;
+import jutils.multicon.data.UdpInputs;
 import jutils.multicon.ui.IConnectionView;
+import jutils.multicon.ui.UdpInputsView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class UdpView implements IConnectionView<UdpConfig>
+public class UdpView implements IConnectionView<UdpInputs>
 {
     /**  */
     public static final String NAME = "UDP Connection";
 
     /**  */
-    private final JComponent view;
-    /**  */
-    private final UdpConfigView inputsView;
-    /**  */
-    private final EndPointField remoteField;
+    private final UdpInputsView inputsView;
 
     /**  */
-    private UdpConnection connection;
+    private final UdpConnection connection;
 
     /***************************************************************************
      * 
      **************************************************************************/
+    @SuppressWarnings( "resource")
     public UdpView()
     {
-        this.inputsView = new UdpConfigView();
-        this.remoteField = new EndPointField( "Remote" );
-        this.view = createView();
-        this.connection = null;
-
-        OptionsSerializer<MulticonOptions> userio = MulticonMain.getUserData();
-
-        inputsView.setData( new UdpConfig( userio.getOptions().udpInputs ) );
-
-        inputsView.addValidityChanged( ( v ) -> inputsValidityChanged( v ) );
-
-        remoteField.setUpdater( ( d ) -> connection.setRemote( d ) );
+        this( new UdpConnection() );
     }
 
     /***************************************************************************
-     * @return
+     * @param connection
      **************************************************************************/
-    private JComponent createView()
+    public UdpView( UdpConnection connection )
     {
-        JPanel panel = new JPanel( new GridBagLayout() );
-        GridBagConstraints constraints;
+        this.connection = connection;
+        this.inputsView = new UdpInputsView();
 
-        constraints = new GridBagConstraints( 0, 0, 1, 1, 1.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( inputsView.getView(), constraints );
+        OptionsSerializer<MulticonOptions> userio = MulticonMain.getUserData();
 
-        StandardFormView form = new StandardFormView();
+        inputsView.setData( new UdpInputs( userio.getOptions().udpInputs ) );
 
-        form.addField( remoteField );
-
-        constraints = new GridBagConstraints( 0, 1, 1, 1, 1.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( form.getView(), constraints );
-
-        constraints = new GridBagConstraints( 0, 2, 1, 1, 1.0, 1.0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-            new Insets( 0, 0, 0, 0 ), 0, 0 );
-        panel.add( Box.createHorizontalStrut( 0 ), constraints );
-
-        return panel;
+        inputsView.addValidityChanged( ( v ) -> inputsValidityChanged( v ) );
     }
 
     /***************************************************************************
@@ -89,14 +58,14 @@ public class UdpView implements IConnectionView<UdpConfig>
     @Override
     public JComponent getView()
     {
-        return view;
+        return inputsView.getView();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public UdpConfig getData()
+    public UdpInputs getData()
     {
         return inputsView.getData();
     }
@@ -105,7 +74,7 @@ public class UdpView implements IConnectionView<UdpConfig>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( UdpConfig data )
+    public void setData( UdpInputs data )
     {
         inputsView.setData( data );
     }
@@ -123,15 +92,28 @@ public class UdpView implements IConnectionView<UdpConfig>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public IConnection createConnection() throws SocketException, IOException
+    public void connect() throws SocketException, IOException
     {
-        UdpConfig inputs = inputsView.getData();
-        EndPoint remote = remoteField.getValue();
+        UdpInputs inputs = inputsView.getData();
 
-        UdpConnection connection = new UdpConnection( inputs, remote );
+        connection.open( inputs.config, inputs.remote );
+    }
 
-        this.connection = connection;
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void disconnect() throws IOException
+    {
+        connection.close();
+    }
 
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public IConnection getConnection()
+    {
         return connection;
     }
 
@@ -141,7 +123,7 @@ public class UdpView implements IConnectionView<UdpConfig>
     @Override
     public void setEditable( boolean editable )
     {
-        inputsView.setEnabled( editable );
+        inputsView.setEditable( editable );
     }
 
     /***************************************************************************
@@ -151,7 +133,7 @@ public class UdpView implements IConnectionView<UdpConfig>
     {
         if( connection != null && v.isValid )
         {
-            EndPoint remote = remoteField.getValue();
+            EndPoint remote = inputsView.getData().remote;
 
             connection.setRemote( remote );
         }

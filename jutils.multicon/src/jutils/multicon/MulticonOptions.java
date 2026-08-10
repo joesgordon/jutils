@@ -6,6 +6,7 @@ import java.util.*;
 import jutils.core.ValidationException;
 import jutils.core.io.xs.XsUtils;
 import jutils.core.net.*;
+import jutils.multicon.data.UdpInputs;
 
 /*******************************************************************************
  * 
@@ -13,11 +14,11 @@ import jutils.core.net.*;
 public class MulticonOptions
 {
     /**  */
-    public TcpInputs tcpServerInputs;
+    public TcpServerConfig tcpServerInputs;
     /**  */
-    public TcpInputs tcpClientInputs;
+    public TcpConfig tcpClientInputs;
     /**  */
-    public UdpConfig udpInputs;
+    public UdpInputs udpInputs;
     /**  */
     public MulticastInputs multicastInputs;
     /**  */
@@ -28,9 +29,9 @@ public class MulticonOptions
      **************************************************************************/
     public MulticonOptions()
     {
-        this.tcpServerInputs = new TcpInputs();
-        this.tcpClientInputs = new TcpInputs();
-        this.udpInputs = new UdpConfig();
+        this.tcpServerInputs = new TcpServerConfig();
+        this.tcpClientInputs = new TcpConfig();
+        this.udpInputs = new UdpInputs();
         this.multicastInputs = new MulticastInputs();
         this.favs = new HashMap<>();
     }
@@ -40,12 +41,13 @@ public class MulticonOptions
      **************************************************************************/
     public MulticonOptions( MulticonOptions options )
     {
-        this.tcpServerInputs = options.tcpServerInputs == null ? new TcpInputs()
-            : new TcpInputs( options.tcpServerInputs );
-        this.tcpClientInputs = options.tcpClientInputs == null ? new TcpInputs()
-            : new TcpInputs( options.tcpClientInputs );
-        this.udpInputs = options.udpInputs == null ? new UdpConfig()
-            : new UdpConfig( options.udpInputs );
+        this.tcpServerInputs = options.tcpServerInputs == null
+            ? new TcpServerConfig()
+            : new TcpServerConfig( options.tcpServerInputs );
+        this.tcpClientInputs = options.tcpClientInputs == null ? new TcpConfig()
+            : new TcpConfig( options.tcpClientInputs );
+        this.udpInputs = options.udpInputs == null ? new UdpInputs()
+            : new UdpInputs( options.udpInputs );
         this.multicastInputs = options.multicastInputs == null
             ? new MulticastInputs()
             : new MulticastInputs( options.multicastInputs );

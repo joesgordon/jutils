@@ -60,18 +60,23 @@ public class Usable<T>
             this.data = usable.data;
         }
     }
-	
-	/***************************************************************************
-	 * @param errMsg
+
+    /***************************************************************************
+     * @param errMsg
      * @param name
-     * @param usable     
+     * @param usable
+     * @return
      **************************************************************************/
-    public static void validate( String errMsg, String name, Usable<?> usable )        
+    public static String validateSilent( String name, Usable<?> usable )
     {
+        String errMsg = "";
+
         if( usable.isUsed && usable.data == null )
         {
-            errMsg.format( "%s is used but not defined. \n", name );
+            errMsg = String.format( "%s is used but not defined.\n", name );
         }
+
+        return errMsg;
     }
 
     /***************************************************************************

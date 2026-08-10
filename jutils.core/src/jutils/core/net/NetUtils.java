@@ -216,6 +216,18 @@ public final class NetUtils
     {
         UdpSocket socket = new UdpSocket();
 
+        return openUdpSocket( socket, inputs );
+    }
+
+    /***************************************************************************
+     * Opens a UDP socket with the provided inputs.
+     * @param inputs the configuration of the socket.
+     * @return the created, open socket.
+     * @throws IOException any error that occurs.
+     **************************************************************************/
+    public static UdpSocket openUdpSocket( UdpSocket socket, UdpConfig inputs )
+        throws IOException
+    {
         if( inputs.multicast.isUsed && inputs.multicast.data == null )
         {
             throw new IOException( "Multicast group not specified" );

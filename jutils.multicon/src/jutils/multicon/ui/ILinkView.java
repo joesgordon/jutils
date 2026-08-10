@@ -1,41 +1,35 @@
 package jutils.multicon.ui;
 
 import java.io.IOException;
-import java.net.SocketException;
 
-import jutils.core.net.IConnection;
-import jutils.core.ui.model.IDataView;
+import javax.swing.JComponent;
+
+import jutils.core.ui.model.IView;
+import jutils.multicon.links.ILink;
 
 /*******************************************************************************
- * Defines a view that can create connections.
- * @param <T>
+ * 
  ******************************************************************************/
-public interface IConnectionView<T> extends IDataView<T>
+public interface ILinkView extends IView<JComponent>
 {
     /***************************************************************************
-     * @return the string describing the connection this view represents.
+     * {@inheritDoc}
      **************************************************************************/
-    public String getTitle();
-
-    /***************************************************************************
-     * @return
-     * @throws SocketException
-     * @throws IOException
-     **************************************************************************/
-    public void connect() throws SocketException, IOException;
-
-    /***************************************************************************
-     * @throws IOException
-     **************************************************************************/
-    public void disconnect() throws IOException;
+    @Override
+    public JComponent getView();
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public IConnection getConnection();
+    public ILink getLink();
 
     /***************************************************************************
-     * @param editable
+     * @throws IOException
      **************************************************************************/
-    public void setEditable( boolean editable );
+    public void bind() throws IOException;
+
+    /***************************************************************************
+     * @throws IOException
+     **************************************************************************/
+    public void unbind() throws IOException;
 }

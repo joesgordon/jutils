@@ -71,7 +71,8 @@ public class ListView<T> implements IDataView<List<T>>
     private List<T> items;
 
     /***************************************************************************
-     * Creates a new view with the provided data view and model.
+     * Creates a new view with the provided data view and model that shows
+     * add/remove and up/down (reorder) buttons.
      * @param itemsModel the model for this view.
      **************************************************************************/
     public ListView( IListViewModel<T> itemsModel )

@@ -1,100 +1,63 @@
-package jutils.multicon.ui.net;
-
-import java.io.IOException;
-import java.net.SocketException;
+package jutils.core.ui.net;
 
 import javax.swing.JComponent;
 
-import jutils.core.io.options.OptionsSerializer;
-import jutils.core.net.*;
-import jutils.core.ui.net.TcpInputsView;
-import jutils.multicon.MulticonMain;
-import jutils.multicon.MulticonOptions;
-import jutils.multicon.ui.IConnectionView;
+import jutils.core.ui.event.updater.IUpdater;
+import jutils.core.ui.fields.IDataFormField;
+import jutils.core.ui.fields.IntegerFormField;
+import jutils.core.ui.validation.IValidityChangedListener;
+import jutils.core.ui.validation.Validity;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TcpClientView implements IConnectionView<TcpConfig>
+public class PortField implements IDataFormField<Integer>
 {
     /**  */
-    public static final String NAME = "TCP Client";
-
-    /**  */
-    private final TcpConnection connection;
-    /**  */
-    private final TcpInputsView inputsView;
+    private final IntegerFormField field;
 
     /***************************************************************************
-     * 
+     * @param name
      **************************************************************************/
-    public TcpClientView()
+    public PortField( String name )
     {
-        this( new TcpConnection() );
-    }
-
-    /***************************************************************************
-     * @param connection
-     **************************************************************************/
-    public TcpClientView( TcpConnection connection )
-    {
-        this.connection = connection;
-        this.inputsView = new TcpInputsView( false );
-
-        OptionsSerializer<MulticonOptions> userio = MulticonMain.getUserData();
-
-        inputsView.setData(
-            new TcpConfig( userio.getOptions().tcpClientInputs ) );
+        this.field = new IntegerFormField( name, 0, 65535 );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public JComponent getView()
+    public Integer getValue()
     {
-        return inputsView.getView();
+        return field.getValue();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public String getTitle()
+    public void setValue( Integer value )
     {
-        return NAME;
+        field.setValue( value );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void connect() throws SocketException, IOException
+    public void setUpdater( IUpdater<Integer> updater )
     {
-        TcpConfig inputs = inputsView.getData();
-
-        OptionsSerializer<MulticonOptions> userio = MulticonMain.getUserData();
-        MulticonOptions options = userio.getOptions();
-        options.tcpClientInputs = new TcpConfig( inputs );
-        userio.write( options );
+        field.setUpdater( updater );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void disconnect() throws IOException
+    public IUpdater<Integer> getUpdater()
     {
-        connection.close();
-    }
-
-    /***************************************************************************
-     * {@inheritDoc}
-     **************************************************************************/
-    @Override
-    public IConnection getConnection()
-    {
-        return connection;
+        return field.getUpdater();
     }
 
     /***************************************************************************
@@ -103,32 +66,51 @@ public class TcpClientView implements IConnectionView<TcpConfig>
     @Override
     public void setEditable( boolean editable )
     {
-        inputsView.setEnabled( editable );
+        field.setEditable( editable );
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public TcpConfig getData()
+    public String getName()
     {
-        return inputsView.getData();
+        return field.getName();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( TcpConfig data )
+    public JComponent getView()
     {
-        inputsView.setData( data );
+        return field.getView();
     }
 
     /***************************************************************************
-     * @param inputs
+     * {@inheritDoc}
      **************************************************************************/
-    public void setInputs( TcpConfig inputs )
+    @Override
+    public void addValidityChanged( IValidityChangedListener l )
     {
-        inputsView.setData( inputs );
+        field.addValidityChanged( l );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void removeValidityChanged( IValidityChangedListener l )
+    {
+        field.removeValidityChanged( l );
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public Validity getValidity()
+    {
+        return field.getValidity();
     }
 }

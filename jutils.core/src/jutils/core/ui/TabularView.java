@@ -13,8 +13,8 @@ import javax.swing.table.TableCellRenderer;
 import jutils.core.ui.RowHeaderView.IRowHeaderModel;
 import jutils.core.ui.RowHeaderView.IRowListModel;
 import jutils.core.ui.event.ResizingTableModelListener;
-import jutils.core.ui.event.RunnableList;
 import jutils.core.ui.model.IView;
+import jutils.core.utils.RunnableList;
 
 /*******************************************************************************
  * 
@@ -561,7 +561,7 @@ public class TabularView implements IView<JComponent>
         @Override
         public void addUpdatedListener( Runnable callback )
         {
-            updaters.addListener( callback );
+            updaters.add( callback );
         }
 
         /**
@@ -577,7 +577,7 @@ public class TabularView implements IView<JComponent>
          */
         public void fireUpdates()
         {
-            updaters.fireListeners();
+            updaters.fire();
         }
     }
 

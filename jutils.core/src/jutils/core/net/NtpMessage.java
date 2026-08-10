@@ -159,8 +159,9 @@ public class NtpMessage
 
         remote.set( ntpServer, 5000 );
 
-        try( UdpConnection socket = new UdpConnection( inputs, remote ) )
+        try( UdpConnection socket = new UdpConnection() )
         {
+            socket.open( inputs, remote );
             try( ByteArrayStream bs = new ByteArrayStream( 1024 );
                  DataStream s = new DataStream( bs, ByteOrdering.BIG_ENDIAN ) )
             {

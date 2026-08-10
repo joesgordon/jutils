@@ -1,45 +1,44 @@
-package jutils.core.net;
+package jutils.multicon.links;
 
-import java.io.Closeable;
-import java.io.IOException;
+import jutils.multicon.data.LinkType;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public interface IConnection extends Closeable
+public interface ILink
 {
     /***************************************************************************
-     * Sends the message provided using this connection.
-     * @param buf the bytes to send
-     * @return the message sent or {@code null} on error.
-     * @throws IOException any exception generated.
-     **************************************************************************/
-    public NetMessage sendMessage( byte [] buf ) throws IOException;
-
-    /***************************************************************************
      * @return
-     * @throws IOException
      **************************************************************************/
-    public NetMessage receiveMessage() throws IOException;
-
-    /***************************************************************************
-     * @param listener
-     **************************************************************************/
-    public void addDisconnectedListener( Runnable listener );
+    public String getDescription();
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public EndPoint getLocal();
+    public LinkType getType();
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public EndPoint getRemote();
+    public int getRxMsgCount();
 
     /***************************************************************************
-     * {@inheritDoc}
+     * @return
      **************************************************************************/
-    @Override
-    public void close() throws IOException;
+    public long getRxByteCount();
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public int getTxMsgCount();
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public long getTxByteCount();
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public boolean isConnected();
 }

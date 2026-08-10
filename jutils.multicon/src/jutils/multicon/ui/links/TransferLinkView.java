@@ -1,45 +1,65 @@
-package jutils.core.net;
+package jutils.multicon.ui.links;
 
-import java.io.Closeable;
 import java.io.IOException;
+
+import javax.swing.JComponent;
+
+import jutils.multicon.links.ILink;
+import jutils.multicon.links.TransferLink;
+import jutils.multicon.ui.ILinkView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public interface IConnection extends Closeable
+public class TransferLinkView implements ILinkView
 {
-    /***************************************************************************
-     * Sends the message provided using this connection.
-     * @param buf the bytes to send
-     * @return the message sent or {@code null} on error.
-     * @throws IOException any exception generated.
-     **************************************************************************/
-    public NetMessage sendMessage( byte [] buf ) throws IOException;
+    /**  */
+    private final TransferLink link;
 
     /***************************************************************************
-     * @return
-     * @throws IOException
+     * 
      **************************************************************************/
-    public NetMessage receiveMessage() throws IOException;
-
-    /***************************************************************************
-     * @param listener
-     **************************************************************************/
-    public void addDisconnectedListener( Runnable listener );
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public EndPoint getLocal();
-
-    /***************************************************************************
-     * @return
-     **************************************************************************/
-    public EndPoint getRemote();
+    public TransferLinkView()
+    {
+        this.link = new TransferLink();
+    }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void close() throws IOException;
+    public JComponent getView()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public ILink getLink()
+    {
+        return link;
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void bind() throws IOException
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    /***************************************************************************
+     * {@inheritDoc}
+     **************************************************************************/
+    @Override
+    public void unbind() throws IOException
+    {
+        // TODO Auto-generated method stub
+
+    }
 }

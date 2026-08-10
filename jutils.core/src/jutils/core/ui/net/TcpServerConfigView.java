@@ -2,80 +2,58 @@ package jutils.core.ui.net;
 
 import javax.swing.JComponent;
 
-import jutils.core.net.IpAddress;
-import jutils.core.net.TcpConfig;
+import jutils.core.net.TcpServerConfig;
 import jutils.core.ui.StandardFormView;
-import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.fields.IntegerFormField;
 import jutils.core.ui.model.IDataView;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TcpInputsView implements IDataView<TcpConfig>
+public class TcpServerConfigView implements IDataView<TcpServerConfig>
 {
     /**  */
     private final StandardFormView form;
-
     /**  */
-    private final IDataFormField<IpAddress> localAddressField;
+    private final NetworkInterfaceField nicField;
     /**  */
     private final IntegerFormField localPortField;
     /**  */
-    private final IpAddressField remoteAddressField;
-    /**  */
-    private final IntegerFormField remotePortField;
+    private final IntegerFormField backlogField;
     /**  */
     private final IntegerFormField timeoutField;
 
     /**  */
-    private TcpConfig inputs;
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public TcpInputsView( boolean isServer )
-    {
-        this( isServer, true );
-    }
+    private TcpServerConfig config;
 
     /***************************************************************************
      * @param advanced shows time-to-live and timeout fields.
      **************************************************************************/
-    public TcpInputsView( boolean isServer, boolean advanced )
+    public TcpServerConfigView( boolean advanced )
     {
         this.form = new StandardFormView();
 
         this.localPortField = new IntegerFormField( "Local Port", 0, 65535 );
-        this.localAddressField = new NetworkInterfaceField( "NIC" );
+        this.nicField = new NetworkInterfaceField( "NIC" );
 
-        this.remoteAddressField = new IpAddressField( "Remote Address" );
-        this.remotePortField = new IntegerFormField( "Remote Port", 0, 65535 );
-
+        this.backlogField = new IntegerFormField( "Backlog", 1, null );
         this.timeoutField = new IntegerFormField( "Timeout", "ms", 0, null );
 
         form.addField( localPortField );
-        form.addField( localAddressField );
-
-        if( !isServer )
-        {
-            form.addField( remoteAddressField );
-            form.addField( remotePortField );
-        }
+        form.addField( nicField );
 
         if( advanced )
         {
+            form.addField( backlogField );
             form.addField( timeoutField );
         }
 
-        setData( new TcpConfig() );
+        setData( new TcpServerConfig() );
 
-        localAddressField.setUpdater( ( d ) -> inputs.local.address.set( d ) );
-        localPortField.setUpdater( ( d ) -> inputs.local.port = d );
-        timeoutField.setUpdater( ( d ) -> inputs.timeout = d );
-        remoteAddressField.setUpdater(
-            ( d ) -> inputs.remote.address.set( d ) );
-        remotePortField.setUpdater( ( d ) -> inputs.remote.port = d );
+        nicField.setUpdater( ( d ) -> config.local.address.set( d ) );
+        localPortField.setUpdater( ( d ) -> config.local.port = d );
+        backlogField.setUpdater( ( d ) -> config.backlog = d );
+        timeoutField.setUpdater( ( d ) -> config.timeout = d );
     }
 
     /***************************************************************************
@@ -91,26 +69,24 @@ public class TcpInputsView implements IDataView<TcpConfig>
      * 
      **************************************************************************/
     @Override
-    public TcpConfig getData()
+    public TcpServerConfig getData()
     {
-        return inputs;
+        return config;
     }
 
     /***************************************************************************
      * 
      **************************************************************************/
     @Override
-    public void setData( TcpConfig data )
+    public void setData( TcpServerConfig data )
     {
-        this.inputs = data;
+        this.config = data;
 
-        localAddressField.setValue( inputs.local.address );
-        localPortField.setValue( inputs.local.port );
+        nicField.setValue( config.local.address );
+        localPortField.setValue( config.local.port );
 
-        timeoutField.setValue( inputs.timeout );
-
-        remoteAddressField.setValue( inputs.remote.address );
-        remotePortField.setValue( inputs.remote.port );
+        backlogField.setValue( config.backlog );
+        timeoutField.setValue( config.timeout );
     }
 
     /***************************************************************************
@@ -119,11 +95,9 @@ public class TcpInputsView implements IDataView<TcpConfig>
     public void setEnabled( boolean enabled )
     {
         localPortField.setEditable( enabled );
-        localAddressField.setEditable( enabled );
+        nicField.setEditable( enabled );
 
+        backlogField.setEditable( enabled );
         timeoutField.setEditable( enabled );
-
-        remoteAddressField.setEditable( enabled );
-        remotePortField.setEditable( enabled );
     }
 }

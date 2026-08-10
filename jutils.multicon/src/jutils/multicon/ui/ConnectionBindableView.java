@@ -14,7 +14,7 @@ import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.net.NetMessagesView;
 
 /*******************************************************************************
- *
+ * @param <T>
  ******************************************************************************/
 public class ConnectionBindableView<T> implements IBindableView<T>
 {
@@ -38,7 +38,9 @@ public class ConnectionBindableView<T> implements IBindableView<T>
     {
         this.connectionView = connectionView;
 
-        IUpdater<NetMessage> msgNotifier = ( m ) -> SwingUtilities.invokeLater(
+        IUpdater<NetMessage> msgNotifier;
+
+        msgNotifier = ( m ) -> SwingUtilities.invokeLater(
             () -> addMessage( m ) );
 
         this.messagesPanel = new NetMessagesView();
@@ -63,18 +65,24 @@ public class ConnectionBindableView<T> implements IBindableView<T>
         TitleView cfgTitlePanel = new TitleView( "Configuration",
             connectionView.getView() );
 
-        panel.add( cfgTitlePanel.getView(),
+        JPanel cfgComp = cfgTitlePanel.getView();
+
+        Dimension dim = cfgComp.getMinimumSize();
+        dim.width = 200;
+        cfgComp.setMinimumSize( dim );
+
+        panel.add( cfgComp,
             new GridBagConstraints( 0, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets( 6, 6, 4, 6 ), 0, 0 ) );
-
-        panel.add( inputPanel.getView(),
-            new GridBagConstraints( 0, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets( 0, 6, 6, 6 ), 0, 0 ) );
+                new Insets( 6, 6, 6, 0 ), 0, 0 ) );
 
         panel.add( msgsTitlePanel.getView(),
-            new GridBagConstraints( 1, 0, 1, 2, 1.0, 1.0,
+            new GridBagConstraints( 1, 0, 1, 1, 1.0, 1.0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets( 6, 6, 6, 6 ), 0, 0 ) );
+
+        panel.add( inputPanel.getView(),
+            new GridBagConstraints( 0, 1, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets( 0, 6, 6, 6 ), 0, 0 ) );
 
@@ -114,8 +122,10 @@ public class ConnectionBindableView<T> implements IBindableView<T>
     @Override
     public void bind() throws IOException
     {
+        connectionView.connect();
+
         @SuppressWarnings( "resource")
-        IConnection connection = connectionView.createConnection();
+        IConnection connection = connectionView.getConnection();
 
         setConnection( connection );
     }
@@ -195,7 +205,7 @@ public class ConnectionBindableView<T> implements IBindableView<T>
      * @param connection
      * @throws IOException
      **************************************************************************/
-    public void setConnection( IConnection connection )
+    private void setConnection( IConnection connection )
     {
         if( commModel != null )
         {

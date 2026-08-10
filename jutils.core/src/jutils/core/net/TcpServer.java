@@ -2,9 +2,12 @@ package jutils.core.net;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 
 /*******************************************************************************
  * 
@@ -12,18 +15,35 @@ import java.net.SocketTimeoutException;
 public class TcpServer implements Closeable
 {
     /**  */
-    private final ServerSocket server;
+    private final TcpServerConfig config;
+    /**  */
+    private ServerSocketChannel server;
+    /**  */
+    private Selector selector;
 
     /***************************************************************************
-     * @param inputs
+     * 
+     **************************************************************************/
+    public TcpServer()
+    {
+        this.config = new TcpServerConfig();
+    }
+
+    /***************************************************************************
+     * @param config
      * @throws IOException
      **************************************************************************/
-    public TcpServer( TcpInputs inputs ) throws IOException
+    public void open( TcpServerConfig config ) throws IOException
     {
-        this.server = new ServerSocket( inputs.localPort, 64,
-            inputs.nic.getInetAddress() );
+        this.config.set( config );
 
-        server.setSoTimeout( inputs.timeout );
+        this.server = ServerSocketChannel.open();
+
+        InetSocketAddress local = config.local.getInetSocketAddress();
+
+        server.bind( local, config.backlog );
+
+        server.register( selector, SelectionKey.OP_ACCEPT );
     }
 
     /***************************************************************************
@@ -43,9 +63,22 @@ public class TcpServer implements Closeable
     @SuppressWarnings( "resource")
     public TcpConnection accept() throws IOException, SocketTimeoutException
     {
-        Socket socket = server.accept();
+        TcpConnection connection = null;
 
-        TcpConnection connection = new TcpConnection( socket );
+        int count = selector.select( config.timeout );
+
+        if( count > 0 )
+        {
+            // Iterate through selector.selectedKeys().iterator() and use
+            // ServerSocketChannel channel = (ServerSocketChannel)
+            // key.channel() if this is ever changed to listen to multiple
+            // ports.
+
+            SocketChannel socket = server.accept();
+            TcpSocket tcp = TcpSocket.createFrom( socket );
+
+            connection = new TcpConnection( tcp );
+        }
 
         return connection;
     }

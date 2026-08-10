@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
 import jutils.core.concurrent.*;
 import jutils.core.io.options.OptionsSerializer;
 import jutils.core.net.*;
-import jutils.core.ui.net.TcpInputsView;
+import jutils.core.ui.net.TcpServerConfigView;
 import jutils.multicon.MulticonMain;
 import jutils.multicon.MulticonOptions;
 import jutils.multicon.ui.*;
@@ -17,13 +17,13 @@ import jutils.multicon.ui.*;
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class TcpServerView implements IBindableView<TcpInputs>
+public class TcpServerView implements IBindableView<TcpServerConfig>
 {
     /**  */
     public static final String NAME = "TCP Server";
 
     /**  */
-    private final TcpInputsView inputsView;
+    private final TcpServerConfigView configView;
 
     /**  */
     private TaskThread acceptThread;
@@ -33,12 +33,12 @@ public class TcpServerView implements IBindableView<TcpInputs>
      **************************************************************************/
     public TcpServerView()
     {
-        this.inputsView = new TcpInputsView( true, true );
+        this.configView = new TcpServerConfigView( true );
 
         OptionsSerializer<MulticonOptions> userio = MulticonMain.getUserData();
 
-        inputsView.setData(
-            new TcpInputs( userio.getOptions().tcpServerInputs ) );
+        configView.setData(
+            new TcpServerConfig( userio.getOptions().tcpServerInputs ) );
     }
 
     /***************************************************************************
@@ -47,11 +47,11 @@ public class TcpServerView implements IBindableView<TcpInputs>
     @Override
     public void bind() throws IOException
     {
-        TcpInputs inputs = inputsView.getData();
+        TcpServerConfig inputs = configView.getData();
 
         OptionsSerializer<MulticonOptions> userio = MulticonMain.getUserData();
         MulticonOptions options = userio.getDefault();
-        options.tcpServerInputs = new TcpInputs( inputs );
+        options.tcpServerInputs = new TcpServerConfig( inputs );
         userio.write( options );
 
         AcceptTask task = new AcceptTask( inputs, this );
@@ -59,7 +59,7 @@ public class TcpServerView implements IBindableView<TcpInputs>
 
         acceptThread.start();
 
-        inputsView.setEnabled( false );
+        configView.setEnabled( false );
     }
 
     /***************************************************************************
@@ -77,7 +77,7 @@ public class TcpServerView implements IBindableView<TcpInputs>
             this.acceptThread = null;
         }
 
-        inputsView.setEnabled( true );
+        configView.setEnabled( true );
     }
 
     /***************************************************************************
@@ -86,7 +86,7 @@ public class TcpServerView implements IBindableView<TcpInputs>
     @Override
     public JComponent getView()
     {
-        return inputsView.getView();
+        return configView.getView();
     }
 
     /***************************************************************************
@@ -111,18 +111,18 @@ public class TcpServerView implements IBindableView<TcpInputs>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public TcpInputs getData()
+    public TcpServerConfig getData()
     {
-        return inputsView.getData();
+        return configView.getData();
     }
 
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( TcpInputs data )
+    public void setData( TcpServerConfig data )
     {
-        inputsView.setData( data );
+        configView.setData( data );
     }
 
     /***************************************************************************
@@ -130,16 +130,14 @@ public class TcpServerView implements IBindableView<TcpInputs>
      **************************************************************************/
     private void handleConnectionAccepted( TcpConnection connection )
     {
-        TcpClientView clientView = new TcpClientView();
-        ConnectionBindableView<
-            TcpInputs> connectionView = new ConnectionBindableView<>(
-                new TcpClientView() );
+        TcpClientView clientView = new TcpClientView( connection );
+        ConnectionBindableView<TcpConfig> connectionView;
 
-        TcpInputs inputs = connection.getInputs();
+        connectionView = new ConnectionBindableView<>( clientView );
+
+        TcpConfig inputs = connection.getInputs();
 
         clientView.setInputs( inputs );
-
-        connectionView.setConnection( connection );
 
         MulticonOldFrame.showBindingFrame( connectionView, getView(), false );
     }
@@ -150,17 +148,17 @@ public class TcpServerView implements IBindableView<TcpInputs>
     private static class AcceptTask implements ITask
     {
         /**  */
-        private final TcpInputs inputs;
+        private final TcpServerConfig config;
         /**  */
         private final TcpServerView view;
 
         /**
-         * @param inputs
+         * @param config
          * @param view
          */
-        public AcceptTask( TcpInputs inputs, TcpServerView view )
+        public AcceptTask( TcpServerConfig config, TcpServerView view )
         {
-            this.inputs = inputs;
+            this.config = config;
             this.view = view;
         }
 
@@ -170,8 +168,10 @@ public class TcpServerView implements IBindableView<TcpInputs>
         @Override
         public void run( ITaskHandler stopManager )
         {
-            try( TcpServer server = new TcpServer( inputs ) )
+            try( TcpServer server = new TcpServer() )
             {
+                server.open( config );
+
                 while( stopManager.canContinue() )
                 {
                     try
