@@ -187,17 +187,25 @@ public class ScheduledTask
      **************************************************************************/
     private void execute()
     {
-        if( count == 0 )
+        try
         {
-            this.runTimer.start();
+            if( count == 0 )
+            {
+                this.runTimer.start();
+            }
+
+            task.run( count, runTimer.getElapsed() );
+
+            count++;
+            if( count < 0 )
+            {
+                count = 0;
+            }
         }
-
-        task.run( count, runTimer.getElapsed() );
-
-        count++;
-        if( count < 0 )
+        catch( Throwable th )
         {
-            count = 0;
+            LogUtils.printError( "Task scheduled @ %.1f Hz has failed", rate );
+            th.printStackTrace();
         }
     }
 
