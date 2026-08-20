@@ -12,7 +12,9 @@ public class CyclingSpinnerListModel implements SpinnerModel
     /**  */
     private final SpinnerListModel baseModel;
     /**  */
-    private final Object firstValue, lastValue;
+    private final Object firstValue;
+    /**  */
+    private final Object lastValue;
 
     /**  */
     private SpinnerModel linkedModel = null;

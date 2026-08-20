@@ -60,13 +60,13 @@ public class Usable<T>
             this.data = usable.data;
         }
     }
-	
-	/***************************************************************************
-	 * @param errMsg
+
+    /***************************************************************************
+     * @param errMsg
      * @param name
-     * @param usable     
+     * @param usable
      **************************************************************************/
-    public static void validate( String errMsg, String name, Usable<?> usable )        
+    public static void validate( String errMsg, String name, Usable<?> usable )
     {
         if( usable.isUsed && usable.data == null )
         {

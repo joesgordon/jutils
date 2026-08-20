@@ -1,5 +1,6 @@
 package jutils.core.concurrent;
 
+import jutils.core.io.LogUtils;
 import jutils.core.ui.event.ItemActionListener;
 
 /*******************************************************************************
@@ -8,7 +9,7 @@ import jutils.core.ui.event.ItemActionListener;
 public class Taskable implements Runnable
 {
     /** Object used to hold the continue/stop state. */
-    private final ITaskHandler stopper;
+    private final ITaskHandler handler;
     /** The task to run */
     private final ITask task;
 
@@ -34,7 +35,7 @@ public class Taskable implements Runnable
      **************************************************************************/
     public Taskable( ITask task, ITaskHandler stopManager )
     {
-        this.stopper = stopManager;
+        this.handler = stopManager;
         this.task = task;
         this.started = false;
     }
@@ -47,7 +48,7 @@ public class Taskable implements Runnable
      **************************************************************************/
     public void addFinishedListener( ItemActionListener<Boolean> l )
     {
-        stopper.addFinishedListener( l );
+        handler.addFinishedListener( l );
     }
 
     /***************************************************************************
@@ -56,7 +57,7 @@ public class Taskable implements Runnable
      **************************************************************************/
     public void removeFinishedListener( ItemActionListener<Boolean> l )
     {
-        stopper.removeFinishedListener( l );
+        handler.removeFinishedListener( l );
     }
 
     /***************************************************************************
@@ -65,15 +66,17 @@ public class Taskable implements Runnable
     @Override
     public void run()
     {
+        LogUtils.printDebug( "Taskable.run() Started" );
         this.started = true;
         try
         {
-            task.run( stopper );
+            task.run( handler );
         }
         finally
         {
-            stopper.signalFinished();
+            handler.signalFinished();
         }
+        LogUtils.printDebug( "Taskable.run() Finished" );
     }
 
     /***************************************************************************
@@ -81,7 +84,7 @@ public class Taskable implements Runnable
      **************************************************************************/
     public void stop()
     {
-        stopper.stop();
+        handler.stop();
     }
 
     /***************************************************************************
@@ -100,7 +103,7 @@ public class Taskable implements Runnable
      **************************************************************************/
     public boolean isFinished()
     {
-        return stopper.isFinished();
+        return handler.isFinished();
     }
 
     /***************************************************************************
@@ -120,7 +123,7 @@ public class Taskable implements Runnable
      **************************************************************************/
     public boolean waitFor()
     {
-        return stopper.waitFor();
+        return handler.waitFor();
     }
 
     /***************************************************************************
@@ -132,7 +135,7 @@ public class Taskable implements Runnable
      **************************************************************************/
     public boolean waitFor( long milliseconds )
     {
-        return stopper.waitFor( milliseconds );
+        return handler.waitFor( milliseconds );
     }
 
     /***************************************************************************
@@ -143,6 +146,6 @@ public class Taskable implements Runnable
      **************************************************************************/
     public boolean stopAndWaitFor()
     {
-        return stopper.stopAndWaitFor();
+        return handler.stopAndWaitFor();
     }
 }
