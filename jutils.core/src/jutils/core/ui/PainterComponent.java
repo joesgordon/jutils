@@ -53,8 +53,6 @@ public class PainterComponent extends JPanel
 
         Graphics2D g = ( Graphics2D )graphics;
 
-        setHighQualityRendering( g );
-
         paintable.paint( g );
     }
 
