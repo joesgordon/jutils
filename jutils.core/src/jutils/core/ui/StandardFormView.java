@@ -1,5 +1,6 @@
 package jutils.core.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,7 +21,9 @@ import jutils.core.ui.model.IView;
  ******************************************************************************/
 public class StandardFormView implements IView<JPanel>
 {
+    /**  */
     public static final int DEFAULT_FIELD_MARGIN = 4;
+    /**  */
     public static final int DEFAULT_FORM_MARGIN = 8;
 
     /**  */
@@ -36,11 +39,13 @@ public class StandardFormView implements IView<JPanel>
     /**  */
     private final List<FieldInfo> fields;
 
-    /**  */
+    /** Labels above fields if {@code true}; on the left otherwise. */
     private final boolean vertical;
 
     /***************************************************************************
-     * 
+     * Creates a form with {@link #DEFAULT_FIELD_MARGIN} pixels between labels
+     * and fields, {@link #DEFAULT_FORM_MARGIN} pixels between fields, and
+     * labels to the left of fields.
      **************************************************************************/
     public StandardFormView()
     {
@@ -56,7 +61,7 @@ public class StandardFormView implements IView<JPanel>
     }
 
     /***************************************************************************
-     * @param formMargin
+     * @param fieldMargin
      **************************************************************************/
     public StandardFormView( int fieldMargin )
     {
@@ -75,7 +80,7 @@ public class StandardFormView implements IView<JPanel>
     /***************************************************************************
      * @param fieldMargin
      * @param formMargin
-     * @param horizontal
+     * @param vertical
      **************************************************************************/
     public StandardFormView( int fieldMargin, int formMargin, boolean vertical )
     {
@@ -98,7 +103,7 @@ public class StandardFormView implements IView<JPanel>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JPanel getView()
@@ -232,6 +237,17 @@ public class StandardFormView implements IView<JPanel>
     public void setVisible( IFormField f, boolean visible )
     {
         setVisible( f.getView(), visible );
+    }
+
+    /***************************************************************************
+     * @param foreground
+     **************************************************************************/
+    public void setLabelForeground( Color foreground )
+    {
+        for( FieldInfo fi : fields )
+        {
+            fi.label.setForeground( foreground );
+        }
     }
 
     /***************************************************************************
