@@ -15,6 +15,8 @@ public class InsomniaMain
      **************************************************************************/
     public static void main( String [] args )
     {
+        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
+
         AppRunner.invokeLater( () -> createFrame() );
     }
 

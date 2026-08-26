@@ -39,7 +39,7 @@ public final class Utils
     public static final String NEW_LINE;
 
     /**  */
-    public static final String DEGREES = "\u00B0C";
+    public static final String DEGREES = "\u00B0";
 
     static
     {
