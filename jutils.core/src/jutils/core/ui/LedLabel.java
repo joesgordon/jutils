@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 /*******************************************************************************
  * 
@@ -74,6 +75,8 @@ public final class LedLabel
         this.label = new JLabel( icon );
 
         this.label.setText( text );
+
+        label.setHorizontalAlignment( SwingConstants.LEFT );
     }
 
     /***************************************************************************

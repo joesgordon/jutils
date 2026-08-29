@@ -60,6 +60,7 @@ public final class BuklMain
         BuklRunner app = new BuklRunner( configPath, options.verbose,
             options.generateDocs );
         app.run();
+
         return 0;
     }
 

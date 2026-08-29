@@ -66,12 +66,15 @@ public class Usable<T>
      * @param name
      * @param usable
      **************************************************************************/
-    public static void validate( String errMsg, String name, Usable<?> usable )
+    public static String validate( String errMsg, String name,
+        Usable<?> usable )
     {
         if( usable.isUsed && usable.data == null )
         {
-            errMsg.format( "%s is used but not defined. \n", name );
+            return String.format( "%s is used but not defined. \n", name );
         }
+
+        return "";
     }
 
     /***************************************************************************
