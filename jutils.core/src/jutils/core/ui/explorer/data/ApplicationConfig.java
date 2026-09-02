@@ -24,6 +24,11 @@ public class ApplicationConfig implements Comparable<Object>
         this.args = "";
     }
 
+    /***************************************************************************
+     * @param name
+     * @param path
+     * @param args
+     **************************************************************************/
     public ApplicationConfig( String name, File path, String args )
     {
         this.name = name;
@@ -32,7 +37,7 @@ public class ApplicationConfig implements Comparable<Object>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public String toString()
@@ -41,7 +46,7 @@ public class ApplicationConfig implements Comparable<Object>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public int compareTo( Object obj )
@@ -50,7 +55,7 @@ public class ApplicationConfig implements Comparable<Object>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public int hashCode()
@@ -59,7 +64,7 @@ public class ApplicationConfig implements Comparable<Object>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public boolean equals( Object obj )
@@ -71,5 +76,4 @@ public class ApplicationConfig implements Comparable<Object>
 
         return false;
     }
-
 }

@@ -1,6 +1,5 @@
 package jutils.core.concurrent;
 
-import jutils.core.io.LogUtils;
 import jutils.core.ui.event.ItemActionListener;
 
 /*******************************************************************************
@@ -66,8 +65,10 @@ public class Taskable implements Runnable
     @Override
     public void run()
     {
-        LogUtils.printDebug( "Taskable.run() Started" );
+        // LogUtils.printDebug( "Taskable.run() Started" );
+
         this.started = true;
+
         try
         {
             task.run( handler );
@@ -76,7 +77,8 @@ public class Taskable implements Runnable
         {
             handler.signalFinished();
         }
-        LogUtils.printDebug( "Taskable.run() Finished" );
+
+        // LogUtils.printDebug( "Taskable.run() Finished" );
     }
 
     /***************************************************************************

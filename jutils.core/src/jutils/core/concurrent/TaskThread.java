@@ -1,7 +1,5 @@
 package jutils.core.concurrent;
 
-import jutils.core.io.LogUtils;
-
 /*******************************************************************************
  * Defines a thread for {@link ITask}s. A {@link TaskThread} can be started only
  * once just like a {@link Thread}.
@@ -47,15 +45,15 @@ public class TaskThread
      **************************************************************************/
     public void start()
     {
-        LogUtils.printDebug( "TaskThread.start() Started" );
+        // LogUtils.printDebug( "TaskThread.start() Started" );
         if( isFinished() )
         {
-            LogUtils.printDebug( "resetting" );
+            // LogUtils.printDebug( "resetting" );
             reset();
         }
 
         thread.start();
-        LogUtils.printDebug( "TaskThread.start() Finished" );
+        // LogUtils.printDebug( "TaskThread.start() Finished" );
     }
 
     /***************************************************************************
@@ -101,7 +99,9 @@ public class TaskThread
     {
         if( isStarted() )
         {
-            LogUtils.printDebug( "waiting for %s", thread.getName() );
+            // LogUtils.printDebug( "TaskThread.waitFor() waiting for %s",
+            // thread.getName() );
+
             return taskable.waitFor();
         }
 
