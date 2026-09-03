@@ -2,23 +2,21 @@ package jutils.core;
 
 import java.awt.Image;
 import java.awt.Window;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.Line;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Icon;
 
+import jutils.core.concurrent.EventSignal;
+import jutils.core.io.ClipSound;
 import jutils.core.io.IconLoader;
+import jutils.core.utils.IGetter;
 
 /*******************************************************************************
  * Defines the constants needed to access the icons in this library.
@@ -251,58 +249,43 @@ public final class IconConstants
      **************************************************************************/
     public static void playNotify()
     {
-        Runnable r = () -> {
-            try( InputStream is = loader.loader.getInputStream( "done.wav" );
-                 BufferedInputStream sstream = new BufferedInputStream( is ) )
+        Runnable r = () -> executePlayNotify();
+        new Thread( r, "Wave Player" ).start();
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    private static void executePlayNotify()
+    {
+        EventSignal doneSignal = new EventSignal();
+        IGetter<InputStream> opener = () -> loader.loader.getInputStream(
+            "done.wav" );
+        LineListener listener = ( e ) -> {
+            if( e.getType() == LineEvent.Type.STOP )
             {
-                // new JavaSoundAudioClip( is ).play();
-
-                // try( AudioStream audioStream = new AudioStream( is ) )
-                // {
-                // AudioPlayer.player.start( audioStream );
-                // }
-
-                try( AudioInputStream stream = AudioSystem.getAudioInputStream(
-                    sstream ) )
-                {
-                    AudioFormat format = stream.getFormat();
-                    DataLine.Info info = new DataLine.Info( Clip.class,
-                        format );
-
-                    try( Line line = AudioSystem.getLine( info ) )
-                    {
-                        try( Clip clip = ( Clip )line )
-                        {
-                            clip.open( stream );
-                            clip.start();
-
-                            while( !clip.isRunning() )
-                            {
-                                Utils.sleep( 10 );
-                            }
-
-                            while( clip.isRunning() )
-                            {
-                                Utils.sleep( 10 );
-                            }
-                        }
-                    }
-                    catch( LineUnavailableException ex )
-                    {
-                        ex.printStackTrace();
-                    }
-                }
-                catch( UnsupportedAudioFileException ex )
-                {
-                    ex.printStackTrace();
-                }
-            }
-            catch( IOException ex )
-            {
-                ex.printStackTrace();
+                doneSignal.signal();
             }
         };
-        new Thread( r, "Wave Player" ).start();
+
+        try( ClipSound sound = new ClipSound( opener ) )
+        {
+            sound.addLineListener( listener );
+            sound.play();
+            doneSignal.await();
+        }
+        catch( LineUnavailableException ex )
+        {
+            ex.printStackTrace();
+        }
+        catch( UnsupportedAudioFileException ex )
+        {
+            ex.printStackTrace();
+        }
+        catch( IOException ex )
+        {
+            ex.printStackTrace();
+        }
     }
 
     /***************************************************************************
