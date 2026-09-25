@@ -1,6 +1,7 @@
 package jutils.core.concurrent;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -16,12 +17,12 @@ public final class TaskHandler implements ITaskHandler
     /**
      * Execution continues as long as {@code continueRunning} is {@code true}.
      */
-    private volatile boolean continueRunning;
+    private AtomicBoolean continueRunning;
     /**
      * {@code true} after {@link #signalFinished()} called; {@code false}
      * otherwise.
      */
-    private volatile boolean isFinished;
+    private AtomicBoolean isFinished;
     /** Lock used to protect the finished flag and the stop condition. */
     private final ReentrantLock stopLock;
     /** Condition used to signal that execution is complete. */
@@ -36,8 +37,8 @@ public final class TaskHandler implements ITaskHandler
      **************************************************************************/
     public TaskHandler()
     {
-        this.continueRunning = true;
-        this.isFinished = false;
+        this.continueRunning = new AtomicBoolean( true );
+        this.isFinished = new AtomicBoolean( false );
         this.stopLock = new ReentrantLock();
         this.stopCondition = stopLock.newCondition();
         this.finishedListeners = new ItemActionList<Boolean>();
@@ -58,7 +59,7 @@ public final class TaskHandler implements ITaskHandler
     @Override
     public boolean canContinue()
     {
-        return continueRunning;
+        return continueRunning.get();
     }
 
     /***************************************************************************
@@ -67,7 +68,7 @@ public final class TaskHandler implements ITaskHandler
     @Override
     public boolean isFinished()
     {
-        return isFinished;
+        return isFinished.get();
     }
 
     /***************************************************************************
@@ -88,7 +89,7 @@ public final class TaskHandler implements ITaskHandler
         try
         {
             stopLock.lock();
-            isFinished = true;
+            isFinished.set( true );
             stopCondition.signalAll();
         }
         finally
@@ -96,7 +97,7 @@ public final class TaskHandler implements ITaskHandler
             stopLock.unlock();
         }
 
-        finishedListeners.fireListeners( this, continueRunning );
+        finishedListeners.fireListeners( this, continueRunning.get() );
 
         finishedListeners.removeAll();
     }
@@ -107,7 +108,7 @@ public final class TaskHandler implements ITaskHandler
     @Override
     public void stop()
     {
-        continueRunning = false;
+        continueRunning.set( false );
     }
 
     /***************************************************************************
@@ -132,7 +133,7 @@ public final class TaskHandler implements ITaskHandler
 
         try
         {
-            while( !isFinished )
+            while( !isFinished.get() )
             {
                 try
                 {

@@ -1,21 +1,24 @@
 package bukl;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 /*******************************************************************************
- * 
+ * Defines the data that represents the command line arguments for the
+ * application.
  ******************************************************************************/
 public class BuklOptions
 {
-    /**  */
+    /** If help is to be displayed. */
     public boolean help;
-    /**  */
+    /** If verbose information is enabled. */
     public boolean verbose;
-    /**  */
+    /** If javadoc are to be generated. */
     public boolean generateDocs;
-    /**  */
+    /** Path to a properties file. */
     public String configPath;
 
     /***************************************************************************
@@ -84,5 +87,23 @@ public class BuklOptions
     {
         return "-h".equals( arg ) || "--help".equals( arg ) ||
             "help".equals( arg );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public static void printUsage()
+    {
+        System.out.println(
+            "Usage: java bukl.BuklMain [-v] [-d|--doc] [path-to-bukl.properties]" );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public Path getPath()
+    {
+        return configPath != null ? Paths.get( configPath )
+            : Paths.get( "bukl.properties" );
     }
 }

@@ -37,15 +37,15 @@ public final class Utils
     public static final char [] REGEX_METAC;
     /** The new line string for the current system. */
     public static final String NEW_LINE;
-    /** The user's home directory. */
-    public static final String USER_HOME;
+
+    /**  */
+    public static final String DEGREES = "\u00B0";
 
     static
     {
         REGEX_METAC = new char[] { '\\', '^', '|', '[', ']', '(', ')', '$', '.',
             '+', '*', '?', '{', '}' };
         NEW_LINE = SystemProperty.LINE_SEPARATOR.getProperty();
-        USER_HOME = SystemProperty.USER_DIR.getProperty();
     }
 
     /***************************************************************************

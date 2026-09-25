@@ -147,8 +147,8 @@ public final class AppRunner
     public static <T> T invokeOptions( String message, String title,
         T [] options, T defaultValue )
     {
-        OptionsApp<T> app = new OptionsApp<>( message, title, options,
-            defaultValue );
+        OptionsApp<
+            T> app = new OptionsApp<>( message, title, options, defaultValue );
 
         invokeAndWait( app );
 
@@ -286,7 +286,7 @@ public final class AppRunner
     }
 
     /***************************************************************************
-     * @return
+     * 
      **************************************************************************/
     private static void setJGoodiesLaf()
     {

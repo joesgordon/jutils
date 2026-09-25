@@ -1,14 +1,19 @@
 package jutils.core.concurrent;
 
 /*******************************************************************************
- * Defines a thread for {@link ITask}s.
+ * Defines a thread for {@link ITask}s. A {@link TaskThread} can be started only
+ * once just like a {@link Thread}.
  ******************************************************************************/
 public class TaskThread
 {
+    /**  */
+    private final ITask task;
+    /**  */
+    private final String name;
     /** The {@link Runnable} that can be stopped. */
-    private final Taskable runnable;
+    private Taskable taskable;
     /** The thread running the task. */
-    private final Thread thread;
+    private Thread thread;
 
     /***************************************************************************
      * Creates a new thread with the provided task and name.
@@ -17,17 +22,38 @@ public class TaskThread
      **************************************************************************/
     public TaskThread( ITask task, String name )
     {
-        this.runnable = new Taskable( task );
-        this.thread = new Thread( runnable, name );
+        this.task = task;
+        this.name = name;
+
+        this.taskable = new Taskable( task );
+        this.thread = new Thread( taskable, name );
     }
 
     /***************************************************************************
-     * Starts the thread.
+     * 
+     **************************************************************************/
+    public void reset()
+    {
+        this.taskable = new Taskable( task );
+        this.thread = new Thread( taskable, name );
+    }
+
+    /***************************************************************************
+     * Starts the thread by scheduling it to be run. The thread will likely not
+     * be started upon return from this function.
      * @see Thread#start()
      **************************************************************************/
     public void start()
     {
+        // LogUtils.printDebug( "TaskThread.start() Started" );
+        if( isFinished() )
+        {
+            // LogUtils.printDebug( "resetting" );
+            reset();
+        }
+
         thread.start();
+        // LogUtils.printDebug( "TaskThread.start() Finished" );
     }
 
     /***************************************************************************
@@ -44,7 +70,7 @@ public class TaskThread
      **************************************************************************/
     public void stop()
     {
-        runnable.stop();
+        taskable.stop();
     }
 
     /***************************************************************************
@@ -57,7 +83,7 @@ public class TaskThread
     {
         if( isStarted() )
         {
-            return runnable.stopAndWaitFor();
+            return taskable.stopAndWaitFor();
         }
 
         return false;
@@ -73,7 +99,10 @@ public class TaskThread
     {
         if( isStarted() )
         {
-            return runnable.waitFor();
+            // LogUtils.printDebug( "TaskThread.waitFor() waiting for %s",
+            // thread.getName() );
+
+            return taskable.waitFor();
         }
 
         return false;
@@ -85,7 +114,7 @@ public class TaskThread
      **************************************************************************/
     public boolean isStarted()
     {
-        return runnable.isStarted();
+        return taskable.isStarted();
     }
 
     /***************************************************************************
@@ -94,7 +123,7 @@ public class TaskThread
      **************************************************************************/
     public boolean isFinished()
     {
-        return runnable.isFinished();
+        return taskable.isFinished();
     }
 
     /***************************************************************************
@@ -103,7 +132,7 @@ public class TaskThread
      **************************************************************************/
     public boolean isRunning()
     {
-        return runnable.isRunning();
+        return taskable.isRunning();
     }
 
     /***************************************************************************
@@ -112,5 +141,13 @@ public class TaskThread
     public String getName()
     {
         return thread.getName();
+    }
+
+    /***************************************************************************
+     * @param on
+     **************************************************************************/
+    public void setDaemon( boolean on )
+    {
+        thread.setDaemon( on );
     }
 }

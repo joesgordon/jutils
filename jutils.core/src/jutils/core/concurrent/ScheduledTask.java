@@ -28,7 +28,7 @@ public class ScheduledTask
     /** Timer to determine run duration. */
     private final NanoWatch runTimer;
     /**  */
-    private final Thread daemonThread;
+    private TaskThread daemonTask;
 
     /** Scheduler used to start/stop the task. */
     private ScheduledExecutorService scheduler;
@@ -57,19 +57,20 @@ public class ScheduledTask
         this.rate = rate;
         this.period = ( long )( 0.5 + 1e9 / rate );
         this.runTimer = new NanoWatch();
-        this.daemonThread = new Thread( () -> executeDaemon() );
+        this.daemonTask = new TaskThread( ( h ) -> executeDaemon( h ),
+            "ScheduledTaskDaemon" );
 
         this.scheduler = null;
         this.future = null;
         this.count = 0;
 
-        daemonThread.setDaemon( true );
+        daemonTask.setDaemon( true );
     }
 
     /***************************************************************************
-     * 
+     * @param handler
      **************************************************************************/
-    private void executeDaemon()
+    private void executeDaemon( ITaskHandler handler )
     {
         try
         {
@@ -88,7 +89,7 @@ public class ScheduledTask
     {
         if( future == null )
         {
-            this.daemonThread.start();
+            this.daemonTask.start();
             this.count = 0;
             this.scheduler = Executors.newSingleThreadScheduledExecutor();
             this.future = scheduler.scheduleAtFixedRate( () -> execute(), 0,
@@ -114,7 +115,8 @@ public class ScheduledTask
 
             runTimer.stop();
 
-            daemonThread.interrupt();
+            daemonTask.interrupt();
+            daemonTask.stop();
         }
     }
 
@@ -187,17 +189,26 @@ public class ScheduledTask
      **************************************************************************/
     private void execute()
     {
-        if( count == 0 )
+        try
         {
-            this.runTimer.start();
+            if( count == 0 )
+            {
+                this.runTimer.start();
+            }
+
+            task.run( count, runTimer.getElapsed() );
+
+            count++;
+            if( count < 0 )
+            {
+                count = 0;
+            }
         }
-
-        task.run( count, runTimer.getElapsed() );
-
-        count++;
-        if( count < 0 )
+        catch( Throwable th )
         {
-            count = 0;
+            LogUtils.printError( "Task scheduled @ %.1f Hz has failed", rate );
+            th.printStackTrace();
+            throw th;
         }
     }
 
