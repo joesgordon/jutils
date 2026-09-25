@@ -3,7 +3,6 @@ package jutils.core;
 import java.awt.Image;
 import java.awt.Window;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
@@ -15,8 +14,8 @@ import javax.swing.Icon;
 
 import jutils.core.concurrent.EventSignal;
 import jutils.core.io.ClipSound;
+import jutils.core.io.ClipSound.IStreamOpener;
 import jutils.core.io.IconLoader;
-import jutils.core.utils.IGetter;
 
 /*******************************************************************************
  * Defines the constants needed to access the icons in this library.
@@ -259,8 +258,7 @@ public final class IconConstants
     private static void executePlayNotify()
     {
         EventSignal doneSignal = new EventSignal();
-        IGetter<InputStream> opener = () -> loader.loader.getInputStream(
-            "done.wav" );
+        IStreamOpener opener = () -> loader.loader.getInputStream( "done.wav" );
         LineListener listener = ( e ) -> {
             if( e.getType() == LineEvent.Type.STOP )
             {

@@ -2,7 +2,6 @@ package bukl;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /*******************************************************************************
  * Entry point for the Bukl Java bootstrap build tool.
@@ -10,14 +9,14 @@ import java.nio.file.Paths;
 public final class BuklMain
 {
     /***************************************************************************
-     * 
+     * Declare the default and only constructor private to prevent instances.
      **************************************************************************/
     private BuklMain()
     {
     }
 
     /***************************************************************************
-     * @param args
+     * @param args arguments represented by {@link BuklOptions}.
      **************************************************************************/
     public static void main( String [] args )
     {
@@ -39,9 +38,9 @@ public final class BuklMain
     }
 
     /***************************************************************************
-     * @param args
-     * @return
-     * @throws IOException
+     * @param args arguments represented by {@link BuklOptions}.
+     * @return the exit code for the application.
+     * @throws IOException any I/O error that occurs.
      **************************************************************************/
     public static int run( String [] args ) throws IOException
     {
@@ -49,27 +48,16 @@ public final class BuklMain
 
         if( options.help )
         {
-            printUsage();
+            BuklOptions.printUsage();
             return 0;
         }
 
-        Path configPath = options.configPath != null
-            ? Paths.get( options.configPath )
-            : Paths.get( "bukl.properties" );
+        Path configPath = options.getPath();
 
         BuklRunner app = new BuklRunner( configPath, options.verbose,
             options.generateDocs );
         app.run();
 
         return 0;
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    private static void printUsage()
-    {
-        System.out.println(
-            "Usage: java bukl.BuklMain [-v] [-d|--doc] [path-to-bukl.properties]" );
     }
 }

@@ -5,3 +5,4 @@ luminance
 serializer
 toolbar
 popup
+javadoc
