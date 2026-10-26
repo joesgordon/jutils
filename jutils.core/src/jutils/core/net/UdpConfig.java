@@ -8,9 +8,9 @@ import jutils.core.utils.Usable;
 public class UdpConfig
 {
     /**  */
-    public int localPort;
+    public final IpAddress local;
     /**  */
-    public final IpAddress nic;
+    public int localPort;
     /**  */
     public boolean broadcast;
     /**  */
@@ -29,8 +29,8 @@ public class UdpConfig
      **************************************************************************/
     public UdpConfig()
     {
+        this.local = new IpAddress();
         this.localPort = 0;
-        this.nic = new IpAddress();
         this.broadcast = false;
         this.multicast = new Usable<>( false, new IpAddress( 224, 0, 0, 1 ) );
         this.timeout = 500;
@@ -40,7 +40,7 @@ public class UdpConfig
     }
 
     /***************************************************************************
-     * @param config
+     * @param config the configuration to be copied.
      **************************************************************************/
     public UdpConfig( UdpConfig config )
     {
@@ -50,14 +50,15 @@ public class UdpConfig
     }
 
     /***************************************************************************
-     * @param config
+     * @param config the configuration containing the values to copy to this
+     * configuration.
      **************************************************************************/
     public void set( UdpConfig config )
     {
         this.localPort = config.localPort;
-        if( config.nic != null )
+        if( config.local != null )
         {
-            this.nic.set( config.nic );
+            this.local.set( config.local );
         }
         this.broadcast = config.broadcast;
         if( config.multicast != null )

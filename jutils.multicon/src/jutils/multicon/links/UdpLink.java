@@ -38,7 +38,7 @@ public class UdpLink implements ILink
     @Override
     public String getDescription()
     {
-        String txt = String.format( "%s:%d to %s", inputs.config.nic,
+        String txt = String.format( "%s:%d to %s", inputs.config.local,
             inputs.config.localPort, inputs.remote );
         return txt;
     }

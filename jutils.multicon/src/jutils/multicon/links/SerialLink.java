@@ -1,12 +1,23 @@
 package jutils.multicon.links;
 
 import jutils.multicon.data.LinkType;
+import jutils.platform.data.SerialConfig;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
 public class SerialLink implements ILink
 {
+    public final SerialConfig config;
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public SerialLink()
+    {
+        this.config = new SerialConfig();
+    }
+
     /***************************************************************************
      * {@inheritDoc}
      **************************************************************************/
@@ -14,7 +25,7 @@ public class SerialLink implements ILink
     public String getDescription()
     {
         // TODO Auto-generated method stub
-        return "Serial";
+        return String.format( "%s:", config.comPort );
     }
 
     /***************************************************************************

@@ -36,6 +36,9 @@ public class UdpInputsView implements IDataView<UdpInputs>, IValidationField
 
         this.validityManager = new AggregateValidityChangedManager();
 
+        remoteAddressField.getTextField().setColumns( 8 );
+        remotePortField.getTextField().setColumns( 8 );
+
         configView.addField( remoteAddressField );
         configView.addField( remotePortField );
 

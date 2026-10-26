@@ -1,6 +1,7 @@
 package jutils.core.ui.net;
 
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.fields.IDataFormField;
@@ -112,5 +113,13 @@ public class PortField implements IDataFormField<Integer>
     public Validity getValidity()
     {
         return field.getValidity();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JTextField getTextField()
+    {
+        return field.getTextField();
     }
 }

@@ -1,7 +1,9 @@
 package jutils.multicon.ui;
 
+import java.awt.*;
+
 import javax.swing.JComponent;
-import javax.swing.JSplitPane;
+import javax.swing.JPanel;
 
 import jutils.core.ui.ComponentView;
 import jutils.core.ui.event.updater.IUpdater;
@@ -14,8 +16,8 @@ import jutils.multicon.data.LinkType;
  ******************************************************************************/
 public class MulticonView implements IView<JComponent>
 {
-    /** The tabs in the content view. */
-    private final JSplitPane split;
+    /**  */
+    private final JPanel view;
     /**  */
     private final MultiConnectionList list;
     /**  */
@@ -28,19 +30,35 @@ public class MulticonView implements IView<JComponent>
      **************************************************************************/
     public MulticonView()
     {
-        this.split = new JSplitPane();
         this.list = new MultiConnectionList();
         this.connectionView = new ComponentView();
         this.selectedListeners = new UpdaterList<>();
+        this.view = createView();
 
+        list.getView().setMinimumSize( new Dimension( 200, 200 ) );
+        list.getView().setPreferredSize( new Dimension( 200, 200 ) );
         list.addItemSelectedListener( ( d ) -> handleLinkSelected( d ) );
+    }
 
-        split.setLeftComponent( list.getView() );
-        split.setRightComponent( connectionView.getView() );
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    private JPanel createView()
+    {
+        JPanel panel = new JPanel( new GridBagLayout() );
+        GridBagConstraints constraints;
 
-        split.setDividerLocation( 200 );
-        split.setOneTouchExpandable( false );
-        split.setResizeWeight( 0.0 );
+        constraints = new GridBagConstraints( 0, 0, 1, 1, 0.0, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 6, 6, 6, 6 ), 0, 0 );
+        panel.add( list.getView(), constraints );
+
+        constraints = new GridBagConstraints( 1, 0, 1, 1, 1.0, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+            new Insets( 6, 0, 6, 6 ), 0, 0 );
+        panel.add( connectionView.getView(), constraints );
+
+        return panel;
     }
 
     /***************************************************************************
@@ -49,7 +67,7 @@ public class MulticonView implements IView<JComponent>
     @Override
     public JComponent getView()
     {
-        return split;
+        return view;
     }
 
     /***************************************************************************

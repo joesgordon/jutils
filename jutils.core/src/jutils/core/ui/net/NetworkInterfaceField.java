@@ -1,6 +1,7 @@
 package jutils.core.ui.net;
 
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 import jutils.core.net.IpAddress;
 import jutils.core.net.IpVersion;
@@ -141,5 +142,13 @@ public class NetworkInterfaceField implements IDataFormField<IpAddress>
     public Validity getValidity()
     {
         return nicField.getValidity();
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public JTextField getTextField()
+    {
+        return nicField.getTextField();
     }
 }

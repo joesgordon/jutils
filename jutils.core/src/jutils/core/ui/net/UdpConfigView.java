@@ -7,7 +7,6 @@ import jutils.core.net.IpAddress;
 import jutils.core.net.UdpConfig;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.fields.BooleanFormField;
-import jutils.core.ui.fields.IDataFormField;
 import jutils.core.ui.fields.IFormField;
 import jutils.core.ui.fields.IntegerFormField;
 import jutils.core.ui.fields.UsableFormField;
@@ -25,7 +24,7 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
     /**  */
     private final StandardFormView form;
     /**  */
-    private final IDataFormField<IpAddress> nicField;
+    private final NetworkInterfaceField nicField;
     /**  */
     private final PortField localPortField;
     /**  */
@@ -52,14 +51,16 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
      **************************************************************************/
     public UdpConfigView()
     {
+        IpAddressField mcField = new IpAddressField( "Multicast",
+            new MulticastGroupParser() );
+
         this.form = new StandardFormView();
 
         this.nicField = new NetworkInterfaceField( "NIC" );
         this.localPortField = new PortField( "Local Port" );
 
         this.broadcastField = new BooleanFormField( "Broadcast" );
-        this.multicastField = new UsableFormField<>(
-            new IpAddressField( "Multicast", new MulticastGroupParser() ) );
+        this.multicastField = new UsableFormField<>( mcField );
 
         this.timeoutField = new IntegerFormField( "Timeout", "ms", 0, null );
         this.reuseField = new BooleanFormField( "Reuse" );
@@ -68,6 +69,12 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
         this.ttlField = new IntegerFormField( "TTL", 0, 255 );
 
         this.validityManager = new AggregateValidityChangedManager();
+
+        nicField.getTextField().setColumns( 8 );
+        localPortField.getTextField().setColumns( 8 );
+        mcField.getTextField().setColumns( 8 );
+        timeoutField.getTextField().setColumns( 8 );
+        ttlField.getTextField().setColumns( 8 );
 
         form.addField( nicField );
         form.addField( localPortField );
@@ -96,7 +103,7 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
         validityManager.addField( ttlField );
 
         localPortField.setUpdater( ( d ) -> inputs.localPort = d );
-        nicField.setUpdater( ( d ) -> inputs.nic.set( d ) );
+        nicField.setUpdater( ( d ) -> inputs.local.set( d ) );
 
         broadcastField.setUpdater( ( d ) -> inputs.broadcast = d );
         multicastField.setUpdater( ( d ) -> inputs.multicast.set( d ) );
@@ -161,7 +168,7 @@ public class UdpConfigView implements IDataView<UdpConfig>, IValidationField
         this.inputs = data;
 
         localPortField.setValue( inputs.localPort );
-        nicField.setValue( inputs.nic );
+        nicField.setValue( inputs.local );
 
         broadcastField.setValue( inputs.broadcast );
         multicastField.setValue( inputs.multicast );

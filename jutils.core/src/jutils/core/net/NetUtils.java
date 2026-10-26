@@ -252,13 +252,13 @@ public final class NetUtils
             socket.setTimeToLive( inputs.ttl );
             socket.setLoopback( inputs.loopback );
 
-            socket.setInterface( inputs.nic );
+            socket.setInterface( inputs.local );
 
-            socket.joinGroup( group, inputs.nic );
+            socket.joinGroup( group, inputs.local );
         }
         else
         {
-            EndPoint localPoint = new EndPoint( inputs.nic, inputs.localPort );
+            EndPoint localPoint = new EndPoint( inputs.local, inputs.localPort );
 
             socket.open();
             socket.setReuseAddress( inputs.reuse );
