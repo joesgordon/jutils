@@ -28,6 +28,11 @@ public class YearNanos implements ITimestamp
      */
     public long nanos;
 
+    /**  */
+    public static long MAX_NANOS_366 = TimeUtils.NANOS_IN_LEAP_YEAR - 1;
+    /**  */
+    public static long MAX_NANOS_365 = MAX_NANOS_366 - TimeUtils.NANOS_IN_DAY;
+
     /***************************************************************************
      * Creates a new instant set to midnight January 1 1970.
      **************************************************************************/
@@ -159,7 +164,7 @@ public class YearNanos implements ITimestamp
      **************************************************************************/
     public void setMicros( long micros, boolean retain )
     {
-        setTime( NanoTimeUnit.MICROSECONDS, micros, retain );
+        setTime( NanoTimeUnit.MICROS, micros, retain );
     }
 
     /***************************************************************************
@@ -183,7 +188,7 @@ public class YearNanos implements ITimestamp
      **************************************************************************/
     public void setMillis( long millis, boolean retain )
     {
-        setTime( NanoTimeUnit.MILLISECONDS, millis, retain );
+        setTime( NanoTimeUnit.MILLIS, millis, retain );
     }
 
     /***************************************************************************
@@ -215,7 +220,9 @@ public class YearNanos implements ITimestamp
     }
 
     /***************************************************************************
-     * @return
+     * Creates a new YearNanos of the minimum supported {@link YearNanos} of
+     * -32768-01-01T00:00:00.000000000.
+     * @return the minimum supported {@link YearNanos}.
      **************************************************************************/
     public static YearNanos min()
     {
@@ -223,13 +230,15 @@ public class YearNanos implements ITimestamp
     }
 
     /***************************************************************************
-     * @return
+     * Creates a new YearNanos of the maximum supported {@link YearNanos} of
+     * +32767-01-01T00:00:00.000000000.
+     * @return the maximum supported {@link YearNanos}.
      **************************************************************************/
     public static YearNanos max()
     {
-        long nanos = TimeUtils.NANOS_IN_DAY * 365;
+        long nanos = ( TimeUtils.NANOS_IN_DAY * 365 ) - 1;
 
-        return new YearNanos( Short.MAX_VALUE, nanos - 1 );
+        return new YearNanos( Short.MAX_VALUE, nanos );
     }
 
     /***************************************************************************
@@ -265,11 +274,11 @@ public class YearNanos implements ITimestamp
     public static enum NanoTimeUnit implements INamedItem
     {
         /** Represents nanoseconds. */
-        NANOSECONDS( "Nanoseconds", 1L ),
+        NANOS( "Nanoseconds", 1L ),
         /** Represents microseconds. */
-        MICROSECONDS( "Microseconds", 1000L ),
+        MICROS( "Microseconds", 1000L ),
         /** Represents milliseconds. */
-        MILLISECONDS( "Milliseconds", 1000000L ),
+        MILLIS( "Milliseconds", 1000000L ),
         /** Represents seconds. */
         SECONDS( "Seconds", 1000000000L );
 
@@ -295,8 +304,7 @@ public class YearNanos implements ITimestamp
         @Override
         public String getName()
         {
-            // TODO Auto-generated method stub
-            return null;
+            return name;
         }
     }
 

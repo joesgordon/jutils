@@ -1,4 +1,4 @@
-package jutils.telemetry.ch10.io;
+package jutils.telemetry.ch10.io.pcm1;
 
 import java.io.IOException;
 

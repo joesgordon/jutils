@@ -7,12 +7,12 @@ import javax.swing.JComponent;
 import jutils.core.ui.ClassedView.IClassedView;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.fields.IntegerFormField;
-import jutils.telemetry.ch10.MonthDayTime;
+import jutils.telemetry.ch10.MonthYearTime;
 
 /*******************************************************************************
  * 
  ******************************************************************************/
-public class MonthDayTimeView implements IClassedView<MonthDayTime>
+public class MonthYearTimeView implements IClassedView<MonthYearTime>
 {
     /**  */
     public final JComponent view;
@@ -32,12 +32,12 @@ public class MonthDayTimeView implements IClassedView<MonthDayTime>
     public final IntegerFormField yearField;
 
     /**  */
-    private MonthDayTime time;
+    private MonthYearTime time;
 
     /***************************************************************************
      * 
      **************************************************************************/
-    public MonthDayTimeView()
+    public MonthYearTimeView()
     {
         this.millisField = new IntegerFormField( "Milliseconds", 0, 999 );
         this.secondsField = new IntegerFormField( "Seconds", 0, 59 );
@@ -89,7 +89,7 @@ public class MonthDayTimeView implements IClassedView<MonthDayTime>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public MonthDayTime getData()
+    public MonthYearTime getData()
     {
         return this.time;
     }
@@ -98,7 +98,7 @@ public class MonthDayTimeView implements IClassedView<MonthDayTime>
      * {@inheritDoc}
      **************************************************************************/
     @Override
-    public void setData( MonthDayTime data )
+    public void setData( MonthYearTime data )
     {
         this.time = data;
 

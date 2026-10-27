@@ -6,7 +6,7 @@ import jutils.core.ui.ClassedView;
 import jutils.core.ui.model.IDataView;
 import jutils.telemetry.ch10.ITime1;
 import jutils.telemetry.ch10.IrigDayTime;
-import jutils.telemetry.ch10.MonthDayTime;
+import jutils.telemetry.ch10.MonthYearTime;
 
 /*******************************************************************************
  * 
@@ -23,7 +23,7 @@ public class Time1View implements IDataView<ITime1>
     {
         this.view = new ClassedView<>();
 
-        view.put( MonthDayTime.class, new MonthDayTimeView(), false );
+        view.put( MonthYearTime.class, new MonthYearTimeView(), false );
         view.put( IrigDayTime.class, new IrigDayTimeView(), false );
     }
 

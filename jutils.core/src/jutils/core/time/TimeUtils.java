@@ -15,58 +15,85 @@ import java.time.temporal.ChronoUnit;
  ******************************************************************************/
 public final class TimeUtils
 {
+    // -------------------------------------------------------------------------
+    // Day constants
+    // -------------------------------------------------------------------------
+
     /**  */
-    public static final long MAX_DAYS_IN_YEAR = 366;
+    public static final long DAYS_IN_LEAP_YEAR = 366;
     /**  */
     public static final long DAYS_IN_WEEK = 7;
+
+    // -------------------------------------------------------------------------
+    // Hour constants
+    // -------------------------------------------------------------------------
 
     /**  */
     public static final long HOURS_IN_DAY = 24;
     /**  */
-    public static final long MAX_HOURS_IN_YEAR = HOURS_IN_DAY *
-        MAX_DAYS_IN_YEAR;
+    public static final long HOURS_IN_LEAP_YEAR = HOURS_IN_DAY *
+        DAYS_IN_LEAP_YEAR;
+
+    // -------------------------------------------------------------------------
+    // Minute constants
+    // -------------------------------------------------------------------------
 
     /**  */
     public static final long MINUTES_IN_HOUR = 60;
     /**  */
     public static final long MINUTES_IN_DAY = MINUTES_IN_HOUR * HOURS_IN_DAY;
     /**  */
-    public static final long MAX_MIN_IN_YEAR = MAX_HOURS_IN_YEAR * 60;
+    public static final long MINUTES_IN_LEAP_YEAR = HOURS_IN_LEAP_YEAR * 60;
+
+    // -------------------------------------------------------------------------
+    // Second constants
+    // -------------------------------------------------------------------------
 
     /**  */
-    public static final long SECONDS_IN_MINUTE = 60;
+    public static final long SECONDS_IN_MIN = 60;
     /**  */
-    public static final long SECONDS_IN_DAY = SECONDS_IN_MINUTE *
-        MINUTES_IN_DAY;
+    public static final long SECONDS_IN_HOUR = SECONDS_IN_MIN * MINUTES_IN_HOUR;
     /**  */
-    public static final long MAX_SECONDS_IN_YEAR = MAX_MIN_IN_YEAR * 60;
+    public static final long SECONDS_IN_DAY = SECONDS_IN_MIN * MINUTES_IN_DAY;
+    /**  */
+    public static final long SECONDS_IN_LEAP_YEAR = MINUTES_IN_LEAP_YEAR * 60;
+
+    // -------------------------------------------------------------------------
+    // Millisecond constants
+    // -------------------------------------------------------------------------
 
     /**  */
     public static final long MILLIS_IN_SEC = 1000;
     /**  */
-    public static final long MILLIS_IN_MIN = MILLIS_IN_SEC * SECONDS_IN_MINUTE;
+    public static final long MILLIS_IN_MIN = MILLIS_IN_SEC * SECONDS_IN_MIN;
     /**  */
     public static final long MILLIS_IN_HOUR = MILLIS_IN_MIN * MINUTES_IN_HOUR;
     /**  */
     public static final long MILLIS_IN_DAY = MILLIS_IN_HOUR * HOURS_IN_DAY;
     /**  */
-    public static final long MILLIS_IN_WEEK = MILLIS_IN_DAY * DAYS_IN_WEEK;
-    /**  */
-    public static final long MAX_MILLIS_IN_YEAR = MAX_SECONDS_IN_YEAR * 1000;
+    public static final long MILLIS_IN_LEAP_YEAR = SECONDS_IN_LEAP_YEAR * 1000;
+
+    // -------------------------------------------------------------------------
+    // Microsecond constants
+    // -------------------------------------------------------------------------
 
     /**  */
     public static final long MICROS_IN_MILLI = 1000L;
     /**  */
     public static final long MICROS_IN_SEC = MICROS_IN_MILLI * MILLIS_IN_SEC;
     /**  */
-    public static final long MICROS_IN_MIN = MILLIS_IN_SEC * SECONDS_IN_MINUTE;
+    public static final long MICROS_IN_MIN = MICROS_IN_SEC * SECONDS_IN_MIN;
     /**  */
-    public static final long MICROS_IN_HOUR = MILLIS_IN_MIN * MINUTES_IN_HOUR;
+    public static final long MICROS_IN_HOUR = MICROS_IN_MIN * MINUTES_IN_HOUR;
     /**  */
     public static final long MICROS_IN_DAY = MICROS_IN_HOUR * HOURS_IN_DAY;
     /**  */
-    public static final long MAX_MICROS_IN_YEAR = MICROS_IN_DAY *
-        MAX_DAYS_IN_YEAR;
+    public static final long MICROS_IN_LEAP_YEAR = MICROS_IN_DAY *
+        DAYS_IN_LEAP_YEAR;
+
+    // -------------------------------------------------------------------------
+    // Nanosecond constants
+    // -------------------------------------------------------------------------
 
     /**   */
     public static final long NANOS_IN_MICRO = 1000L;
@@ -74,11 +101,15 @@ public final class TimeUtils
     public static final long NANOS_IN_MILLI = NANOS_IN_MICRO * MICROS_IN_MILLI;
     /**  */
     public static final long NANOS_IN_SEC = NANOS_IN_MILLI * MILLIS_IN_SEC;
+    /**  */
+    public static final long NANOS_IN_MIN = NANOS_IN_SEC * SECONDS_IN_MIN;
+    /**  */
+    public static final long NANOS_IN_HOUR = NANOS_IN_MIN * MINUTES_IN_HOUR;
     /** The number of nanoseconds in a day. */
-    public static final long NANOS_IN_DAY = NANOS_IN_SEC * SECONDS_IN_DAY;
-    /** The maximum number of nanoseconds in a year (366 days). */
-    public static final long MAX_NANOS_IN_YEAR = NANOS_IN_DAY *
-        MAX_DAYS_IN_YEAR;
+    public static final long NANOS_IN_DAY = NANOS_IN_HOUR * HOURS_IN_DAY;
+    /** The number of nanoseconds in a leap year (366 days). */
+    public static final long NANOS_IN_LEAP_YEAR = NANOS_IN_DAY *
+        DAYS_IN_LEAP_YEAR;
 
     /**  */
     public static final String DATE_FMT = "yyyy-MM-dd";
@@ -427,5 +458,38 @@ public final class TimeUtils
         int millis = ( nanos + 500 ) / 1000;
         long seconds = time.toEpochSecond( ZoneOffset.UTC );
         return seconds * 1000L + millis;
+    }
+
+    /***************************************************************************
+     * @param date
+     * @return
+     **************************************************************************/
+    public static int toDayOfYear( LocalDate date )
+    {
+        return date.getDayOfYear();
+    }
+
+    /***************************************************************************
+     * Provides the day of year (a value of 1 is 1 January).
+     * @param year
+     * @param month
+     * @param day
+     * @return
+     **************************************************************************/
+    public static int toDayOfYear( int year, int month, int day )
+    {
+        LocalDate date = LocalDate.of( year, month, day );
+
+        return toDayOfYear( date );
+    }
+
+    /***************************************************************************
+     * @param year
+     * @param dayOfYear
+     * @return
+     **************************************************************************/
+    public static LocalDate fromDayOfYear( int year, int dayOfYear )
+    {
+        return LocalDate.ofYearDay( year, dayOfYear );
     }
 }

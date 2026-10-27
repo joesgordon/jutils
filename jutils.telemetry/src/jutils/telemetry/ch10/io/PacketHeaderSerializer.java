@@ -65,10 +65,10 @@ public class PacketHeaderSerializer implements IDataSerializer<PacketHeader>
 
         flags = stream.read();
 
-        field = PacketFlag.CHECKSUM_PRESENT.getField( flags );
+        field = PacketFlag.CHECKSUM_PRESENT.getByte( flags );
         header.checksumPresent = ChecksumSize.fromValue( field );
 
-        field = PacketFlag.SEC_HDR_TIME_FMT.getField( flags );
+        field = PacketFlag.SEC_HDR_TIME_FMT.getByte( flags );
         header.secHdrTimeFmt = SecondaryHeaderTimeFormat.fromValue( field );
 
         header.dataOverflow = PacketFlag.DATA_OVERFLOW.getFlag( flags );

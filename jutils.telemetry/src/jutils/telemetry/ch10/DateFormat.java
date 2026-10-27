@@ -10,7 +10,7 @@ public enum DateFormat implements INamedValue
     /**  */
     IRIG_DAY( 0, "IRIG Day" ),
     /**  */
-    MONTH_YEAR( 1, "Month/Day" ),;
+    MONTH_YEAR( 1, "Month/Year" ),;
 
     /**  */
     public final int value;

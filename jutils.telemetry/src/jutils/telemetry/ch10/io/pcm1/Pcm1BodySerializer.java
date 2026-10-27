@@ -1,4 +1,4 @@
-package jutils.telemetry.ch10.io;
+package jutils.telemetry.ch10.io.pcm1;
 
 import java.io.IOException;
 
@@ -6,6 +6,7 @@ import jutils.core.ValidationException;
 import jutils.core.io.IDataStream;
 import jutils.telemetry.ch10.PacketHeader;
 import jutils.telemetry.ch10.Pcm1Body;
+import jutils.telemetry.ch10.io.IBodySerializer;
 
 /*******************************************************************************
  * 

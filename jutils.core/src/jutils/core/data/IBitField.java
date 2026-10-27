@@ -8,23 +8,21 @@ import jutils.core.utils.BitMasks;
 public interface IBitField
 {
     /***************************************************************************
-     * Returns the 0-relative bit this flag refers to. Bits 0 and 3 are set in
-     * the value {@code 0x09}.
-     * @return the bit this flag is refers to.
+     * Returns the 0-relative start bit (inclusive) of the field.
+     * @return the start bit.
      **************************************************************************/
     public int getStartBit();
 
     /***************************************************************************
-     * Returns the 0-relative bit this flag refers to. Bits 0 and 3 are set in
-     * the value {@code 0x09}.
-     * @return the bit this flag is refers to.
+     * Returns the 0-relative end bit (inclusive) of the field.
+     * @return the end bit.
      **************************************************************************/
     public int getEndBit();
 
     /***************************************************************************
-     * The mask created by shifting the value 0x01, {@link #getBit()} number of
-     * times to the left (i.e. {@code 1 << getBit()}.
-     * @return the mask for the provided bit.
+     * The mask created by setting the bits from {@link #getStartBit()} to
+     * {@link #getEndBit()}.
+     * @return the mask for this field.
      * @see #createMask(int)
      **************************************************************************/
     public long getMask();
@@ -137,9 +135,36 @@ public interface IBitField
      * @param word
      * @return
      **************************************************************************/
-    public default byte getField( byte word )
+    public default byte getByte( byte word )
     {
         return ( byte )getField( word & BitMasks.BYTE_MASK );
+    }
+
+    /***************************************************************************
+     * @param word
+     * @return
+     **************************************************************************/
+    public default byte getByte( short word )
+    {
+        return ( byte )getField( word & BitMasks.SHORT_MASK );
+    }
+
+    /***************************************************************************
+     * @param word
+     * @return
+     **************************************************************************/
+    public default byte getByte( int word )
+    {
+        return ( byte )getField( word & BitMasks.INT_MASK );
+    }
+
+    /***************************************************************************
+     * @param word
+     * @return
+     **************************************************************************/
+    public default byte getByte( long word )
+    {
+        return ( byte )getField( word );
     }
 
     /***************************************************************************
@@ -147,16 +172,46 @@ public interface IBitField
      * @param value
      * @return
      **************************************************************************/
-    public default byte setField( byte word, byte value )
+    public default byte setByte( byte word, byte value )
     {
         return ( byte )setField( word & BitMasks.BYTE_MASK, value );
     }
 
     /***************************************************************************
      * @param word
+     * @param value
      * @return
      **************************************************************************/
-    public default short getField( short word )
+    public default short setByte( short word, byte value )
+    {
+        return ( short )setField( word & BitMasks.SHORT_MASK, value );
+    }
+
+    /***************************************************************************
+     * @param word
+     * @param value
+     * @return
+     **************************************************************************/
+    public default int setByte( int word, byte value )
+    {
+        return ( int )setField( word & BitMasks.INT_MASK, value );
+    }
+
+    /***************************************************************************
+     * @param word
+     * @param value
+     * @return
+     **************************************************************************/
+    public default long setByte( long word, byte value )
+    {
+        return setField( word, value );
+    }
+
+    /***************************************************************************
+     * @param word
+     * @return
+     **************************************************************************/
+    public default short getShort( short word )
     {
         return ( short )getField( word & BitMasks.SHORT_MASK );
     }

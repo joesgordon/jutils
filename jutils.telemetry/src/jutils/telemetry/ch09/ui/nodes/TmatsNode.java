@@ -39,6 +39,7 @@ public class TmatsNode extends AbstractDataNode<TmatsFile>
     public void createChildren()
     {
         children.add( new GeneralInfoNode( this, data.tmats.general ) );
+        children.add( new TransmissionsNode( this, data.tmats.transmissions ) );
         // TODO Auto-generated method stub
     }
 

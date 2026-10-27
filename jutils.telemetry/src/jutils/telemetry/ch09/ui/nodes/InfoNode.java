@@ -7,6 +7,9 @@ import jutils.core.ui.model.IDataView;
 import jutils.telemetry.ch09.Information;
 import jutils.telemetry.ch09.ui.InformationView;
 
+/*******************************************************************************
+ * 
+ ******************************************************************************/
 public class InfoNode extends AbstractDataNode<Information>
 {
     /***************************************************************************

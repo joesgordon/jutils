@@ -1,4 +1,4 @@
-package jutils.telemetry.ch10.io;
+package jutils.telemetry.ch10.io.pcm1;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import jutils.core.swap.ByteSwapper;
 import jutils.core.swap.SwapPattern;
 import jutils.telemetry.ch10.Pcm1SpecificData;
 import jutils.telemetry.ch10.PcmThroughputData;
-import jutils.telemetry.ch10.io.PcmDataSerializer.IPcmDataSerializer;
+import jutils.telemetry.ch10.io.pcm1.PcmDataSerializer.IPcmDataSerializer;
 
 /*******************************************************************************
  * 
