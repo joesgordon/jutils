@@ -200,6 +200,7 @@ public final class AppRunner
         }
         catch( InvocationTargetException ex )
         {
+            ex.printStackTrace();
         }
         catch( InterruptedException ex )
         {
@@ -362,6 +363,16 @@ public final class AppRunner
     }
 
     /***************************************************************************
+     * @param frame
+     **************************************************************************/
+    private static void addStandardUncaughtExceptionHandler( JFrame frame )
+    {
+        UncaughtExceptionHandler h;
+        h = new StandardUncaughtExceptionHandler( frame );
+        Thread.setDefaultUncaughtExceptionHandler( h );
+    }
+
+    /***************************************************************************
      * Creates a JFrame to be displayed.
      **************************************************************************/
     public static interface IFrameCreator
@@ -464,6 +475,8 @@ public final class AppRunner
         @Override
         public void createAndShowUi()
         {
+            addStandardUncaughtExceptionHandler( null );
+
             callback.run();
         }
     }
@@ -554,9 +567,7 @@ public final class AppRunner
         {
             JFrame frame = frameApp.createFrame();
 
-            UncaughtExceptionHandler h;
-            h = new StandardUncaughtExceptionHandler( frame );
-            Thread.setDefaultUncaughtExceptionHandler( h );
+            addStandardUncaughtExceptionHandler( frame );
 
             prepareAndShowFrame( frame, validate );
 

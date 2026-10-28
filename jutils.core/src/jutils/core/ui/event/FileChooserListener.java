@@ -220,6 +220,8 @@ public class FileChooserListener implements ActionListener
     /***************************************************************************
      * Shows a {@link JFileChooser} over the parent component provided in the
      * constructor.
+     * @return {@code true} if the file is accepted; {@code false} if the dialog
+     * is closed/cancelled.
      **************************************************************************/
     public boolean showDialog()
     {
@@ -376,14 +378,12 @@ public class FileChooserListener implements ActionListener
         FileNameExtensionFilter fileFilter )
     {
         File file = selected;
-        String extension = fileFilter.getExtensions()[0];
+        String dotExt = '.' + fileFilter.getExtensions()[0];
         String filename = file.getName();
-        int dotIndex = filename.length() - extension.length() - 1;
 
-        if( dotIndex > -1 && !( filename.endsWith( extension ) &&
-            filename.charAt( dotIndex ) == '.' ) )
+        if( !filename.endsWith( dotExt ) )
         {
-            file = new File( file.getParentFile(), filename + "." + extension );
+            file = new File( file.getParentFile(), filename + dotExt );
         }
 
         return file;
