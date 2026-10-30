@@ -15,8 +15,6 @@ public class DemoPlatformMain
      **************************************************************************/
     public static void main( String [] args )
     {
-        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
-
         PlatformUtils.checkResources();
 
         AppRunner.invokeLater( () -> createFrame() );

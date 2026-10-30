@@ -45,8 +45,6 @@ public class HexeditMain
             }
         }
 
-        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
-
         HexeditApp hexApp = new HexeditApp( file );
         AppRunner.invokeLater( hexApp );
     }

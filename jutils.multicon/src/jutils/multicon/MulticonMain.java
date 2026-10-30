@@ -28,8 +28,6 @@ public class MulticonMain
      **************************************************************************/
     public static void main( String[] args )
     {
-        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
-
         PlatformUtils.getPlatform().initialize();
 
         AppRunner.invokeLater( new MulticonApp(), true );

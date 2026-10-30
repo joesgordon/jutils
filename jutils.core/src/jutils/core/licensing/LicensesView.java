@@ -77,8 +77,6 @@ public class LicensesView implements IView<JComponent>
      **************************************************************************/
     public static void main( String [] args )
     {
-        AppRunner.DEFAULT_LAF = AppRunner.SIMPLE_LAF;
-
         AppRunner.invokeLater( () -> createAndShowUi() );
     }
 

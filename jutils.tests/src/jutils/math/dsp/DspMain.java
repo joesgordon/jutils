@@ -17,8 +17,6 @@ public class DspMain
     {
         testA2d();
 
-        AppRunner.DEFAULT_LAF = AppRunner.JGOODIES_LAF;
-
         AppRunner.invokeLater( () -> createFrame() );
     }
 
