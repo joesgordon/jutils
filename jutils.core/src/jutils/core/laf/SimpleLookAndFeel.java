@@ -1,9 +1,6 @@
 package jutils.core.laf;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map.Entry;
@@ -28,14 +25,14 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
 
     /**  */
 
-    public final SimpleLafColors colors;
+    public final SimpleColors colors;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public SimpleLookAndFeel()
     {
-        this( new SimpleLafColors() );
+        this( new SimpleColors() );
     }
 
     /***************************************************************************
@@ -43,7 +40,7 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
      * @param colors the colors of the components to be used for this
      * look-and-feel instance.
      **************************************************************************/
-    public SimpleLookAndFeel( SimpleLafColors colors )
+    public SimpleLookAndFeel( SimpleColors colors )
     {
         super();
 
@@ -320,7 +317,8 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
         table.put( "TableHeader.background", colors.background );
         table.put( "TableHeader.foreground", colors.foreground );
         table.put( "TableHeader.cellBorder",
-            ( LazyValue )t -> new TableHeaderBorder() );
+            ( LazyValue )t -> new TableHeaderBorder( colors.shadow,
+                colors.highlight ) );
     }
 
     /***************************************************************************
@@ -342,6 +340,7 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
     private void setTextfieldDefaults( UIDefaults table )
     {
         table.put( "TextField.background", colors.controlBackground );
+        table.put( "TextField.border", new LineBorder( colors.shadow ) );
         table.put( "TextField.caretForeground", colors.foreground );
         table.put( "TextField.foreground", colors.foreground );
         table.put( "TextField.inactiveForeground", colors.background );
@@ -417,8 +416,8 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
      **************************************************************************/
     static void printTable( UIDefaults table, String keyTerm, Class<?> valTerm )
     {
-        ArrayList<Entry<Object, Object>> entries = new ArrayList<>(
-            table.entrySet() );
+        ArrayList<Entry<Object,
+            Object>> entries = new ArrayList<>( table.entrySet() );
 
         Collections.sort( entries, ( e1, e2 ) -> {
             return e1.getKey().toString().compareTo( e2.getKey().toString() );
@@ -472,84 +471,5 @@ public class SimpleLookAndFeel extends MetalLookAndFeel
         }
 
         // Utils.printStackTrace();
-    }
-
-    /***************************************************************************
-     * 
-     **************************************************************************/
-    public static final class SimpleLafColors
-    {
-        /**  */
-        public Color background;
-        /**  */
-        public Color controlBackground;
-        /**  */
-        public Color controlHighlight;
-        /**  */
-        public Color foreground;
-        /**  */
-        public Color control;
-        /**  */
-        public Color shadow;
-        /**  */
-        public Color highlight;
-        /**  */
-        public Color bright;
-
-        /**
-         * 
-         */
-        public SimpleLafColors()
-        {
-            this.background = new Color( 0x444444 );
-            this.controlBackground = new Color( 0x0C2D40 );
-            this.controlHighlight = new Color( 0x46A5DC );
-            this.foreground = new Color( 0xF0F0F0 );
-            this.control = new Color( 0x204060 );
-            this.shadow = new Color( 0x111A1F );
-            this.highlight = new Color( 0x7A7A7A );
-            this.bright = new Color( 0x0579C8 );
-        }
-    }
-
-    /**
-     *
-     */
-    @SuppressWarnings( "serial")
-    public class TableHeaderBorder extends javax.swing.border.AbstractBorder
-    {
-        /**
-         * The border insets.
-         */
-        protected Insets editorBorderInsets = new Insets( 2, 2, 2, 0 );
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void paintBorder( Component c, Graphics g, int x, int y, int w,
-            int h )
-        {
-            g.translate( x, y );
-
-            g.setColor( colors.shadow );
-            g.drawLine( w - 1, 0, w - 1, h - 1 );
-            g.drawLine( 1, h - 1, w - 1, h - 1 );
-            g.setColor( colors.highlight );
-            g.drawLine( 0, 0, w - 2, 0 );
-            g.drawLine( 0, 0, 0, h - 2 );
-
-            g.translate( -x, -y );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Insets getBorderInsets( Component c, Insets nset )
-        {
-            nset.set( nset.top, nset.left, nset.bottom, nset.right );
-            return nset;
-        }
     }
 }
