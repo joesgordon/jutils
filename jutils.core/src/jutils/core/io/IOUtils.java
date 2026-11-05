@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import jutils.core.OptionUtils;
 import jutils.core.OptionUtils.YncAnswer;
 import jutils.core.Utils;
@@ -396,6 +398,28 @@ public final class IOUtils
     }
 
     /***************************************************************************
+     * Ensures that the extension specified by the file filter is suffixed onto
+     * the file name of the given file.
+     * @param selected The file to be checked.
+     * @param fileFilter the filter defining the extension to be used.
+     * @return a file with the given extension.
+     **************************************************************************/
+    public static File ensureExtension( File selected,
+        FileNameExtensionFilter fileFilter )
+    {
+        File file = selected;
+        String dotExt = '.' + fileFilter.getExtensions()[0];
+        String filename = file.getName();
+
+        if( !filename.endsWith( dotExt ) )
+        {
+            file = new File( file.getParentFile(), filename + dotExt );
+        }
+
+        return file;
+    }
+
+    /***************************************************************************
      * Returns the directory containing the jar or class file containing the
      * provided class.
      * @param installClass the class to be located.
@@ -681,39 +705,40 @@ public final class IOUtils
                 name + " directory: " + dir.getAbsolutePath() );
         }
     }
-	
-	//Casey additions
-	public static String validateBatchFileInput( File file, String name )
-     {
-		String errMsg = "";
-		
-		if( !file.exists() )
+
+    // Casey additions
+    public static String validateBatchFileInput( File file, String name )
+    {
+        String errMsg = "";
+
+        if( !file.exists() )
         {
-            errMsg =  "The specified " + name +
-                " file does not exist: " + file.getAbsolutePath() + "\n";
+            errMsg = "The specified " + name + " file does not exist: " +
+                file.getAbsolutePath() + "\n";
         }
         else if( !file.isFile() )
         {
             errMsg = "The specified " + name +
-                " file exists, but is not a file: " + file.getAbsolutePath() + "\n";
+                " file exists, but is not a file: " + file.getAbsolutePath() +
+                "\n";
         }
         else if( !file.canRead() )
         {
-            errMsg = "Cannot read from the specified " +
-                name + " file: " + file.getAbsolutePath() + "\n";
+            errMsg = "Cannot read from the specified " + name + " file: " +
+                file.getAbsolutePath() + "\n";
         }
-		
-		return errMsg;
+
+        return errMsg;
     }
-	
-	public static String validateBatchDirInput( File dir, String name  )
+
+    public static String validateBatchDirInput( File dir, String name )
     {
-		String errMsg = "";
-		
-		if( !dir.exists() )
+        String errMsg = "";
+
+        if( !dir.exists() )
         {
-            errMsg = "The specified " + name +
-                " directory does not exist: " + dir.getAbsolutePath() + "\n";
+            errMsg = "The specified " + name + " directory does not exist: " +
+                dir.getAbsolutePath() + "\n";
         }
         else if( !dir.isDirectory() )
         {
@@ -723,54 +748,54 @@ public final class IOUtils
         }
         else if( !dir.canRead() )
         {
-            errMsg = "Cannot read from the specified " +
-                name + " directory: " + dir.getAbsolutePath() + "\n";
+            errMsg = "Cannot read from the specified " + name + " directory: " +
+                dir.getAbsolutePath() + "\n";
         }
-		return errMsg;
+        return errMsg;
     }
-	
-	public static String validateBatchFileOuput( File file, String name )     
+
+    public static String validateBatchFileOuput( File file, String name )
     {
-		String errMsg = "";
-		
-		if( !file.exists() )
+        String errMsg = "";
+
+        if( !file.exists() )
         {
             File parent = file.getAbsoluteFile().getParentFile();
 
             if( !parent.exists() )
             {
-                errMsg =  "The specified " + name +
+                errMsg = "The specified " + name +
                     " file's parent directory does not exist: " +
                     parent.getAbsolutePath() + "\n";
             }
             else if( !parent.canWrite() )
             {
-                errMsg = 
-                    "Cannot write to the specified " + name +
-                        " file's parent directory: " +
-                        parent.getAbsolutePath() + "\n";
+                errMsg = "Cannot write to the specified " + name +
+                    " file's parent directory: " + parent.getAbsolutePath() +
+                    "\n";
             }
         }
         else if( !file.isFile() )
         {
-            errMsg = "The specified " + name +
-                " file is not a file: " + file.getAbsolutePath() + "\n";
+            errMsg = "The specified " + name + " file is not a file: " +
+                file.getAbsolutePath() + "\n";
         }
         else if( !file.canWrite() )
         {
-            errMsg = "Cannot write to the specified " +
-                name + " file: " + file.getAbsolutePath() + "\n";
+            errMsg = "Cannot write to the specified " + name + " file: " +
+                file.getAbsolutePath() + "\n";
         }
-		return errMsg;
+        return errMsg;
     }
-	public static String validateBatchDirOutput( File dir, String name )        
+
+    public static String validateBatchDirOutput( File dir, String name )
     {
-		String errMsg = "";
-		
-		if( !dir.exists() )
+        String errMsg = "";
+
+        if( !dir.exists() )
         {
-            errMsg = "The specified " + name +
-                " directory does not exist: " + dir.getAbsolutePath() + "\n";
+            errMsg = "The specified " + name + " directory does not exist: " +
+                dir.getAbsolutePath() + "\n";
         }
         else if( !dir.isDirectory() )
         {
@@ -780,13 +805,13 @@ public final class IOUtils
         }
         else if( !dir.canWrite() )
         {
-            errMsg = "Cannot write to the specified " +
-                name + " directory: " + dir.getAbsolutePath() + "\n";
+            errMsg = "Cannot write to the specified " + name + " directory: " +
+                dir.getAbsolutePath() + "\n";
         }
-		return errMsg;
+        return errMsg;
     }
-	
-	// end Casey additions
+
+    // end Casey additions
 
     /***************************************************************************
      * Validates the provided file path against the provided file type and

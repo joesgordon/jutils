@@ -1,6 +1,5 @@
 package jutils.core.ui.event;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,13 +7,11 @@ import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import jutils.core.io.IOUtils;
+import jutils.core.ui.ExtendedFileChooser;
 
 /*******************************************************************************
  * Generic {@link ActionListener} for prompting a user for a file. If file
@@ -42,7 +39,7 @@ public class FileChooserListener implements ActionListener
     private final boolean selectMultiple;
 
     /** The file chooser to be used to generate a dialog. */
-    private final DataFileChooser chooser;
+    private final ExtendedFileChooser chooser;
 
     /** The directory last view regardless of user accept/cancel. */
     private File lastDir;
@@ -150,7 +147,7 @@ public class FileChooserListener implements ActionListener
                 "Cannot select multiple if saving." );
         }
 
-        this.chooser = new DataFileChooser();
+        this.chooser = new ExtendedFileChooser();
 
         chooser.setDialogTitle( title );
         chooser.setMultiSelectionEnabled( false );
@@ -165,25 +162,7 @@ public class FileChooserListener implements ActionListener
      **************************************************************************/
     public void addExtension( String description, String... extensions )
     {
-        StringBuilder desc = new StringBuilder();
-
-        desc.append( description );
-        desc.append( " " );
-
-        for( int i = 0; i < extensions.length; i++ )
-        {
-            if( i > 0 )
-            {
-                desc.append( ", " );
-            }
-            desc.append( "(*." );
-            desc.append( extensions[i] );
-            desc.append( ')' );
-        }
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            desc.toString(), extensions );
-        chooser.addChoosableFileFilter( filter );
+        chooser.addExtension( description, extensions );
     }
 
     /***************************************************************************
@@ -352,7 +331,8 @@ public class FileChooserListener implements ActionListener
                         FileNameExtensionFilter fnef = ( FileNameExtensionFilter )filter;
                         for( int i = 0; i < selected.length; i++ )
                         {
-                            selected[i] = ensureExtension( selected[i], fnef );
+                            selected[i] = IOUtils.ensureExtension( selected[i],
+                                fnef );
                         }
                     }
                 }
@@ -368,38 +348,11 @@ public class FileChooserListener implements ActionListener
     }
 
     /***************************************************************************
-     * Ensures that the extension specified by the file filter is suffixed onto
-     * the file name of the given file.
-     * @param selected The file to be checked.
-     * @param fileFilter the filter defining the extension to be used.
-     * @return a file with the given extension.
-     **************************************************************************/
-    private static File ensureExtension( File selected,
-        FileNameExtensionFilter fileFilter )
-    {
-        File file = selected;
-        String dotExt = '.' + fileFilter.getExtensions()[0];
-        String filename = file.getName();
-
-        if( !filename.endsWith( dotExt ) )
-        {
-            file = new File( file.getParentFile(), filename + dotExt );
-        }
-
-        return file;
-    }
-
-    /***************************************************************************
      * Removes all file extensions.
      **************************************************************************/
     public void removeAllExtensions()
     {
-        FileFilter [] filters = chooser.getChoosableFileFilters();
-
-        for( FileFilter f : filters )
-        {
-            chooser.removeChoosableFileFilter( f );
-        }
+        chooser.removeAllExtensions();
     }
 
     /***************************************************************************
@@ -491,85 +444,6 @@ public class FileChooserListener implements ActionListener
             return () -> {
                 return new File[0];
             };
-        }
-    }
-
-    /***************************************************************************
-     * Defines a {@link JFileChooser} that supports an additional component on
-     * the right hand side.
-     **************************************************************************/
-    private static final class DataFileChooser extends JFileChooser
-    {
-        /** Generated UID. */
-        private static final long serialVersionUID = 407583092267479562L;
-
-        /**
-         * Creates the chooser with default options.
-         */
-        public DataFileChooser()
-        {
-            super();
-
-            // Color [] colors = { Color.red, Color.green, Color.blue,
-            // Color.black };
-            //
-            // for( int i = 0; i < super.getComponentCount(); i++ )
-            // {
-            // JComponent comp = ( JComponent )super.getComponent( i );
-            //
-            // comp.setBorder( new LineBorder( colors[i] ) );
-            //
-            // LogUtils.printDebug( "Child %d is a %s", i, comp.getClass() );
-            // }
-        }
-
-        /**
-         * Sets a component to show additional options to the right of the
-         * standard chooser fields.
-         * @param comp the component containing fields for additional options.
-         */
-        public void setAdditional( JComponent comp )
-        {
-            BorderLayout layout = ( BorderLayout )super.getLayout();
-            BorderLayout newLayout = new BorderLayout();
-            JPanel panel = new JPanel( newLayout );
-
-            newLayout.setHgap( layout.getHgap() );
-            newLayout.setVgap( layout.getVgap() );
-
-            while( super.getComponentCount() > 0 )
-            {
-                Component c = super.getComponent( 0 );
-                Object constraints = layout.getConstraints( c );
-
-                // LogUtils.printDebug( "Contraints: " + constraints.toString()
-                // );
-
-                super.remove( c );
-                panel.add( c, constraints );
-            }
-
-            Border border = comp.getBorder();
-
-            if( border == null )
-            {
-                border = new EtchedBorder();
-            }
-
-            // int rightBorder = onTop ? 0 : 8;
-            // int bottomBorder = onTop ? 8 : 0;
-
-            comp.setBorder(
-                new CompoundBorder( new EmptyBorder( 0, 8, 0, 0 ), border ) );
-
-            // String compLoc = onTop ? BorderLayout.NORTH : BorderLayout.WEST;
-            // String existingLoc = onTop ? BorderLayout.SOUTH :
-            // BorderLayout.EAST;
-
-            super.add( panel, BorderLayout.CENTER );
-            super.add( comp, BorderLayout.EAST );
-
-            super.doLayout();
         }
     }
 }
