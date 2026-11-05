@@ -20,9 +20,9 @@ import jutils.core.io.FieldPrinter;
 import jutils.core.net.NetUtils;
 import jutils.core.net.NicInfo;
 import jutils.core.ui.IToolView;
-import jutils.core.ui.ItemListView;
-import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListDataView;
+import jutils.core.ui.ItemsListView;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.StandardFrameView;
 import jutils.core.ui.StringView;
 import jutils.core.ui.app.AppRunner;
@@ -38,14 +38,14 @@ public class NicInfosView implements IView<JComponent>
     /**  */
     private final JComponent view;
     /**  */
-    private final ItemListView<NicInfo> nicsView;
+    private final ItemsListDataView<NicInfo> nicsView;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public NicInfosView()
     {
-        this.nicsView = new ItemListView<>( new NicInfoView(),
+        this.nicsView = new ItemsListDataView<>( new NicInfoView(),
             new NicInfoModel(), false, false );
         this.view = createView();
     }
@@ -143,7 +143,7 @@ public class NicInfosView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( NicInfo item )
+        public String getName( NicInfo item )
         {
             return item.name;
         }
@@ -152,7 +152,7 @@ public class NicInfosView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public NicInfo promptForNew( ListView<NicInfo> view )
+        public NicInfo promptForNew( ItemsListView<NicInfo> view )
         {
             return null;
         }

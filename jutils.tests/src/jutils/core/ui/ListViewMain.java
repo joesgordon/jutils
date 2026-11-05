@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.app.IFrameApp;
 
@@ -34,7 +34,7 @@ public class ListViewMain
         public JFrame createFrame()
         {
             StandardFrameView frameView = new StandardFrameView();
-            ListView<String> listView = new ListView<String>(
+            ItemsListView<String> listView = new ItemsListView<String>(
                 new StringListModel() );
 
             List<String> items = new ArrayList<>();
@@ -79,7 +79,7 @@ public class ListViewMain
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( String item )
+        public String getName( String item )
         {
             return item;
         }
@@ -88,7 +88,7 @@ public class ListViewMain
          * {@inheritDoc}
          */
         @Override
-        public String promptForNew( ListView<String> view )
+        public String promptForNew( ItemsListView<String> view )
         {
             return view.promptForName( "String" );
         }

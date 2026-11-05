@@ -16,8 +16,8 @@ import javax.swing.JPanel;
 
 import jutils.core.INamedItem;
 import jutils.core.io.LogUtils;
-import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListView;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
 import jutils.demo.ui.jutils.DateTimeViews;
@@ -35,7 +35,7 @@ public class JUtilsView implements IView<JComponent>
     /**  */
     private final JPanel view;
     /**  */
-    private final ListView<JUtilsComponent> choicesView;
+    private final ItemsListView<JUtilsComponent> choicesView;
     /**  */
     private final TitleView choiceView;
 
@@ -48,7 +48,7 @@ public class JUtilsView implements IView<JComponent>
     public JUtilsView()
     {
         this.compViews = new HashMap<>();
-        this.choicesView = new ListView<>( new JUtilsComponentListModel(),
+        this.choicesView = new ItemsListView<>( new JUtilsComponentListModel(),
             false, false );
         this.choiceView = new TitleView( "Nothing Selected", null );
 
@@ -196,7 +196,7 @@ public class JUtilsView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( JUtilsComponent item )
+        public String getName( JUtilsComponent item )
         {
             return item.name;
         }
@@ -205,7 +205,8 @@ public class JUtilsView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public JUtilsComponent promptForNew( ListView<JUtilsComponent> view )
+        public JUtilsComponent promptForNew(
+            ItemsListView<JUtilsComponent> view )
         {
             return null;
         }

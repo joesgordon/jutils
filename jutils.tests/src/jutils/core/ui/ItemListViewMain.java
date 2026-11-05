@@ -12,7 +12,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.app.AppRunner;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.event.updater.UpdaterList;
@@ -58,13 +58,13 @@ public class ItemListViewMain
         /**  */
         private final JPanel view;
         /**  */
-        private final ItemListView<TestData> normalItemList;
+        private final ItemsListDataView<TestData> normalItemList;
         /**  */
-        private final ItemListView<TestData> rendererItemList;
+        private final ItemsListDataView<TestData> rendererItemList;
         /**  */
-        private final ListView<TestData> normalList;
+        private final ItemsListView<TestData> normalList;
         /**  */
-        private final ListView<TestData> rendererList;
+        private final ItemsListView<TestData> rendererList;
 
         /**
          * 
@@ -74,13 +74,13 @@ public class ItemListViewMain
             TestDataView ntdv = new TestDataView();
             TestDataView rtdv = new TestDataView();
 
-            this.normalItemList = new ItemListView<TestData>( ntdv,
+            this.normalItemList = new ItemsListDataView<TestData>( ntdv,
                 new TestDataModel() );
-            this.rendererItemList = new ItemListView<TestData>( rtdv,
+            this.rendererItemList = new ItemsListDataView<TestData>( rtdv,
                 new TestDataModel() );
 
-            this.normalList = new ListView<>( new TestDataModel() );
-            this.rendererList = new ListView<>( new TestDataModel() );
+            this.normalList = new ItemsListView<>( new TestDataModel() );
+            this.rendererList = new ItemsListView<>( new TestDataModel() );
 
             this.view = createView();
 
@@ -214,7 +214,7 @@ public class ItemListViewMain
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( TestData item )
+        public String getName( TestData item )
         {
             return item.name;
         }
@@ -223,7 +223,7 @@ public class ItemListViewMain
          * {@inheritDoc}
          */
         @Override
-        public TestData promptForNew( ListView<TestData> view )
+        public TestData promptForNew( ItemsListView<TestData> view )
         {
             String name = view.promptForName( "Test Data" );
 

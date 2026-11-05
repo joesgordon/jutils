@@ -121,7 +121,7 @@ public class CollectionListModel<T> extends AbstractListModel<T>
      * @param item the item to be added.
      * @param index the index at which the item will be insterted.
      **************************************************************************/
-    public void add( T item, int index )
+    public void addAt( T item, int index )
     {
         items.add( index, item );
 
@@ -138,17 +138,18 @@ public class CollectionListModel<T> extends AbstractListModel<T>
 
         if( index > -1 )
         {
-            remove( index );
+            removeAt( index );
         }
     }
 
     /***************************************************************************
      * Removes the item at the specified index.
      * @param index the index of the element to be removed
-     * @throws IndexOutOfBoundsException if the index is out of range (index < 0
-     * || index >= getSize())
+     * @return the item removed.
+     * @throws IndexOutOfBoundsException if the index is out of range
+     * ({@code index < 0 || index >= getSize()})
      **************************************************************************/
-    public T remove( int index )
+    public T removeAt( int index )
     {
         T t = items.remove( index );
 

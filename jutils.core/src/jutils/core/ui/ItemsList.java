@@ -53,6 +53,47 @@ public class ItemsList<D> extends JList<D>
     }
 
     /***************************************************************************
+     * @param item
+     **************************************************************************/
+    public void addItem( D item )
+    {
+        listModel.add( item );
+    }
+
+    /***************************************************************************
+     * @param item
+     * @param index
+     **************************************************************************/
+    public void addItemAt( D item, int index )
+    {
+        listModel.addAt( item, index );
+    }
+
+    /***************************************************************************
+     * @param item
+     **************************************************************************/
+    public void removeItem( D item )
+    {
+        listModel.remove( item );
+    }
+
+    /***************************************************************************
+     * @param index
+     **************************************************************************/
+    public void removeItemAt( int index )
+    {
+        listModel.removeAt( index );
+    }
+
+    /***************************************************************************
+     * 
+     **************************************************************************/
+    public void clear()
+    {
+        listModel.clear();
+    }
+
+    /***************************************************************************
      * @param e
      * @return
      **************************************************************************/
@@ -76,7 +117,7 @@ public class ItemsList<D> extends JList<D>
      * @param index
      * @return
      **************************************************************************/
-    public D getItem( int index )
+    public D getItemAt( int index )
     {
         return listModel.get( index );
     }
@@ -91,7 +132,7 @@ public class ItemsList<D> extends JList<D>
 
         if( index > -1 )
         {
-            return itemModel.getTooltip( getItem( index ) );
+            return itemModel.getTooltip( getItemAt( index ) );
         }
         return null;
     }
@@ -102,6 +143,14 @@ public class ItemsList<D> extends JList<D>
     public void setItems( List<D> items )
     {
         listModel.setData( items );
+    }
+
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public List<D> getItems()
+    {
+        return listModel.getData();
     }
 
     /***************************************************************************

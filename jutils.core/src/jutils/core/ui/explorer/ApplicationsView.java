@@ -3,23 +3,23 @@ package jutils.core.ui.explorer;
 import java.awt.Component;
 import java.util.List;
 
-import jutils.core.ui.ItemListView;
-import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListDataView;
+import jutils.core.ui.ItemsListView;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.explorer.data.ApplicationConfig;
 import jutils.core.ui.model.IDataView;
 
 public class ApplicationsView implements IDataView<List<ApplicationConfig>>
 {
     /**  */
-    private final ItemListView<ApplicationConfig> appsView;
+    private final ItemsListDataView<ApplicationConfig> appsView;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public ApplicationsView()
     {
-        this.appsView = new ItemListView<>( new ApplicationView(),
+        this.appsView = new ItemsListDataView<>( new ApplicationView(),
             new ExtensionItemListModel() );
     }
 
@@ -65,14 +65,14 @@ public class ApplicationsView implements IDataView<List<ApplicationConfig>>
         implements IListViewModel<ApplicationConfig>
     {
         @Override
-        public String getTitle( ApplicationConfig item )
+        public String getName( ApplicationConfig item )
         {
             return item.name;
         }
 
         @Override
         public ApplicationConfig promptForNew(
-            ListView<ApplicationConfig> view )
+            ItemsListView<ApplicationConfig> view )
         {
             ApplicationConfig item = null;
             String name = view.promptForName( "extension" );

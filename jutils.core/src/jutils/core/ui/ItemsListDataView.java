@@ -13,8 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import jutils.core.ui.ListView.IListViewModel;
-import jutils.core.ui.ListView.SelectionMode;
+import jutils.core.ui.ItemsListView.IListViewModel;
+import jutils.core.ui.ItemsListView.SelectionMode;
 import jutils.core.ui.event.ItemActionEvent;
 import jutils.core.ui.event.updater.IUpdater;
 import jutils.core.ui.model.IDataView;
@@ -26,12 +26,12 @@ import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
  * displayed with the {@link IDataView} provided.
  * @param <T> the type of item to be listed.
  ******************************************************************************/
-public class ItemListView<T> implements IDataView<List<T>>
+public class ItemsListDataView<T> implements IDataView<List<T>>
 {
     /** The main component. */
     private final JPanel view;
     /** The model of the list. */
-    private final ListView<T> itemsView;
+    private final ItemsListView<T> itemsView;
 
     /**  */
     private final ComponentView compView;
@@ -51,7 +51,7 @@ public class ItemListView<T> implements IDataView<List<T>>
      * @param dataView the view that displays an individual item when selected.
      * @param itemsModel the model for this view.
      **************************************************************************/
-    public ItemListView( IDataView<T> dataView, IListViewModel<T> itemsModel )
+    public ItemsListDataView( IDataView<T> dataView, IListViewModel<T> itemsModel )
     {
         this( dataView, itemsModel, true, true );
     }
@@ -63,7 +63,7 @@ public class ItemListView<T> implements IDataView<List<T>>
      * @param allowAddRemove shows add/remove buttons if {@code true}.
      * @param allowReorder shows order buttons if {@code true}.
      **************************************************************************/
-    public ItemListView( IDataView<T> dataView, IListViewModel<T> itemsModel,
+    public ItemsListDataView( IDataView<T> dataView, IListViewModel<T> itemsModel,
         boolean allowAddRemove, boolean allowReorder )
     {
         this( dataView, itemsModel, allowAddRemove, allowReorder, true );
@@ -77,12 +77,12 @@ public class ItemListView<T> implements IDataView<List<T>>
      * @param allowReorder shows order buttons if {@code true}.
      * @param useScrollPane
      **************************************************************************/
-    public ItemListView( IDataView<T> dataView, IListViewModel<T> itemsModel,
+    public ItemsListDataView( IDataView<T> dataView, IListViewModel<T> itemsModel,
         boolean allowAddRemove, boolean allowReorder, boolean useScrollPane )
     {
         this.dataView = dataView;
 
-        this.itemsView = new ListView<T>( itemsModel, allowAddRemove,
+        this.itemsView = new ItemsListView<T>( itemsModel, allowAddRemove,
             allowReorder );
 
         this.compView = new ComponentView();

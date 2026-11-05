@@ -3,9 +3,9 @@ package jutils.core.ui.explorer;
 import java.awt.Component;
 import java.util.List;
 
-import jutils.core.ui.ItemListView;
-import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListDataView;
+import jutils.core.ui.ItemsListView;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.explorer.data.ExtensionConfig;
 import jutils.core.ui.model.IDataView;
 
@@ -15,14 +15,14 @@ import jutils.core.ui.model.IDataView;
 public class ExtensionsView implements IDataView<List<ExtensionConfig>>
 {
     /**  */
-    private final ItemListView<ExtensionConfig> extsView;
+    private final ItemsListDataView<ExtensionConfig> extsView;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public ExtensionsView()
     {
-        this.extsView = new ItemListView<>( new ExtensionView(),
+        this.extsView = new ItemsListDataView<>( new ExtensionView(),
             new ExtensionItemListModel() );
     }
 
@@ -68,13 +68,13 @@ public class ExtensionsView implements IDataView<List<ExtensionConfig>>
         implements IListViewModel<ExtensionConfig>
     {
         @Override
-        public String getTitle( ExtensionConfig item )
+        public String getName( ExtensionConfig item )
         {
             return item.ext;
         }
 
         @Override
-        public ExtensionConfig promptForNew( ListView<ExtensionConfig> view )
+        public ExtensionConfig promptForNew( ItemsListView<ExtensionConfig> view )
         {
             ExtensionConfig item = null;
             String ext = view.promptForName( "extension" );

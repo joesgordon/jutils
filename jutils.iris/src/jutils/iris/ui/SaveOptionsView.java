@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 
 import jutils.core.io.parsers.ExistenceType;
 import jutils.core.io.parsers.FileType;
-import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListView;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.OkDialogView;
 import jutils.core.ui.OkDialogView.OkDialogButtons;
 import jutils.core.ui.StandardFormView;
@@ -41,7 +41,7 @@ public class SaveOptionsView implements IDataView<SaveOptions>
     /**  */
     private final FileFormField dirField;
     /**   */
-    private final ListView<String> namesField;
+    private final ItemsListView<String> namesField;
 
     /**  */
     private SaveOptions data;
@@ -57,7 +57,7 @@ public class SaveOptionsView implements IDataView<SaveOptions>
             new NamedItemDescriptor<>() );
         this.dirField = new FileFormField( "Directory", FileType.DIRECTORY,
             ExistenceType.EXISTS, false, true );
-        this.namesField = new ListView<String>( new NamesModel(), false,
+        this.namesField = new ItemsListView<String>( new NamesModel(), false,
             false );
 
         indexField.getTextField().setMinimumSize(
@@ -157,7 +157,7 @@ public class SaveOptionsView implements IDataView<SaveOptions>
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( String item )
+        public String getName( String item )
         {
             return item;
         }
@@ -166,7 +166,7 @@ public class SaveOptionsView implements IDataView<SaveOptions>
          * {@inheritDoc}
          */
         @Override
-        public String promptForNew( ListView<String> view )
+        public String promptForNew( ItemsListView<String> view )
         {
             return null;
         }

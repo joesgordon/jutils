@@ -103,7 +103,7 @@ public class ItemsListPopup<T>
     {
         if( list.getItemCount() > 0 )
         {
-            list.setSelectedValue( list.getItem( 0 ), true );
+            list.setSelectedValue( list.getItemAt( 0 ), true );
         }
         list.clearSelection();
         popup.show( parent, 0, parent.getHeight() );

@@ -14,8 +14,8 @@ import javax.swing.JPanel;
 
 import jutils.core.INamedItem;
 import jutils.core.io.LogUtils;
-import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListView;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.model.IView;
 import jutils.demo.ui.swing.RadioButtonView;
@@ -28,7 +28,7 @@ public class SwingView implements IView<JComponent>
     /**  */
     private final JPanel view;
     /**  */
-    private final ListView<ComponentPanel> choicesView;
+    private final ItemsListView<ComponentPanel> choicesView;
     /**  */
     private final TitleView choiceView;
 
@@ -43,8 +43,8 @@ public class SwingView implements IView<JComponent>
     public SwingView()
     {
         this.compViews = new HashMap<>();
-        this.choicesView = new ListView<>( new ComponentPanelListModel(), false,
-            false );
+        this.choicesView = new ItemsListView<>( new ComponentPanelListModel(),
+            false, false );
         this.choiceView = new TitleView( "Nothing Selected", null );
 
         compViews.put( ComponentPanel.JBUTTON, () -> null );
@@ -159,7 +159,7 @@ public class SwingView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( ComponentPanel item )
+        public String getName( ComponentPanel item )
         {
             return item.name;
         }
@@ -168,7 +168,7 @@ public class SwingView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public ComponentPanel promptForNew( ListView<ComponentPanel> view )
+        public ComponentPanel promptForNew( ItemsListView<ComponentPanel> view )
         {
             return null;
         }

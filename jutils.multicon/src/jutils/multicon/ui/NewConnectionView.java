@@ -6,10 +6,10 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import jutils.core.ui.ItemListView;
-import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IListViewModel;
-import jutils.core.ui.ListView.SelectionMode;
+import jutils.core.ui.ItemsListDataView;
+import jutils.core.ui.ItemsListView;
+import jutils.core.ui.ItemsListView.IListViewModel;
+import jutils.core.ui.ItemsListView.SelectionMode;
 import jutils.core.ui.model.IView;
 import jutils.core.ui.model.LabelListCellRenderer.IListCellLabelDecorator;
 import jutils.multicon.data.ConnectionType;
@@ -20,14 +20,14 @@ import jutils.multicon.data.ConnectionType;
 public class NewConnectionView implements IView<JComponent>
 {
     /**  */
-    private final ItemListView<ConnectionType> typeList;
+    private final ItemsListDataView<ConnectionType> typeList;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public NewConnectionView()
     {
-        this.typeList = new ItemListView<>( new ConnectionTypeView(),
+        this.typeList = new ItemsListDataView<>( new ConnectionTypeView(),
             new ConnectionsListModel(), false, false );
 
         typeList.setSelectionMode( SelectionMode.SINGLE_ITEM );
@@ -69,7 +69,7 @@ public class NewConnectionView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public String getTitle( ConnectionType item )
+        public String getName( ConnectionType item )
         {
             return item.name;
         }
@@ -78,7 +78,7 @@ public class NewConnectionView implements IView<JComponent>
          * {@inheritDoc}
          */
         @Override
-        public ConnectionType promptForNew( ListView<ConnectionType> view )
+        public ConnectionType promptForNew( ItemsListView<ConnectionType> view )
         {
             // TODO Auto-generated method stub
             return null;

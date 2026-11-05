@@ -8,6 +8,7 @@ import javax.swing.Icon;
 public interface ItemsListModel<T>
 {
     /***************************************************************************
+     * Returns the string representation of the provided item.
      * @param item
      * @return
      **************************************************************************/

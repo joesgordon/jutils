@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListView;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.model.IDataView;
 import jutils.plot.model.Series;
 
@@ -16,14 +16,14 @@ import jutils.plot.model.Series;
 public class PlotsPropertiesView implements IDataView<List<Series>>
 {
     /**  */
-    private final ListView<Series> listView;
+    private final ItemsListView<Series> listView;
 
     /***************************************************************************
      * 
      **************************************************************************/
     public PlotsPropertiesView()
     {
-        this.listView = new ListView<Series>( new SeriesItemListModel() );
+        this.listView = new ItemsListView<Series>( new SeriesItemListModel() );
     }
 
     /***************************************************************************
@@ -59,13 +59,13 @@ public class PlotsPropertiesView implements IDataView<List<Series>>
     private static class SeriesItemListModel implements IListViewModel<Series>
     {
         @Override
-        public String getTitle( Series item )
+        public String getName( Series item )
         {
             return item.name;
         }
 
         @Override
-        public Series promptForNew( ListView<Series> view )
+        public Series promptForNew( ItemsListView<Series> view )
         {
             return null;
         }

@@ -6,8 +6,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import jutils.core.IconConstants;
-import jutils.core.ui.ListView;
-import jutils.core.ui.ListView.IListViewModel;
+import jutils.core.ui.ItemsListView;
+import jutils.core.ui.ItemsListView.IListViewModel;
 import jutils.core.ui.StandardFormView;
 import jutils.core.ui.TitleView;
 import jutils.core.ui.explorer.data.ExtensionConfig;
@@ -26,7 +26,7 @@ public class ExtensionView implements IDataView<ExtensionConfig>
     /**  */
     private final StringFormField descField;
     /**  */
-    private final ListView<String> appList;
+    private final ItemsListView<String> appList;
 
     /**  */
     private ExtensionConfig extension;
@@ -38,7 +38,7 @@ public class ExtensionView implements IDataView<ExtensionConfig>
     {
         this.extField = new StringFormField( "Extension" );
         this.descField = new StringFormField( "Description" );
-        this.appList = new ListView<>( new ExtensionItemListModel() );
+        this.appList = new ItemsListView<>( new ExtensionItemListModel() );
         this.view = createView();
 
         setData( new ExtensionConfig( "a", "A File" ) );
@@ -108,13 +108,13 @@ public class ExtensionView implements IDataView<ExtensionConfig>
         implements IListViewModel<String>
     {
         @Override
-        public String getTitle( String item )
+        public String getName( String item )
         {
             return item;
         }
 
         @Override
-        public String promptForNew( ListView<String> view )
+        public String promptForNew( ItemsListView<String> view )
         {
             // TODO display drop down in a dialog with all programs.
 
