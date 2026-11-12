@@ -68,6 +68,18 @@ public class CollectionListModel<T> extends AbstractListModel<T>
     }
 
     /***************************************************************************
+     * Sets the item at the provided index.
+     * @param item the replacement item to be put in the list.
+     * @param index the index of the item to be replaced.
+     **************************************************************************/
+    public void setAt( T item, int index )
+    {
+        items.set( index, item );
+
+        fireContentsChanged( this, index, index );
+    }
+
+    /***************************************************************************
      * Sets the list items to those provided.
      * @param items the items to compose the list.
      **************************************************************************/
