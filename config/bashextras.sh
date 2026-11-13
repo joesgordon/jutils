@@ -3,14 +3,18 @@
 # 
 # 
 
-echo "========================= Loading Bash Extras ========================="
+echo "==================== Loading Bash Extras ==================="
+
+export FILE_EDITOR='gedit'
+export FILE_MANAGER='thunar'
+export EXTRAS_PATH='/apps/bashextras.sh'
 
 user_rc_file="$HOME/.beuserrc"
 
 alias rs='source $HOME/.bashrc'
 alias rse='exec bash'
 alias ec='fe $HOME/.bashrc'
-alias ecc='fe /apps/bashextras.sh'
+alias ecc='fe "$EXTRAS_PATH"'
 alias ecu='fe $user_rc_file'
 alias gou='go $HOME'
 alias gof='go /files/'
@@ -40,10 +44,9 @@ alias psef='ps -ef'
 alias setcmd='sudo systemctl set-default multi-user'
 alias setgui='sudo systemctl set-default graphical'
 
-export BE_EDTR='gedit'
 export HISTTIMEFORMAT="%04y-%02m-%02d %02H:%02M:%02S "
 export PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n[\d \t]\$ '
-#export PS1='\[\e]0;\w\a\]\n\u@\h \w\n[\d \t] $ '
+#export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\n\[\033[32m\]\u@\h \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$ '
 export PS2='> '
 export PS4='+ '
 
@@ -115,7 +118,7 @@ function findf()
 
 function fe()
 {
-    ( $BE_EDTR $* 1>/dev/null 2>&1 ) &
+    ( "$FILE_EDITOR" $* 1>/dev/null 2>&1 ) &
 }
 
 function few()
@@ -170,7 +173,7 @@ function fm()
         return
     fi
     
-    ( thunar $todir 1>/dev/null 2>&1 ) &
+    ( "$FILE_MANAGER" $todir 1>/dev/null 2>&1 ) &
 }
 
 function up()
@@ -221,7 +224,7 @@ function pdfunc ()
 
 
 if [[  -f "${user_rc_file}" ]] ; then
-    echo "====================== Loading User Resource File ====================="
+    echo "================ Loading User Resource File ================"
     # echo "Loading ${user_rc_file}"
 	. "${user_rc_file}"
 fi
