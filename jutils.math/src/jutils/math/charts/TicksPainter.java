@@ -10,8 +10,12 @@ import jutils.math.charts.props.TicksProperties;
  ******************************************************************************/
 public class TicksPainter implements IPainter
 {
+    /**  */
     public TicksProperties properties;
 
+    /***************************************************************************
+     * 
+     **************************************************************************/
     public TicksPainter()
     {
         this.properties = new TicksProperties();

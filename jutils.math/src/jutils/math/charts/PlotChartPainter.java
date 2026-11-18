@@ -34,6 +34,7 @@ public class PlotChartPainter implements IChartPainter
     @Override
     public void paint( Graphics2D g )
     {
+        ticks.paint( g );
         // TODO Auto-generated method stub
     }
 }

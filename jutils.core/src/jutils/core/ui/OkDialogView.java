@@ -224,6 +224,14 @@ public class OkDialogView implements IView<JDialog>
     }
 
     /***************************************************************************
+     * @param enabled
+     **************************************************************************/
+    public void setOkButtonEnabled( boolean enabled )
+    {
+        okButton.setEnabled( enabled );
+    }
+
+    /***************************************************************************
      * Adds the provided listener to the list of listeners to be called when the
      * dialog is closed. The boolean will be {@code true} if the ok button was
      * pressed and {@code false} if the cancel button was pressed or the dialog
