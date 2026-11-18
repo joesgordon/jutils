@@ -244,7 +244,7 @@ public class OkDialogView implements IView<JDialog>
     }
 
     /***************************************************************************
-     * 
+     * {@inheritDoc}
      **************************************************************************/
     @Override
     public JDialog getView()
